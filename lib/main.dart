@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
+import 'src/Language_selector_screen/language_selector.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
@@ -65,7 +66,7 @@ Future<void> main() async {
 }
 
 /// Without logging and crash reporting, this would be `void main()`.
-void guardedMain() {
+void guardedMain() async {
   if (kReleaseMode) {
     // Don't log anything below warnings in production.
     Logger.root.level = Level.WARNING;
@@ -82,6 +83,7 @@ void guardedMain() {
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
   );
+
 
   // TODO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.
@@ -111,6 +113,11 @@ void guardedMain() {
   //   // Ask the store what the player has bought already.
   //   inAppPurchaseController.restorePurchases();
   // }
+  WidgetsFlutterBinding.ensureInitialized();
+   await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(
     MyApp(
@@ -189,6 +196,14 @@ class MyApp extends StatelessWidget {
               pageBuilder: (context, state) => buildMyTransition<void>(
                 child: LoaderWidget(key: Key('loading')),
                 color: context.watch<Palette>().backgroundPlaySession,
+              ),
+            ),
+            GoRoute(
+              path: 'language_selector',
+              pageBuilder: (context, state) => buildMyTransition<void>(
+                child: LanguageSelector(key: Key('language_selector'), scaffoldKey: GlobalKey<ScaffoldState>()),
+                color: context.watch<Palette>().backgroundTransparent,
+                decoration:  BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
               ),
             ),
           ]),

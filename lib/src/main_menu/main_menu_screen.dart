@@ -4,17 +4,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../drawer/drawer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../customAppBar/customAppBar_notitle.dart';
+import '../drawer/drawer.dart';
 import '../games_services/games_services.dart';
+import '../instruction_dialog/instruction_dialog.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
-import '../customAppBar/customAppBar_notitle.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -32,7 +33,7 @@ class MainMenuScreen extends StatelessWidget {
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
       child: Scaffold(
-        drawer: AppDrawer(),
+        drawer: CustomAppDrawer(),
         key: scaffoldKey,
         appBar: CustomAppBar_notitle(
           onMenuButtonPressed: () {
@@ -154,7 +155,16 @@ class MainMenuScreen extends StatelessWidget {
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
                 ),
                 icon: Icon(Icons.question_mark, size: 32),
-                onPressed: () => GoRouter.of(context).push('/settings'),
+                onPressed: () {
+                  Future.delayed(Duration(milliseconds: 150), () {
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) {
+                        return InstructionDialog();
+                      },
+                    );
+                  });
+                },
                 label: const Text('Zasady gry'),
               ),
               _gap,

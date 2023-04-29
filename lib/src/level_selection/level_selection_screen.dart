@@ -35,116 +35,117 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     return Container(
-        decoration: BoxDecoration(
-          gradient: Palette().backgroundLoadingSessionGradient,
-        ),
-    child: Scaffold(
-      drawer: AppDrawer(),
-      key: scaffoldKey,
-      appBar: CustomAppBar(
-        title: 'Wprowadź nazwy drużyn',
-          onMenuButtonPressed: () {
-    scaffoldKey.currentState?.openDrawer();
-    },
+      decoration: BoxDecoration(
+        gradient: Palette().backgroundLoadingSessionGradient,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(children: [
-          Container(
-            height: 100, // Określ wysokość wg własnego uznania
-            child: LogoWidget_notitle(),
+      child: Scaffold(
+          drawer: CustomAppDrawer(),
+          key: scaffoldKey,
+          appBar: CustomAppBar(
+            title: 'Wprowadź nazwy drużyn',
+            onMenuButtonPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.numberOfTeams,
-              itemBuilder: (context, index) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Team ${index + 1}',
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        Color newColor = teamColors[index]; // Dodaj tę linię
-                        await showDialog<Color>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Wybierz kolor'),
-                            content: SingleChildScrollView(
-                              child: BlockPicker(
-                                pickerColor: teamColors[index],
-                                onColorChanged: (Color color) {
-                                  newColor = color; // Dodaj tę linię
-                                },
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Positioned.fill(
+              child: Column(children: [
+                Container(
+                  height: 100, // Określ wysokość wg własnego uznania
+                  child: LogoWidget_notitle(),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: widget.numberOfTeams,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                                decoration: InputDecoration(
+                                labelText: 'Team ${index + 1}',
                               ),
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Anuluj'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(
-                                    context, newColor), // Zmodyfikuj tę linię
-                                child: const Text('OK'),
-                              ),
-                            ],
                           ),
-                        );
-                        // Jeśli wybrano nowy kolor, zaktualizuj listę
-                        if (newColor != teamColors[index]) {
-                          // Zmodyfikuj tę linię
-                          setState(() {
-                            teamColors[index] = newColor;
-                          });
-                        }
-                      },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: teamColors[index],
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
+                          GestureDetector(
+                            onTap: () async {
+                              Color newColor =
+                                  teamColors[index]; // Dodaj tę linię
+                              await showDialog<Color>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Wybierz kolor'),
+                                  content: SingleChildScrollView(
+                                    child: BlockPicker(
+                                      pickerColor: teamColors[index],
+                                      onColorChanged: (Color color) {
+                                        newColor = color; // Dodaj tę linię
+                                      },
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Anuluj'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context,
+                                          newColor), // Zmodyfikuj tę linię
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              // Jeśli wybrano nowy kolor, zaktualizuj listę
+                              if (newColor != teamColors[index]) {
+                                // Zmodyfikuj tę linię
+                                setState(() {
+                                  teamColors[index] = newColor;
+                                });
+                              }
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: teamColors[index],
+                                border: Border.all(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 100.0),
-            child: Center(
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFCB48EF), // color
-                  foregroundColor: Colors.white, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                        ],
+                      );
+                    },
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
                 ),
-                icon: Icon(Icons.play_arrow_rounded, size: 32),
-                onPressed: () {
-
-                },
-                label: const Text('Zagraj teraz!'),
+              Container(
+                height: 200,
+                child: Center(// Określ wysokość wg własnego uznania
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFCB48EF), // color
+                    foregroundColor: Colors.white, // textColor
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize: Size(
+                        MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                    TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                  ),
+                  icon: Icon(Icons.play_arrow_rounded, size: 32),
+                  onPressed: () {},
+                  label: const Text('Zagraj teraz!'),
+                ),
               ),
+              ),
+              ]),
             ),
-          ),
-        ]),
-      ),
-    ),
+          )),
     );
   }
 }

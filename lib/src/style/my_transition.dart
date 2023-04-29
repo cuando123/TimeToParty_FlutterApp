@@ -9,6 +9,7 @@ import 'package:logging/logging.dart';
 CustomTransitionPage<T> buildMyTransition<T>({
   required Widget child,
   required Color color,
+  Decoration? decoration,
   String? name,
   Object? arguments,
   String? restorationId,
@@ -21,6 +22,7 @@ CustomTransitionPage<T> buildMyTransition<T>({
         animation: animation,
         color: color,
         child: child,
+        decoration: decoration,
       );
     },
     key: key,
@@ -38,10 +40,13 @@ class _MyReveal extends StatefulWidget {
 
   final Color color;
 
+  final Decoration? decoration;
+
   const _MyReveal({
     required this.child,
     required this.animation,
     required this.color,
+    this.decoration,
   });
 
   @override
@@ -91,7 +96,7 @@ class _MyRevealState extends State<_MyReveal> {
             ),
           ),
           child: Container(
-            color: widget.color,
+            decoration: widget.decoration ?? BoxDecoration(color: widget.color),
           ),
         ),
         AnimatedOpacity(

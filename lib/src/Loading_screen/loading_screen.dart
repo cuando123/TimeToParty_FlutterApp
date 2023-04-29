@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'dart:ui';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import '../style/palette.dart';
-import 'package:provider/provider.dart';
 
 class LoaderWidget extends StatelessWidget {
   const LoaderWidget({super.key});
