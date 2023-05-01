@@ -39,9 +39,13 @@ import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
 import 'src/Loading_screen/loading_screen.dart';
+import 'src/in_app_purchase/cards_advertisement_screen.dart';
+
+import 'src/notifications/notifications_manager.dart';
 
 
 Future<void> main() async {
+
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
@@ -67,6 +71,7 @@ Future<void> main() async {
 
 /// Without logging and crash reporting, this would be `void main()`.
 void guardedMain() async {
+
   if (kReleaseMode) {
     // Don't log anything below warnings in production.
     Logger.root.level = Level.WARNING;
@@ -120,7 +125,7 @@ void guardedMain() async {
   ]);
 
   runApp(
-    MyApp(
+      MyApp(
       settingsPersistence: LocalStorageSettingsPersistence(),
       playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
       inAppPurchaseController: inAppPurchaseController,
@@ -131,7 +136,7 @@ void guardedMain() async {
 }
 
 Logger _log = Logger('main.dart');
-
+final GlobalKey<ScaffoldState> settingsScaffoldKey = GlobalKey<ScaffoldState>();
 class MyApp extends StatelessWidget {
 
   static final _router = GoRouter(
@@ -188,8 +193,11 @@ class MyApp extends StatelessWidget {
                 ]),
             GoRoute(
               path: 'settings',
-              builder: (context, state) =>
-                  const SettingsScreen(key: Key('settings')),
+              pageBuilder: (context, state) => buildMyTransition<void>(
+                child: SettingsScreen(key: Key('settings'), scaffoldKey: settingsScaffoldKey),
+                color: context.watch<Palette>().backgroundTransparent,
+                decoration: BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+              ),
             ),
             GoRoute(
               path: 'loading',
@@ -202,6 +210,14 @@ class MyApp extends StatelessWidget {
               path: 'language_selector',
               pageBuilder: (context, state) => buildMyTransition<void>(
                 child: LanguageSelector(key: Key('language_selector'), scaffoldKey: GlobalKey<ScaffoldState>()),
+                color: context.watch<Palette>().backgroundTransparent,
+                decoration:  BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+              ),
+            ),
+            GoRoute(
+              path: 'card_advertisement',
+              pageBuilder: (context, state) => buildMyTransition<void>(
+                child: CardAdvertisementScreen(key: Key('card_advertisement'), scaffoldKey: GlobalKey<ScaffoldState>()),
                 color: context.watch<Palette>().backgroundTransparent,
                 decoration:  BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
               ),
@@ -241,12 +257,15 @@ class MyApp extends StatelessWidget {
               return progress;
             },
           ),
+          Provider(
+            create: (_) => NotificationsManager(),
+          ),
           Provider<GamesServicesController?>.value(
               value: gamesServicesController),
           Provider<AdsController?>.value(value: adsController),
           ChangeNotifierProvider<InAppPurchaseController?>.value(
               value: inAppPurchaseController),
-          Provider<SettingsController>(
+          ChangeNotifierProvider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(
               persistence: settingsPersistence,

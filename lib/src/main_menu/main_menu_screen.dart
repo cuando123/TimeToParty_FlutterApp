@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
@@ -139,7 +140,7 @@ class MainMenuScreen extends StatelessWidget {
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
                 ),
                 icon: Icon(Icons.settings, size: 32),
-                onPressed: () => GoRouter.of(context).push('/settings'),
+                onPressed: () => GoRouter.of(context).go('/settings'),
                 label: const Text('Ustawienia'),
               ),
               _gap,
@@ -179,22 +180,10 @@ class MainMenuScreen extends StatelessWidget {
                       MediaQuery.of(context).size.height * 0.05),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
                 ),
-                onPressed: () => GoRouter.of(context).go('/loading'),
+                onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
                 child: const Text('Wyjście'),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 32),
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: settingsController.muted,
-                  builder: (context, muted, child) {
-                    return IconButton(
-                      onPressed: () => settingsController.toggleMuted(),
-                      icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-                    );
-                  },
-                ),
-              ),
-              const Text('Siemka'),
+              SizedBox(height:80)
             ],
           ),
         ),

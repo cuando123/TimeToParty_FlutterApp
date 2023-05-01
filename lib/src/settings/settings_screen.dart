@@ -1,191 +1,343 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:game_template/src/drawer/drawer.dart';
 import 'package:provider/provider.dart';
 
-import '../in_app_purchase/in_app_purchase.dart';
-import '../player_progress/player_progress.dart';
+import '../customAppBar/customAppBar.dart';
+import '../notifications/notifications_manager.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
-import 'custom_name_dialog.dart';
 import 'settings.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'dart:core';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-
-  static const _gap = SizedBox(height: 60);
+  const SettingsScreen({super.key, required this.scaffoldKey});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  static const _gap = SizedBox(height: 5);
 
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
     final palette = context.watch<Palette>();
+    final settingsController = context.watch<SettingsController>();
 
     return Scaffold(
-      backgroundColor: palette.backgroundSettings,
+      key: scaffoldKey,
+      drawer: CustomAppDrawer(),
+      appBar: CustomAppBar(
+        title: 'Ustawienia',
+        onMenuButtonPressed: () {
+          scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+      backgroundColor:
+          palette.backgroundTransparent,
       body: ResponsiveScreen(
         squarishMainArea: ListView(
           children: [
-            _gap,
-            const Text(
-              'Settings',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
-              ),
-            ),
-            _gap,
-            const _NameChangeLine(
-              'Name',
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: settings.soundsOn,
-              builder: (context, soundsOn, child) => _SettingsLine(
-                'Sound FX',
-                Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off),
-                onSelected: () => settings.toggleSoundsOn(),
-              ),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: settings.musicOn,
-              builder: (context, musicOn, child) => _SettingsLine(
-                'Music',
-                Icon(musicOn ? Icons.music_note : Icons.music_off),
-                onSelected: () => settings.toggleMusicOn(),
-              ),
-            ),
-            Consumer<InAppPurchaseController?>(
-                builder: (context, inAppPurchase, child) {
-              if (inAppPurchase == null) {
-                // In-app purchases are not supported yet.
-                // Go to lib/main.dart and uncomment the lines that create
-                // the InAppPurchaseController.
-                return const SizedBox.shrink();
-              }
-
-              Widget icon;
-              VoidCallback? callback;
-              if (inAppPurchase.adRemoval.active) {
-                icon = const Icon(Icons.check);
-              } else if (inAppPurchase.adRemoval.pending) {
-                icon = const CircularProgressIndicator();
-              } else {
-                icon = const Icon(Icons.ad_units);
-                callback = () {
-                  inAppPurchase.buy();
-                };
-              }
-              return _SettingsLine(
-                'Remove ads',
-                icon,
-                onSelected: callback,
-              );
-            }),
-            _SettingsLine(
-              'Reset progress',
-              const Icon(Icons.delete),
-              onSelected: () {
-                context.read<PlayerProgress>().reset();
-
-                final messenger = ScaffoldMessenger.of(context);
-                messenger.showSnackBar(
-                  const SnackBar(
-                      content: Text('Player progress has been reset.')),
-                );
+            ElevatedButton(
+              onPressed: () {
+                if (settingsController.notificationsEnabled.value) {
+                  tz.initializeTimeZones();
+                  NotificationsManager notificationsManager =
+                      NotificationsManager();
+                  WidgetsFlutterBinding.ensureInitialized();
+                  notificationsManager.initializeNotifications();
+                  notificationsManager.showNotificationNow();
+                  //await notificationsManager.scheduleWeeklyNotification();
+                }
               },
+              child: Text("Testuj notyfikacje"),
+            ),
+            TogglesControl(
+              valueNotifier: settingsController.notificationsEnabled,
+              onToggle: () {
+                // Pobierz instancję NotificationsManager z kontekstu
+                final notificationsManager =
+                    Provider.of<NotificationsManager>(context, listen: false);
+                // Przekazujemy instancję NotificationsManager do metody toggleNotifications
+                settingsController.toggleNotifications(notificationsManager);
+              },
+              title: 'Powiadomienia',
+              iconOn: Icons.notifications,
+              iconOff: Icons.notifications_off,
+            ),
+            TogglesControl(
+              valueNotifier: settingsController.muted,
+              onToggle: settingsController.toggleMuted,
+              title: 'Wszystkie dźwięki',
+              iconOn: Icons.volume_up,
+              iconOff: Icons.volume_off,
             ),
             _gap,
-          ],
-        ),
-        rectangularMenuArea: FilledButton(
-          onPressed: () {
-            GoRouter.of(context).pop();
-          },
-          child: const Text('Back'),
-        ),
-      ),
-    );
-  }
-}
-
-class _NameChangeLine extends StatelessWidget {
-  final String title;
-
-  const _NameChangeLine(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = context.watch<SettingsController>();
-
-    return InkResponse(
-      highlightShape: BoxShape.rectangle,
-      onTap: () => showCustomNameDialog(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(title,
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 30,
+            TogglesControl(
+              valueNotifier: settings.soundsOn,
+              onToggle: settingsController.toggleSoundsOn,
+              title: 'Efekty dźwiękowe',
+              iconOn: Icons.graphic_eq,
+              iconOff: Icons.volume_off,
+            ),
+            _gap,
+            TogglesControl(
+              valueNotifier: settings.musicOn,
+              onToggle: settingsController.toggleMusicOn,
+              title: 'Muzyka',
+              iconOn: Icons.music_note,
+              iconOff: Icons.music_off,
+            ),
+            SizedBox(height: 20),
+            Text(
+                textAlign: TextAlign.center,
+                'W celu uzyskania pomocy dotyczącej gry przejdź pod adres:',
+                style: TextStyle(
+                  color: Color(0xFFFFFFFF),
+                  fontFamily: 'HindMadurai',
+                  fontSize: 12,
                 )),
-            const Spacer(),
-            ValueListenableBuilder(
-              valueListenable: settings.playerName,
-              builder: (context, name, child) => Text(
-                '‘$name’',
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 30,
+            TextButton(onPressed: () async {
+            await Future.delayed(Duration(milliseconds: 150));
+            CustomAppDrawer().showExitDialog(context);
+            },
+              child: Text(
+                'https://frydoapps.com/contact-apps',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFFFFFFFF),
+                  fontFamily: 'HindMadurai',
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,decorationColor: Color(0xFFFFFFFF),
+                ),
+              ),)
+          ],
+        ),
+        rectangularMenuArea: Text(
+            textAlign: TextAlign.center,
+            'Time To Party® ©${DateTime.now().year} Frydo Poland. Wszelkie prawa zastrzeżone',
+            style: TextStyle(
+              color: Color(0xFFFFFFFF),
+              fontFamily: 'HindMadurai',
+              fontSize: 10,
+            )),
+      ),
+    );
+  }
+}
+
+class TogglesControl extends StatelessWidget {
+  final ValueNotifier<bool> valueNotifier;
+  final Function onToggle;
+  final String title;
+  final IconData iconOn;
+  final IconData iconOff;
+
+  TogglesControl({
+    required this.valueNotifier,
+    required this.onToggle,
+    required this.title,
+    required this.iconOn,
+    required this.iconOff,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 32),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: valueNotifier,
+        builder: (context, muted, child) => Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 20),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Color(0xFFCB48EF),
+                      fontFamily: 'HindMadurai',
+                      fontSize: 16,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => onToggle(),
+                    icon: Icon(muted ? iconOn : iconOff,
+                        color: muted ? Color(0xFFCB48EF) : Colors.grey),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () => onToggle(),
+                child: Transform.scale(
+                  scale: 1.0,
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 200),
+                    child: muted
+                        ? Container(
+                            key: Key('off'),
+                            width: 48,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color(0xFFCB48EF),
+                            ),
+                            child: Align(
+                              alignment: Alignment(0.7, 0),
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            key: Key('on'),
+                            width: 48,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.grey,
+                            ),
+                            child: Align(
+                              alignment: Alignment(-0.7, 0),
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      child: child,
+                      scale: animation,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _SettingsLine extends StatelessWidget {
-  final String title;
+class RectSliderThumbShape extends SliderComponentShape {
+  final double thumbRadius;
 
-  final Widget icon;
-
-  final VoidCallback? onSelected;
-
-  const _SettingsLine(this.title, this.icon, {this.onSelected});
+  const RectSliderThumbShape({required this.thumbRadius});
 
   @override
-  Widget build(BuildContext context) {
-    return InkResponse(
-      highlightShape: BoxShape.rectangle,
-      onTap: onSelected,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 30,
-                ),
-              ),
-            ),
-            icon,
-          ],
-        ),
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return Size.fromRadius(thumbRadius);
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    bool? isDiscrete,
+    TextPainter? labelPainter,
+    RenderBox? parentBox,
+    required SliderThemeData sliderTheme,
+    TextDirection? textDirection,
+    double? value,
+    double? textScaleFactor,
+    Size? sizeWithOverflow,
+  }) {
+    final Canvas canvas = context.canvas;
+    final Paint paint = Paint()
+      ..color = sliderTheme.thumbColor!
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: center,
+        width: thumbRadius * 2,
+        height: thumbRadius * 2,
       ),
+      paint,
     );
+  }
+}
+
+class CustomRectangularSliderTrackShape extends SliderTrackShape {
+  final Radius borderRadius;
+
+  CustomRectangularSliderTrackShape({required this.borderRadius});
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+    Offset? secondaryOffset,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight!;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackLeft = offset.dx;
+    final double trackWidth = parentBox.size.width;
+    final double activeTrackWidth = thumbCenter.dx -
+        trackLeft -
+        sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width /
+            2;
+
+    final RRect leftTrack = RRect.fromLTRBR(
+      trackLeft,
+      trackTop,
+      trackLeft + activeTrackWidth,
+      trackTop + trackHeight,
+      borderRadius,
+    );
+    final RRect rightTrack = RRect.fromLTRBR(
+      trackLeft + activeTrackWidth,
+      trackTop,
+      trackLeft + trackWidth,
+      trackTop + trackHeight,
+      borderRadius,
+    );
+
+    context.canvas.drawRRect(leftTrack,
+        Paint()..color = sliderTheme.activeTrackColor ?? Colors.black);
+    context.canvas.drawRRect(rightTrack,
+        Paint()..color = sliderTheme.inactiveTrackColor ?? Colors.black);
+  }
+
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+    Offset offset = Offset.zero,
+  }) {
+    final double thumbWidth =
+        sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
+    final double trackHeight = sliderTheme.trackHeight!;
+    final double trackLeft = offset.dx + thumbWidth / 2;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width - thumbWidth;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

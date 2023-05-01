@@ -1,14 +1,12 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
 
 import 'persistence/settings_persistence.dart';
+import '../notifications/notifications_manager.dart';
 
 /// An class that holds settings like [playerName] or [musicOn],
 /// and saves them to an injected persistence store.
-class SettingsController {
+class SettingsController extends ChangeNotifier {
   final SettingsPersistence _persistence;
 
   /// Whether or not the sound is on at all. This overrides both music
@@ -17,9 +15,11 @@ class SettingsController {
 
   ValueNotifier<String> playerName = ValueNotifier('Player');
 
-  ValueNotifier<bool> soundsOn = ValueNotifier(false);
+  ValueNotifier<bool> soundsOn = ValueNotifier(true);
 
-  ValueNotifier<bool> musicOn = ValueNotifier(false);
+  ValueNotifier<bool> musicOn = ValueNotifier(true);
+
+  ValueNotifier<bool> notificationsEnabled = ValueNotifier(true);
 
   /// Creates a new instance of [SettingsController] backed by [persistence].
   SettingsController({required SettingsPersistence persistence})
@@ -28,16 +28,23 @@ class SettingsController {
   /// Asynchronously loads values from the injected persistence store.
   Future<void> loadStateFromPersistence() async {
     await Future.wait([
-      _persistence
-          // On the web, sound can only start after user interaction, so
-          // we start muted there.
-          // On any other platform, we start unmuted.
-          .getMuted(defaultValue: kIsWeb)
-          .then((value) => muted.value = value),
+
+      _persistence.getMuted().then((value) => muted.value = value),
       _persistence.getSoundsOn().then((value) => soundsOn.value = value),
       _persistence.getMusicOn().then((value) => musicOn.value = value),
+      _persistence.getNotificationsOn().then((value) => notificationsEnabled.value = value),
       _persistence.getPlayerName().then((value) => playerName.value = value),
     ]);
+  }
+
+  void toggleNotifications(NotificationsManager notificationsManager) {
+    notificationsEnabled.value = !notificationsEnabled.value;
+    _persistence.saveNotificationsOn(notificationsEnabled.value);
+    if (notificationsEnabled.value) {
+      notificationsManager.initializeNotifications();// Włącz powiadomienia
+    } else {
+      notificationsManager.cancelAllNotifications(); // Wyłącz powiadomienia
+    }
   }
 
   void setPlayerName(String name) {

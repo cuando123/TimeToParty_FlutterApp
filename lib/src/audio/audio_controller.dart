@@ -120,8 +120,8 @@ class AudioController {
   /// [SettingsController.muted] is `true` or if its
   /// [SettingsController.soundsOn] is `false`.
   void playSfx(SfxType type) {
-    final muted = _settings?.muted.value ?? true;
-    if (muted) {
+    final muted = _settings?.muted.value ?? false;
+    if (!muted) {
       _log.info(() => 'Ignoring playing sound ($type) because audio is muted.');
       return;
     }
@@ -168,20 +168,8 @@ class AudioController {
     }
   }
 
-  void _musicOnHandler() {
-    if (_settings!.musicOn.value) {
-      // Music got turned on.
-      if (!_settings!.muted.value) {
-        _resumeMusic();
-      }
-    } else {
-      // Music got turned off.
-      _stopMusic();
-    }
-  }
-
   void _mutedHandler() {
-    if (_settings!.muted.value) {
+    if (!_settings!.muted.value) {
       // All sound just got muted.
       _stopAllSound();
     } else {
@@ -192,6 +180,19 @@ class AudioController {
     }
   }
 
+  void _musicOnHandler() {
+    if (!_settings!.muted.value) {
+      // All sounds are off, including music.
+      _stopAllSound();
+    } else {
+      // All sounds are on, but music can be on or off.
+      if (_settings!.musicOn.value) {
+        _resumeMusic();
+      } else {
+        _stopMusic();
+      }
+    }
+  }
   Future<void> _playFirstSongInPlaylist() async {
     _log.info(() => 'Playing ${_playlist.first} now.');
     await _musicPlayer.play(AssetSource('music/${_playlist.first.filename}'));

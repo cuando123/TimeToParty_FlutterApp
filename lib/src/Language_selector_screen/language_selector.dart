@@ -5,7 +5,8 @@ import '../drawer/drawer.dart';
 import '../style/palette.dart';
 
 class LanguageSelector extends StatelessWidget {
-  const LanguageSelector({Key? key, required this.scaffoldKey}) : super(key: key);
+  const LanguageSelector({Key? key, required this.scaffoldKey})
+      : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
@@ -22,7 +23,7 @@ class LanguageSelector extends StatelessWidget {
           onMenuButtonPressed: () {
             scaffoldKey.currentState?.openDrawer();
           },
-          ),
+        ),
         body: Column(
           children: [
             Container(
@@ -34,12 +35,18 @@ class LanguageSelector extends StatelessWidget {
                 crossAxisCount: 2,
                 childAspectRatio: 3,
                 children: [
-                  languageButton('English', Icons.flag),
-                  languageButton('Deutsch', Icons.flag),
-                  languageButton('Italiano', Icons.flag),
-                  languageButton('Espanol', Icons.flag),
-                  languageButton('Polski', Icons.flag),
-                  languageButton('Francais', Icons.flag),
+                  languageButton('English',
+                      'assets/time_to_party_assets/flags/united_kingdom.svg'),
+                  languageButton('Deutsch',
+                      'assets/time_to_party_assets/flags/germany.svg'),
+                  languageButton('Italiano',
+                      'assets/time_to_party_assets/flags/italy.svg'),
+                  languageButton('Español',
+                      'assets/time_to_party_assets/flags/spain.svg'),
+                  languageButton(
+                      'Polski', 'assets/time_to_party_assets/flags/poland.svg'),
+                  languageButton('Français',
+                      'assets/time_to_party_assets/flags/france.svg'),
                 ],
               ),
             ),
@@ -49,20 +56,24 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget languageButton(String language, IconData icon) {
+  Widget languageButton(String language, String path) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
         onPressed: () {
           // Dodaj obsługę kliknięcia przycisku
         },
-        icon: Icon(icon),
-        label: Text(language),
+        icon: SvgPicture.asset(path),
+        label: Text(language,
+            style: TextStyle(
+              color: Color(0xFFA0A0A0),
+              fontFamily: 'HindMadurai',
+              fontSize: 16,
+            )),
         style: TextButton.styleFrom(
-          primary: Colors.black,
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xFF434347),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(2.0),
           ),
         ),
       ),

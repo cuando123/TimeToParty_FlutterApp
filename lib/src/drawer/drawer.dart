@@ -12,6 +12,9 @@ import '../instruction_dialog/instruction_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CustomAppDrawer extends StatelessWidget {
+  final void Function(BuildContext context)? privacyPolicyFunction;
+
+  CustomAppDrawer({this.privacyPolicyFunction});
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -40,7 +43,10 @@ class CustomAppDrawer extends StatelessWidget {
               decoration: BoxDecoration(),
               child: InkWell(
                 borderRadius: BorderRadius.circular(4),
-                onTap: (){},
+                onTap: () async {
+                  await Future.delayed(Duration(milliseconds: 150));
+                  GoRouter.of(context).push('/card_advertisement');
+                },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -116,17 +122,7 @@ class CustomAppDrawer extends StatelessWidget {
                       ),
                     ),
                     onTap: () async {
-                      final url =
-                          'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
-                      final fileName =
-                          'Privacy_Policy_for_Applications_and_Games.pdf';
-                      try {
-                        final file = await downloadAndCachePdf(url, fileName);
-                        _openPdfViewer(context, file, "Polityka prywatności");
-                      } catch (e) {
-                        print('Błąd: $e');
-                        _connectionProblemDialog(context);
-                      }
+                      _privacy_policy_function(context);
                     }),
               ),
             ),
@@ -194,7 +190,7 @@ class CustomAppDrawer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () async {
                   await Future.delayed(Duration(milliseconds: 150));
-                  GoRouter.of(context).push('/settings');
+                  GoRouter.of(context).go('/settings');
                 },
                 child: ListTile(
                   leading: Icon(
@@ -244,7 +240,7 @@ class CustomAppDrawer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () async {
                   await Future.delayed(Duration(milliseconds: 150));
-                  _showExitDialog(context);
+                  showExitDialog(context);
                 },
                 child: ListTile(
                   leading: Icon(
@@ -476,7 +472,7 @@ class CustomAppDrawer extends StatelessWidget {
     );
   }
 
-  void _showExitDialog(BuildContext context) {
+  void showExitDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -553,5 +549,22 @@ class CustomAppDrawer extends StatelessWidget {
     } else {
       throw Exception('Błąd pobierania pliku PDF.');
     }
+  }
+
+  void _privacy_policy_function(BuildContext context) async {
+    final url =
+        'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
+    final fileName =
+        'Privacy_Policy_for_Applications_and_Games.pdf';
+    try {
+      final file = await downloadAndCachePdf(url, fileName);
+      _openPdfViewer(context, file, "Polityka prywatności");
+    } catch (e) {
+      print('Błąd: $e');
+      _connectionProblemDialog(context);
+    }
+  }
+  static void callPrivacyPolicyFunction(BuildContext context, CustomAppDrawer appDrawer) {
+    appDrawer._privacy_policy_function(context);
   }
 }
