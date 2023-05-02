@@ -45,4 +45,37 @@ class Palette {
   Color get background4 => const Color(0xffffd7ff);
   Color get backgroundSettings => const Color(0xffbfc8e3);
   Color get trueWhite => const Color(0xffffffff);
+  Color get pink => const Color(0xFFCB48EF);
+  Color get white => const Color(0xFFE5E5E5);
+  Color get bluegrey => const Color(0xFFB0B5E9);
+}
+
+class ResponsiveText {
+
+  static double referenceWidth = 360;
+  static double referenceHeight = 800;
+
+  static double scaleWidth(BuildContext context, double width) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return (screenWidth / referenceWidth) * width;
+  }
+
+  static double scaleHeight(BuildContext context, double height) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return (screenHeight / referenceHeight) * height;
+  }
+
+  static Text customText(BuildContext context, String text, Color textColor,
+      TextAlign textAlign, double fontSize) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: textColor,
+        fontFamily: 'HindMadurai',
+        fontSize: fontSize,
+        fontWeight: FontWeight.normal,
+      ),
+      textAlign: textAlign,
+    );
+  }
 }

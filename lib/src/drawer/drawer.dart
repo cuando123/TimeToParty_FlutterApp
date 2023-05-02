@@ -31,7 +31,11 @@ class CustomAppDrawer extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView(
+        child:
+        Scrollbar(
+          thumbVisibility: true,
+          child:
+        ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             // Tu jeszcze dodać trzeba reklame kart
@@ -318,7 +322,7 @@ class CustomAppDrawer extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ),),
       ),
     );
   }

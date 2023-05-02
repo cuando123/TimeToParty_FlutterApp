@@ -33,22 +33,11 @@ class SettingsScreen extends StatelessWidget {
       backgroundColor:
           palette.backgroundTransparent,
       body: ResponsiveScreen(
-        squarishMainArea: ListView(
+        squarishMainArea:
+        Scrollbar(
+        child:
+        ListView(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                if (settingsController.notificationsEnabled.value) {
-                  tz.initializeTimeZones();
-                  NotificationsManager notificationsManager =
-                      NotificationsManager();
-                  WidgetsFlutterBinding.ensureInitialized();
-                  notificationsManager.initializeNotifications();
-                  notificationsManager.showNotificationNow();
-                  //await notificationsManager.scheduleWeeklyNotification();
-                }
-              },
-              child: Text("Testuj notyfikacje"),
-            ),
             TogglesControl(
               valueNotifier: settingsController.notificationsEnabled,
               onToggle: () {
@@ -107,9 +96,23 @@ class SettingsScreen extends StatelessWidget {
                   fontSize: 14,
                   decoration: TextDecoration.underline,decorationColor: Color(0xFFFFFFFF),
                 ),
-              ),)
+              ),),
+            ElevatedButton(
+              onPressed: () {
+                if (settingsController.notificationsEnabled.value) {
+                  tz.initializeTimeZones();
+                  NotificationsManager notificationsManager =
+                  NotificationsManager();
+                  WidgetsFlutterBinding.ensureInitialized();
+                  notificationsManager.initializeNotifications();
+                  notificationsManager.showNotificationNow();
+                  //await notificationsManager.scheduleWeeklyNotification();
+                }
+              },
+              child: Text("Testuj notyfikacje"),
+            ),
           ],
-        ),
+        ),),
         rectangularMenuArea: Text(
             textAlign: TextAlign.center,
             'Time To Party® ©${DateTime.now().year} Frydo Poland. Wszelkie prawa zastrzeżone',
@@ -141,7 +144,7 @@ class TogglesControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 32),
+      padding: const EdgeInsets.only(top: 20),
       child: ValueListenableBuilder<bool>(
         valueListenable: valueNotifier,
         builder: (context, muted, child) => Container(
@@ -155,7 +158,6 @@ class TogglesControl extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(width: 20),
                   Text(
                     title,
                     style: TextStyle(

@@ -23,6 +23,7 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
     final palette = context.watch<Palette>();
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
@@ -55,9 +56,9 @@ class MainMenuScreen extends StatelessWidget {
                 valueListenable: selectedNumberOfTeams,
                 builder: (BuildContext context, int? value, Widget? child) {
                   return Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
+                    width: ResponsiveText.scaleWidth(context, 200),
                     decoration: BoxDecoration(
-                      color: Color(0xFFB0B5E9),
+                      color: Palette().bluegrey,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: DropdownButton<int?>(
@@ -69,7 +70,7 @@ class MainMenuScreen extends StatelessWidget {
                           child: Text(
                             '                  $value',
                             style: TextStyle(
-                                fontFamily: 'HindMadurai', fontSize: 20),
+                                fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                           ),
                         );
                       }).toList(),
@@ -78,10 +79,10 @@ class MainMenuScreen extends StatelessWidget {
                           selectedNumberOfTeams.value = newValue;
                         }
                       },
-                      dropdownColor: Color(0xFFB0B5E9),
+                      dropdownColor: Palette().bluegrey,
                       style: TextStyle(
                         color: Color(0xFF221933),
-                        fontSize: 20,
+                        fontSize: ResponsiveText.scaleHeight(context, 20),
                         fontFamily: 'HindMadurai',
                       ),
                       hint: const Text('   Ile drużyn zagra?'),
@@ -93,14 +94,14 @@ class MainMenuScreen extends StatelessWidget {
               _gap,
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFCB48EF), // color
-                  foregroundColor: Colors.white, // textColor
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
+                      ResponsiveText.scaleHeight(context, 41)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
                 onPressed: () {
@@ -130,32 +131,32 @@ class MainMenuScreen extends StatelessWidget {
               ],
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFB0B5E9), // color
+                  backgroundColor: Palette().bluegrey, // color
                   foregroundColor: Color(0xFF221933), // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
+                      ResponsiveText.scaleHeight(context, 41)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
-                icon: Icon(Icons.settings, size: 32),
+                icon: Icon(Icons.settings, size: ResponsiveText.scaleHeight(context, 32)),
                 onPressed: () => GoRouter.of(context).go('/settings'),
                 label: const Text('Ustawienia'),
               ),
               _gap,
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFB0B5E9), // color
+                  backgroundColor: Palette().bluegrey, // color
                   foregroundColor: Color(0xFF221933), // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
+                      ResponsiveText.scaleHeight(context, 41)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
-                icon: Icon(Icons.question_mark, size: 32),
+                icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
                 onPressed: () {
                   Future.delayed(Duration(milliseconds: 150), () {
                     showDialog<void>(
@@ -171,19 +172,19 @@ class MainMenuScreen extends StatelessWidget {
               _gap,
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFB0B5E9), // color
+                  backgroundColor: Palette().bluegrey, // color
                   foregroundColor: Color(0xFF221933), // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
+                      ResponsiveText.scaleHeight(context, 41)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
                 child: const Text('Wyjście'),
               ),
-              SizedBox(height:80)
+              SizedBox(height:ResponsiveText.scaleHeight(context, 80))
             ],
           ),
         ),
@@ -214,7 +215,7 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 10);
+
 }
 
 class LogoWidget extends StatelessWidget {

@@ -8,7 +8,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
-
+//TODO dobra a teraz tak, tutaj masz kod: trzeba przerobić tak, żeby w pickerColor było tylko 6 kolorów. One mają być tutaj
+//domyślnie ustawione. Bez powtórzeń. Zmiana jednego koloru ma przydzielać inne kolory z palety. Np. najpierw jest powiedzmy:
+//żółty, niebieski, czerwony, zielony, fioletowy, pomarańczowy -> tylko takie mają być dostępne w pickerColor, dodatkowo zmiana jednego to
+//również zmiana innych w pozostałych polach.
+//dodatkowo trzeba opakować cały ListView w jakieś białe tło żeby było pod spodem bo źle to aktualnie wygląda
+//+ mamy tutaj problem w momencie kliknięcia w pole tekstowe żeby wpisać nazwę drużyny: klawiatura się nie odpala i jest błąd: "Incorrect use of ParentDataWidget."
+// poniżej daję Ci mój kod do analizy:
 class LevelSelectionScreen extends StatefulWidget {
   final int numberOfTeams;
 
