@@ -42,12 +42,22 @@ class Palette {
       Color(0xff674D80),
     ],
   );
+  Gradient get drawerGradient => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF604779), // 0.0
+      Color(0xFF2E1F46), // 0.5
+      Color(0xFF1F1D23), // 1.0
+    ],
+  );
   Color get background4 => const Color(0xffffd7ff);
   Color get backgroundSettings => const Color(0xffbfc8e3);
   Color get trueWhite => const Color(0xffffffff);
   Color get pink => const Color(0xFFCB48EF);
   Color get white => const Color(0xFFE5E5E5);
   Color get bluegrey => const Color(0xFFB0B5E9);
+  Color get menudark => const Color(0xFF221933);
 }
 
 class ResponsiveText {

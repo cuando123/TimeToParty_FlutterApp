@@ -11,7 +11,8 @@ class CardAdvertisementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final customAppDrawer = CustomAppDrawer();
-    final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 18));
+    final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10));
+
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -64,7 +65,11 @@ class CardAdvertisementScreen extends StatelessWidget {
                 ResponsiveText.scaleHeight(context, 18),
               ),
               Padding(
-                padding: EdgeInsets.only( left: ResponsiveText.scaleWidth(context,90)), // Dodaje wypełnienie górne i dolne
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width < 380 || MediaQuery.of(context).size.width > 500
+                    ? ResponsiveText.scaleWidth(context, 90)
+                    : ResponsiveText.scaleWidth(context, 65),
+              ),
                 child: Column(
                   children: [
                     _gap,
@@ -92,7 +97,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SvgPicture.asset(
-                          'assets/time_to_party_assets/banner_random_icon_advert.svg', // Podmień na ścieżkę do swojego obrazka SVG
+                          'assets/time_to_party_assets/banner_random_icon_advert.svg',
                           height: ResponsiveText.scaleHeight(context, 24),
                           width: ResponsiveText.scaleWidth(context, 24),
                         ),
@@ -112,7 +117,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SvgPicture.asset(
-                          'assets/time_to_party_assets/banner_timer_icon_advert.svg', // Podmień na ścieżkę do swojego obrazka SVG
+                          'assets/time_to_party_assets/banner_timer_icon_advert.svg',
                           height: ResponsiveText.scaleHeight(context, 24),
                           width: ResponsiveText.scaleWidth(context, 24),
                         ),

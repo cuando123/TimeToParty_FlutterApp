@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFFD9D9D9)),
+        icon: Icon(Icons.arrow_back, color: Color(0xFFE5E5E5)),
         onPressed: onBackButtonPressed ?? () => GoRouter.of(context).go('/'),
       ),
       title: Text(title,
@@ -29,14 +29,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: Icon(Icons.more_horiz, color: Color(0xFFD9D9D9)),
+          icon: Icon(Icons.more_horiz, color: Color(0xFFE5E5E5)),
           onPressed: onMenuButtonPressed,
         ),
       ],
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(
-          color: Color(0xFFD9D9D9), // Kolor linii
+          color: Color(0xFFE5E5E5), // Kolor linii
           height: 1.0, // Grubość linii
           width: double.infinity, // Rozciągnięcie linii na całą szerokość
         ),

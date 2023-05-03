@@ -1,15 +1,16 @@
 import 'dart:io' as io;
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:game_template/src/main_menu/main_menu_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-import '../instruction_dialog/instruction_dialog.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+import '../instruction_dialog/instruction_dialog.dart';
+import '../style/palette.dart';
 
 class CustomAppDrawer extends StatelessWidget {
   final void Function(BuildContext context)? privacyPolicyFunction;
@@ -17,33 +18,26 @@ class CustomAppDrawer extends StatelessWidget {
   CustomAppDrawer({this.privacyPolicyFunction});
   @override
   Widget build(BuildContext context) {
+    final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
     return Drawer(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: ResponsiveText.scaleWidth(context, 288),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF604779), // 0.0
-              Color(0xFF2E1F46), // 0.5
-              Color(0xFF1F1D23), // 1.0
-            ],
-          ),
+          gradient: Palette().drawerGradient
         ),
         child:
         Scrollbar(
-          thumbVisibility: true,
+          thumbVisibility: false,
           child:
         ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            // Tu jeszcze dodać trzeba reklame kart
+            // Tu jeszcze dodać trzeba reklame kart TODO??
             _gap,
             Material(
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.12,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
+              height:  MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 40) : ResponsiveText.scaleHeight(context, 96),
+              margin: EdgeInsets.only(top:  MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 50) : ResponsiveText.scaleHeight(context, 64)),
               decoration: BoxDecoration(),
               child: InkWell(
                 borderRadius: BorderRadius.circular(4),
@@ -56,24 +50,19 @@ class CustomAppDrawer extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     'assets/time_to_party_assets/premium_cards_icon.svg', // Podmień na ścieżkę do swojego obrazka SVG
-                    height: MediaQuery.of(context).size.width * 0.12, // Dostosuj wysokość obrazka
-                    width: MediaQuery.of(context).size.width * 0.12, // Dostosuj szerokość obrazka
+                    height: ResponsiveText.scaleWidth(context, 43), // Dostosuj wysokość obrazka
+                    width: ResponsiveText.scaleWidth(context, 43), // Dostosuj szerokość obrazka
                   ),
-                  SizedBox(width: 10), // Odstęp między obrazkiem a tekstem
-                  Text('Karty premium!',
-                  style: TextStyle(
-                    fontFamily: 'HindMadurai',
-                    fontSize: 20,
-                    color: Color(0xFFE5E5E5),
-                  )),
+                  SizedBox(width:  ResponsiveText.scaleWidth(context, 10)), // Odstęp między obrazkiem a tekstem
+                  letsText(context, "Karty premium!", 20, Palette().white),
                 ],
               ),
             ),
             ),
             ),
-            _gap,_gap,_gap,
+            MediaQuery.of(context).size.height < 650 ? SizedBox(width:  ResponsiveText.scaleHeight(context, 1)) : SizedBox(width:  ResponsiveText.scaleHeight(context, 30)),
             Divider(
-              color: Color(0xFFE5E5E5),
+              color: Palette().white,
             ),
             //Zasady gry
             Material(
@@ -92,21 +81,14 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.question_mark,
-                    color: Color(0xFFE5E5E5),
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Zasady gry',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5),
-                    ),
-                  ),
+                  title: letsText(context, "Zasady gry", 14, Palette().white),
                 ),
               ),
             ),
             Divider(
-              color: Color(0xFFE5E5E5),
+              color: Palette().white,
             ),
             //Polityka prywatnosci
             Material(
@@ -115,16 +97,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                     leading: Icon(
                       Icons.privacy_tip,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                      color: Palette().white,
                     ),
-                    title: Text(
-                      'Polityka prywatności',
-                      style: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: 14,
-                        color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                      ),
-                    ),
+                    title: letsText(context, "Polityka prywatności", 14, Palette().white),
                     onTap: () async {
                       _privacy_policy_function(context);
                     }),
@@ -148,21 +123,14 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.zoom_in,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Umowa licencyjna EULA',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Umowa licencyjna EULA", 14, Palette().white),
                 ),
               ),
             ),
             Divider(
-              color: Color(0xFFE5E5E5),
+              color: Palette().white,
             ),
             //Zmień język
             Material(
@@ -175,16 +143,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.language,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Zmień język',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Zmień język", 14, Palette().white),
                 ),
               ),
             ),
@@ -199,21 +160,14 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.settings,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Ustawienia',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Ustawienia", 14, Palette().white),
                 ),
               ),
             ),
             Divider(
-              color: Color(0xFFE5E5E5),
+              color: Palette().white,
             ),
             //Przywróć platnosci: TODO
             Material(
@@ -225,16 +179,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.settings_backup_restore,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Przywróć płatności',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Przywróć płatności", 14, Palette().white),
                 ),
               ),
             ),
@@ -249,16 +196,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.edit,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Napisz do nas!',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Napisz do nas!", 14, Palette().white),
                 ),
               ),
             ),
@@ -273,16 +213,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.share,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Udostępnij',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Udostępnij", 14, Palette().white),
                 ),
               ),
             ),
@@ -297,16 +230,9 @@ class CustomAppDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(
                     Icons.star,
-                    color: Color(0xFFE5E5E5), // Dodaj kolor ikony z theme
+                    color: Palette().white,
                   ),
-                  title: Text(
-                    'Oceń nas w Google Play!',
-                    style: TextStyle(
-                      fontFamily: 'HindMadurai',
-                      fontSize: 14,
-                      color: Color(0xFFE5E5E5), // Dodaj kolor tekstu z theme
-                    ),
-                  ),
+                  title: letsText(context, "Oceń nas w Google Play!", 14, Palette().white),
                 ),
               ),
             ),
@@ -315,10 +241,7 @@ class CustomAppDrawer extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
-                child: Text(
-                  'ver 1.0',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
+                child: letsText(context, "ver 1.0", 12, Palette().white),
               ),
             ),
           ],
@@ -365,8 +288,9 @@ class CustomAppDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -375,7 +299,7 @@ class CustomAppDrawer extends StatelessWidget {
             style: TextStyle(
               color: Color(0XFF391D50),
               fontFamily: 'HindMadurai',
-              fontSize: 18,
+              fontSize: ResponsiveText.scaleHeight(context, 18),
             ),
             textAlign: TextAlign.center,
           ),
@@ -384,7 +308,7 @@ class CustomAppDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Jeśli podoba Ci się aplikacja, daj nam  \u00A0 5 gwiazdek! Dla ciebie to jeden klik, a dla nas motywacja do działania :)',
+                'Jeśli podoba Ci się aplikacja, daj nam  5 gwiazdek! Dla ciebie to jeden klik, a dla nas motywacja do działania :)',
                 textAlign: TextAlign.center,
               ),
               _gap,
@@ -396,14 +320,14 @@ class CustomAppDrawer extends StatelessWidget {
               _gap,
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFCB48EF), // color
-                  foregroundColor: Colors.white, // textColor
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () async {
                   final String url =
@@ -436,7 +360,7 @@ class CustomAppDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -445,7 +369,7 @@ class CustomAppDrawer extends StatelessWidget {
             style: TextStyle(
               color: Color(0XFF391D50),
               fontFamily: 'HindMadurai',
-              fontSize: 18,
+              fontSize: ResponsiveText.scaleHeight(context, 18),
             ),
             textAlign: TextAlign.center,
           ),
@@ -455,14 +379,14 @@ class CustomAppDrawer extends StatelessWidget {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFCB48EF), // color
-                  foregroundColor: Colors.white, // textColor
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -480,8 +404,9 @@ class CustomAppDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -490,7 +415,7 @@ class CustomAppDrawer extends StatelessWidget {
             style: TextStyle(
               color: Color(0XFF391D50),
               fontFamily: 'HindMadurai',
-              fontSize: 18,
+              fontSize: ResponsiveText.scaleHeight(context, 18),
             ),
             textAlign: TextAlign.center,
           ),
@@ -505,14 +430,14 @@ class CustomAppDrawer extends StatelessWidget {
               _gap,
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFCB48EF), // color
-                  foregroundColor: Colors.white, // textColor
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: 20),
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () async {
                   Navigator.pop(context);
@@ -541,7 +466,7 @@ class CustomAppDrawer extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 10);
+
   Future<io.File> downloadAndCachePdf(String url, String fileName) async {
     final response = await http.get(Uri.parse(url));
 
@@ -570,5 +495,16 @@ class CustomAppDrawer extends StatelessWidget {
   }
   static void callPrivacyPolicyFunction(BuildContext context, CustomAppDrawer appDrawer) {
     appDrawer._privacy_policy_function(context);
+  }
+
+  Text letsText(BuildContext context, String text, double fontSize, Color textColor) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontFamily: 'HindMadurai',
+        fontSize: ResponsiveText.scaleHeight(context, fontSize),
+        color: textColor,
+      ),
+    );
   }
 }

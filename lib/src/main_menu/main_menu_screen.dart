@@ -1,32 +1,29 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
-
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/games_services.dart';
 import '../instruction_dialog/instruction_dialog.dart';
-import '../settings/settings.dart';
 import '../style/palette.dart';
-import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
-    final palette = context.watch<Palette>();
+
+    final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650
+        ? ResponsiveText.scaleHeight(context, 5)
+        : ResponsiveText.scaleHeight(context, 10));
+    final _gapBig = SizedBox(height: MediaQuery.of(context).size.height < 650
+        ? ResponsiveText.scaleHeight(context, 30)
+        : ResponsiveText.scaleHeight(context, 45));
     final gamesServicesController = context.watch<GamesServicesController?>();
-    final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     ValueNotifier<int?> selectedNumberOfTeams = ValueNotifier<int?>(null);
@@ -44,13 +41,17 @@ class MainMenuScreen extends StatelessWidget {
           title: '',
         ),
         backgroundColor: Colors.transparent,
-        body: ResponsiveScreen(
-          mainAreaProminence: 0.4,
-          squarishMainArea: Center(
-            child: LogoWidget(),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Center(
+                child: LogoWidget(),
           ),
-          rectangularMenuArea: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+          _gapBig,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ValueListenableBuilder<int?>(
                 valueListenable: selectedNumberOfTeams,
@@ -68,9 +69,10 @@ class MainMenuScreen extends StatelessWidget {
                         return DropdownMenuItem<int>(
                           value: value,
                           child: Text(
-                            '                  $value',
+                            '  $value drużyny',
                             style: TextStyle(
                                 fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                            textAlign: TextAlign.center,
                           ),
                         );
                       }).toList(),
@@ -81,7 +83,7 @@ class MainMenuScreen extends StatelessWidget {
                       },
                       dropdownColor: Palette().bluegrey,
                       style: TextStyle(
-                        color: Color(0xFF221933),
+                        color: Palette().menudark,
                         fontSize: ResponsiveText.scaleHeight(context, 20),
                         fontFamily: 'HindMadurai',
                       ),
@@ -100,7 +102,9 @@ class MainMenuScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      ResponsiveText.scaleHeight(context, 41)),
+                      MediaQuery.of(context).size.height < 650
+                          ? ResponsiveText.scaleHeight(context, 51)
+                          : ResponsiveText.scaleHeight(context, 41)),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
@@ -111,33 +115,17 @@ class MainMenuScreen extends StatelessWidget {
                 label: const Text('Zagraj teraz!'),
               ),
               _gap,
-              if (gamesServicesController != null) ...[
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: FilledButton(
-                    onPressed: () => gamesServicesController.showAchievements(),
-                    child: const Text('Achievements'),
-                  ),
-                ),
-                _gap,
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: FilledButton(
-                    onPressed: () => gamesServicesController.showLeaderboard(),
-                    child: const Text('Leaderboard'),
-                  ),
-                ),
-                _gap,
-              ],
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Color(0xFF221933), // textColor
+                  foregroundColor: Palette().menudark, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      ResponsiveText.scaleHeight(context, 41)),
+                      MediaQuery.of(context).size.height < 650
+                          ? ResponsiveText.scaleHeight(context, 51)
+                          : ResponsiveText.scaleHeight(context, 41)),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.settings, size: ResponsiveText.scaleHeight(context, 32)),
@@ -148,12 +136,14 @@ class MainMenuScreen extends StatelessWidget {
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Color(0xFF221933), // textColor
+                  foregroundColor: Palette().menudark, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      ResponsiveText.scaleHeight(context, 41)),
+                      MediaQuery.of(context).size.height < 650
+                          ? ResponsiveText.scaleHeight(context, 51)
+                          : ResponsiveText.scaleHeight(context, 41)),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
@@ -173,12 +163,14 @@ class MainMenuScreen extends StatelessWidget {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Color(0xFF221933), // textColor
+                  foregroundColor: Palette().menudark, // textColor
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      ResponsiveText.scaleHeight(context, 41)),
+                      MediaQuery.of(context).size.height < 650
+                          ? ResponsiveText.scaleHeight(context, 51)
+                          : ResponsiveText.scaleHeight(context, 41)),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
@@ -187,142 +179,36 @@ class MainMenuScreen extends StatelessWidget {
               SizedBox(height:ResponsiveText.scaleHeight(context, 80))
             ],
           ),
-        ),
-      ),
+                ],),),),),
     );
   }
-
-  /// Prevents the game from showing game-services-related menu items
-  /// until we're sure the player is signed in.
-  ///
-  /// This normally happens immediately after game start, so players will not
-  /// see any flash. The exception is folks who decline to use Game Center
-  /// or Google Play Game Services, or who haven't yet set it up.
-  Widget _hideUntilReady({required Widget child, required Future<bool> ready}) {
-    return FutureBuilder<bool>(
-      future: ready,
-      builder: (context, snapshot) {
-        // Use Visibility here so that we have the space for the buttons
-        // ready.
-        return Visibility(
-          visible: snapshot.data ?? false,
-          maintainState: true,
-          maintainSize: true,
-          maintainAnimation: true,
-          child: child,
-        );
-      },
-    );
-  }
-
-
 }
 
 class LogoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final mediaQueryData = MediaQuery.of(context);
-    final screenHeight = mediaQueryData.size.height;
-    final screenWidth = mediaQueryData.size.width;
-    print("Pixel Ratio: $pixelRatio");
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     print("Screen Height: $screenHeight");
     print("Screen Width: $screenWidth");
-    final StarBoxWidth = 60 / screenWidth * mediaQueryData.size.width;
-    final StarBoxHeight = 60 / screenHeight * mediaQueryData.size.height;
-    final TextBoxWidth = 281 / screenWidth * mediaQueryData.size.width;
-    final TextBoxHeight = 146 / screenHeight * mediaQueryData.size.height;
-    return Container(
-      child: Stack(children: <Widget>[
-        // blue star
-        Positioned(
-          top: 84 / screenHeight * mediaQueryData.size.height,
-          left: 43 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/blue_star.svg',
-              ),
-            ),
-          ),
+    return Padding(
+      padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height < 650
+              ? 1
+              : ResponsiveText.scaleHeight(context, 20)),
+      child: Column(
+      children: [
+        SvgPicture.asset(
+          'assets/time_to_party_assets/all_stars_title.svg',
+          width: ResponsiveText.scaleWidth(context, 261),
+          height: ResponsiveText.scaleHeight(context, 126),
         ),
-        // yellow star
-        Positioned(
-          top: 55 / screenHeight * mediaQueryData.size.height,
-          left: 93 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/yellow_star.svg',
-              ),
-            ),
-          ),
+        SvgPicture.asset(
+          'assets/time_to_party_assets/time_to_party_logo.svg',
+          width: ResponsiveText.scaleWidth(context, 257),
+          height: ResponsiveText.scaleHeight(context, 134),
         ),
-        // grey star
-        Positioned(
-          top: 58 / screenHeight * mediaQueryData.size.height,
-          left: 157 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/grey_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // black star
-        Positioned(
-          top: 41 / screenHeight * mediaQueryData.size.height,
-          left: 205 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/black_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // pink star
-        Positioned(
-          top: 55 / screenHeight * mediaQueryData.size.height,
-          left: 276 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/pink_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // title logo
-        Positioned(
-          top: 135 / mediaQueryData.size.height * screenHeight,
-          left: 49 / mediaQueryData.size.width * screenWidth,
-          child: Container(
-            width: TextBoxWidth,
-            height: TextBoxHeight,
-            child: SvgPicture.asset(
-              'assets/time_to_party_assets/time_to_party_logo.svg',
-            ),
-          ),
-        ),
-        // Loading bar slider
-      ]),
-    );
+      ],
+    ),);
   }
 }

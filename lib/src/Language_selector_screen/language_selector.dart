@@ -27,7 +27,7 @@ class LanguageSelector extends StatelessWidget {
         body: Column(
           children: [
             Container(
-              height: 100, // Określ wysokość wg własnego uznania
+              height: ResponsiveText.scaleHeight(context, 155), // Określ wysokość wg własnego uznania
               child: LogoWidget_notitle(),
             ),
             Expanded(
@@ -35,17 +35,17 @@ class LanguageSelector extends StatelessWidget {
                 crossAxisCount: 2,
                 childAspectRatio: 3,
                 children: [
-                  languageButton('English',
+                  languageButton(context, 'English',
                       'assets/time_to_party_assets/flags/united_kingdom.svg'),
-                  languageButton('Deutsch',
+                  languageButton(context, 'Deutsch',
                       'assets/time_to_party_assets/flags/germany.svg'),
-                  languageButton('Italiano',
+                  languageButton(context, 'Italiano',
                       'assets/time_to_party_assets/flags/italy.svg'),
-                  languageButton('Español',
+                  languageButton(context, 'Español',
                       'assets/time_to_party_assets/flags/spain.svg'),
-                  languageButton(
+                  languageButton(context,
                       'Polski', 'assets/time_to_party_assets/flags/poland.svg'),
-                  languageButton('Français',
+                  languageButton(context, 'Français',
                       'assets/time_to_party_assets/flags/france.svg'),
                 ],
               ),
@@ -56,7 +56,7 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget languageButton(String language, String path) {
+  Widget languageButton(BuildContext context, String language, String path) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
@@ -66,9 +66,9 @@ class LanguageSelector extends StatelessWidget {
         icon: SvgPicture.asset(path),
         label: Text(language,
             style: TextStyle(
-              color: Color(0xFFA0A0A0),
+              color: Palette().bluegrey,
               fontFamily: 'HindMadurai',
-              fontSize: 16,
+              fontSize: ResponsiveText.scaleHeight(context, 16),
             )),
         style: TextButton.styleFrom(
           backgroundColor: Color(0xFF434347),
@@ -81,131 +81,23 @@ class LanguageSelector extends StatelessWidget {
   }
 }
 
-class AppDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        children: <Widget>[
-          DrawerHeader(
-            child: Text('Drawer Header'),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-          ),
-          ListTile(
-            title: Text('Item 1'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class LogoWidget_notitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final mediaQueryData = MediaQuery.of(context);
-    final screenHeight = mediaQueryData.size.height;
-    final screenWidth = mediaQueryData.size.width;
-    final StarBoxWidth = 60 / screenWidth * mediaQueryData.size.width;
-    final StarBoxHeight = 60 / screenHeight * mediaQueryData.size.height;
-    return Container(
-      child: Stack(children: <Widget>[
-        // blue star
-        Positioned(
-          top: 54 / screenHeight * mediaQueryData.size.height,
-          left: 43 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/blue_star.svg',
-              ),
-            ),
+    return Padding(
+      padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height < 650
+              ? 1
+              : ResponsiveText.scaleHeight(context, 20)),
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            'assets/time_to_party_assets/all_stars_title.svg',
+            width: ResponsiveText.scaleWidth(context, 261),
+            height: ResponsiveText.scaleHeight(context, 126),
           ),
-        ),
-        // yellow star
-        Positioned(
-          top: 25 / screenHeight * mediaQueryData.size.height,
-          left: 93 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/yellow_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // grey star
-        Positioned(
-          top: 28 / screenHeight * mediaQueryData.size.height,
-          left: 157 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/grey_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // black star
-        Positioned(
-          top: 11 / screenHeight * mediaQueryData.size.height,
-          left: 205 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/black_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // pink star
-        Positioned(
-          top: 25 / screenHeight * mediaQueryData.size.height,
-          left: 276 / screenWidth * mediaQueryData.size.width,
-          child: Transform.rotate(
-            angle: -20 * 3.14 / 180,
-            child: Container(
-              width: StarBoxWidth,
-              height: StarBoxHeight,
-              child: SvgPicture.asset(
-                'assets/time_to_party_assets/pink_star.svg',
-              ),
-            ),
-          ),
-        ),
-        // title logo
-        // Loading bar slider
-      ]),
-    );
+        ],
+      ),);
   }
 }
+
