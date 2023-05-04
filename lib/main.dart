@@ -16,16 +16,20 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 import 'src/Language_selector_screen/language_selector.dart';
+import 'src/Loading_screen/loading_screen.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
+import 'src/app_lifecycle/translation_database.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
 import 'src/games_services/score.dart';
+import 'src/in_app_purchase/cards_advertisement_screen.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
 import 'src/level_selection/level_selection_screen.dart';
 import 'src/level_selection/levels.dart';
 import 'src/main_menu/main_menu_screen.dart';
+import 'src/notifications/notifications_manager.dart';
 import 'src/play_session/play_session_screen.dart';
 import 'src/player_progress/persistence/local_storage_player_progress_persistence.dart';
 import 'src/player_progress/persistence/player_progress_persistence.dart';
@@ -38,10 +42,6 @@ import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
-import 'src/Loading_screen/loading_screen.dart';
-import 'src/in_app_purchase/cards_advertisement_screen.dart';
-
-import 'src/notifications/notifications_manager.dart';
 
 
 Future<void> main() async {
@@ -123,7 +123,8 @@ void guardedMain() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
+  TranslationDatabase db = TranslationDatabase();
+  await db.demodb();
   runApp(
       MyApp(
       settingsPersistence: LocalStorageSettingsPersistence(),

@@ -1,8 +1,6 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// A palette of colors to be used in the game.
 ///
@@ -87,5 +85,25 @@ class ResponsiveText {
       ),
       textAlign: textAlign,
     );
+  }
+}
+
+class LogoWidget_notitle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height < 650
+              ? 1
+              : ResponsiveText.scaleHeight(context, 20)),
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            'assets/time_to_party_assets/all_stars_title.svg',
+            width: ResponsiveText.scaleWidth(context, 261),
+            height: ResponsiveText.scaleHeight(context, 126),
+          ),
+        ],
+      ),);
   }
 }

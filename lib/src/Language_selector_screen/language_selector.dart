@@ -81,23 +81,4 @@ class LanguageSelector extends StatelessWidget {
   }
 }
 
-class LogoWidget_notitle extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height < 650
-              ? 1
-              : ResponsiveText.scaleHeight(context, 20)),
-      child: Column(
-        children: [
-          SvgPicture.asset(
-            'assets/time_to_party_assets/all_stars_title.svg',
-            width: ResponsiveText.scaleWidth(context, 261),
-            height: ResponsiveText.scaleHeight(context, 126),
-          ),
-        ],
-      ),);
-  }
-}
 

@@ -108,6 +108,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
                   child: IgnorePointer(
                     child: Confetti(
                       isStopped: !_duringCelebration,
+                      child: widget,
                     ),
                   ),
                 ),

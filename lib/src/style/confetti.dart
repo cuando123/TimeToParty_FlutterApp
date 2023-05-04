@@ -29,15 +29,19 @@ class Confetti extends StatefulWidget {
 
   final List<Color> colors;
 
+  final Widget child; // Dodaj to
+
   const Confetti({
     this.colors = _defaultColors,
     this.isStopped = false,
+    required this.child, // Dodaj to
     super.key,
   });
 
   @override
   State<Confetti> createState() => _ConfettiState();
 }
+
 
 class ConfettiPainter extends CustomPainter {
   final defaultPaint = Paint();
@@ -96,15 +100,21 @@ class _ConfettiState extends State<Confetti>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: ConfettiPainter(
-        colors: widget.colors,
-        animation: _controller,
-      ),
-      willChange: true,
-      child: const SizedBox.expand(),
+    return Stack(
+      children: [
+        CustomPaint(
+          painter: ConfettiPainter(
+            colors: widget.colors,
+            animation: _controller,
+          ),
+          willChange: true,
+          child: const SizedBox.expand(),
+        ),
+        widget.child, // Dodaj to
+      ],
     );
   }
+
 
   @override
   void didUpdateWidget(covariant Confetti oldWidget) {

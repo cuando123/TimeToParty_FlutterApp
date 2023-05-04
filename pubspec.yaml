@@ -28,6 +28,7 @@ dependencies:
   url_launcher: ^6.1.10
   share_plus: ^6.3.4
   flutter_local_notifications: ^14.0.0+1
+  sqflite: ^2.2.8+1
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import '../style/confetti.dart';
 
 CustomTransitionPage<T> buildMyTransition<T>({
   required Widget child,
@@ -20,32 +21,29 @@ CustomTransitionPage<T> buildMyTransition<T>({
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return _MyReveal(
         animation: animation,
-        color: color,
+        colors: Confetti(child: child,).colors,
+        decoration: decoration ?? BoxDecoration(color: color),
         child: child,
-        decoration: decoration,
       );
     },
     key: key,
     name: name,
     arguments: arguments,
     restorationId: restorationId,
-    transitionDuration: const Duration(milliseconds: 700),
+    transitionDuration: const Duration(milliseconds: 1000),
   );
 }
 
 class _MyReveal extends StatefulWidget {
   final Widget child;
-
   final Animation<double> animation;
-
-  final Color color;
-
+  final List<Color> colors;
   final Decoration? decoration;
 
   const _MyReveal({
     required this.child,
     required this.animation,
-    required this.color,
+    required this.colors,
     this.decoration,
   });
 
@@ -54,16 +52,11 @@ class _MyReveal extends StatefulWidget {
 }
 
 class _MyRevealState extends State<_MyReveal> {
-  static final _log = Logger('_InkRevealState');
-
-  bool _finished = false;
-
-  final _tween = Tween(begin: const Offset(0, -1), end: Offset.zero);
+  bool _showConfetti = true;
 
   @override
   void initState() {
     super.initState();
-
     widget.animation.addStatusListener(_statusListener);
   }
 
@@ -87,42 +80,41 @@ class _MyRevealState extends State<_MyReveal> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        SlideTransition(
-          position: _tween.animate(
-            CurvedAnimation(
-              parent: widget.animation,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeOutCubic,
-            ),
-          ),
-          child: Container(
-            decoration: widget.decoration ?? BoxDecoration(color: widget.color),
-          ),
+        AnimatedBuilder(
+          animation: widget.animation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: 1 - widget.animation.value,
+              child: Container(
+                decoration: widget.decoration,
+              ),
+            );
+          },
         ),
-        AnimatedOpacity(
-          opacity: _finished ? 1 : 0,
-          duration: const Duration(milliseconds: 300),
-          child: widget.child,
+        Confetti(
+          isStopped: widget.animation.value < 1, // Zmiana tutaj
+          colors: widget.colors,
+          child: AnimatedOpacity(
+            opacity: widget.animation.value,
+            duration: const Duration(milliseconds: 1000),
+            child: widget.child,
+          ),
         ),
       ],
     );
   }
 
   void _statusListener(AnimationStatus status) {
-    _log.fine(() => 'status: $status');
-    switch (status) {
-      case AnimationStatus.completed:
-        setState(() {
-          _finished = true;
-        });
-        break;
-      case AnimationStatus.forward:
-      case AnimationStatus.dismissed:
-      case AnimationStatus.reverse:
-        setState(() {
-          _finished = false;
-        });
-        break;
+    if (status == AnimationStatus.completed) {
+      setState(() {
+        _showConfetti = false;
+      });
+    } else if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
+      setState(() {
+        _showConfetti = true;
+      });
     }
   }
 }
+
+
