@@ -3,11 +3,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
+import '../app_lifecycle/translation_database.dart';
 
-class LanguageSelector extends StatelessWidget {
+class LanguageSelector extends StatefulWidget {
   const LanguageSelector({Key? key, required this.scaffoldKey})
       : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
+
+  @override
+  _LanguageSelectorState createState() => _LanguageSelectorState();
+}
+
+class _LanguageSelectorState extends State<LanguageSelector> {
+  String _translatedText = '';
+
+  void _updateTranslation(String key, String langPrefix) async {
+    String translatedText = await TranslationDatabase().getTranslationText(key, langPrefix);
+    setState(() {
+      _translatedText = translatedText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +31,11 @@ class LanguageSelector extends StatelessWidget {
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
       child: Scaffold(
-        key: scaffoldKey,
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
-          title: 'Zmień język',
+          title: _translatedText,
           onMenuButtonPressed: () {
-            scaffoldKey.currentState?.openDrawer();
+            widget.scaffoldKey.currentState?.openDrawer();
           },
         ),
         body: Column(
@@ -36,17 +50,17 @@ class LanguageSelector extends StatelessWidget {
                 childAspectRatio: 3,
                 children: [
                   languageButton(context, 'English',
-                      'assets/time_to_party_assets/flags/united_kingdom.svg'),
+                      'assets/time_to_party_assets/flags/united_kingdom.svg', 'EN_en'),
                   languageButton(context, 'Deutsch',
-                      'assets/time_to_party_assets/flags/germany.svg'),
+                      'assets/time_to_party_assets/flags/germany.svg', 'DE_de'),
                   languageButton(context, 'Italiano',
-                      'assets/time_to_party_assets/flags/italy.svg'),
+                      'assets/time_to_party_assets/flags/italy.svg', 'IT_it'),
                   languageButton(context, 'Español',
-                      'assets/time_to_party_assets/flags/spain.svg'),
+                      'assets/time_to_party_assets/flags/spain.svg', 'ES_es'),
                   languageButton(context,
-                      'Polski', 'assets/time_to_party_assets/flags/poland.svg'),
+                      'Polski', 'assets/time_to_party_assets/flags/poland.svg', 'PL_pl'),
                   languageButton(context, 'Français',
-                      'assets/time_to_party_assets/flags/france.svg'),
+                      'assets/time_to_party_assets/flags/france.svg', 'FR_fr'),
                 ],
               ),
             ),
@@ -56,12 +70,12 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget languageButton(BuildContext context, String language, String path) {
+  Widget languageButton(BuildContext context, String language, String path, String lang_prefix) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
-        onPressed: () {
-          // Dodaj obsługę kliknięcia przycisku
+        onPressed: () async {
+          _updateTranslation('select_language', lang_prefix);
         },
         icon: SvgPicture.asset(path),
         label: Text(language,

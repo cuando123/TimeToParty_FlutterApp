@@ -1,52 +1,42 @@
-import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
-import 'package:collection/collection.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TranslationDatabase {
-  Future<void> demodb() async {
-    try {
-      var databasesPath = await getDatabasesPath();
-      String path = join(databasesPath, 'db_awesome.db');
+  Future<Database> initDatabase() async {
+    var dbPath = join(await getDatabasesPath(), 'db_awesome.db');
 
-      // open the database
-      Database database = await openDatabase(path, version: 1,
-          onCreate: (Database db, int version) async {
-            // When creating the db, create the table
-            await db.execute(
-                'CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT, value INTEGER, num REAL)');
-          });
+      ByteData data = await rootBundle.load("assets/time_to_party_assets/db_awesome.db");
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      await File(dbPath).writeAsBytes(bytes, flush: true);
 
-      // Insert some records in a transaction
-      await database.transaction((txn) async {
-        int id1 = await txn.rawInsert(
-            'INSERT INTO Test(name, value, num) VALUES("some name", 1234, 456.789)');
-        print('inserted1: $id1');
-        int id2 = await txn.rawInsert(
-            'INSERT INTO Test(name, value, num) VALUES(?, ?, ?)',
-            ['another name', 12345678, 3.1416]);
-        print('inserted2: $id2');
-      });
+    return openDatabase(dbPath);
+  }
+  Future<String> getTranslationText(String key, String languageKey) async { // Dodano parametr key
+    Database database = await initDatabase(); // Użyj metody initDatabase
 
-      // Update some record
-      int count = await database.rawUpdate(
-          'UPDATE Test SET name = ?, value = ? WHERE name = ?',
-          ['updated name', '9876', 'some name']);
-      print('updated: $count');
+    // Zapytanie SQL do pobrania tekstu dla danego klucza języka
+    String query = 'SELECT string_value FROM Menu_translations WHERE key = ? AND language = ?';
+    List<String> queryArgs = [key, languageKey]; // Zaktualizowano queryArgs
 
-      // Get the records
-      List<Map> list = await database.rawQuery('SELECT * FROM Test');
-      List<Map> expectedList = [
-        {'name': 'updated name', 'id': 1, 'value': 9876, 'num': 456.789},
-        {'name': 'another name', 'id': 2, 'value': 12345678, 'num': 3.1416}
-      ];
-      print(list);
-      print(expectedList);
+    // Wykonaj zapytanie
+    List<Map<String, dynamic>> result = await database.rawQuery(query, queryArgs);
 
-      // Close the database
-      await database.close();
-    } catch (e) {
-      print('An error occurred while performing database operations: $e');
+    // Zamknij bazę danych
+    await database.close();
+
+    // Sprawdź, czy zwrócono jakieś wyniki
+    if (result.isNotEmpty) {
+      // Pobierz pierwszy wynik
+      Map<String, dynamic> row = result.first;
+
+      // Zwróć wartość tekstu
+      return row['string_value'] as String;
     }
+
+    // Jeśli nie znaleziono tekstu, zwróć pusty ciąg znaków
+    return '';
   }
 }

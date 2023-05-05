@@ -123,8 +123,6 @@ void guardedMain() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  TranslationDatabase db = TranslationDatabase();
-  await db.demodb();
   runApp(
       MyApp(
       settingsPersistence: LocalStorageSettingsPersistence(),
