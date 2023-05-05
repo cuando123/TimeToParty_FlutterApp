@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
+import '../app_lifecycle/translated_text.dart';
 
 class CardAdvertisementScreen extends StatelessWidget {
   const CardAdvertisementScreen({super.key, required this.scaffoldKey});
@@ -21,7 +22,7 @@ class CardAdvertisementScreen extends StatelessWidget {
         key: scaffoldKey,
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
-          title: 'Kup Teraz!',
+          title: translatedText('buy_now'),
           onMenuButtonPressed: () {
             scaffoldKey.currentState?.openDrawer();
           },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final Widget title;
   final VoidCallback? onBackButtonPressed;
   final VoidCallback? onMenuButtonPressed;
 
@@ -19,13 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: Icon(Icons.arrow_back, color: Color(0xFFE5E5E5)),
         onPressed: onBackButtonPressed ?? () => GoRouter.of(context).go('/'),
       ),
-      title: Text(title,
-          style: TextStyle(
-            color: Color(0xFFE5E5E5),
-            fontFamily: 'HindMadurai',
-            fontSize: 16,
-          )
-      ),
+      title: title,
       centerTitle: true,
       actions: [
         IconButton(

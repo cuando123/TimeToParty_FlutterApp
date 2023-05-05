@@ -9,6 +9,7 @@ import '../style/responsive_screen.dart';
 import 'settings.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'dart:core';
+import '../app_lifecycle/translated_text.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key, required this.scaffoldKey});
@@ -25,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
       key: scaffoldKey,
       drawer: CustomAppDrawer(),
       appBar: CustomAppBar(
-        title: 'Ustawienia',
+        title: translatedText('settings'),
         onMenuButtonPressed: () {
           scaffoldKey.currentState?.openDrawer();
         },

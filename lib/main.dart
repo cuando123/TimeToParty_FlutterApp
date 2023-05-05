@@ -19,7 +19,7 @@ import 'src/Language_selector_screen/language_selector.dart';
 import 'src/Loading_screen/loading_screen.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
-import 'src/app_lifecycle/translation_database.dart';
+import 'src/app_lifecycle/TranslationProvider.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
@@ -42,10 +42,9 @@ import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
-
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
@@ -71,7 +70,6 @@ Future<void> main() async {
 
 /// Without logging and crash reporting, this would be `void main()`.
 void guardedMain() async {
-
   if (kReleaseMode) {
     // Don't log anything below warnings in production.
     Logger.root.level = Level.WARNING;
@@ -88,7 +86,6 @@ void guardedMain() async {
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
   );
-
 
   // TODO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.
@@ -119,25 +116,33 @@ void guardedMain() async {
   //   inAppPurchaseController.restorePurchases();
   // }
   WidgetsFlutterBinding.ensureInitialized();
-   await SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  final translationProvider = TranslationProvider.fromDeviceLanguage();
   runApp(
-      MyApp(
-      settingsPersistence: LocalStorageSettingsPersistence(),
-      playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-      inAppPurchaseController: inAppPurchaseController,
-      adsController: adsController,
-      gamesServicesController: gamesServicesController,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: translationProvider,
+        ),
+      ],
+      child: MyApp(
+        settingsPersistence: LocalStorageSettingsPersistence(),
+        playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
+        inAppPurchaseController: inAppPurchaseController,
+        adsController: adsController,
+        gamesServicesController: gamesServicesController,
+      ),
     ),
   );
 }
 
 Logger _log = Logger('main.dart');
 final GlobalKey<ScaffoldState> settingsScaffoldKey = GlobalKey<ScaffoldState>();
-class MyApp extends StatelessWidget {
 
+class MyApp extends StatelessWidget {
   static final _router = GoRouter(
     routes: [
       GoRoute(
@@ -149,11 +154,13 @@ class MyApp extends StatelessWidget {
                 path: 'play/:numberOfTeams',
                 pageBuilder: (context, state) {
                   final numberOfTeamsParam = state.params['numberOfTeams'];
-                  final numberOfTeams = int.tryParse(numberOfTeamsParam ?? '') ?? 2;
+                  final numberOfTeams =
+                      int.tryParse(numberOfTeamsParam ?? '') ?? 2;
                   return buildMyTransition<void>(
                     child: LevelSelectionScreen(
                       key: Key('level selection'),
-                      numberOfTeams: numberOfTeams, // Przekaż numberOfTeams jako argument
+                      numberOfTeams:
+                          numberOfTeams, // Przekaż numberOfTeams jako argument
                     ),
                     color: context.watch<Palette>().backgroundLevelSelection,
                   );
@@ -193,9 +200,13 @@ class MyApp extends StatelessWidget {
             GoRoute(
               path: 'settings',
               pageBuilder: (context, state) => buildMyTransition<void>(
-                child: SettingsScreen(key: Key('settings'), scaffoldKey: settingsScaffoldKey),
+                child: SettingsScreen(
+                    key: Key('settings'), scaffoldKey: settingsScaffoldKey),
                 color: context.watch<Palette>().backgroundTransparent,
-                decoration: BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+                decoration: BoxDecoration(
+                    gradient: context
+                        .watch<Palette>()
+                        .backgroundLoadingSessionGradient),
               ),
             ),
             GoRoute(
@@ -208,17 +219,27 @@ class MyApp extends StatelessWidget {
             GoRoute(
               path: 'language_selector',
               pageBuilder: (context, state) => buildMyTransition<void>(
-                child: LanguageSelector(key: Key('language_selector'), scaffoldKey: GlobalKey<ScaffoldState>()),
+                child: LanguageSelector(
+                    key: Key('language_selector'),
+                    scaffoldKey: GlobalKey<ScaffoldState>()),
                 color: context.watch<Palette>().backgroundTransparent,
-                decoration:  BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+                decoration: BoxDecoration(
+                    gradient: context
+                        .watch<Palette>()
+                        .backgroundLoadingSessionGradient),
               ),
             ),
             GoRoute(
               path: 'card_advertisement',
               pageBuilder: (context, state) => buildMyTransition<void>(
-                child: CardAdvertisementScreen(key: Key('card_advertisement'), scaffoldKey: GlobalKey<ScaffoldState>()),
+                child: CardAdvertisementScreen(
+                    key: Key('card_advertisement'),
+                    scaffoldKey: GlobalKey<ScaffoldState>()),
                 color: context.watch<Palette>().backgroundTransparent,
-                decoration:  BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+                decoration: BoxDecoration(
+                    gradient: context
+                        .watch<Palette>()
+                        .backgroundLoadingSessionGradient),
               ),
             ),
           ]),
@@ -310,6 +331,19 @@ class MyApp extends StatelessWidget {
             routeInformationParser: _router.routeInformationParser,
             routerDelegate: _router.routerDelegate,
             scaffoldMessengerKey: scaffoldMessengerKey,
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en', 'EN'), // Angielski
+              Locale('de', 'DE'), // Niemiecki
+              Locale('it', 'IT'), // Włoski
+              Locale('es', 'ES'), // Hiszpański
+              Locale('pl', 'PL'), // Polski
+              Locale('fr', 'FR'), // Francuski
+            ],
           );
         }),
       ),

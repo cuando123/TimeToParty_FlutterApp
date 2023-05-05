@@ -10,6 +10,7 @@ import '../drawer/drawer.dart';
 import '../games_services/games_services.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
+import '../app_lifecycle/translated_text.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -112,7 +113,7 @@ class MainMenuScreen extends StatelessWidget {
                   audioController.playSfx(SfxType.buttonTap);
                   GoRouter.of(context).go('/play/${selectedNumberOfTeams.value}');
                 },
-                label: const Text('Zagraj teraz!'),
+                label: translatedText('play_now'),
               ),
               _gap,
               ElevatedButton.icon(

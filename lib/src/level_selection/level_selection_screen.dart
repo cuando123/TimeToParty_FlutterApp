@@ -6,6 +6,7 @@ import '../drawer/drawer.dart';
 import '../style/palette.dart';
 import 'dart:math';
 import '../style/confetti.dart';
+import '../app_lifecycle/translated_text.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   final int numberOfTeams;
@@ -69,7 +70,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
             drawer: CustomAppDrawer(),
             key: scaffoldKey,
             appBar: CustomAppBar(
-              title: 'Wprowadź nazwy drużyn',
+              title: translatedText('enter_team_names'),
               onMenuButtonPressed: () {
                 scaffoldKey.currentState?.openDrawer();
               },

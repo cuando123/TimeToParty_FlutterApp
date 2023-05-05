@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translation_database.dart';
+import '../app_lifecycle/translated_text.dart';
+import '../app_lifecycle/TranslationProvider.dart';
 
 class LanguageSelector extends StatefulWidget {
   const LanguageSelector({Key? key, required this.scaffoldKey})
@@ -15,14 +17,6 @@ class LanguageSelector extends StatefulWidget {
 }
 
 class _LanguageSelectorState extends State<LanguageSelector> {
-  String _translatedText = '';
-
-  void _updateTranslation(String key, String langPrefix) async {
-    String translatedText = await TranslationDatabase().getTranslationText(key, langPrefix);
-    setState(() {
-      _translatedText = translatedText;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +27,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       child: Scaffold(
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
-          title: _translatedText,
+          title: translatedText('select_language'),
           onMenuButtonPressed: () {
             widget.scaffoldKey.currentState?.openDrawer();
           },
@@ -75,7 +69,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
         onPressed: () async {
-          _updateTranslation('select_language', lang_prefix);
+          Provider.of<TranslationProvider>(context, listen: false)
+              .changeLanguage(lang_prefix);
         },
         icon: SvgPicture.asset(path),
         label: Text(language,
