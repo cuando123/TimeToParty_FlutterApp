@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'translation_database.dart';
+import 'dart:async';
 
 class TranslationProvider extends ChangeNotifier {
   String _currentLanguage;
-
+  Map<String, String> _cachedTranslations = {};
   TranslationProvider(this._currentLanguage);
 
   factory TranslationProvider.fromDeviceLanguage() {
-    final String? deviceLanguage = WidgetsBinding.instance?.window.locale.toLanguageTag();
+    final String deviceLanguage = WidgetsBinding.instance.window.locale.toLanguageTag();
     String currentLanguage;
     switch (deviceLanguage) {
       case 'en-EN':
@@ -39,12 +40,23 @@ class TranslationProvider extends ChangeNotifier {
 
   String get currentLanguage => _currentLanguage;
 
-  void changeLanguage(String languageKey) {
+  Future<void> changeLanguage(String languageKey) async {
     _currentLanguage = languageKey;
+    await loadTranslations();
     notifyListeners();
   }
 
-  Future<String> getTranslationText(String key) async {
-    return await _translationDatabase.getTranslationText(key, _currentLanguage);
+  String getTranslationText(String key) {
+    return _cachedTranslations[key] ?? '';
   }
+
+  Stream<String> translationTextStream(String key) async* {
+    yield* Stream.periodic(Duration.zero, (_) => key).asyncMap(getTranslationText);
+  }
+
+  Future<void> loadTranslations() async {
+    _cachedTranslations = await _translationDatabase.getAllTranslationsForLanguage(_currentLanguage);
+    notifyListeners();
+  }
+
 }

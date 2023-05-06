@@ -113,7 +113,7 @@ class MainMenuScreen extends StatelessWidget {
                   audioController.playSfx(SfxType.buttonTap);
                   GoRouter.of(context).go('/play/${selectedNumberOfTeams.value}');
                 },
-                label: translatedText('play_now'),
+                label: translatedText(context,'play_now', 20, Palette().white),
               ),
               _gap,
               ElevatedButton.icon(

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../app_lifecycle/translated_text.dart';
 
 /// A palette of colors to be used in the game.
 ///
@@ -56,36 +57,6 @@ class Palette {
   Color get white => const Color(0xFFE5E5E5);
   Color get bluegrey => const Color(0xFFB0B5E9);
   Color get menudark => const Color(0xFF221933);
-}
-
-class ResponsiveText {
-
-  static double referenceWidth = 360;
-  static double referenceHeight = 800;
-
-  static double scaleWidth(BuildContext context, double width) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return (screenWidth / referenceWidth) * width;
-  }
-
-  static double scaleHeight(BuildContext context, double height) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    return (screenHeight / referenceHeight) * height;
-  }
-
-  static Text customText(BuildContext context, String text, Color textColor,
-      TextAlign textAlign, double fontSize) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: textColor,
-        fontFamily: 'HindMadurai',
-        fontSize: fontSize,
-        fontWeight: FontWeight.normal,
-      ),
-      textAlign: textAlign,
-    );
-  }
 }
 
 class LogoWidget_notitle extends StatelessWidget {

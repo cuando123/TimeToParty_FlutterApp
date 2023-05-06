@@ -14,6 +14,7 @@ class TranslationDatabase {
 
     return openDatabase(dbPath);
   }
+  /* temporary not needed
   Future<String> getTranslationText(String key, String languageKey) async { // Dodano parametr key
     Database database = await initDatabase(); // Użyj metody initDatabase
 
@@ -38,5 +39,18 @@ class TranslationDatabase {
 
     // Jeśli nie znaleziono tekstu, zwróć pusty ciąg znaków
     return '';
+  }*/
+
+  Future<Map<String, String>> getAllTranslationsForLanguage(String language) async {
+    Database database = await initDatabase();
+
+    final queryResult = await database.rawQuery('SELECT key, string_value FROM Menu_translations WHERE language = ?', [language]);
+
+    final translationsMap = <String, String>{};
+    for (final row in queryResult) {
+      translationsMap[row['key'] as String]  = row['string_value'] as String;
+    }
+    return translationsMap;
   }
+
 }

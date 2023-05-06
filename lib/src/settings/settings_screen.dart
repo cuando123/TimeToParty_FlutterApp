@@ -26,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
       key: scaffoldKey,
       drawer: CustomAppDrawer(),
       appBar: CustomAppBar(
-        title: translatedText('settings'),
+        title: translatedText(context,'settings', 14, Palette().white),
         onMenuButtonPressed: () {
           scaffoldKey.currentState?.openDrawer();
         },

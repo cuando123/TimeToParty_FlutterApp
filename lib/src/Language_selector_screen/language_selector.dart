@@ -27,7 +27,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       child: Scaffold(
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
-          title: translatedText('select_language'),
+          title: translatedText(context,'select_language', 14, Palette().white),
           onMenuButtonPressed: () {
             widget.scaffoldKey.currentState?.openDrawer();
           },

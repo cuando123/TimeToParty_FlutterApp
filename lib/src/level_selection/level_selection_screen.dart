@@ -70,7 +70,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
             drawer: CustomAppDrawer(),
             key: scaffoldKey,
             appBar: CustomAppBar(
-              title: translatedText('enter_team_names'),
+              title: translatedText(context,'enter_team_names', 14, Palette().white),
               onMenuButtonPressed: () {
                 scaffoldKey.currentState?.openDrawer();
               },

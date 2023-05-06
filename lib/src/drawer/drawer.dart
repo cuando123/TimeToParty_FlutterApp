@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
+import '../app_lifecycle/translated_text.dart';
 
 class CustomAppDrawer extends StatelessWidget {
   final void Function(BuildContext context)? privacyPolicyFunction;
@@ -54,7 +55,7 @@ class CustomAppDrawer extends StatelessWidget {
                     width: ResponsiveText.scaleWidth(context, 43), // Dostosuj szerokość obrazka
                   ),
                   SizedBox(width:  ResponsiveText.scaleWidth(context, 10)), // Odstęp między obrazkiem a tekstem
-                  letsText(context, "Karty premium!", 20, Palette().white),
+                translatedText(context, 'premium_cards', 20, Palette().white),
                 ],
               ),
             ),
@@ -83,7 +84,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.question_mark,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Zasady gry", 14, Palette().white),
+                  title: translatedText(context, 'game_rules', 14, Palette().white),
                 ),
               ),
             ),
@@ -99,7 +100,7 @@ class CustomAppDrawer extends StatelessWidget {
                       Icons.privacy_tip,
                       color: Palette().white,
                     ),
-                    title: letsText(context, "Polityka prywatności", 14, Palette().white),
+                    title: translatedText(context, 'privacy_policy', 14, Palette().white),
                     onTap: () async {
                       _privacy_policy_function(context);
                     }),
@@ -125,7 +126,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.zoom_in,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Umowa licencyjna EULA", 14, Palette().white),
+                  title: translatedText(context, 'end_user_license_agreement', 14, Palette().white),
                 ),
               ),
             ),
@@ -145,7 +146,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.language,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Zmień język", 14, Palette().white),
+                  title: translatedText(context, 'select_language', 14, Palette().white),
                 ),
               ),
             ),
@@ -162,7 +163,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.settings,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Ustawienia", 14, Palette().white),
+                  title: translatedText(context, 'settings', 14, Palette().white),
                 ),
               ),
             ),
@@ -181,7 +182,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.settings_backup_restore,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Przywróć płatności", 14, Palette().white),
+                  title: translatedText(context, 'restore_purchases', 14, Palette().white),
                 ),
               ),
             ),
@@ -198,7 +199,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.edit,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Napisz do nas!", 14, Palette().white),
+                  title: translatedText(context, 'contact_us', 14, Palette().white),
                 ),
               ),
             ),
@@ -208,14 +209,14 @@ class CustomAppDrawer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () async {
                   await Future.delayed(Duration(milliseconds: 150));
-                  _shareContent();
+                  await _shareContent(context);
                 },
                 child: ListTile(
                   leading: Icon(
                     Icons.share,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Udostępnij", 14, Palette().white),
+                  title: translatedText(context, 'share', 14, Palette().white),
                 ),
               ),
             ),
@@ -232,7 +233,7 @@ class CustomAppDrawer extends StatelessWidget {
                     Icons.star,
                     color: Palette().white,
                   ),
-                  title: letsText(context, "Oceń nas w Google Play!", 14, Palette().white),
+                  title: translatedText(context, 'rate_us_google_play', 14, Palette().white),
                 ),
               ),
             ),
@@ -249,11 +250,14 @@ class CustomAppDrawer extends StatelessWidget {
       ),
     );
   }
+  Future<void> _shareContent(BuildContext context) async {
+    String message = await getTranslatedString(context, 'look_what_we_played_notification');
+    String subject = await getTranslatedString(context, 'lets_play_time_to_party');
 
-  void _shareContent() {
     Share.share(
-        'Zobacz w co graliśmy ze znajomymi! Super gierka na imprezę, możemy kiedyś zagrać :) https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
-        subject: 'Zagrajmy w Time to Party!');
+        '${await message}https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
+        subject: subject
+    );
   }
 
   void _openPdfViewer(BuildContext context, io.File file, String title) {
@@ -294,23 +298,14 @@ class CustomAppDrawer extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text(
-            'Twoja opinia ma znaczenie!',
-            style: TextStyle(
-              color: Color(0XFF391D50),
-              fontFamily: 'HindMadurai',
-              fontSize: ResponsiveText.scaleHeight(context, 18),
-            ),
-            textAlign: TextAlign.center,
-          ),
+          title: translatedText(context, 'your_opinion_matters', 18, Color(0XFF391D50)),
+           // textAlign: TextAlign.center,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Jeśli podoba Ci się aplikacja, daj nam  5 gwiazdek! Dla ciebie to jeden klik, a dla nas motywacja do działania :)',
-                textAlign: TextAlign.center,
-              ),
+              translatedText(context, 'rate_this_app', 14, Palette().bluegrey),
+               // textAlign: TextAlign.center,
               _gap,
               Center(
                 child: SvgPicture.asset(
@@ -338,14 +333,14 @@ class CustomAppDrawer extends StatelessWidget {
                     print('Could not launch $url');
                   }
                 },
-                child: Text('Oceń w Google Play!'),
+                child: translatedText(context, 'rate_us_google_play', 14, Palette().bluegrey),
               ),
               Center(
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Anuluj'),
+                  child: translatedText(context, 'cancel', 14, Palette().bluegrey),
                 ),
               ),
             ],

@@ -22,7 +22,7 @@ class CardAdvertisementScreen extends StatelessWidget {
         key: scaffoldKey,
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
-          title: translatedText('buy_now'),
+          title: translatedText(context,'buy_now', 14, Palette().white),
           onMenuButtonPressed: () {
             scaffoldKey.currentState?.openDrawer();
           },

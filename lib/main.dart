@@ -121,22 +121,24 @@ void guardedMain() async {
     DeviceOrientation.portraitDown,
   ]);
   final translationProvider = TranslationProvider.fromDeviceLanguage();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(
-          value: translationProvider,
+  await translationProvider.loadTranslations().then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(
+            value: translationProvider,
+          ),
+        ],
+        child: MyApp(
+          settingsPersistence: LocalStorageSettingsPersistence(),
+          playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
+          inAppPurchaseController: inAppPurchaseController,
+          adsController: adsController,
+          gamesServicesController: gamesServicesController,
         ),
-      ],
-      child: MyApp(
-        settingsPersistence: LocalStorageSettingsPersistence(),
-        playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-        inAppPurchaseController: inAppPurchaseController,
-        adsController: adsController,
-        gamesServicesController: gamesServicesController,
       ),
-    ),
-  );
+    );
+  });
 }
 
 Logger _log = Logger('main.dart');

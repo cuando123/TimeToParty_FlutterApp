@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../style/palette.dart';
+import '../app_lifecycle/translated_text.dart';
 
 class InstructionDialog extends StatelessWidget {
   @override
