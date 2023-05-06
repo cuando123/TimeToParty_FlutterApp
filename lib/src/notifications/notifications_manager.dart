@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../app_lifecycle/translated_text.dart';
 
 class NotificationsManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -56,10 +57,11 @@ class NotificationsManager {
     }
     return scheduledDate;
   }
-  Future<void> showNotificationNow() async {
+  Future<void> showNotificationNow(String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-        'weekly_notification_channel', 'Weekly Notifications',
+        'weekly_notification_channel',
+        'Weekly Notifications',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: true);
@@ -69,8 +71,8 @@ class NotificationsManager {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Hej! Dawno Cię u nas nie było!',
-      'Co ty na to, aby zagrać?',
+      title,
+      body,
       platformChannelSpecifics,
     );
   }

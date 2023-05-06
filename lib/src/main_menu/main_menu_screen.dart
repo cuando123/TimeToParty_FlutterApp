@@ -24,7 +24,6 @@ class MainMenuScreen extends StatelessWidget {
     final _gapBig = SizedBox(height: MediaQuery.of(context).size.height < 650
         ? ResponsiveText.scaleHeight(context, 30)
         : ResponsiveText.scaleHeight(context, 45));
-    final gamesServicesController = context.watch<GamesServicesController?>();
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     ValueNotifier<int?> selectedNumberOfTeams = ValueNotifier<int?>(null);
@@ -69,12 +68,22 @@ class MainMenuScreen extends StatelessWidget {
                           .map<DropdownMenuItem<int>>((int value) {
                         return DropdownMenuItem<int>(
                           value: value,
-                          child: Text(
-                            '  $value drużyny',
-                            style: TextStyle(
-                                fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
-                            textAlign: TextAlign.center,
+                          child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '$value ',
+                                style: TextStyle(
+                                  fontFamily: 'HindMadurai',
+                                  fontSize: ResponsiveText.scaleHeight(context, 20),
+                                  color: Palette().menudark,
+                                ),
+                              ),
+                              translatedTextSpan(context, 'x_teams', 20, Palette().menudark),
+                            ],
                           ),
+                        ),
                         );
                       }).toList(),
                       onChanged: (int? newValue) {
@@ -88,7 +97,7 @@ class MainMenuScreen extends StatelessWidget {
                         fontSize: ResponsiveText.scaleHeight(context, 20),
                         fontFamily: 'HindMadurai',
                       ),
-                      hint: const Text('   Ile drużyn zagra?'),
+                      hint: translatedText(context,'how_many_teams', 20, Palette().menudark),
                       isExpanded: true,
                     ),
                   );
@@ -131,7 +140,7 @@ class MainMenuScreen extends StatelessWidget {
                 ),
                 icon: Icon(Icons.settings, size: ResponsiveText.scaleHeight(context, 32)),
                 onPressed: () => GoRouter.of(context).go('/settings'),
-                label: const Text('Ustawienia'),
+                label: translatedText(context,'settings', 20, Palette().menudark),
               ),
               _gap,
               ElevatedButton.icon(
@@ -145,7 +154,7 @@ class MainMenuScreen extends StatelessWidget {
                       MediaQuery.of(context).size.height < 650
                           ? ResponsiveText.scaleHeight(context, 51)
                           : ResponsiveText.scaleHeight(context, 41)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
                 onPressed: () {
@@ -158,7 +167,7 @@ class MainMenuScreen extends StatelessWidget {
                     );
                   });
                 },
-                label: const Text('Zasady gry'),
+                label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
               _gap,
               ElevatedButton(
@@ -175,7 +184,7 @@ class MainMenuScreen extends StatelessWidget {
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
-                child: const Text('Wyjście'),
+                child: translatedText(context,'exit', 20, Palette().menudark),
               ),
               SizedBox(height:ResponsiveText.scaleHeight(context, 80))
             ],

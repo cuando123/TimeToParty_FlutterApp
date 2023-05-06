@@ -107,7 +107,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                   await showDialog<Color>(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: const Text('Wybierz kolor'),
+                                      title: translatedText(context,'choose_color', 20, Palette().white, textAlign: TextAlign.center),
                                       content: SingleChildScrollView(
                                         child: BlockPicker(
                                           availableColors: availableColors,
@@ -127,7 +127,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          child: const Text('Anuluj'),
+                                          child: translatedText(context,'cancel', 14, Palette().white),
                                         ),
                                         TextButton(
                                           onPressed: () => Navigator.pop(
@@ -171,7 +171,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                           onPressed: () {
                             _toggleCelebration();
                           },
-                          label: const Text('Zagraj teraz!'),
+                          label: translatedText(context,'play_now', 20, Palette().white),
                         ),
                       ),
                     ),

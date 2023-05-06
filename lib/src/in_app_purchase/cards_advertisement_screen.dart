@@ -33,38 +33,20 @@ class CardAdvertisementScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _gap,
-              ResponsiveText.customText(
-                context,
-                'Ekskluzywna przygoda z kartami na wyciągnięcie ręki!',
-                Palette().pink,
-                TextAlign.center,
-                ResponsiveText.scaleHeight(context, 18),
-              ),
+              translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
               SvgPicture.asset(
                   'assets/time_to_party_assets/banner_cards_advert.svg',
                   width: MediaQuery.of(context).size.width < 400 ? ResponsiveText.scaleWidth(context, 260 * 130 / 212) : ResponsiveText.scaleWidth(context, 260),
                   height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 130) : ResponsiveText.scaleHeight(context, 212),
               ),
-              ResponsiveText.customText(
-                context,
-                'Zakup wersję UNLIMITED!',
-                Palette().white,
-                TextAlign.center,
-                ResponsiveText.scaleHeight(context, 20),
-              ),
+             translatedText(context, 'buy_unlimited_version', 20, Palette().white, textAlign: TextAlign.center),
               _gap,
               SvgPicture.asset(
                   'assets/time_to_party_assets/banner_cards_advert_linear.svg',
                   width: ResponsiveText.scaleWidth(context, 77),
                   height: ResponsiveText.scaleHeight(context, 40)),
               _gap,
-              ResponsiveText.customText(
-                context,
-                'Odkryj pełen potencjał gry z niesamowitymi bonusami!',
-                Palette().pink,
-                TextAlign.center,
-                ResponsiveText.scaleHeight(context, 18),
-              ),
+              translatedText(context, 'discover_the_full_potential', 18, Palette().pink, textAlign: TextAlign.center),
               Padding(
                 padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width < 380 || MediaQuery.of(context).size.width > 500
@@ -84,13 +66,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                         ),
                         SizedBox(
                             width: ResponsiveText.scaleWidth(context, 10)),
-                        ResponsiveText.customText(
-                          context,
-                          'Więcej zabawy!',
-                          Palette().white,
-                          TextAlign.center,
-                          ResponsiveText.scaleHeight(context, 14),
-                        ),
+                        translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
                       ],
                     ),
                     _gap,
@@ -104,13 +80,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                         ),
                         SizedBox(
                             width: ResponsiveText.scaleHeight(context, 10)),
-                        ResponsiveText.customText(
-                          context,
-                          'Więcej losowych zdarzeń!',
-                          Palette().white,
-                          TextAlign.center,
-                          ResponsiveText.scaleHeight(context, 14),
-                        ),
+                        translatedText(context, 'more_random_events', 14, Palette().white, textAlign: TextAlign.center),
                       ],
                     ),
                     _gap,
@@ -125,13 +95,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                         SizedBox(
                             width: ResponsiveText.scaleHeight(context,
                                 10)),
-                        ResponsiveText.customText(
-                          context,
-                          'Dłuższa i ciekawsza rozgrywka!',
-                          Palette().white,
-                          TextAlign.center,
-                          ResponsiveText.scaleHeight(context, 14),
-                        ),
+                        translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white, textAlign: TextAlign.center),
                       ],
                     ),
                   ],
@@ -152,7 +116,7 @@ class CardAdvertisementScreen extends StatelessWidget {
                       fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () {},
-                child: Text('8,99zł jednorazowo'),
+                child: translatedText(context, 'pay_once', 20, Palette().white),
               ),
               TextButton(
                 onPressed: () async {
@@ -160,23 +124,11 @@ class CardAdvertisementScreen extends StatelessWidget {
                       context, customAppDrawer);
                 },
                 child:
-                ResponsiveText.customText(
-                  context,
-                  'Polityka prywatności oraz regulamin danych osobowych',
-                  Palette().white,
-                  TextAlign.center,
-                  ResponsiveText.scaleHeight(context, 14),
-                ),
+                translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white, textAlign: TextAlign.center),
               ),
               TextButton(
                 onPressed: () {},
-                child: ResponsiveText.customText(
-                  context,
-                  'Przywróć płatności',
-                  Palette().white,
-                  TextAlign.center,
-                  ResponsiveText.scaleHeight(context, 14),
-                ),
+                child:translatedText(context, 'restore_purchases', 14, Palette().white, textAlign: TextAlign.center),
               ),
             ],
           ),

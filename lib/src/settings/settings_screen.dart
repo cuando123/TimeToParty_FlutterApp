@@ -1,34 +1,57 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:game_template/src/drawer/drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
+import '../app_lifecycle/translated_text.dart';
 import '../customAppBar/customAppBar.dart';
 import '../notifications/notifications_manager.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'settings.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'dart:core';
-import '../app_lifecycle/translated_text.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key, required this.scaffoldKey});
+class SettingsScreen extends StatefulWidget  {
+  const SettingsScreen({Key? key, required this.scaffoldKey}) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
-  static const _gap = SizedBox(height: 5);
+
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String title = '';
+  String allSoundsTitle = '';
+  String soundEffectsTitle = '';
+  String musicTitle = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      title = getTranslatedString(context, 'settings_notifications');
+      allSoundsTitle = getTranslatedString(context, 'settings_all_sounds');
+      soundEffectsTitle = getTranslatedString(context, 'settings_sound_effects');
+      musicTitle = getTranslatedString(context, 'settings_music');
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    const _gap = SizedBox(height: 5);
     final settings = context.watch<SettingsController>();
     final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
 
     return Scaffold(
-      key: scaffoldKey,
+      key: widget.scaffoldKey,
       drawer: CustomAppDrawer(),
       appBar: CustomAppBar(
         title: translatedText(context,'settings', 14, Palette().white),
         onMenuButtonPressed: () {
-          scaffoldKey.currentState?.openDrawer();
+          widget.scaffoldKey.currentState?.openDrawer();
         },
       ),
       backgroundColor:
@@ -48,14 +71,14 @@ class SettingsScreen extends StatelessWidget {
                 // Przekazujemy instancję NotificationsManager do metody toggleNotifications
                 settingsController.toggleNotifications(notificationsManager);
               },
-              title: 'Powiadomienia',
+              title: title,
               iconOn: Icons.notifications,
               iconOff: Icons.notifications_off,
             ),
             TogglesControl(
               valueNotifier: settingsController.muted,
               onToggle: settingsController.toggleMuted,
-              title: 'Wszystkie dźwięki',
+              title: allSoundsTitle,
               iconOn: Icons.volume_up,
               iconOff: Icons.volume_off,
             ),
@@ -63,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
             TogglesControl(
               valueNotifier: settings.soundsOn,
               onToggle: settingsController.toggleSoundsOn,
-              title: 'Efekty dźwiękowe',
+              title: soundEffectsTitle,
               iconOn: Icons.graphic_eq,
               iconOff: Icons.volume_off,
             ),
@@ -71,19 +94,12 @@ class SettingsScreen extends StatelessWidget {
             TogglesControl(
               valueNotifier: settings.musicOn,
               onToggle: settingsController.toggleMusicOn,
-              title: 'Muzyka',
+              title: musicTitle,
               iconOn: Icons.music_note,
               iconOff: Icons.music_off,
             ),
             SizedBox(height: 20),
-            Text(
-                textAlign: TextAlign.center,
-                'W celu uzyskania pomocy dotyczącej gry przejdź pod adres:',
-                style: TextStyle(
-                  color: Color(0xFFFFFFFF),
-                  fontFamily: 'HindMadurai',
-                  fontSize: 12,
-                )),
+            translatedText(context,'game_help_address', 12, Palette().white),
             TextButton(onPressed: () async {
             await Future.delayed(Duration(milliseconds: 150));
             CustomAppDrawer().showExitDialog(context);
@@ -99,14 +115,16 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (settingsController.notificationsEnabled.value) {
+                  String translatedTitle = await getTranslatedString(context, 'weekly_notification_up');
+                  String translatedBody = await getTranslatedString(context, 'weekly_notification_down');
                   tz.initializeTimeZones();
                   NotificationsManager notificationsManager =
                   NotificationsManager();
                   WidgetsFlutterBinding.ensureInitialized();
-                  notificationsManager.initializeNotifications();
-                  notificationsManager.showNotificationNow();
+                  await notificationsManager.initializeNotifications();
+                  await notificationsManager.showNotificationNow(translatedTitle, translatedBody);
                   //await notificationsManager.scheduleWeeklyNotification();
                 }
               },

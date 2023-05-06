@@ -298,13 +298,13 @@ class CustomAppDrawer extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'your_opinion_matters', 18, Color(0XFF391D50)),
+          title: translatedText(context, 'your_opinion_matters', 18, Color(0XFF391D50), textAlign: TextAlign.center),
            // textAlign: TextAlign.center,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              translatedText(context, 'rate_this_app', 14, Palette().bluegrey),
+              translatedText(context, 'rate_this_app', 14, Palette().menudark, textAlign: TextAlign.center),
                // textAlign: TextAlign.center,
               _gap,
               Center(
@@ -333,7 +333,7 @@ class CustomAppDrawer extends StatelessWidget {
                     print('Could not launch $url');
                   }
                 },
-                child: translatedText(context, 'rate_us_google_play', 14, Palette().bluegrey),
+                child: translatedText(context, 'rate_us_google_play', 14, Palette().white),
               ),
               Center(
                 child: TextButton(
@@ -359,15 +359,7 @@ class CustomAppDrawer extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text(
-            'Błąd podczas pobierania pliku. Sprawdź połączenie z Internetem.',
-            style: TextStyle(
-              color: Color(0XFF391D50),
-              fontFamily: 'HindMadurai',
-              fontSize: ResponsiveText.scaleHeight(context, 18),
-            ),
-            textAlign: TextAlign.center,
-          ),
+          title: translatedText(context, 'download_error_network', 18, Palette().bluegrey, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,23 +397,12 @@ class CustomAppDrawer extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text(
-            'Czy chcesz opuścić aplikację?',
-            style: TextStyle(
-              color: Color(0XFF391D50),
-              fontFamily: 'HindMadurai',
-              fontSize: ResponsiveText.scaleHeight(context, 18),
-            ),
-            textAlign: TextAlign.center,
-          ),
+          title: translatedText(context, 'would_you_like_exit', 18, Color(0XFF391D50), textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Zostaniesz przekierowany na stronę internetową.',
-                textAlign: TextAlign.center,
-              ),
+              translatedText(context, 'redirected_to_the_website', 14, Palette().menudark, textAlign: TextAlign.center),
               _gap,
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -451,7 +432,7 @@ class CustomAppDrawer extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Anuluj'),
+                  child: translatedText(context, 'cancel', 14, Palette().bluegrey, textAlign: TextAlign.center),
                 ),
               ),
             ],
@@ -492,14 +473,4 @@ class CustomAppDrawer extends StatelessWidget {
     appDrawer._privacy_policy_function(context);
   }
 
-  Text letsText(BuildContext context, String text, double fontSize, Color textColor) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontFamily: 'HindMadurai',
-        fontSize: ResponsiveText.scaleHeight(context, fontSize),
-        color: textColor,
-      ),
-    );
-  }
 }
