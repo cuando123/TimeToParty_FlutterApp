@@ -9,18 +9,27 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../main.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 
-class CustomAppDrawer extends StatelessWidget {
-  final void Function(BuildContext context)? privacyPolicyFunction;
+class CustomAppDrawer extends StatefulWidget {
 
-  CustomAppDrawer({this.privacyPolicyFunction});
+  const CustomAppDrawer({super.key});
+
+  @override
+  CustomAppDrawerState createState() => CustomAppDrawerState();
+}
+
+class CustomAppDrawerState extends State<CustomAppDrawer> {
+
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
-    return Drawer(
+    return Stack(
+      children: [
+     Drawer(
       child: Container(
         width: ResponsiveText.scaleWidth(context, 288),
         decoration: BoxDecoration(
@@ -102,7 +111,7 @@ class CustomAppDrawer extends StatelessWidget {
                     ),
                     title: translatedText(context, 'privacy_policy', 14, Palette().white),
                     onTap: () async {
-                      _privacy_policy_function(context);
+                      await globalLoading.privacy_policy_function(context);
                     }),
               ),
             ),
@@ -111,15 +120,7 @@ class CustomAppDrawer extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(4),
                 onTap: () async {
-                  final url =
-                      'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
-                  final fileName = 'EndUserLicenseAgreement_EULA.pdf';
-                  try {
-                    final file = await downloadAndCachePdf(url, fileName);
-                    _openPdfViewer(context, file, "Umowa licencyjna EULA");
-                  } catch (e) {
-                    _connectionProblemDialog(context);
-                  }
+                  await globalLoading.eula_function(context);
                 },
                 child: ListTile(
                   leading: Icon(
@@ -248,7 +249,9 @@ class CustomAppDrawer extends StatelessWidget {
           ],
         ),),
       ),
-    );
+    ),
+    GlobalLoadingIndicator(),
+    ],);
   }
   Future<void> _shareContent(BuildContext context) async {
     String message = await getTranslatedString(context, 'look_what_we_played_notification');
@@ -257,34 +260,6 @@ class CustomAppDrawer extends StatelessWidget {
     Share.share(
         '${await message}https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
         subject: subject
-    );
-  }
-
-  void _openPdfViewer(BuildContext context, io.File file, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: PDFView(
-            filePath: file.path,
-            enableSwipe: true,
-            swipeHorizontal: true,
-            autoSpacing: true,
-            pageFling: true,
-            onError: (error) {
-              print(error.toString());
-            },
-            onPageError: (page, error) {
-              print('$page: ${error.toString()}');
-            },
-            onViewCreated: (PDFViewController controller) {},
-            onPageChanged: (int? page, int? total) {},
-          ),
-        ),
-      ),
     );
   }
 
@@ -350,44 +325,7 @@ class CustomAppDrawer extends StatelessWidget {
     );
   }
 
-  void _connectionProblemDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(context, 'download_error_network', 18, Palette().bluegrey, textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().pink, // color
-                  foregroundColor: Palette().white, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(MediaQuery.of(context).size.width,
-                      ResponsiveText.scaleHeight(context, 40)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void showExitDialog(BuildContext context) {
+  static void showExitDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -442,6 +380,50 @@ class CustomAppDrawer extends StatelessWidget {
     );
   }
 
+}
+
+class GlobalLoading {
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    onLoadingStatusChanged?.call(value);
+  }
+
+  void Function(bool isLoading)? onLoadingStatusChanged;
+
+  Future<void> privacy_policy_function(BuildContext context) async {
+    isLoading = true;
+    final url = 'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
+    final fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
+
+    try {
+      final file = await downloadAndCachePdf(url, fileName);
+      _openPdfViewer(context, file, "Polityka prywatności");
+    } catch (e) {
+      print('Błąd: $e');
+      _connectionProblemDialog(context);
+    }
+
+    isLoading = false;
+  }
+
+  Future<void> eula_function(BuildContext context) async {
+    isLoading = true;
+
+    final url = 'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
+    final fileName = 'EndUserLicenseAgreement_EULA.pdf';
+    try {
+      final file = await downloadAndCachePdf(url, fileName);
+      _openPdfViewer(context, file, "Umowa licencyjna EULA");
+    } catch (e) {
+      _connectionProblemDialog(context);
+    }
+
+    isLoading= false;
+  }
 
   Future<io.File> downloadAndCachePdf(String url, String fileName) async {
     final response = await http.get(Uri.parse(url));
@@ -456,21 +438,100 @@ class CustomAppDrawer extends StatelessWidget {
     }
   }
 
-  void _privacy_policy_function(BuildContext context) async {
-    final url =
-        'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
-    final fileName =
-        'Privacy_Policy_for_Applications_and_Games.pdf';
-    try {
-      final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Polityka prywatności");
-    } catch (e) {
-      print('Błąd: $e');
-      _connectionProblemDialog(context);
-    }
-  }
-  static void callPrivacyPolicyFunction(BuildContext context, CustomAppDrawer appDrawer) {
-    appDrawer._privacy_policy_function(context);
+  void _connectionProblemDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, 'download_error_network', 18, Palette().bluegrey, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width,
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
+  void _openPdfViewer(BuildContext context, io.File file, String title) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text(title),
+          ),
+          body: PDFView(
+            filePath: file.path,
+            enableSwipe: true,
+            swipeHorizontal: true,
+            autoSpacing: true,
+            pageFling: true,
+            onError: (error) {
+              print(error.toString());
+            },
+            onPageError: (page, error) {
+              print('$page: ${error.toString()}');
+            },
+            onViewCreated: (PDFViewController controller) {},
+            onPageChanged: (int? page, int? total) {},
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GlobalLoadingIndicator extends StatefulWidget {
+
+  @override
+  _GlobalLoadingIndicatorState createState() => _GlobalLoadingIndicatorState();
+}
+
+class _GlobalLoadingIndicatorState extends State<GlobalLoadingIndicator> {
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    globalLoading.onLoadingStatusChanged = (bool value) {
+      setState(() {
+        _isLoading = value;
+      });
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading
+        ? Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: CircularProgressIndicator(color: Palette().pink),
+      ),
+    )
+        : SizedBox.shrink();
+  }
 }

@@ -25,6 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String allSoundsTitle = '';
   String soundEffectsTitle = '';
   String musicTitle = '';
+  String allRightsReserved = '';
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       allSoundsTitle = getTranslatedString(context, 'settings_all_sounds');
       soundEffectsTitle = getTranslatedString(context, 'settings_sound_effects');
       musicTitle = getTranslatedString(context, 'settings_music');
+      allRightsReserved = getTranslatedString(context, 'all_rights_reserved');
       setState(() {});
     });
   }
@@ -99,10 +101,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOff: Icons.music_off,
             ),
             SizedBox(height: 20),
-            translatedText(context,'game_help_address', 12, Palette().white),
+            translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
             TextButton(onPressed: () async {
             await Future.delayed(Duration(milliseconds: 150));
-            CustomAppDrawer().showExitDialog(context);
+            CustomAppDrawerState.showExitDialog(context);
             },
               child: Text(
                 'https://frydoapps.com/contact-apps',
@@ -134,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),),
         rectangularMenuArea: Text(
             textAlign: TextAlign.center,
-            'Time To Party® ©${DateTime.now().year} Frydo Poland. Wszelkie prawa zastrzeżone',
+            'Time To Party® ©${DateTime.now().year} Frydo Poland. $allRightsReserved',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
               fontFamily: 'HindMadurai',

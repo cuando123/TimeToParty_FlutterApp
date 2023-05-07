@@ -71,6 +71,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         onPressed: () async {
           Provider.of<TranslationProvider>(context, listen: false)
               .changeLanguage(lang_prefix);
+          showLanguageChangedSnackbar(context);
         },
         icon: SvgPicture.asset(path),
         label: Text(language,
@@ -87,6 +88,14 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         ),
       ),
     );
+  }
+
+  void showLanguageChangedSnackbar(BuildContext context) {
+    final snackBar = SnackBar(
+      content: translatedText(context,'language_changed', 14, Palette().white, textAlign: TextAlign.center),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 

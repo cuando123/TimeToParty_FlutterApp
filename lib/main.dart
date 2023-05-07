@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 // Uncomment the following lines when enabling Firebase Crashlytics
 // import 'dart:io';
 // import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +7,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/drawer/drawer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +40,8 @@ import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+final globalLoading = GlobalLoading();
 
 Future<void> main() async {
   // To enable Firebase Crashlytics, uncomment the following lines and

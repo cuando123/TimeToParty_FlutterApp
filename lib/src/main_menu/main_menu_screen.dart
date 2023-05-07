@@ -7,7 +7,6 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
-import '../games_services/games_services.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -211,7 +210,7 @@ class LogoWidget extends StatelessWidget {
         SvgPicture.asset(
           'assets/time_to_party_assets/all_stars_title.svg',
           width: ResponsiveText.scaleWidth(context, 261),
-          height: ResponsiveText.scaleHeight(context, 126),
+          height: ResponsiveText.scaleHeight(context, 156),
         ),
         SvgPicture.asset(
           'assets/time_to_party_assets/time_to_party_logo.svg',

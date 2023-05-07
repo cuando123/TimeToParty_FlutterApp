@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/main.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 
-class CardAdvertisementScreen extends StatelessWidget {
-  const CardAdvertisementScreen({super.key, required this.scaffoldKey});
+class CardAdvertisementScreen extends StatefulWidget {
+  const CardAdvertisementScreen({
+    required Key key,
+    required this.scaffoldKey,
+  }) : super(key: key);
+
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
+  _CardAdvertisementScreenState createState() => _CardAdvertisementScreenState();
+}
+
+class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
+
+  @override
   Widget build(BuildContext context) {
-    final customAppDrawer = CustomAppDrawer();
     final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10));
 
     return Container(
@@ -19,15 +29,16 @@ class CardAdvertisementScreen extends StatelessWidget {
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
       child: Scaffold(
-        key: scaffoldKey,
+        key: widget.scaffoldKey,
         drawer: CustomAppDrawer(),
         appBar: CustomAppBar(
           title: translatedText(context,'buy_now', 14, Palette().white),
           onMenuButtonPressed: () {
-            scaffoldKey.currentState?.openDrawer();
+            widget.scaffoldKey.currentState?.openDrawer();
           },
         ),
-        body: Center(
+        body: Stack( children: [
+        Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,8 +131,7 @@ class CardAdvertisementScreen extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () async {
-                  CustomAppDrawer.callPrivacyPolicyFunction(
-                      context, customAppDrawer);
+                await globalLoading.privacy_policy_function(context);
                 },
                 child:
                 translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white, textAlign: TextAlign.center),
@@ -133,7 +143,9 @@ class CardAdvertisementScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+          GlobalLoadingIndicator()
+          ]
+      ),),
     );
   }
 }
