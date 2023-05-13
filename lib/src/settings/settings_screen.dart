@@ -16,6 +16,7 @@ class SettingsScreen extends StatefulWidget  {
   const SettingsScreen({Key? key, required this.scaffoldKey}) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
 
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -47,7 +48,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
 
-    return Scaffold(
+    return Container(
+      decoration: BoxDecoration(
+    gradient: Palette().backgroundLoadingSessionGradient,
+    ),
+      child: Scaffold(
       key: widget.scaffoldKey,
       drawer: CustomAppDrawer(),
       appBar: CustomAppBar(
@@ -56,8 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           widget.scaffoldKey.currentState?.openDrawer();
         },
       ),
-      backgroundColor:
-          palette.backgroundTransparent,
+
       body: ResponsiveScreen(
         squarishMainArea:
         Scrollbar(
@@ -142,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               fontFamily: 'HindMadurai',
               fontSize: 10,
             )),
-      ),
+      ),),
     );
   }
 }

@@ -141,7 +141,6 @@ void guardedMain() async {
 }
 
 Logger _log = Logger('main.dart');
-final GlobalKey<ScaffoldState> settingsScaffoldKey = GlobalKey<ScaffoldState>();
 
 class MyApp extends StatelessWidget {
   static final _router = GoRouter(
@@ -202,7 +201,7 @@ class MyApp extends StatelessWidget {
               path: 'settings',
               pageBuilder: (context, state) => buildMyTransition<void>(
                 child: SettingsScreen(
-                    key: Key('settings'), scaffoldKey: settingsScaffoldKey),
+                    key: Key('settings'), scaffoldKey: GlobalKey<ScaffoldState>()),
                 color: context.watch<Palette>().backgroundTransparent,
                 decoration: BoxDecoration(
                     gradient: context

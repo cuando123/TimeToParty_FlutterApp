@@ -8,11 +8,43 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../instruction_dialog/instruction_dialog.dart';
+import '../level_selection/level_selection_screen.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
+import '../style/balloon_animation.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
+
+  Route _createRoute(int numberOfTeams) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            LevelSelectionScreen(
+              key: Key('level selection'),
+              numberOfTeams: numberOfTeams,
+            ),
+            BalloonAnimation(),
+          ],
+        );
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +99,23 @@ class MainMenuScreen extends StatelessWidget {
                           .map<DropdownMenuItem<int>>((int value) {
                         return DropdownMenuItem<int>(
                           value: value,
-                          child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '$value ',
-                                style: TextStyle(
-                                  fontFamily: 'HindMadurai',
-                                  fontSize: ResponsiveText.scaleHeight(context, 20),
-                                  color: Palette().menudark,
-                                ),
+                          child: Center(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '$value ',
+                                    style: TextStyle(
+                                      fontFamily: 'HindMadurai',
+                                      fontSize: ResponsiveText.scaleHeight(context, 20),
+                                      color: Palette().menudark,
+                                    ),
+                                  ),
+                                  translatedTextSpan(context, 'x_teams', 20, Palette().menudark),
+                                ],
                               ),
-                              translatedTextSpan(context, 'x_teams', 20, Palette().menudark),
-                            ],
+                            ),
                           ),
-                        ),
                         );
                       }).toList(),
                       onChanged: (int? newValue) {
@@ -119,7 +152,7 @@ class MainMenuScreen extends StatelessWidget {
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
                 onPressed: () {
                   audioController.playSfx(SfxType.buttonTap);
-                  GoRouter.of(context).go('/play/${selectedNumberOfTeams.value}');
+                  Navigator.of(context).push(_createRoute(selectedNumberOfTeams.value ?? 2));
                 },
                 label: translatedText(context,'play_now', 20, Palette().white),
               ),

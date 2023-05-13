@@ -58,6 +58,7 @@ flutter:
     - assets/music/
     - assets/sfx/
     - assets/time_to_party_assets/
+    - assets/time_to_party_assets/balloons/
     - assets/time_to_party_assets/flags/
 
   fonts:
