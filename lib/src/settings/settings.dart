@@ -21,6 +21,8 @@ class SettingsController extends ChangeNotifier {
 
   ValueNotifier<bool> notificationsEnabled = ValueNotifier(true);
 
+  ValueNotifier<bool> vibrationsEnabled = ValueNotifier(true);
+
   /// Creates a new instance of [SettingsController] backed by [persistence].
   SettingsController({required SettingsPersistence persistence})
       : _persistence = persistence;
@@ -65,5 +67,10 @@ class SettingsController extends ChangeNotifier {
   void toggleSoundsOn() {
     soundsOn.value = !soundsOn.value;
     _persistence.saveSoundsOn(soundsOn.value);
+  }
+
+  void toggleVibrations() {
+    vibrationsEnabled.value = !vibrationsEnabled.value;
+    notifyListeners();
   }
 }

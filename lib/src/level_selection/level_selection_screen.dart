@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../Loading_screen/loading_screen.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../play_session/play_gameboard_main.dart';
 import '../style/palette.dart';
 import 'dart:math';
 import '../app_lifecycle/translated_text.dart';
@@ -46,16 +48,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   @override
   void initState() {
     super.initState();
-    teamNames = List<String>.filled(widget.numberOfTeams, '');
+    teamNames = List<String>.generate(widget.numberOfTeams, (index) => 'Drużyna ${index + 1}');
     teamColors = _initializeColors(widget.numberOfTeams);
     // Inicjalizacja kontrolerów dla każdego zespołu
     for (int i = 0; i < widget.numberOfTeams; i++) {
-      controllers.add(TextEditingController());
+      controllers.add(TextEditingController(text: teamNames[i]));
     }
-  }
-  Color _getRandomColor(int index) {
-    int randomIndex = Random().nextInt(availableColors.length);
-    return availableColors[randomIndex];
   }
 
   @override
@@ -169,6 +167,16 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                             icon: Icon(Icons.play_arrow_rounded, size: 32),
                             onPressed: () {
                               _toggleCelebration();
+                              // Dodane: przekazanie danych do następnego ekranu
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoadingScreen(
+                                    teamNames: teamNames,
+                                    teamColors: teamColors,
+                                  ),
+                                ),
+                              );
                             },
                             label: translatedText(
                                 context, 'play_now', 20, Palette().white),

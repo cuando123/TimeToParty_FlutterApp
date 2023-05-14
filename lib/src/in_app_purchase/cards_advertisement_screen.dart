@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
+import 'package:go_router/go_router.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
@@ -23,8 +24,13 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10));
-
-    return Container(
+    return WillPopScope(
+        onWillPop: () async {
+          GoRouter.of(context).go('/');
+          return false;
+        },
+        child:
+     Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
@@ -56,63 +62,72 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   'assets/time_to_party_assets/banner_cards_advert_linear.svg',
                   width: ResponsiveText.scaleWidth(context, 77),
                   height: ResponsiveText.scaleHeight(context, 40)),
-              _gap,
               translatedText(context, 'discover_the_full_potential', 18, Palette().pink, textAlign: TextAlign.center),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width < 380 || MediaQuery.of(context).size.width > 500
-                    ? ResponsiveText.scaleWidth(context, 90)
-                    : ResponsiveText.scaleWidth(context, 65),
-              ),
-                child: Column(
+          Center(child:
+          Column(
                   children: [
-                    _gap,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/time_to_party_assets/banner_baloon_icon_advert.png',
-                          height: ResponsiveText.scaleHeight(context, 29),
-                          width: ResponsiveText.scaleHeight(context, 24),
-                        ),
-                        SizedBox(
-                            width: ResponsiveText.scaleWidth(context, 10)),
-                        translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
-                      ],
+                    TextButton(
+                      onPressed: () {
+                        showDialogMoreFun(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset(
+                            'assets/time_to_party_assets/banner_baloon_icon_advert.png',
+                            height: ResponsiveText.scaleHeight(context, 29),
+                            width: ResponsiveText.scaleHeight(context, 24),
+                          ),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          Icon(Icons.arrow_back, color: Colors.white),
+                        ],
+                      ),
                     ),
-                    _gap,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/time_to_party_assets/banner_random_icon_advert.svg',
-                          height: ResponsiveText.scaleHeight(context, 24),
-                          width: ResponsiveText.scaleWidth(context, 24),
-                        ),
-                        SizedBox(
-                            width: ResponsiveText.scaleHeight(context, 10)),
-                        translatedText(context, 'more_random_events', 14, Palette().white, textAlign: TextAlign.center),
-                      ],
+                    TextButton(
+                      onPressed: () {
+                        showDialogMoreRandomEvents(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/time_to_party_assets/banner_random_icon_advert.svg',
+                            height: ResponsiveText.scaleHeight(context, 24),
+                            width: ResponsiveText.scaleWidth(context, 24),
+                          ),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          translatedText(context, 'more_random_events', 14, Palette().white, textAlign: TextAlign.center),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          Icon(Icons.arrow_back, color: Colors.white),
+                        ],
+                      ),
                     ),
-                    _gap,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/time_to_party_assets/banner_timer_icon_advert.svg',
-                          height: ResponsiveText.scaleHeight(context, 24),
-                          width: ResponsiveText.scaleWidth(context, 24),
-                        ),
-                        SizedBox(
-                            width: ResponsiveText.scaleHeight(context,
-                                10)),
-                        translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white, textAlign: TextAlign.center),
-                      ],
+                    TextButton(
+                      onPressed: () {
+                        showDialogLongerGameplay(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                            height: ResponsiveText.scaleHeight(context, 24),
+                            width: ResponsiveText.scaleWidth(context, 24),
+                          ),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white, textAlign: TextAlign.center),
+                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          Icon(Icons.arrow_back, color: Colors.white),
+                        ],
+                      ),
                     ),
                   ],
-                ),
-              ),
-              _gap,
+                ),),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -145,7 +160,124 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
         ),
           GlobalLoadingIndicator()
           ]
-      ),),
+      ),),),
+    );
+  }
+
+  void showDialogMoreFun(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, 'more_fun', 18, Palette().pink, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              translatedText(context, 'more_fun_description', 14, Palette().menudark, textAlign: TextAlign.center),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width,
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showDialogMoreRandomEvents(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, 'more_random_events', 18, Palette().pink, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              translatedText(context, 'more_random_events_description', 14, Palette().menudark, textAlign: TextAlign.center),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width,
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showDialogLongerGameplay(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, 'longer_and_more_interesting_gameplay', 18, Palette().pink, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              translatedText(context, 'longer_and_more_interesting_gameplay_description', 14, Palette().menudark, textAlign: TextAlign.center),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette().pink, // color
+                  foregroundColor: Palette().white, // textColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width,
+                      ResponsiveText.scaleHeight(context, 40)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

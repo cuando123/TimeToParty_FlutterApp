@@ -143,12 +143,13 @@ void guardedMain() async {
 Logger _log = Logger('main.dart');
 
 class MyApp extends StatelessWidget {
+
   static final _router = GoRouter(
     routes: [
       GoRoute(
           path: '/',
           builder: (context, state) =>
-              const MainMenuScreen(key: Key('main menu')),
+          const MainMenuScreen(key: Key('main menu')),
           routes: [
             GoRoute(
                 path: 'play/:numberOfTeams',
@@ -160,9 +161,11 @@ class MyApp extends StatelessWidget {
                     child: LevelSelectionScreen(
                       key: Key('level selection'),
                       numberOfTeams:
-                          numberOfTeams, // Przekaż numberOfTeams jako argument
+                      numberOfTeams, // Przekaż numberOfTeams jako argument
                     ),
-                    color: context.watch<Palette>().backgroundLevelSelection,
+                    color: context
+                        .watch<Palette>()
+                        .backgroundLevelSelection,
                   );
                 },
                 routes: [
@@ -177,7 +180,9 @@ class MyApp extends StatelessWidget {
                           level,
                           key: const Key('play session'),
                         ),
-                        color: context.watch<Palette>().backgroundPlaySession,
+                        color: context
+                            .watch<Palette>()
+                            .backgroundPlaySession,
                       );
                     },
                   ),
@@ -192,55 +197,70 @@ class MyApp extends StatelessWidget {
                           score: score,
                           key: const Key('win game'),
                         ),
-                        color: context.watch<Palette>().backgroundPlaySession,
+                        color: context
+                            .watch<Palette>()
+                            .backgroundPlaySession,
                       );
                     },
                   )
                 ]),
             GoRoute(
               path: 'settings',
-              pageBuilder: (context, state) => buildMyTransition<void>(
-                child: SettingsScreen(
-                    key: Key('settings'), scaffoldKey: GlobalKey<ScaffoldState>()),
-                color: context.watch<Palette>().backgroundTransparent,
-                decoration: BoxDecoration(
-                    gradient: context
+              pageBuilder: (context, state) =>
+                  buildMyTransition<void>(
+                    child: SettingsScreen(
+                        key: Key('settings'),
+                        scaffoldKey: GlobalKey<ScaffoldState>()),
+                    color: context
                         .watch<Palette>()
-                        .backgroundLoadingSessionGradient),
-              ),
+                        .backgroundTransparent,
+                    decoration: BoxDecoration(
+                        gradient: context
+                            .watch<Palette>()
+                            .backgroundLoadingSessionGradient),
+                  ),
             ),
             GoRoute(
               path: 'loading',
-              pageBuilder: (context, state) => buildMyTransition<void>(
-                child: LoaderWidget(key: Key('loading')),
-                color: context.watch<Palette>().backgroundPlaySession,
-              ),
+              pageBuilder: (context, state) =>
+                  buildMyTransition<void>(
+                    child: LoaderWidget(key: Key('loading')),
+                    color: context
+                        .watch<Palette>()
+                        .backgroundPlaySession,
+                  ),
             ),
             GoRoute(
               path: 'language_selector',
-              pageBuilder: (context, state) => buildMyTransition<void>(
-                child: LanguageSelector(
-                    key: Key('language_selector'),
-                    scaffoldKey: GlobalKey<ScaffoldState>()),
-                color: context.watch<Palette>().backgroundTransparent,
-                decoration: BoxDecoration(
-                    gradient: context
+              pageBuilder: (context, state) =>
+                  buildMyTransition<void>(
+                    child: LanguageSelector(
+                        key: Key('language_selector'),
+                        scaffoldKey: GlobalKey<ScaffoldState>()),
+                    color: context
                         .watch<Palette>()
-                        .backgroundLoadingSessionGradient),
-              ),
+                        .backgroundTransparent,
+                    decoration: BoxDecoration(
+                        gradient: context
+                            .watch<Palette>()
+                            .backgroundLoadingSessionGradient),
+                  ),
             ),
             GoRoute(
               path: 'card_advertisement',
-              pageBuilder: (context, state) => buildMyTransition<void>(
-                child: CardAdvertisementScreen(
-                    key: Key('card_advertisement'),
-                    scaffoldKey: GlobalKey<ScaffoldState>()),
-                color: context.watch<Palette>().backgroundTransparent,
-                decoration: BoxDecoration(
-                    gradient: context
+              pageBuilder: (context, state) =>
+                  buildMyTransition<void>(
+                    child: CardAdvertisementScreen(
+                        key: Key('card_advertisement'),
+                        scaffoldKey: GlobalKey<ScaffoldState>()),
+                    color: context
                         .watch<Palette>()
-                        .backgroundLoadingSessionGradient),
-              ),
+                        .backgroundTransparent,
+                    decoration: BoxDecoration(
+                        gradient: context
+                            .watch<Palette>()
+                            .backgroundLoadingSessionGradient),
+                  ),
             ),
           ]),
     ],
@@ -256,7 +276,18 @@ class MyApp extends StatelessWidget {
 
   final AdsController? adsController;
 
-  const MyApp({
+  final Future initFuture = Future.wait([
+    // umieść tutaj swoje operacje inicjalizacyjne, na przykład:
+    // Firebase.initializeApp(),
+    // initCrashlytics(),
+    // initAdmob(),
+    // initInAppPurchases(),
+    // initGameServices(),
+    // itd.
+    Future<void>.delayed(Duration(seconds: 3)),
+  ]);
+
+  MyApp({
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,
@@ -267,86 +298,104 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppLifecycleObserver(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) {
-              var progress = PlayerProgress(playerProgressPersistence);
-              progress.getLatestFromStore();
-              return progress;
-            },
-          ),
-          Provider(
-            create: (_) => NotificationsManager(),
-          ),
-          Provider<GamesServicesController?>.value(
-              value: gamesServicesController),
-          Provider<AdsController?>.value(value: adsController),
-          ChangeNotifierProvider<InAppPurchaseController?>.value(
-              value: inAppPurchaseController),
-          ChangeNotifierProvider<SettingsController>(
-            lazy: false,
-            create: (context) => SettingsController(
-              persistence: settingsPersistence,
-            )..loadStateFromPersistence(),
-          ),
-          ProxyProvider2<SettingsController, ValueNotifier<AppLifecycleState>,
-              AudioController>(
-            // Ensures that the AudioController is created on startup,
-            // and not "only when it's needed", as is default behavior.
-            // This way, music starts immediately.
-            lazy: false,
-            create: (context) => AudioController()..initialize(),
-            update: (context, settings, lifecycleNotifier, audio) {
-              if (audio == null) throw ArgumentError.notNull();
-              audio.attachSettings(settings);
-              audio.attachLifecycleNotifier(lifecycleNotifier);
-              return audio;
-            },
-            dispose: (context, audio) => audio.dispose(),
-          ),
-          Provider(
-            create: (context) => Palette(),
-          ),
-        ],
-        child: Builder(builder: (context) {
-          final palette = context.watch<Palette>();
+    return FutureBuilder(
+        future: initFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return AppLifecycleObserver(
+              child: MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) {
+                      var progress = PlayerProgress(playerProgressPersistence);
+                      progress.getLatestFromStore();
+                      return progress;
+                    },
+                  ),
+                  Provider(
+                    create: (_) => NotificationsManager(),
+                  ),
+                  Provider<GamesServicesController?>.value(
+                      value: gamesServicesController),
+                  Provider<AdsController?>.value(value: adsController),
+                  ChangeNotifierProvider<InAppPurchaseController?>.value(
+                      value: inAppPurchaseController),
+                  ChangeNotifierProvider<SettingsController>(
+                    lazy: false,
+                    create: (context) =>
+                    SettingsController(
+                      persistence: settingsPersistence,
+                    )
+                      ..loadStateFromPersistence(),
+                  ),
+                  ProxyProvider2<SettingsController,
+                      ValueNotifier<AppLifecycleState>,
+                      AudioController>(
+                    // Ensures that the AudioController is created on startup,
+                    // and not "only when it's needed", as is default behavior.
+                    // This way, music starts immediately.
+                    lazy: false,
+                    create: (context) =>
+                    AudioController()
+                      ..initialize(),
+                    update: (context, settings, lifecycleNotifier, audio) {
+                      if (audio == null) throw ArgumentError.notNull();
+                      audio.attachSettings(settings);
+                      audio.attachLifecycleNotifier(lifecycleNotifier);
+                      return audio;
+                    },
+                    dispose: (context, audio) => audio.dispose(),
+                  ),
+                  Provider(
+                    create: (context) => Palette(),
+                  ),
+                ],
+                child: Builder(builder: (context) {
+                  final palette = context.watch<Palette>();
 
-          return MaterialApp.router(
-            title: 'Time To Party',
-            theme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: palette.darkPen,
-                background: palette.backgroundMain,
+                  return MaterialApp.router(
+                    title: 'Time To Party',
+                    theme: ThemeData.from(
+                      colorScheme: ColorScheme.fromSeed(
+                        seedColor: palette.darkPen,
+                        background: palette.backgroundMain,
+                      ),
+                      textTheme: TextTheme(
+                        bodyMedium: TextStyle(
+                          color: palette.ink,
+                        ),
+                      ),
+                      useMaterial3: true,
+                    ),
+                    routeInformationProvider: _router.routeInformationProvider,
+                    routeInformationParser: _router.routeInformationParser,
+                    routerDelegate: _router.routerDelegate,
+                    scaffoldMessengerKey: scaffoldMessengerKey,
+                    localizationsDelegates: const [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [
+                      Locale('en', 'EN'), // Angielski
+                      Locale('de', 'DE'), // Niemiecki
+                      Locale('it', 'IT'), // Włoski
+                      Locale('es', 'ES'), // Hiszpański
+                      Locale('pl', 'PL'), // Polski
+                      Locale('fr', 'FR'), // Francuski
+                    ],
+                  );
+                }),
               ),
-              textTheme: TextTheme(
-                bodyMedium: TextStyle(
-                  color: palette.ink,
-                ),
-              ),
-              useMaterial3: true,
-            ),
-            routeInformationProvider: _router.routeInformationProvider,
-            routeInformationParser: _router.routeInformationParser,
-            routerDelegate: _router.routerDelegate,
-            scaffoldMessengerKey: scaffoldMessengerKey,
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en', 'EN'), // Angielski
-              Locale('de', 'DE'), // Niemiecki
-              Locale('it', 'IT'), // Włoski
-              Locale('es', 'ES'), // Hiszpański
-              Locale('pl', 'PL'), // Polski
-              Locale('fr', 'FR'), // Francuski
-            ],
-          );
-        }),
-      ),
+            );
+          } else {
+            return MaterialApp(
+                home: Scaffold(
+                  body: LoaderWidget(),
+                )
+            );
+          }
+        }
     );
   }
 }

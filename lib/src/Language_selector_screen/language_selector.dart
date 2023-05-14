@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
@@ -20,7 +21,13 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return WillPopScope(
+        onWillPop: () async {
+          GoRouter.of(context).go('/');
+          return false;
+        },
+        child:
+    Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
@@ -60,7 +67,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 

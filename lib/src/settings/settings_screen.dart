@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:game_template/src/drawer/drawer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -43,12 +44,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const _gap = SizedBox(height: 5);
+    const _gap = SizedBox(height: 10);
     final settings = context.watch<SettingsController>();
-    final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
-
-    return Container(
+    return WillPopScope(
+        onWillPop: () async {
+          GoRouter.of(context).go('/');
+          return false;
+        },
+        child:
+     Container(
       decoration: BoxDecoration(
     gradient: Palette().backgroundLoadingSessionGradient,
     ),
@@ -81,6 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOn: Icons.notifications,
               iconOff: Icons.notifications_off,
             ),
+            _gap,
             TogglesControl(
               valueNotifier: settingsController.muted,
               onToggle: settingsController.toggleMuted,
@@ -103,6 +109,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: musicTitle,
               iconOn: Icons.music_note,
               iconOff: Icons.music_off,
+            ),
+            _gap,
+            TogglesControl(
+              valueNotifier: settingsController.vibrationsEnabled,
+              onToggle: settingsController.toggleVibrations,
+              title: "Vibrations", // możesz zastąpić to tłumaczonym ciągiem znaków
+              iconOn: Icons.vibration, // wybierz odpowiednie ikony
+              iconOff: Icons.work_off_outlined,
             ),
             SizedBox(height: 20),
             translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
@@ -146,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               fontFamily: 'HindMadurai',
               fontSize: 10,
             )),
-      ),),
+      ),),),
     );
   }
 }
@@ -168,9 +182,7 @@ class TogglesControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: ValueListenableBuilder<bool>(
+    return ValueListenableBuilder<bool>(
         valueListenable: valueNotifier,
         builder: (context, muted, child) => Container(
           padding: EdgeInsets.all(8.0),
@@ -255,7 +267,6 @@ class TogglesControl extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

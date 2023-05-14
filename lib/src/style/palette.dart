@@ -79,3 +79,44 @@ class LogoWidget_notitle extends StatelessWidget {
       ),);
   }
 }
+
+class LogoWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    print("Screen Height: $screenHeight");
+    print("Screen Width: $screenWidth");
+    return Padding(
+      padding: EdgeInsets.only(
+          top: MediaQuery
+              .of(context)
+              .size
+              .height < 650
+              ? 1
+              : ResponsiveText.scaleHeight(context, 20)),
+      child: Column(
+        children: [
+          SizedBox(height: 10),
+          SvgPicture.asset(
+            'assets/time_to_party_assets/all_stars_title.svg',
+            width: ResponsiveText.scaleWidth(context, 300),
+            //height: ResponsiveText.scaleHeight(context, 146),
+          ),
+          SizedBox(height: 10),
+          SvgPicture.asset(
+            'assets/time_to_party_assets/time_to_party_logo.svg',
+            width: ResponsiveText.scaleWidth(context, 257),
+            height: ResponsiveText.scaleHeight(context, 134),
+          ),
+          SizedBox(height: 10),
+        ],
+      ),);
+  }
+}
