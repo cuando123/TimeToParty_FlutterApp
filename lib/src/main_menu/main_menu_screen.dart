@@ -23,7 +23,6 @@ class MainMenuScreen extends StatelessWidget {
           children: [
             LevelSelectionScreen(
               key: Key('level selection'),
-              numberOfTeams: numberOfTeams,
             ),
             BalloonAnimation(),
           ],
@@ -84,56 +83,32 @@ class MainMenuScreen extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ValueListenableBuilder<int?>(
-                valueListenable: selectedNumberOfTeams,
-                builder: (BuildContext context, int? value, Widget? child) {
-                  return Container(
-                    width: ResponsiveText.scaleWidth(context, 200),
-                    decoration: BoxDecoration(
-                      color: Palette().bluegrey,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<int?>(
-                      value: value,
-                      items: <int>[2, 3, 4, 5, 6]
-                          .map<DropdownMenuItem<int>>((int value) {
-                        return DropdownMenuItem<int>(
-                          value: value,
-                          child: Center(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '$value ',
-                                    style: TextStyle(
-                                      fontFamily: 'HindMadurai',
-                                      fontSize: ResponsiveText.scaleHeight(context, 20),
-                                      color: Palette().menudark,
-                                    ),
-                                  ),
-                                  translatedTextSpan(context, 'x_teams', 20, Palette().menudark),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (int? newValue) {
-                        if (newValue != null) {
-                          selectedNumberOfTeams.value = newValue;
-                        }
+              _gap,
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette().bluegrey, // color
+                  foregroundColor: Palette().menudark, // textColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
+                      MediaQuery.of(context).size.height < 650
+                          ? ResponsiveText.scaleHeight(context, 51)
+                          : ResponsiveText.scaleHeight(context, 41)),
+                  //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                ),
+                icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
+                onPressed: () {
+                  Future.delayed(Duration(milliseconds: 150), () {
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) {
+                        return InstructionDialog();
                       },
-                      dropdownColor: Palette().bluegrey,
-                      style: TextStyle(
-                        color: Palette().menudark,
-                        fontSize: ResponsiveText.scaleHeight(context, 20),
-                        fontFamily: 'HindMadurai',
-                      ),
-                      hint: translatedText(context,'how_many_teams', 20, Palette().menudark),
-                      isExpanded: true,
-                    ),
-                  );
+                    );
+                  });
                 },
+                label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
               _gap,
               ElevatedButton.icon(
@@ -173,33 +148,6 @@ class MainMenuScreen extends StatelessWidget {
                 icon: Icon(Icons.settings, size: ResponsiveText.scaleHeight(context, 32)),
                 onPressed: () => GoRouter.of(context).go('/settings'),
                 label: translatedText(context,'settings', 20, Palette().menudark),
-              ),
-              _gap,
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Palette().menudark, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 51)
-                          : ResponsiveText.scaleHeight(context, 41)),
-                  //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
-                ),
-                icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
-                onPressed: () {
-                  Future.delayed(Duration(milliseconds: 150), () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (context) {
-                        return InstructionDialog();
-                      },
-                    );
-                  });
-                },
-                label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
               _gap,
               ElevatedButton(

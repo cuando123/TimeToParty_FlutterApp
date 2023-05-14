@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -32,24 +31,24 @@ class Palette {
   Color get backgroundPlaySession => const Color(0xffffebb5);
   Color get backgroundTransparent => Colors.transparent;
   Gradient get backgroundLoadingSessionGradient => LinearGradient(
-    begin: Alignment.bottomRight,
-    end: Alignment.topLeft,
-    stops: [0.0, 0.46, 1.0],
-    colors: [
-      Color(0xff1E1E1E),
-      Color(0xff24173C),
-      Color(0xff674D80),
-    ],
-  );
+        begin: Alignment.bottomRight,
+        end: Alignment.topLeft,
+        stops: [0.0, 0.46, 1.0],
+        colors: [
+          Color(0xff1E1E1E),
+          Color(0xff24173C),
+          Color(0xff674D80),
+        ],
+      );
   Gradient get drawerGradient => LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      Color(0xFF604779), // 0.0
-      Color(0xFF2E1F46), // 0.5
-      Color(0xFF1F1D23), // 1.0
-    ],
-  );
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF604779), // 0.0
+          Color(0xFF2E1F46), // 0.5
+          Color(0xFF1F1D23), // 1.0
+        ],
+      );
   Color get background4 => const Color(0xffffd7ff);
   Color get backgroundSettings => const Color(0xffbfc8e3);
   Color get trueWhite => const Color(0xffffffff);
@@ -76,34 +75,26 @@ class LogoWidget_notitle extends StatelessWidget {
             height: ResponsiveText.scaleHeight(context, 126),
           ),
         ],
-      ),);
+      ),
+    );
   }
 }
 
 class LogoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     print("Screen Height: $screenHeight");
     print("Screen Width: $screenWidth");
     return Padding(
       padding: EdgeInsets.only(
-          top: MediaQuery
-              .of(context)
-              .size
-              .height < 650
+          top: MediaQuery.of(context).size.height < 650
               ? 1
               : ResponsiveText.scaleHeight(context, 20)),
       child: Column(
         children: [
-          SizedBox(height: 10),
+          SizedBox(height: 30),
           SvgPicture.asset(
             'assets/time_to_party_assets/all_stars_title.svg',
             width: ResponsiveText.scaleWidth(context, 300),
@@ -117,6 +108,37 @@ class LogoWidget extends StatelessWidget {
           ),
           SizedBox(height: 10),
         ],
-      ),);
+      ),
+    );
+  }
+}
+
+class CustomElevatedButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final Widget child;
+  final ButtonStyle? style;
+  final Color disabledColor;
+
+  const CustomElevatedButton({
+    Key? key,
+    required this.onPressed,
+    required this.child,
+    this.style,
+    this.disabledColor = Colors.grey,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final buttonTheme = ElevatedButtonTheme.of(context);
+    final style = this.style ?? buttonTheme.style ?? theme.elevatedButtonTheme.style ?? theme.textButtonTheme.style;
+
+    final effectiveStyle = onPressed != null ? style : style?.copyWith(backgroundColor: MaterialStateProperty.all(disabledColor));
+
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: child,
+      style: effectiveStyle,
+    );
   }
 }

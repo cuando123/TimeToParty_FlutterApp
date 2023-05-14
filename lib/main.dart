@@ -151,24 +151,6 @@ class MyApp extends StatelessWidget {
           builder: (context, state) =>
           const MainMenuScreen(key: Key('main menu')),
           routes: [
-            GoRoute(
-                path: 'play/:numberOfTeams',
-                pageBuilder: (context, state) {
-                  final numberOfTeamsParam = state.params['numberOfTeams'];
-                  final numberOfTeams =
-                      int.tryParse(numberOfTeamsParam ?? '') ?? 2;
-                  return buildMyTransition<void>(
-                    child: LevelSelectionScreen(
-                      key: Key('level selection'),
-                      numberOfTeams:
-                      numberOfTeams, // Przekaż numberOfTeams jako argument
-                    ),
-                    color: context
-                        .watch<Palette>()
-                        .backgroundLevelSelection,
-                  );
-                },
-                routes: [
                   GoRoute(
                     path: 'session/:level',
                     pageBuilder: (context, state) {
@@ -262,9 +244,8 @@ class MyApp extends StatelessWidget {
                             .backgroundLoadingSessionGradient),
                   ),
             ),
-          ]),
-    ],
-  );
+          ]);
+
 
   final PlayerProgressPersistence playerProgressPersistence;
 
