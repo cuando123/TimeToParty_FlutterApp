@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import '../Loading_screen/loading_screen.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
-import '../play_session/play_gameboard_main.dart';
 import '../style/palette.dart';
-import 'dart:math';
 import '../app_lifecycle/translated_text.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
@@ -30,6 +28,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     Colors.purple,
     Colors.orange,
   ];
+  String teams = '';
 
   List<TextEditingController> controllers = [];
 
@@ -47,13 +46,30 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   @override
   void initState() {
     super.initState();
-    teamNames =
-        List<String>.generate(numberOfTeams, (index) => 'Drużyna ${index + 1}');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        teams = getTranslatedString(context, 'x_teams');
+        // Odśwież nazwy drużyn po otrzymaniu tłumaczenia
+        teamNames = List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
+      });
+    });
+    // Tymczasowe nazwy drużyn bez tłumaczenia
+    teamNames = List<String>.generate(numberOfTeams, (index) => '${index + 1}');
     teamColors = _initializeColors(numberOfTeams);
     // Inicjalizacja kontrolerów dla każdego zespołu
     for (int i = 0; i < numberOfTeams; i++) {
       controllers.add(TextEditingController(text: teamNames[i]));
       touched.add(false); // Dodajemy to
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    teams = getTranslatedString(context, 'x_teams');
+    teamNames = List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
+    for (int i = 0; i < numberOfTeams; i++) {
+      controllers[i].text = teamNames[i]; // aktualizacja kontrolerów
     }
   }
 
@@ -124,7 +140,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                             : () {
                           setState(() {
                             numberOfTeams++;
-                            teamNames.add('Drużyna $numberOfTeams');
+                            teamNames.add('$teams $numberOfTeams');
                             teamColors = _initializeColors(numberOfTeams);
                             controllers.add(TextEditingController(
                                 text: teamNames[numberOfTeams - 1]));
@@ -188,7 +204,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                     }
                                   },
                                   decoration: InputDecoration(
-                                    hintText: 'Drużyna ${index + 1}',
+                                    hintText: '$teams ${index + 1}',
                                     hintStyle: TextStyle(
                                       color: Color(0xFFA0A0A0),
                                     ),

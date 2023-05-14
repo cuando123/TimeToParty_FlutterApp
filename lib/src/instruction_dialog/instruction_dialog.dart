@@ -185,8 +185,8 @@ class InstructionDialog extends StatelessWidget {
                   heightFactor: 1.5,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFCB48EF), // color
-                      foregroundColor: Colors.white, // textColor
+                      backgroundColor: Palette().pink, // color
+                      foregroundColor: Palette().white, // textColor
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),

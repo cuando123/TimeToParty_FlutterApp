@@ -178,8 +178,13 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(child:
+              SvgPicture.asset(
+                  'assets/time_to_party_assets/line_instruction_screen.svg'),),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
               translatedText(context, 'more_fun_description', 14, Palette().menudark, textAlign: TextAlign.center),
               SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+        Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -187,15 +192,15 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width,
-                      ResponsiveText.scaleHeight(context, 40)),
+                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                      MediaQuery.of(context).size.height * 0.05),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: Text('OK'),
-              ),
+              ),),
             ],
           ),
         );
@@ -217,8 +222,13 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(child:
+              SvgPicture.asset(
+                  'assets/time_to_party_assets/line_instruction_screen.svg'),),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
               translatedText(context, 'more_random_events_description', 14, Palette().menudark, textAlign: TextAlign.center),
               SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+        Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -226,15 +236,15 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width,
-                      ResponsiveText.scaleHeight(context, 40)),
+                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                      MediaQuery.of(context).size.height * 0.05),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: Text('OK'),
-              ),
+              ),),
             ],
           ),
         );
@@ -251,13 +261,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'longer_and_more_interesting_gameplay', 18, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(context, 'longer_and_more_interesting_gameplay', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(child:
+              SvgPicture.asset(
+                  'assets/time_to_party_assets/line_instruction_screen.svg'),),
+              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
               translatedText(context, 'longer_and_more_interesting_gameplay_description', 14, Palette().menudark, textAlign: TextAlign.center),
               SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -265,15 +280,15 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width,
-                      ResponsiveText.scaleHeight(context, 40)),
+                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                      MediaQuery.of(context).size.height * 0.05),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: Text('OK'),
-              ),
+              ),),
             ],
           ),
         );

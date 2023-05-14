@@ -9,8 +9,7 @@ import '../app_lifecycle/translated_text.dart';
 import '../app_lifecycle/TranslationProvider.dart';
 
 class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({Key? key, required this.scaffoldKey})
-      : super(key: key);
+  const LanguageSelector({Key? key, required this.scaffoldKey}) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
@@ -18,7 +17,7 @@ class LanguageSelector extends StatefulWidget {
 }
 
 class _LanguageSelectorState extends State<LanguageSelector> {
-
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -33,10 +32,11 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       ),
       child: Scaffold(
         drawer: CustomAppDrawer(),
+        key: scaffoldKey,
         appBar: CustomAppBar(
           title: translatedText(context,'select_language', 14, Palette().white),
           onMenuButtonPressed: () {
-            widget.scaffoldKey.currentState?.openDrawer();
+            scaffoldKey.currentState?.openDrawer();
           },
         ),
         body: Column(

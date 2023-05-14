@@ -11,12 +11,12 @@ import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
-import '../style/balloon_animation.dart';
+import '../style/stars_animation.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
 
-  Route _createRoute(int numberOfTeams) {
+  Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) {
         return Stack(
@@ -24,7 +24,7 @@ class MainMenuScreen extends StatelessWidget {
             LevelSelectionScreen(
               key: Key('level selection'),
             ),
-            BalloonAnimation(),
+            StarsAnimation(),
           ],
         );
       },
@@ -56,7 +56,6 @@ class MainMenuScreen extends StatelessWidget {
         : ResponsiveText.scaleHeight(context, 45));
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    ValueNotifier<int?> selectedNumberOfTeams = ValueNotifier<int?>(null);
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -127,7 +126,7 @@ class MainMenuScreen extends StatelessWidget {
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
                 onPressed: () {
                   audioController.playSfx(SfxType.buttonTap);
-                  Navigator.of(context).push(_createRoute(selectedNumberOfTeams.value ?? 2));
+                  Navigator.of(context).push(_createRoute());
                 },
                 label: translatedText(context,'play_now', 20, Palette().white),
               ),

@@ -28,6 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String soundEffectsTitle = '';
   String musicTitle = '';
   String allRightsReserved = '';
+  String vibrations = '';
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       soundEffectsTitle = getTranslatedString(context, 'settings_sound_effects');
       musicTitle = getTranslatedString(context, 'settings_music');
       allRightsReserved = getTranslatedString(context, 'all_rights_reserved');
+      vibrations = getTranslatedString(context, 'vibrations');
       setState(() {});
     });
   }
@@ -114,9 +116,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TogglesControl(
               valueNotifier: settingsController.vibrationsEnabled,
               onToggle: settingsController.toggleVibrations,
-              title: "Vibrations", // możesz zastąpić to tłumaczonym ciągiem znaków
-              iconOn: Icons.vibration, // wybierz odpowiednie ikony
-              iconOff: Icons.work_off_outlined,
+              title: vibrations,
+              iconOn: Icons.vibration,
+              iconOff: Icons.close,
             ),
             SizedBox(height: 20),
             translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
