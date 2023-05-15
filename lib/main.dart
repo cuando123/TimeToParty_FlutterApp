@@ -127,6 +127,12 @@ void guardedMain() async {
           ChangeNotifierProvider.value(
             value: translationProvider,
           ),
+      ChangeNotifierProvider<TeamProvider>(
+          create: (context) {
+            final provider = TeamProvider();
+            provider.initializeTeams(context, 2);
+            return provider;
+          },),
         ],
         child: MyApp(
           settingsPersistence: LocalStorageSettingsPersistence(),
