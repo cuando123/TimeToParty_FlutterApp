@@ -45,6 +45,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
               height: ResponsiveSizing.scaleHeight(context, 155),
               child: LogoWidget_notitle(),
             ),
+            Text('Uwaga, zmiana języka przeniesie Cię do głównego ekranu'),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -78,6 +79,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         onPressed: () async {
           Provider.of<TranslationProvider>(context, listen: false)
               .changeLanguage(lang_prefix);
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          scaffoldKey.currentState?.openEndDrawer();
           showLanguageChangedSnackbar(context);
         },
         icon: SvgPicture.asset(path),
