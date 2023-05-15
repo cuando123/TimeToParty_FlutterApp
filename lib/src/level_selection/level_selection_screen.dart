@@ -84,10 +84,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _gap_left = SizedBox(
-        width: MediaQuery.of(context).size.width < 300
-            ? ResponsiveText.scaleHeight(context, 5)
-            : ResponsiveText.scaleHeight(context, 10));
     return GestureDetector(
       onTap: () {
         if (!FocusScope.of(context).hasPrimaryFocus) {
@@ -117,7 +113,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
               child: Column(
                 children: [
                   Container(
-                    height: ResponsiveText.scaleHeight(context, 155),
+                    height: ResponsiveSizing.scaleHeight(context, 155),
                     child: LogoWidget_notitle(),
                   ),
                   Row(
@@ -148,7 +144,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                           });
                         },
                       ),
-                      _gap_left,
+          ResponsiveSizing.responsiveWidthGapWithCondition(context, 5, 10, 300),
                       CustomElevatedButton(
                         child: Icon(Icons.remove),
                         style: ElevatedButton.styleFrom(
@@ -175,7 +171,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+                  SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveSizing.scaleHeight(context, 18) : ResponsiveSizing.scaleHeight(context, 10)),
                   Column(
                     children: List.generate(numberOfTeams, (index) {
                       return Padding(
@@ -197,7 +193,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  onTap: () {
+                                  onEditingComplete: () {
                                     if (!touched[index]) {
                                       controllers[index].clear();
                                       touched[index] = true;
@@ -270,7 +266,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                           label: translatedText(
                               context, 'play_now', 20, Palette().white),
                         ),
-                        _gap_left,
+          ResponsiveSizing.responsiveWidthGapWithCondition(context, 5, 10, 300),
                         ElevatedButton(
                           child: Icon(Icons.color_lens),
                           style: ElevatedButton.styleFrom(

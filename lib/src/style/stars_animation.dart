@@ -67,7 +67,7 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
               );
             },
             child: SvgPicture.asset(StarsImages[idx % StarsImages.length],
-              height: ResponsiveText.scaleHeight(context, 56),),
+              height: ResponsiveSizing.scaleHeight(context, 56),),
           ),
         );
       }).toList(),

@@ -47,13 +47,6 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650
-        ? ResponsiveText.scaleHeight(context, 5)
-        : ResponsiveText.scaleHeight(context, 10));
-    final _gapBig = SizedBox(height: MediaQuery.of(context).size.height < 650
-        ? ResponsiveText.scaleHeight(context, 30)
-        : ResponsiveText.scaleHeight(context, 45));
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     return Container(
@@ -78,11 +71,11 @@ class MainMenuScreen extends StatelessWidget {
                 Center(
                 child: LogoWidget(),
           ),
-          _gapBig,
+          ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _gap,
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
@@ -90,13 +83,11 @@ class MainMenuScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 51)
-                          : ResponsiveText.scaleHeight(context, 41)),
+                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
+                    ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
                   //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                 ),
-                icon: Icon(Icons.question_mark, size: ResponsiveText.scaleHeight(context, 32)),
+                icon: Icon(Icons.question_mark, size: ResponsiveSizing.scaleHeight(context, 32)),
                 onPressed: () {
                   Future.delayed(Duration(milliseconds: 150), () {
                     showDialog<void>(
@@ -109,7 +100,7 @@ class MainMenuScreen extends StatelessWidget {
                 },
                 label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -117,11 +108,9 @@ class MainMenuScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 51)
-                          : ResponsiveText.scaleHeight(context, 41)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
+                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
                 onPressed: () {
@@ -130,7 +119,7 @@ class MainMenuScreen extends StatelessWidget {
                 },
                 label: translatedText(context,'play_now', 20, Palette().white),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
@@ -138,17 +127,15 @@ class MainMenuScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 51)
-                          : ResponsiveText.scaleHeight(context, 41)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
+                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
-                icon: Icon(Icons.settings, size: ResponsiveText.scaleHeight(context, 32)),
+                icon: Icon(Icons.settings, size: ResponsiveSizing.scaleHeight(context, 32)),
                 onPressed: () => GoRouter.of(context).go('/settings'),
                 label: translatedText(context,'settings', 20, Palette().menudark),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().bluegrey, // color
@@ -156,16 +143,14 @@ class MainMenuScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: Size(ResponsiveText.scaleWidth(context, 200),
-                      MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 51)
-                          : ResponsiveText.scaleHeight(context, 41)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
+                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
                 child: translatedText(context,'exit', 20, Palette().menudark),
               ),
-              SizedBox(height:ResponsiveText.scaleHeight(context, 80))
+              SizedBox(height:ResponsiveSizing.scaleHeight(context, 80))
             ],
           ),
                 ],),),),),

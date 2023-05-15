@@ -66,7 +66,7 @@ class _BalloonAnimationState extends State<BalloonAnimation> with TickerProvider
               );
             },
             child: Image.asset(balloonImages[idx % balloonImages.length],
-              height: ResponsiveText.scaleHeight(context, 56),),
+              height: ResponsiveSizing.scaleHeight(context, 56),),
           ),
         );
       }).toList(),

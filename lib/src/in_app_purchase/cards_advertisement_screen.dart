@@ -23,7 +23,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _gap = SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10));
     return WillPopScope(
         onWillPop: () async {
           GoRouter.of(context).go('/');
@@ -49,19 +48,19 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _gap,
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
               SvgPicture.asset(
                   'assets/time_to_party_assets/banner_cards_advert.svg',
-                  width: MediaQuery.of(context).size.width < 400 ? ResponsiveText.scaleWidth(context, 260 * 130 / 212) : ResponsiveText.scaleWidth(context, 260),
-                  height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 130) : ResponsiveText.scaleHeight(context, 212),
+                width: ResponsiveSizing.responsiveWidthWithCondition(context, 260 * 130 / 212, 260, 400),
+                height: ResponsiveSizing.responsiveHeightWithCondition(context, 130, 212, 650),
               ),
              translatedText(context, 'buy_unlimited_version', 20, Palette().white, textAlign: TextAlign.center),
-              _gap,
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               SvgPicture.asset(
                   'assets/time_to_party_assets/banner_cards_advert_linear.svg',
-                  width: ResponsiveText.scaleWidth(context, 77),
-                  height: ResponsiveText.scaleHeight(context, 40)),
+                  width: ResponsiveSizing.scaleWidth(context, 77),
+                  height: ResponsiveSizing.scaleHeight(context, 40)),
               translatedText(context, 'discover_the_full_potential', 18, Palette().pink, textAlign: TextAlign.center),
           Center(child:
           Column(
@@ -76,12 +75,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         children: [
                           Image.asset(
                             'assets/time_to_party_assets/banner_baloon_icon_advert.png',
-                            height: ResponsiveText.scaleHeight(context, 29),
-                            width: ResponsiveText.scaleHeight(context, 24),
+                            height: ResponsiveSizing.scaleHeight(context, 29),
+                            width: ResponsiveSizing.scaleHeight(context, 24),
                           ),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           Icon(Icons.arrow_back, color: Colors.white),
                         ],
                       ),
@@ -96,12 +95,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         children: [
                           SvgPicture.asset(
                             'assets/time_to_party_assets/banner_random_icon_advert.svg',
-                            height: ResponsiveText.scaleHeight(context, 24),
-                            width: ResponsiveText.scaleWidth(context, 24),
+                            height: ResponsiveSizing.scaleHeight(context, 24),
+                            width: ResponsiveSizing.scaleWidth(context, 24),
                           ),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           translatedText(context, 'more_random_events', 14, Palette().white, textAlign: TextAlign.center),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           Icon(Icons.arrow_back, color: Colors.white),
                         ],
                       ),
@@ -116,12 +115,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         children: [
                           SvgPicture.asset(
                             'assets/time_to_party_assets/banner_timer_icon_advert.svg',
-                            height: ResponsiveText.scaleHeight(context, 24),
-                            width: ResponsiveText.scaleWidth(context, 24),
+                            height: ResponsiveSizing.scaleHeight(context, 24),
+                            width: ResponsiveSizing.scaleWidth(context, 24),
                           ),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white, textAlign: TextAlign.center),
-                          SizedBox(width: ResponsiveText.scaleWidth(context, 10)),
+                          ResponsiveSizing.responsiveWidthGap(context, 10),
                           Icon(Icons.arrow_back, color: Colors.white),
                         ],
                       ),
@@ -136,10 +135,10 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   minimumSize:
-                      Size(ResponsiveText.scaleWidth(context, 95), ResponsiveText.scaleHeight(context, 41)),
+                      Size(ResponsiveSizing.scaleWidth(context, 95), ResponsiveSizing.scaleHeight(context, 41)),
                   textStyle: TextStyle(
                       fontFamily: 'HindMadurai',
-                      fontSize: ResponsiveText.scaleHeight(context, 20)),
+                      fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 onPressed: () {},
                 child: translatedText(context, 'pay_once', 20, Palette().white),
@@ -181,9 +180,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               Center(child:
               SvgPicture.asset(
                   'assets/time_to_party_assets/line_instruction_screen.svg'),),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'more_fun_description', 14, Palette().menudark, textAlign: TextAlign.center),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
         Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -194,7 +193,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
                       MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -225,9 +224,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               Center(child:
               SvgPicture.asset(
                   'assets/time_to_party_assets/line_instruction_screen.svg'),),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'more_random_events_description', 14, Palette().menudark, textAlign: TextAlign.center),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
         Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -238,7 +237,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
                       MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -269,9 +268,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               Center(child:
               SvgPicture.asset(
                   'assets/time_to_party_assets/line_instruction_screen.svg'),),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'longer_and_more_interesting_gameplay_description', 14, Palette().menudark, textAlign: TextAlign.center),
-              SizedBox(height: MediaQuery.of(context).size.height < 650 ? ResponsiveText.scaleHeight(context, 18) : ResponsiveText.scaleHeight(context, 10)),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(child:
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -282,7 +281,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   ),
                   minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
                       MediaQuery.of(context).size.height * 0.05),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();

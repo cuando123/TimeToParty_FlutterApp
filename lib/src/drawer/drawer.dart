@@ -10,9 +10,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../main.dart';
+import '../app_lifecycle/translated_text.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class CustomAppDrawer extends StatefulWidget {
   const CustomAppDrawer({super.key});
@@ -24,29 +24,24 @@ class CustomAppDrawer extends StatefulWidget {
 class CustomAppDrawerState extends State<CustomAppDrawer> {
   @override
   Widget build(BuildContext context) {
-    final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
     return Stack(
       children: [
         Drawer(
           child: Container(
-            width: ResponsiveText.scaleWidth(context, 288),
+            width: ResponsiveSizing.scaleWidth(context, 288),
             decoration: BoxDecoration(gradient: Palette().drawerGradient),
             child: Scrollbar(
               thumbVisibility: false,
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  // Tu jeszcze dodać trzeba reklame kart TODO??
-                  _gap,
+                  ResponsiveSizing.responsiveHeightGap(context, 10),
                   Material(
                     child: Container(
-                      height: MediaQuery.of(context).size.height < 650
-                          ? ResponsiveText.scaleHeight(context, 40)
-                          : ResponsiveText.scaleHeight(context, 96),
-                      margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height < 650
-                              ? ResponsiveText.scaleHeight(context, 50)
-                              : ResponsiveText.scaleHeight(context, 64)),
+                      height: ResponsiveSizing.responsiveHeightWithCondition(
+                          context, 40, 96, 650),
+                      margin: ResponsiveSizing.responsiveMarginWithCondition(
+                          context, 50, 64, 650),
                       decoration: BoxDecoration(),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(4),
@@ -59,14 +54,13 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           children: [
                             SvgPicture.asset(
                               'assets/time_to_party_assets/premium_cards_icon.svg', // Podmień na ścieżkę do swojego obrazka SVG
-                              height: ResponsiveText.scaleWidth(
+                              height: ResponsiveSizing.scaleWidth(
                                   context, 43), // Dostosuj wysokość obrazka
-                              width: ResponsiveText.scaleWidth(
+                              width: ResponsiveSizing.scaleWidth(
                                   context, 43), // Dostosuj szerokość obrazka
                             ),
-                            SizedBox(
-                                width: ResponsiveText.scaleWidth(context,
-                                    10)), // Odstęp między obrazkiem a tekstem
+                            ResponsiveSizing.responsiveWidthGap(context,
+                                10), // Odstęp między obrazkiem a tekstem
                             translatedText(
                                 context, 'premium_cards', 20, Palette().white),
                           ],
@@ -74,10 +68,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       ),
                     ),
                   ),
-                  MediaQuery.of(context).size.height < 650
-                      ? SizedBox(width: ResponsiveText.scaleHeight(context, 1))
-                      : SizedBox(
-                          width: ResponsiveText.scaleHeight(context, 30)),
+                  ResponsiveSizing.responsiveWidthGapWithCondition(
+                      context, 1, 30, 650),
                   Divider(
                     color: Palette().white,
                   ),
@@ -288,7 +280,6 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -306,17 +297,17 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                 child: SvgPicture.asset(
                     'assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
               translatedText(context, 'rate_this_app', 16, Palette().menudark,
                   textAlign: TextAlign.center),
               // textAlign: TextAlign.center,
-              _gap,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
                 child: SvgPicture.asset(
                   'assets/time_to_party_assets/5_stars_rate.svg',
                 ),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -329,7 +320,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         MediaQuery.of(context).size.height * 0.05),
                     textStyle: TextStyle(
                         fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveText.scaleHeight(context, 20)),
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     final String url =
@@ -364,7 +355,6 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final _gap = SizedBox(height: ResponsiveText.scaleHeight(context, 10));
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -381,11 +371,11 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                 child: SvgPicture.asset(
                     'assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
-              _gap,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
               translatedText(
                   context, 'redirected_to_the_website', 16, Palette().menudark,
                   textAlign: TextAlign.center),
-              _gap,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -398,7 +388,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         MediaQuery.of(context).size.height * 0.05),
                     textStyle: TextStyle(
                         fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveText.scaleHeight(context, 20)),
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.pop(context);
@@ -509,7 +499,7 @@ class GlobalLoading {
                 child: SvgPicture.asset(
                     'assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
-              SizedBox(height: ResponsiveText.scaleHeight(context, 10)),
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -522,7 +512,7 @@ class GlobalLoading {
                         MediaQuery.of(context).size.height * 0.05),
                     textStyle: TextStyle(
                         fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveText.scaleHeight(context, 20)),
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();

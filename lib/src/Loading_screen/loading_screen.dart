@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui';
 
+import '../app_lifecycle/translated_text.dart';
 import '../play_session/play_gameboard_main.dart';
 import '../style/palette.dart';
 
@@ -53,7 +54,7 @@ class LoaderWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min, // Zmieniamy na 'min'
           children: [
             LogoWidget(),
-            SizedBox(height: 20),
+            ResponsiveSizing.responsiveHeightGap(context, 20),
             CircularProgressIndicator(color: Palette().pink),
           ],
         ),

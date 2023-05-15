@@ -33,7 +33,7 @@ class PlayGameboard extends StatelessWidget {
             onTap: () async {
               final settings = Provider.of<SettingsController>(context, listen: false);
               if (settings.vibrationsEnabled.value && await Vibration.hasVibrator() == true) {
-                Vibration.vibrate(duration: 1000); // 1000ms = 1s
+                await Vibration.vibrate(duration: 1000); // 1000ms = 1s
               }
             },
           );

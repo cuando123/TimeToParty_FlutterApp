@@ -66,13 +66,13 @@ class LogoWidget_notitle extends StatelessWidget {
       padding: EdgeInsets.only(
           top: MediaQuery.of(context).size.height < 650
               ? 1
-              : ResponsiveText.scaleHeight(context, 20)),
+              : ResponsiveSizing.scaleHeight(context, 20)),
       child: Column(
         children: [
           SvgPicture.asset(
             'assets/time_to_party_assets/all_stars_title.svg',
-            width: ResponsiveText.scaleWidth(context, 261),
-            height: ResponsiveText.scaleHeight(context, 126),
+            width: ResponsiveSizing.scaleWidth(context, 261),
+            height: ResponsiveSizing.scaleHeight(context, 126),
           ),
         ],
       ),
@@ -91,20 +91,20 @@ class LogoWidget extends StatelessWidget {
       padding: EdgeInsets.only(
           top: MediaQuery.of(context).size.height < 650
               ? 1
-              : ResponsiveText.scaleHeight(context, 20)),
+              : ResponsiveSizing.scaleHeight(context, 20)),
       child: Column(
         children: [
           SizedBox(height: 30),
           SvgPicture.asset(
             'assets/time_to_party_assets/all_stars_title.svg',
-            width: ResponsiveText.scaleWidth(context, 300),
+            width: ResponsiveSizing.scaleWidth(context, 300),
             //height: ResponsiveText.scaleHeight(context, 146),
           ),
           SizedBox(height: 10),
           SvgPicture.asset(
             'assets/time_to_party_assets/time_to_party_logo.svg',
-            width: ResponsiveText.scaleWidth(context, 257),
-            height: ResponsiveText.scaleHeight(context, 134),
+            width: ResponsiveSizing.scaleWidth(context, 257),
+            height: ResponsiveSizing.scaleHeight(context, 134),
           ),
           SizedBox(height: 10),
         ],

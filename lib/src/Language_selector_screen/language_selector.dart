@@ -42,7 +42,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         body: Column(
           children: [
             Container(
-              height: ResponsiveText.scaleHeight(context, 155), // Określ wysokość wg własnego uznania
+              height: ResponsiveSizing.scaleHeight(context, 155),
               child: LogoWidget_notitle(),
             ),
             Expanded(
@@ -85,7 +85,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             style: TextStyle(
               color: Palette().bluegrey,
               fontFamily: 'HindMadurai',
-              fontSize: ResponsiveText.scaleHeight(context, 16),
+              fontSize: ResponsiveSizing.scaleHeight(context, 16),
             )),
         style: TextButton.styleFrom(
           backgroundColor: Color(0xFF434347),

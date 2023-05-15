@@ -46,7 +46,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const _gap = SizedBox(height: 10);
     final settings = context.watch<SettingsController>();
     final settingsController = context.watch<SettingsController>();
     return WillPopScope(
@@ -88,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOn: Icons.notifications,
               iconOff: Icons.notifications_off,
             ),
-            _gap,
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settingsController.muted,
               onToggle: settingsController.toggleMuted,
@@ -96,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOn: Icons.volume_up,
               iconOff: Icons.volume_off,
             ),
-            _gap,
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settings.soundsOn,
               onToggle: settingsController.toggleSoundsOn,
@@ -104,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOn: Icons.graphic_eq,
               iconOff: Icons.volume_off,
             ),
-            _gap,
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settings.musicOn,
               onToggle: settingsController.toggleMusicOn,
@@ -112,7 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               iconOn: Icons.music_note,
               iconOff: Icons.music_off,
             ),
-            _gap,
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settingsController.vibrationsEnabled,
               onToggle: settingsController.toggleVibrations,
