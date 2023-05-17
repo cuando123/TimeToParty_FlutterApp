@@ -143,7 +143,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                               width: ResponsiveSizing.scaleHeight(context, 50)),
                           ResponsiveSizing.responsiveHeightGap(context, 6),
                           SvgPicture.asset(
-                              'assets/time_to_party_assets/field_star_blue.svg',
+                              'assets/time_to_party_assets/field_start.svg',
                               width: ResponsiveSizing.scaleHeight(
                                   context, 50)), // replace with actual svg file
                         ],

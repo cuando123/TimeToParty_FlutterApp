@@ -39,13 +39,18 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             scaffoldKey.currentState?.openDrawer();
           },
         ),
-        body: Column(
+        body:
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+          10.0, 10.0, 10.0, 2.0),
+    child: Column(
           children: [
             Container(
               height: ResponsiveSizing.scaleHeight(context, 155),
               child: LogoWidget_notitle(),
             ),
-            Text('Uwaga, zmiana języka przeniesie Cię do głównego ekranu'),
+            translatedText(context, 'language_change_notification', 14, Palette().white, textAlign: TextAlign.center),
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -66,7 +71,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                 ],
               ),
             ),
-          ],
+          ],),
         ),
       ),),
     );
