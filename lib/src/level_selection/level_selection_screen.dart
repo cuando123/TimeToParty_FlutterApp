@@ -49,12 +49,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   late List<Color> teamColors;
   int numberOfTeams = 2;
   List<Color> availableColors = [
-    Colors.yellow,
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.purple,
-    Colors.orange,
+    Color(0xFF00A2AC),
+    Color(0xFF01B210),
+    Color(0xFF9400AC),
+    Color(0xFFF50000),
+    Color(0xFFFFD335),
+    Color(0xFFFFFFFF)
   ];
 
   void _toggleCelebration() {
