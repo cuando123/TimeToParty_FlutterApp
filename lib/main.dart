@@ -133,6 +133,9 @@ void guardedMain() async {
             provider.initializeTeams(context, 2);
             return provider;
           },),
+          ChangeNotifierProvider<LoadingStatus>(
+            create: (_) => LoadingStatus(),
+          ),
         ],
         child: MyApp(
           settingsPersistence: LocalStorageSettingsPersistence(),
@@ -145,7 +148,16 @@ void guardedMain() async {
     );
   });
 }
+class LoadingStatus extends ChangeNotifier {
+  bool _isLoading = false;
 
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+}
 Logger _log = Logger('main.dart');
 
 class MyApp extends StatelessWidget {

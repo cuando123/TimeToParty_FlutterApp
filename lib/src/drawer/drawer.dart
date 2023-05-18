@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -422,19 +423,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
 }
 
 class GlobalLoading {
-  bool _isLoading = false;
-
-  bool get isLoading => _isLoading;
-
-  set isLoading(bool value) {
-    _isLoading = value;
-    onLoadingStatusChanged?.call(value);
-  }
-
-  void Function(bool isLoading)? onLoadingStatusChanged;
-
   Future<void> privacy_policy_function(BuildContext context) async {
-    isLoading = true;
+    Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
     final url =
         'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
     final fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
@@ -447,11 +437,11 @@ class GlobalLoading {
       _connectionProblemDialog(context);
     }
 
-    isLoading = false;
+    Provider.of<LoadingStatus>(context, listen: false).isLoading = false;
   }
 
   Future<void> eula_function(BuildContext context) async {
-    isLoading = true;
+    Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
 
     final url =
         'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
@@ -463,7 +453,7 @@ class GlobalLoading {
       _connectionProblemDialog(context);
     }
 
-    isLoading = false;
+    Provider.of<LoadingStatus>(context, listen: false).isLoading = false;
   }
 
   Future<io.File> downloadAndCachePdf(String url, String fileName) async {
@@ -556,33 +546,22 @@ class GlobalLoading {
   }
 }
 
-class GlobalLoadingIndicator extends StatefulWidget {
-  @override
-  _GlobalLoadingIndicatorState createState() => _GlobalLoadingIndicatorState();
-}
-
-class _GlobalLoadingIndicatorState extends State<GlobalLoadingIndicator> {
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    globalLoading.onLoadingStatusChanged = (bool value) {
-      setState(() {
-        _isLoading = value;
-      });
-    };
-  }
-
+class GlobalLoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Container(
+    return Consumer<LoadingStatus>(
+      builder: (context, loadingStatus, child) {
+        if (loadingStatus.isLoading) {
+          return Container(
             color: Colors.black.withOpacity(0.5),
             child: Center(
               child: CircularProgressIndicator(color: Palette().pink),
             ),
-          )
-        : SizedBox.shrink();
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
   }
 }
