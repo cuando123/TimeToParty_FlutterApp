@@ -21,14 +21,17 @@ class PlayGameboard extends StatefulWidget {
 class _PlayGameboardState extends State<PlayGameboard>
     with SingleTickerProviderStateMixin {
   late StreamController<int> _selectedController =
-      StreamController<int>.broadcast();
+  StreamController<int>.broadcast();
   late AnimationController _animationController;
   late Animation<double> _buttonAnimation;
   bool _buttonClicked = false;
   List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
   late StreamSubscription<int> _subscription;
   int selectedValue = 0;
-
+  late List<Offset> flagPositions;
+  int currentFlagIndex = 0;
+  late List<int> flagSteps;
+  late List<int> executedSteps;
 
   @override
   void initState() {
@@ -39,23 +42,34 @@ class _PlayGameboardState extends State<PlayGameboard>
     );
     _animationController.stop();
     _selectedController = StreamController<int>.broadcast();
+    flagPositions =
+        List.generate(widget.teamColors.length, (index) => Offset(0, 0));
+    flagSteps = List.filled(widget.teamColors.length, 0);
+    executedSteps = List.filled(widget.teamColors.length, 0);
     _subscription = _selectedController.stream.listen((selectedIndex) {
       setState(() {
-        selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
+        selectedValue = _wheelValues[selectedIndex] +
+            1; // Zaktualizuj wartość selectedValue
       });
       print(
           'Wylosowana wartość: $selectedValue, Wylosowany index: $selectedIndex');
     });
   }
+
   bool isAnimationStarted = false;
 
   @override
   Widget build(BuildContext context) {
+    print('scaleHeight: ${ResponsiveSizing.scaleHeight(context, 50).toString()}');
+    print('height gap: ${ResponsiveSizing.responsiveHeightGap(context, 6).toString()}');
     _buttonAnimation = Tween<double>(
-            begin: 0,
-            end: MediaQuery.of(context).size.width * 0.5) // Change here
+        begin: 0,
+        end: MediaQuery
+            .of(context)
+            .size
+            .width * 0.5) // Change here
         .animate(CurvedAnimation(
-            parent: _animationController, curve: Curves.easeInOut));
+        parent: _animationController, curve: Curves.easeInOut));
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -115,9 +129,14 @@ class _PlayGameboardState extends State<PlayGameboard>
                           Stack(
                             clipBehavior: Clip.none,
                             children: [
-                              SvgPicture.asset('assets/time_to_party_assets/field_start.svg',
-                                  width: ResponsiveSizing.scaleHeight(context, 50)),
-                              ...widget.teamColors.asMap().entries.expand((entry) {
+                              SvgPicture.asset(
+                                  'assets/time_to_party_assets/field_start.svg',
+                                  width: ResponsiveSizing.scaleHeight(
+                                      context, 50)),
+                              ...widget.teamColors
+                                  .asMap()
+                                  .entries
+                                  .expand((entry) {
                                 int index = entry.key;
                                 Color color = entry.value;
                                 final flagCount = widget.teamColors.length;
@@ -134,10 +153,17 @@ class _PlayGameboardState extends State<PlayGameboard>
                                 // Zwracamy tylko te flagi, które mają kolor pasujący do kolorów z teamColors
                                 return flagAssets.where((flag) {
                                   // Dodajemy "FF" na początku kodu koloru, aby dodać kanał alfa
-                                  String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(4);
+                                  String flagColorHex = 'FF' +
+                                      flag
+                                          .split('/')
+                                          .last
+                                          .split('.')
+                                          .first
+                                          .substring(4);
 
                                   // Konwersja na Color
-                                  Color flagColor = Color(int.parse(flagColorHex, radix: 16));
+                                  Color flagColor =
+                                  Color(int.parse(flagColorHex, radix: 16));
 
                                   // Porównujemy wartości RGB
                                   if (color.value == flagColor.value) {
@@ -146,34 +172,34 @@ class _PlayGameboardState extends State<PlayGameboard>
                                     return false;
                                   }
                                 }).map((flag) {
-                                  return Positioned(
-                                    // Jeżeli index >= 3, przesuwamy flagę do drugiego rzędu
-                                    top: flagCount == 2
-                                        ? 10.0 // Dwie flagi - po środku
-                                        : flagCount < 4
-                                        ? 0.0 // Mniej niż 4 flagi - po środku
-                                        : index >= 3
-                                        ? 25.0 // Więcej niż 4 flagi - drugi rząd
-                                        : -5.0, // Więcej niż 4 flagi - pierwszy rząd
-                                    left: flagCount == 2
-                                        ? index * 25.0 + 3
-                                        : flagCount < 4
-                                        ? index * 25.0 - 7.0 // Mniej niż 4 flagi - obecna wartość
-                                        : index >= 3
-                                        ? (index - 3) * 25.0 - 7.0 // Więcej niż 4 flagi - drugi rząd
-                                        : index * 25.0 - 7.0,   // Pozycja zależna od indeksu
+                                  return AnimatedPositioned(
+                                    duration: Duration(seconds: 1),
+                                    // Czas trwania animacji
+                                    top: flagPositions[index].dy,
+                                    left: flagPositions[index].dx,
                                     child: Transform.rotate(
-                                      angle: (index % 3 == 0 ? -10 : index % 3 == 2 ? 15 : 0) * (3.14 / 180),
-                                  child: Transform(
-                                  transform:  Matrix4.identity()..scale(index == 0 || index == 3 ? -1.0 : 1.0, 1.0), // Odbicie w poziomie tylko dla flag po lewej
-                                  alignment: Alignment.center,
-                                  child:
-                                      SvgPicture.asset(
-                                        flag,
-                                        width: 30,  // Szerokość flagi
-                                        height: 30,  // Wysokość flagi
+                                      angle: (index % 3 == 0
+                                          ? -10
+                                          : index % 3 == 2
+                                          ? 15
+                                          : 0) *
+                                          (3.14 / 180),
+                                      child: Transform(
+                                        transform: Matrix4.identity()
+                                          ..scale(
+                                              index == 0 || index == 3
+                                                  ? -1.0
+                                                  : 1.0,
+                                              1.0),
+                                        // Odbicie w poziomie tylko dla flag po lewej
+                                        alignment: Alignment.center,
+                                        child: SvgPicture.asset(
+                                          flag,
+                                          width: 30, // Szerokość flagi
+                                          height: 30, // Wysokość flagi
+                                        ),
                                       ),
-                                    ),),
+                                    ),
                                   );
                                 });
                               }).toList(),
@@ -188,16 +214,18 @@ class _PlayGameboardState extends State<PlayGameboard>
                       child: Column(
                         children: List.generate(
                           9,
-                          (index) => Column(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/time_to_party_assets/field_sheet.svg',
-                                width: 50,
-                                height: 50,
+                              (index) =>
+                              Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/time_to_party_assets/field_sheet.svg',
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                  ResponsiveSizing.responsiveHeightGap(
+                                      context, 6),
+                                ],
                               ),
-                              ResponsiveSizing.responsiveHeightGap(context, 6),
-                            ],
-                          ),
                         ),
                       ),
                     ),
@@ -253,13 +281,17 @@ class _PlayGameboardState extends State<PlayGameboard>
                       child: ElevatedButton(
                         onPressed: () {
                           _animationController.repeat(reverse: true);
-                          final randomIndex =
-                              Fortune.randomInt(0, _wheelValues.length);
+                          final randomIndex = Fortune.randomInt(0, _wheelValues.length);
                           _selectedController.add(randomIndex);
                           setState(() {
                             _buttonClicked = true;
                             _animationController.stop();
                             isAnimationStarted = true;
+                            // Aktualizacja selectedValue przed obliczeniem nowej pozycji flagi
+                            selectedValue = _wheelValues[randomIndex] + 1;
+                            Offset newPosition = calculateNewPosition(selectedValue, currentFlagIndex);
+                            flagPositions[currentFlagIndex] = newPosition;
+                            currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
                           });
                         },
                         child: Text('Zakręć kołem'),
@@ -268,8 +300,14 @@ class _PlayGameboardState extends State<PlayGameboard>
                     Padding(
                       padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width * 0.45,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.45,
                         child: GestureDetector(
                           onTap: () {
                             if (isAnimationStarted) {
@@ -312,7 +350,6 @@ class _PlayGameboardState extends State<PlayGameboard>
                           ),
                         ),
                       ),
-
                     ),
                     Text('Wylosowana wartość: $selectedValue'),
                   ],
@@ -331,5 +368,33 @@ class _PlayGameboardState extends State<PlayGameboard>
     _animationController.dispose();
     _selectedController.close();
     super.dispose();
+  }
+
+
+  Offset calculateNewPosition(int steps, int flagIndex) {
+    flagSteps[flagIndex] += steps;
+    double stepSize = 54.54 + 6.5;
+    int totalSteps = flagSteps[flagIndex];
+    Offset newPosition;
+
+    if (totalSteps <= 8) {
+      // 8 kroków do góry
+      newPosition = Offset(0, -totalSteps * stepSize);
+    } else if (totalSteps <= 13) {
+      // 5 kroków w prawo
+      newPosition = Offset((totalSteps - 8) * stepSize, -8 * stepSize);
+    } else if (totalSteps <= 21) {
+      // 8 kroków w dół
+      newPosition = Offset(5 * stepSize, -(21 - totalSteps) * stepSize);
+    } else if (totalSteps <= 26) {
+      // 5 kroków w lewo
+      newPosition = Offset((26 - totalSteps) * stepSize, 0);
+    } else {
+      // Miejsce mety
+      newPosition = Offset(0, 0);
+      flagSteps[flagIndex] = 0;
+    }
+
+    return newPosition;
   }
 }
