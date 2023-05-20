@@ -56,7 +56,10 @@ class Palette {
   Color get white => const Color(0xFFE5E5E5);
   Color get bluegrey => const Color(0xFFB0B5E9);
   Color get menudark => const Color(0xFF221933);
-  Color get nothing => const Color(0XFF391D50);
+  Color get nothing => const Color(0xFF391D50);
+  Color get borderSpinningWheel => const Color(0xFF3A3114);
+  Color get grey => const Color(0xFF5A5C60);
+  Color get darkGrey => const Color(0xFF3D3E41);
 }
 
 class LogoWidget_notitle extends StatelessWidget {

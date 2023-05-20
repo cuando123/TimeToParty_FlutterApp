@@ -21,10 +21,9 @@ class PlayGameboard extends StatefulWidget {
 class _PlayGameboardState extends State<PlayGameboard>
     with SingleTickerProviderStateMixin {
   late StreamController<int> _selectedController =
-  StreamController<int>.broadcast();
+      StreamController<int>.broadcast();
   late AnimationController _animationController;
   late Animation<double> _buttonAnimation;
-  bool _buttonClicked = false;
   List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
   late StreamSubscription<int> _subscription;
   int selectedValue = 0;
@@ -56,27 +55,41 @@ class _PlayGameboardState extends State<PlayGameboard>
     });
   }
 
-  bool isAnimationStarted = false;
+  String getCurrentTeamColor() {
+    return widget.teamNames[currentFlagIndex].toString();
+  }
+
+  void changeTeam() {
+    setState(() {
+      currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print('scaleHeight: ${ResponsiveSizing.scaleHeight(context, 50).toString()}');
-    print('height gap: ${ResponsiveSizing.responsiveHeightGap(context, 6).toString()}');
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    double totalContentWidth = ResponsiveSizing.scaleWidth(
+        context, 332.5); // Przeskalowana szerokość treści
+    double padding = (screenWidth - totalContentWidth) / 2;
+    print(
+        'scaleHeight: ${ResponsiveSizing.scaleHeight(context, 50).toString()}');
+    print(
+        'height gap: ${ResponsiveSizing.responsiveHeightGap(context, 6).toString()}');
+    print(
+        'width gap: ${ResponsiveSizing.responsiveWidthGap(context, 6).toString()}');
     _buttonAnimation = Tween<double>(
-        begin: 0,
-        end: MediaQuery
-            .of(context)
-            .size
-            .width * 0.5) // Change here
+            begin: 0,
+            end: MediaQuery.of(context).size.width * 0.5) // Change here
         .animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.easeInOut));
+            parent: _animationController, curve: Curves.easeInOut));
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Next Screen'),
+          title: Text(getCurrentTeamColor()),
         ),
         body: Column(
           children: [
@@ -84,11 +97,74 @@ class _PlayGameboardState extends State<PlayGameboard>
               flex: 3,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
-                    15.0, 10.0, 15.0, 2.0), // left, top, right, bottom
+                    padding, 10.0, padding, 2.0), // left, top, right, bottom
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.center,
                   children: [
+                    Positioned(
+                      left: 65,
+                      top: 65,
+                      child: SvgPicture.asset(
+                          'assets/time_to_party_assets/card_microphone.svg',
+                          width: ResponsiveSizing.scaleHeight(context, 93)),
+                    ),
+                    Positioned(
+                      right: 65,
+                      top: 65,
+                      child: SvgPicture.asset(
+                          'assets/time_to_party_assets/card_rymes.svg',
+                          width: ResponsiveSizing.scaleHeight(context, 93)),
+                    ),
+                    Positioned(
+                      left: 65,
+                      bottom: 125,
+                      child: SvgPicture.asset(
+                          'assets/time_to_party_assets/card_letters.svg',
+                          width: ResponsiveSizing.scaleHeight(context, 93)),
+                    ),
+                    Positioned(
+                      right: 65,
+                      bottom: 125,
+                      child: SvgPicture.asset(
+                          'assets/time_to_party_assets/card_pantomime.svg',
+                          width: ResponsiveSizing.scaleHeight(context, 93)),
+                    ),
+                    Positioned(
+                      bottom: 210,
+                      child: SvgPicture.asset(
+                          'assets/time_to_party_assets/card_arrows.svg',
+                          width: ResponsiveSizing.scaleHeight(context, 105)),
+                    ),
+                    Positioned(
+                      bottom: 60,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_blue_dark.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 35)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_green.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 35)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_blue_light.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 35)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_yellow.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 35)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_pink.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 35)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                        ],
+                      ),
+                    ),
                     Positioned(
                       left: 0,
                       top: 0,
@@ -123,88 +199,12 @@ class _PlayGameboardState extends State<PlayGameboard>
                               width: ResponsiveSizing.scaleHeight(context, 50)),
                           ResponsiveSizing.responsiveHeightGap(context, 6),
                           SvgPicture.asset(
-                              'assets/time_to_party_assets/field_star_blue.svg',
+                              'assets/time_to_party_assets/field_star_blue_dark.svg',
                               width: ResponsiveSizing.scaleHeight(context, 50)),
                           ResponsiveSizing.responsiveHeightGap(context, 6),
-                          Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/time_to_party_assets/field_start.svg',
-                                  width: ResponsiveSizing.scaleHeight(
-                                      context, 50)),
-                              ...widget.teamColors
-                                  .asMap()
-                                  .entries
-                                  .expand((entry) {
-                                int index = entry.key;
-                                Color color = entry.value;
-                                final flagCount = widget.teamColors.length;
-                                // Lista dostępnych flag
-                                List<String> flagAssets = [
-                                  'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
-                                  'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
-                                  'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
-                                  'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
-                                  'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
-                                  'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
-                                ];
-
-                                // Zwracamy tylko te flagi, które mają kolor pasujący do kolorów z teamColors
-                                return flagAssets.where((flag) {
-                                  // Dodajemy "FF" na początku kodu koloru, aby dodać kanał alfa
-                                  String flagColorHex = 'FF' +
-                                      flag
-                                          .split('/')
-                                          .last
-                                          .split('.')
-                                          .first
-                                          .substring(4);
-
-                                  // Konwersja na Color
-                                  Color flagColor =
-                                  Color(int.parse(flagColorHex, radix: 16));
-
-                                  // Porównujemy wartości RGB
-                                  if (color.value == flagColor.value) {
-                                    return true;
-                                  } else {
-                                    return false;
-                                  }
-                                }).map((flag) {
-                                  return AnimatedPositioned(
-                                    duration: Duration(seconds: 1),
-                                    // Czas trwania animacji
-                                    top: flagPositions[index].dy,
-                                    left: flagPositions[index].dx,
-                                    child: Transform.rotate(
-                                      angle: (index % 3 == 0
-                                          ? -10
-                                          : index % 3 == 2
-                                          ? 15
-                                          : 0) *
-                                          (3.14 / 180),
-                                      child: Transform(
-                                        transform: Matrix4.identity()
-                                          ..scale(
-                                              index == 0 || index == 3
-                                                  ? -1.0
-                                                  : 1.0,
-                                              1.0),
-                                        // Odbicie w poziomie tylko dla flag po lewej
-                                        alignment: Alignment.center,
-                                        child: SvgPicture.asset(
-                                          flag,
-                                          width: 30, // Szerokość flagi
-                                          height: 30, // Wysokość flagi
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
-                              }).toList(),
-                            ],
-                          )
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_start.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
                         ],
                       ),
                     ),
@@ -212,58 +212,164 @@ class _PlayGameboardState extends State<PlayGameboard>
                       right: 0,
                       top: 0,
                       child: Column(
-                        children: List.generate(
-                          9,
-                              (index) =>
-                              Column(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/time_to_party_assets/field_sheet.svg',
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  ResponsiveSizing.responsiveHeightGap(
-                                      context, 6),
-                                ],
-                              ),
-                        ),
+                        children: [
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_star_pink.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_microphone.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_arrows.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_pantomime.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_star_yellow.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_letters.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_pantomime.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_arrows.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_sheet.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveHeightGap(context, 6),
+                        ],
                       ),
                     ),
                     Positioned(
                       top: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(4, (index) {
-                          return Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/time_to_party_assets/field_sheet.svg',
-                                width: 50,
-                                height: 50,
-                              ),
-                              ResponsiveSizing.responsiveWidthGap(context, 6),
-                            ],
-                          );
-                        }),
+                        children: [
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_star_blue_light.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_arrows.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_microphone.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_sheet.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                        ],
                       ),
                     ),
                     Positioned(
                       bottom: 0, // adjust this value as needed
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(4, (index) {
-                          return Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/time_to_party_assets/field_sheet.svg',
-                                width: 50,
-                                height: 50,
-                              ),
-                              ResponsiveSizing.responsiveWidthGap(context, 6),
-                            ],
-                          );
-                        }),
+                        children: [
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_star_green.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_letters.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_pantomime.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                          ResponsiveSizing.responsiveWidthGap(context, 6),
+                          SvgPicture.asset(
+                              'assets/time_to_party_assets/field_microphone.svg',
+                              width: ResponsiveSizing.scaleHeight(context, 50)),
+                        ],
                       ),
+                    ),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ...widget.teamColors.asMap().entries.expand((entry) {
+                          int index = entry.key;
+                          Color color = entry.value;
+                          // Lista dostępnych flag
+                          List<String> flagAssets = [
+                            'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
+                            'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
+                            'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
+                            'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
+                            'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
+                            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
+                          ];
+                          // Zwracamy tylko te flagi, które mają kolor pasujący do kolorów z teamColors
+                          return flagAssets.where((flag) {
+                            // Dodajemy "FF" na początku kodu koloru, aby dodać kanał alfa
+                            String flagColorHex = 'FF' +
+                                flag
+                                    .split('/')
+                                    .last
+                                    .split('.')
+                                    .first
+                                    .substring(4);
+
+                            // Konwersja na Color
+                            Color flagColor =
+                                Color(int.parse(flagColorHex, radix: 16));
+
+                            // Porównujemy wartości RGB
+                            if (color.value == flagColor.value) {
+                              return true;
+                            } else {
+                              return false;
+                            }
+                          }).map((flag) {
+                            return AnimatedPositioned(
+                              duration: Duration(seconds: 1),
+                              // Czas trwania animacji
+                              bottom:
+                                  flagPositions[index].dy + (index ~/ 3) * 35,
+                              left: flagPositions[index].dx +
+                                  (index % 3) * 25 -
+                                  8,
+                              child: Transform.rotate(
+                                angle: (index % 3 == 0
+                                        ? -10
+                                        : index % 3 == 2
+                                            ? 15
+                                            : 0) *
+                                    (3.14 / 180),
+                                child: Transform(
+                                  transform: Matrix4.identity()
+                                    ..scale(
+                                        index == 0 || index == 3 ? -1.0 : 1.0,
+                                        1.0),
+                                  // Odbicie w poziomie tylko dla flag po lewej
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.asset(
+                                    flag,
+                                    width: 30, // Szerokość flagi
+                                    height: 30, // Wysokość flagi
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                        }).toList(),
+                      ],
                     ),
                   ],
                 ),
@@ -277,76 +383,138 @@ class _PlayGameboardState extends State<PlayGameboard>
                   children: [
                     Positioned(
                       top: 10,
-                      left: _buttonClicked ? 0 : _buttonAnimation.value,
-                      child: ElevatedButton(
+                      left: 100,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Palette().pink, // color
+                          foregroundColor: Palette().white, // textColor
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          minimumSize: Size(
+                              ResponsiveSizing.scaleWidth(context, 220),
+                              ResponsiveSizing.responsiveHeightWithCondition(
+                                  context, 51, 45, 650)),
+                          //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                        ),
+                        icon: Icon(Icons.play_circle_rounded,
+                            size: ResponsiveSizing.scaleHeight(context, 32)),
                         onPressed: () {
                           _animationController.repeat(reverse: true);
-                          final randomIndex = Fortune.randomInt(0, _wheelValues.length);
+                          final randomIndex =
+                              Fortune.randomInt(0, _wheelValues.length);
                           _selectedController.add(randomIndex);
-                          setState(() {
-                            _buttonClicked = true;
-                            _animationController.stop();
-                            isAnimationStarted = true;
-                            // Aktualizacja selectedValue przed obliczeniem nowej pozycji flagi
-                            selectedValue = _wheelValues[randomIndex] + 1;
-                            Offset newPosition = calculateNewPosition(selectedValue, currentFlagIndex);
-                            flagPositions[currentFlagIndex] = newPosition;
-                            currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
+                          changeTeam();
+                          Future.delayed(Duration(seconds: 5), () {
+                            setState(() {
+                              selectedValue = _wheelValues[randomIndex] + 1;
+                              Offset newPosition = calculateNewPosition(
+                                  selectedValue, currentFlagIndex);
+                              flagPositions[currentFlagIndex] = newPosition;
+                              currentFlagIndex = (currentFlagIndex + 1) %
+                                  widget.teamColors.length;
+
+                            });
                           });
                         },
-                        child: Text('Zakręć kołem'),
+                        label: Text('Zakręć kołem'),
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
                       child: Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.45,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (isAnimationStarted) {
-                              _animationController.repeat(reverse: true);
-                            }
-                          },
-                          child: FortuneWheel(
-                            selected: _selectedController.stream,
-                            indicators: const <FortuneIndicator>[
-                              FortuneIndicator(
-                                alignment: Alignment.topCenter,
-                                child: TriangleIndicator(
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                            items: [
-                              FortuneItem(
-                                child: Transform.rotate(
-                                  angle: 90 * 3.14 / 180,
-                                  child: Text(
-                                    '1',
-                                    style: TextStyle(
-                                        fontFamily: 'HindMadurai',
-                                        fontSize: 20),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width * 0.45,
+                        child: Transform.translate(
+                          offset: Offset(
+                              -MediaQuery.of(context).size.width * 0.25, 0.0),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: FortuneWheel(
+                              selected: _selectedController.stream,
+                              indicators: <FortuneIndicator>[
+                                FortuneIndicator(
+                                  alignment: Alignment.topCenter,
+                                  child: Stack(
+                                    children: [
+                                      Transform.translate(
+                                        offset: Offset(0, -10),
+                                        child: Transform.scale(
+                                          scaleX: 0.75,
+                                          scaleY:
+                                              0.65, // zmniejsza wielkość o połowę
+                                          child: TriangleIndicator(
+                                            color:
+                                                Palette().borderSpinningWheel,
+                                          ),
+                                        ),
+                                      ),
+                                      Transform.translate(
+                                        offset: Offset(0, -10),
+                                        child: Transform.scale(
+                                          scaleX: 0.6,
+                                          scaleY:
+                                              0.5, // zmniejsza wielkość o połowę
+                                          child: TriangleIndicator(
+                                            color: Color(0xFFFFC344),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                style: FortuneItemStyle(
-                                  color: Colors.red,
-                                  borderColor: Colors.green,
-                                  borderWidth: 3,
+                              ],
+                              items: [
+                                FortuneItem(
+                                  child: strokedText('1'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().pink,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
                                 ),
-                              ),
-                              FortuneItem(child: Text('2')),
-                              FortuneItem(child: Text('3')),
-                              FortuneItem(child: Text('1')),
-                              FortuneItem(child: Text('2')),
-                              FortuneItem(child: Text('3')),
-                            ],
+                                FortuneItem(
+                                  child: strokedText('2'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().bluegrey,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
+                                ),
+                                FortuneItem(
+                                  child: strokedText('3'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().backgroundPlaySession,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
+                                ),
+                                FortuneItem(
+                                  child: strokedText('1'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().grey,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
+                                ),
+                                FortuneItem(
+                                  child: strokedText('2'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().pink,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
+                                ),
+                                FortuneItem(
+                                  child: strokedText('3'),
+                                  style: FortuneItemStyle(
+                                    color: Palette().darkGrey,
+                                    borderColor: Palette().borderSpinningWheel,
+                                    borderWidth: 3,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -370,6 +538,36 @@ class _PlayGameboardState extends State<PlayGameboard>
     super.dispose();
   }
 
+  Widget strokedText(String text) {
+    return Transform.rotate(
+      angle: 90 * 3.14 / 180,
+      child: Stack(
+        children: <Widget>[
+          // Cieniowany tekst
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 40,
+              fontFamily: 'Adamina',
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 3
+                ..color = Palette().borderSpinningWheel,
+            ),
+          ),
+          // Tekst
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 40,
+              fontFamily: 'Adamina',
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Offset calculateNewPosition(int steps, int flagIndex) {
     flagSteps[flagIndex] += steps;
@@ -378,14 +576,15 @@ class _PlayGameboardState extends State<PlayGameboard>
     Offset newPosition;
 
     if (totalSteps <= 8) {
-      // 8 kroków do góry
-      newPosition = Offset(0, -totalSteps * stepSize);
+      // 8 kroków do góry - tutaj zmieniamy znak
+      newPosition = Offset(0, totalSteps * stepSize); // +, nie -
     } else if (totalSteps <= 13) {
       // 5 kroków w prawo
-      newPosition = Offset((totalSteps - 8) * stepSize, -8 * stepSize);
+      newPosition =
+          Offset((totalSteps - 8) * stepSize, 8 * stepSize); // +, nie -
     } else if (totalSteps <= 21) {
-      // 8 kroków w dół
-      newPosition = Offset(5 * stepSize, -(21 - totalSteps) * stepSize);
+      // 8 kroków w dół - tutaj zostawiamy znak minus, ponieważ chcemy iść w dół
+      newPosition = Offset(5 * stepSize, (21 - totalSteps) * stepSize);
     } else if (totalSteps <= 26) {
       // 5 kroków w lewo
       newPosition = Offset((26 - totalSteps) * stepSize, 0);

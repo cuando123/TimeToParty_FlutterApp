@@ -81,7 +81,7 @@ class InstructionDialog extends StatelessWidget {
                                 context, 'taboo_words', 24, Palette().pink),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             SvgPicture.asset(
-                                'assets/time_to_party_assets/field_star_blue.svg'),
+                                'assets/time_to_party_assets/field_star_blue_dark.svg'),
                           ],
                         ),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
