@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,23 +30,10 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   int currentFlagIndex = 0;
   bool isAnimating = false;
   StreamController<int> selected = StreamController<int>();
-  List<String> upRowFieldsSvg = [];
-  List<String> downRowFieldsSvg = [];
-  List<String> leftColumnFieldsSvg = [];
-  List<String> rightColumnFieldsSvg = [];
-  List<String> allFieldsSvg = [];
-  List<String> newFieldsList = [];
+
   @override
   void initState() {
     super.initState();
-    allFieldsSvg = _getShuffledFields();
-    upRowFieldsSvg = allFieldsSvg.sublist(0, 4);
-    downRowFieldsSvg = allFieldsSvg.sublist(4, 8);
-    leftColumnFieldsSvg = allFieldsSvg.sublist(8, 14);
-    rightColumnFieldsSvg = allFieldsSvg.sublist(14, 20);
-
-    newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg, leftColumnFieldsSvg, rightColumnFieldsSvg);
-
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
@@ -76,7 +62,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: Row(
+          title:
+          Row(
             children: [
               Text("${getCurrentTeamName()} - wasza kolej!"),
               Container(
@@ -111,18 +98,18 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                       Positioned(
                         left: 0,
                         top: 0,
-                        child: leftColumnVertical(leftColumnFieldsSvg, screenWidth),
+                        child: leftColumnVertical(screenWidth),
                       ),
                       Positioned(
                         right: 0,
                         top: 0,
-                        child: rightColumnVertical(rightColumnFieldsSvg, screenWidth),
+                        child: rightColumnVertical(screenWidth),
                       ),
                       Column(
                         children: [
                           Positioned(
                             top: 0,
-                            child: upRowHorizontal(upRowFieldsSvg, screenWidth),
+                            child: upRowHorizontal(screenWidth),
                           ),
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                           Expanded(
@@ -140,7 +127,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                           fourCardsCenter(screenWidth),
                           ResponsiveSizing.responsiveHeightGap(context, 10),
-                          downRowHorizontal(downRowFieldsSvg, screenWidth),
+                          downRowHorizontal(screenWidth),
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                         ],
                       ),
@@ -163,7 +150,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                               child: Column(
                                 children: [
                                   Text('Wylosowana wartość: $selectedValue'),
-                                  translatedText(context, 'game_rules', 20, Palette().white),
+                                  translatedText(context,'game_rules', 20, Palette().white),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
@@ -180,6 +167,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
 
                                             moveFlag(selectedValue, currentFlagIndex,
                                                 screenWidth * 0.02768 - 4 + screenWidth * 0.1436);
+
                                           });
                                         });
                                       },
@@ -239,40 +227,38 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               LayoutBuilder(
-                                builder: (context, constraints) {
-                                  // Oblicz liczbę kolumn na podstawie szerokości ekranu
-                                  int count = percentageScreen < 40
-                                      ? 4
-                                      : 2; // Załóżmy, że chcemy dwie kolumny na szerokich ekranach, a na węższych - tylko jedną.
-                                  print('screen widsth: ${constraints.maxWidth}');
-                                  return GridView.count(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    crossAxisCount: count,
-                                    crossAxisSpacing: 0,
-                                    mainAxisSpacing: 10,
-                                    children: <Widget>[
-                                      CardAnimation(),
-                                      // SvgPicture.asset(
-                                      //   'assets/time_to_party_assets/card_star_green.svg',
-                                      //   fit: BoxFit.contain,
-                                      // ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_blue_light.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_yellow.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_pink.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
+                              builder: (context, constraints) {
+                          // Oblicz liczbę kolumn na podstawie szerokości ekranu
+                          int count = percentageScreen < 40 ? 4 : 2;  // Załóżmy, że chcemy dwie kolumny na szerokich ekranach, a na węższych - tylko jedną.
+                          print('screen widsth: ${constraints.maxWidth}');
+                        return GridView.count(
+                        shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: count,
+                          crossAxisSpacing: 0,
+                          mainAxisSpacing: 10,
+                          children: <Widget>[
+                            CardAnimation(),
+                            // SvgPicture.asset(
+                            //   'assets/time_to_party_assets/card_star_green.svg',
+                            //   fit: BoxFit.contain,
+                            // ),
+                            SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_blue_light.svg',
+                              fit: BoxFit.contain,
+                            ),
+                            SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_yellow.svg',
+                              fit: BoxFit.contain,
+                            ),
+                            SvgPicture.asset(
+                              'assets/time_to_party_assets/card_star_pink.svg',
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        );
+                      },
+                      ),
                               Container(
                                 height: 2.0,
                                 decoration: BoxDecoration(
@@ -286,12 +272,16 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 220),
-                                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 45, 650)),
+                                  minimumSize: Size(
+                                      ResponsiveSizing.scaleWidth(context, 220),
+                                      ResponsiveSizing.responsiveHeightWithCondition(
+                                          context, 51, 45, 650)),
                                   //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                                 ),
-                                icon: Icon(Icons.play_circle_rounded, size: ResponsiveSizing.scaleHeight(context, 32)),
-                                onPressed: () {},
+                                icon: Icon(Icons.play_circle_rounded,
+                                    size: ResponsiveSizing.scaleHeight(context, 32)),
+                                onPressed: () {
+                                },
                                 label: Text('Zakręć kołem'),
                               ),
                             ],
@@ -307,28 +297,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
         }),
       ),
     );
-  }
-
-  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
-    List<String> newFields = [];
-
-    // Dodaj elementy z leftColumn w odwrotnej kolejności, zaczynając od indeksu 14 do 8
-    for (int i = leftColumn.length - 1; i >= 0; i--) {
-      newFields.add(leftColumn[i]);
-    }
-
-    // Dodaj elementy z upRow
-    newFields.addAll(upRow);
-
-    // Dodaj elementy z rightColumn
-    newFields.addAll(rightColumn);
-
-    // Dodaj elementy z downRow w odwrotnej kolejności, zaczynając od indeksu 8 do 4
-    for (int i = downRow.length - 1; i >= 0; i--) {
-      newFields.add(downRow[i]);
-    }
-
-    return newFields;
   }
 
   Widget fourCardsCenter(double screenWidth) {
@@ -348,122 +316,75 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     );
   }
 
-  final Random rng = Random();
-
-  // Mapowanie FieldType do nazwy pliku SVG
-  final Map<FieldType, String> fieldTypes = {
-    FieldType.arrow: 'field_arrows',
-    FieldType.rhyme: 'field_sheet',
-    FieldType.alphabet: 'field_letters',
-    FieldType.pantomime: 'field_pantomime',
-    FieldType.famousPeople: 'field_microphone',
-    FieldType.start: 'field_start',
-    FieldType.starBlueDark: 'field_star_blue_dark',
-    FieldType.starBlueLight: 'field_star_blue_light',
-    FieldType.starGreen: 'field_star_green',
-    FieldType.starPink: 'field_star_pink',
-    FieldType.starYellow: 'field_star_yellow',
-  };
-  //mapowanie pol oraz ich ilosci - TODO cos z niebieska gwiazdka
-  final Map<FieldType, int> fieldCount = {
-    FieldType.arrow: 3,
-    FieldType.rhyme: 3,
-    FieldType.alphabet: 3,
-    FieldType.pantomime: 3,
-    FieldType.famousPeople: 3,
-    FieldType.start: 1,
-    FieldType.starBlueDark: 1,
-    FieldType.starBlueLight: 1,
-    FieldType.starGreen: 1,
-    FieldType.starPink: 1,
-    FieldType.starYellow: 1,
-  };
-  //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
-  List<String> _getShuffledFields() {
-    List<FieldType> fields = [];
-    fieldCount.forEach((field, count) {
-      for (int i = 0; i < count; i++) {
-        fields.add(field);
-      }
-    });
-
-    List<FieldType> shuffledFields = [];
-    shuffledFields.add(fields.removeAt(fields.indexOf(FieldType.start)));
-
-    while (fields.isNotEmpty) {
-      var nextIndex = rng.nextInt(fields.length);
-      FieldType nextField = fields.removeAt(nextIndex);
-
-      if (shuffledFields.last != nextField &&
-          (shuffledFields.length < 3 || shuffledFields[shuffledFields.length - 3] != nextField)) {
-        shuffledFields.add(nextField);
-      } else if (fields.length <= 3) {
-        shuffledFields.add(nextField); // breaking the rule when there are less than 3 fields left
-      } else {
-        fields.add(nextField);
-      }
-    }
-    // Zamieniamy FieldType na nazwy plików SVG
-    List<String> shuffledSvgFields = shuffledFields.map((field) => fieldTypes[field]!).toList();
-
-    shuffledSvgFields.remove(fieldTypes[FieldType.start]);
-    shuffledSvgFields.insert(13, fieldTypes[FieldType.start]!);
-
-    return shuffledSvgFields;
-  }
-
-  //generowanie widgetu row
-  Widget generateRow(List<String> fields, double screenWidth) {
-    List<Widget> children = [];
-
-    for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
-      children.add(SizedBox(width: screenWidth * 0.02768 - 4));
-    }
-    // Usunięcie ostatniego SizedBox
-    children.removeLast();
-
+  Widget upRowHorizontal(double screenWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: children,
+      children: [
+        ResponsiveSizing.responsiveWidthGap(context, 6),
+        SvgPicture.asset('assets/time_to_party_assets/field_star_blue_light.svg', width: screenWidth * 0.1436),
+        SizedBox(width: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        SizedBox(width: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+        SizedBox(width: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        SizedBox(width: screenWidth * 0.02768 - 4),
+      ],
     );
   }
 
-  //generowanie widgetu kolumny
-  Widget generateColumn(List<String> fields, double screenWidth) {
-    List<Widget> children = [];
-
-    for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
-      children.add(SizedBox(height: screenWidth * 0.02768 - 4));
-    }
-    // Usunięcie ostatniego SizedBox
-    children.removeLast();
-
-    return Column(
+  Widget downRowHorizontal(double screenWidth) {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: children,
+      children: [
+        SvgPicture.asset('assets/time_to_party_assets/field_star_green.svg', width: screenWidth * 0.1436),
+        SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
+        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
+        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
+        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+      ],
     );
   }
 
-  //tworzenie row gornej z listy pol itd..
-  Widget upRowHorizontal(List<String> fields, double screenWidth) {
-    return generateRow(fields, screenWidth);
+  Widget leftColumnVertical(double screenWidth) {
+    return Column(
+      children: [
+        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_start.svg', width: screenWidth * 0.1436),
+      ],
+    );
   }
 
-  Widget downRowHorizontal(List<String> fields, double screenWidth) {
-    return generateRow(fields, screenWidth);
+  Widget rightColumnVertical(double screenWidth) {
+    return Column(
+      children: [
+        SvgPicture.asset('assets/time_to_party_assets/field_star_pink.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_star_yellow.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        SizedBox(height: screenWidth * 0.02768 - 4),
+      ],
+    );
   }
 
-  Widget leftColumnVertical(List<String> fields, double screenWidth) {
-    return generateColumn(fields, screenWidth);
-  }
-
-  Widget rightColumnVertical(List<String> fields, double screenWidth) {
-    return generateColumn(fields, screenWidth);
-  }
-
-  //budowanie widgetu flag i liczenie wszystkich przesuniec itp
   Widget buildFlagsStack(List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
     return Stack(
       clipBehavior: Clip.none,
@@ -490,38 +411,29 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           }).map((flag) {
             return AnimatedPositioned(
               duration: Duration(seconds: 1),
-              bottom: (teamColors.length == 2 || teamColors.length == 3)
-                  ? flagPositions[index].dy + 20
-                  : teamColors.length == 4
-                      ? flagPositions[index].dy + 10 + (index ~/ 2) * 25
-                      : (teamColors.length == 5 || teamColors.length == 6)
-                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25
-                          : flagPositions[index].dy +
-                              10 +
-                              (index ~/ 3) * 25, // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
+                bottom: (teamColors.length == 2 || teamColors.length == 3)
+                    ? flagPositions[index].dy + 20
+                    : teamColors.length == 4
+                    ? flagPositions[index].dy + 10 + (index ~/ 2) * 25
+                    : (teamColors.length == 5 || teamColors.length == 6)
+                    ? flagPositions[index].dy + 10 + (index ~/ 3) * 25
+                    : flagPositions[index].dy + 10 + (index ~/ 3) * 25, // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2 || teamColors.length == 4)
                   ? flagPositions[index].dx + (index % 2) * 25 + 5
                   : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                      ? flagPositions[index].dx + (index % 3) * 25 - 8
-                      : flagPositions[index].dx +
-                          (index % 3) * 25 -
-                          8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+                  ? flagPositions[index].dx + (index % 3) * 25-8
+                  : flagPositions[index].dx + (index % 3) * 25-8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
               child: Transform.rotate(
-                angle: (teamColors.length == 4)
+                angle:
+                (teamColors.length == 4)
                     ? ((index % 2 == 0) ? -10 : 15) * (3.14 / 180)
-                    : ((index % 3 == 0)
-                            ? -10
-                            : (index % 3 == 2)
-                                ? 15
-                                : 0) *
-                        (3.14 / 180), //obroty flag dopasowane od ilosci
+                    : ((index % 3 == 0) ? -10 : (index % 3 == 2) ? 15 : 0) * (3.14 / 180), //obroty flag dopasowane od ilosci
                 child: Transform(
-                  transform: Matrix4.identity()
-                    ..scale(
-                        (teamColors.length == 4)
-                            ? ((index == 0 || index == 2) ? -1.0 : 1.0) // odbicia flag ustalone od ilosci
-                            : ((index == 0 || index == 3) ? -1.0 : 1.0),
-                        1.0),
+                  transform: Matrix4.identity()..scale(
+                      (teamColors.length == 4) ? ((index == 0 || index == 2) ? -1.0 : 1.0) // odbicia flag ustalone od ilosci
+                          : ((index == 0 || index == 3) ? -1.0 : 1.0),
+                      1.0
+                  ),
                   alignment: Alignment.center,
                   child: SvgPicture.asset(
                     flag,
@@ -537,7 +449,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     );
   }
 
-  //kolo fortuny
   FortuneItem buildFortuneItem(String text, Color color) {
     return FortuneItem(
       child: strokedText(text),
@@ -549,7 +460,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     );
   }
 
-  //funkcja do wyswietlania koloru druzyny w app_barze
   Color colorFromString(String colorAsString) {
     String colorString = colorAsString.split('(0x')[1].split(')')[0]; // Extracting hex value from the string.
     int colorInt = int.parse(colorString, radix: 16); // Parsing hex string into an integer.
@@ -565,12 +475,12 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     super.dispose();
   }
 
-  //cieniowany tekst
   Widget strokedText(String text) {
     return Transform.rotate(
       angle: 90 * 3.14 / 180,
       child: Stack(
         children: <Widget>[
+          // Cieniowany tekst
           Text(
             text,
             style: TextStyle(
@@ -596,7 +506,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     );
   }
 
-  //funkcja przesuniecia flagi, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
     for (int i = 0; i < steps; i++) {
       flagSteps[flagIndex]++;
@@ -624,16 +533,31 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     }
 
     isAnimating = false;
-    //przekaz urzadzenie osobie opisujacej TODO
-    //showTransferDeviceDialog(context);
-    //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
-    showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
-    print(flagSteps[flagIndex]);
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) => Theme(
+        data: Theme.of(context).copyWith(
+          dialogBackgroundColor: Colors.white,
+        ),
+        child: AlertDialog(
+          title: Text('Uwaga!'),
+          content: Text('Animacja została zakończona.'),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      ),
+    );
 
     setState(() {
       currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
     });
     currentTeamIndex = currentFlagIndex;
+
   }
 
   String getCurrentTeamName() {
@@ -643,96 +567,11 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   String getCurrentTeamColor() {
     return widget.teamColors[currentTeamIndex].toString();
   }
-
-  static void showDialogTest(BuildContext context, List<String> newFieldsList) {
-    String allFieldsText = newFieldsList.join(", ");
-
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        title: Text("My List"),
-        content:Text(allFieldsText,style: TextStyle(color: Colors.white)),
-        actions: [
-          ElevatedButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-  }
-
-  static void showTransferDeviceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(context, 'would_you_like_exit', 20, Palette().pink, textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              translatedText(context, 'redirected_to_the_website', 16, Palette().menudark, textAlign: TextAlign.center),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink, // color
-                    foregroundColor: Palette().white, // textColor
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize:
-                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
-                    textStyle:
-                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
-enum FieldType {
-  arrow,
-  rhyme,
-  alphabet,
-  pantomime,
-  famousPeople,
-  charades,
-  start,
-  starBlueDark,
-  starBlueLight,
-  starGreen,
-  starPink,
-  starYellow
-}
 
 class CardAnimation extends StatefulWidget {
+
   @override
   _CardAnimationState createState() => _CardAnimationState();
 }
@@ -818,3 +657,4 @@ class _CardAnimationState extends State<CardAnimation> with SingleTickerProvider
     );
   }
 }
+
