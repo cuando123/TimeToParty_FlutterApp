@@ -13,8 +13,48 @@ import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../style/stars_animation.dart';
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
+
+  @override
+  _MainMenuScreenState createState() => _MainMenuScreenState();
+}
+
+class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat();  // Powtarza animację w nieskończoność
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.85
+      ),
+    ]).animate(_animationController);
+  }
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -101,6 +141,12 @@ class MainMenuScreen extends StatelessWidget {
                 label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
+              AnimatedBuilder(
+                animation: _scaleAnimation,
+                builder: (context, child) => Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: child,
+                ), child:
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette().pink, // color
@@ -118,7 +164,7 @@ class MainMenuScreen extends StatelessWidget {
                   Navigator.of(context).push(_createRoute());
                 },
                 label: translatedText(context,'play_now', 20, Palette().white),
-              ),
+              ),),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(

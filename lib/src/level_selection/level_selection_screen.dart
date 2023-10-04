@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:provider/provider.dart';
 
-import '../Loading_screen/loading_screen.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
@@ -42,7 +42,7 @@ class LevelSelectionScreen extends StatefulWidget {
   _LevelSelectionScreenState createState() => _LevelSelectionScreenState();
 }
 
-class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
+class _LevelSelectionScreenState extends State<LevelSelectionScreen> with SingleTickerProviderStateMixin {
   List<TextEditingController> controllers = [];
   bool _duringCelebration = false;
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -54,7 +54,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     Color(0xFF9400AC),
     Color(0xFFF50000),
     Color(0xFFFFD335),
-    Color(0xFFFFFFFF)
+    Color(0xFF1C1AAA)
   ];
 
   void _toggleCelebration() {
@@ -68,6 +68,9 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     return shuffledColors.sublist(0, numberOfTeams);
   }
 
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +79,29 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
           .initializeTeams(context, numberOfTeams);
     });
     teamColors = _initializeColors(numberOfTeams);
+    _animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat();  // Powtarza animację w nieskończoność
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.85
+      ),
+    ]).animate(_animationController);
   }
 
   @override
@@ -207,8 +233,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                         height: 50.0,
                                         child: TextField(
                                           onChanged: (text) {
-                                            teamProvider.updateTeamName(
-                                                index, text);
+                                            teamProvider.updateTeamName(index, text);
                                           },
                                           style: TextStyle(
                                             color: Color(0xFFA0A0A0),
@@ -216,21 +241,21 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                           onTap: () {
-                                            if (!teamProvider
-                                                .hasUserInput[index]) {
-                                              teamProvider.updateTeamName(
-                                                  index, '');
+                                            if (!teamProvider.hasUserInput[index]) {
+                                              teamProvider.updateTeamName(index, '');
                                             }
                                           },
                                           decoration: InputDecoration(
-                                            hintText:
-                                                '${teamProvider.teamNames[index]}',
+                                            hintText: '${teamProvider.teamNames[index]}',
                                             hintStyle: TextStyle(
                                               color: Color(0xFFA0A0A0),
                                             ),
                                             filled: true, // Włącz tło
                                             fillColor: Colors.white,
+                                            counterText: '',
                                           ),
+                                          maxLength: 15,
+                                          maxLines: 1,
                                         ),
                                       ),
                                     ),
@@ -255,6 +280,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                              AnimatedBuilder(
+                              animation: _scaleAnimation,
+                              builder: (context, child) => Transform.scale(
+                                scale: _scaleAnimation.value,
+                                child: child,
+                              ), child:
                                 ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFFCB48EF), // color
@@ -277,7 +308,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => LoadingScreen(
+                                        builder: (context) => LoadingScreenSecond(
                                           teamNames: teamProvider.teamNames,
                                           teamColors: teamColors,
                                         ),
@@ -286,7 +317,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                                   },
                                   label: translatedText(
                                       context, 'play_now', 20, Palette().white),
-                                ),
+                                ),),
                                 ResponsiveSizing
                                     .responsiveWidthGapWithCondition(
                                         context, 5, 10, 300),

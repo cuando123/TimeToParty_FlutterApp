@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -69,24 +70,17 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     print('scaleHeight: ${ResponsiveSizing.scaleHeight(context, 50).toString()}');
     print('height gap: ${ResponsiveSizing.responsiveHeightGap(context, 7).toString()}');
     print('width gap: ${ResponsiveSizing.responsiveWidthGap(context, 6).toString()}');
-
-    return Container(
+    return WillPopScope(
+        onWillPop: () async {
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+          showExitGameDialog(context);
+          return false;  // return false to prevent the pop operation
+        },
+    child: Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
       ),
       child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Text("${getCurrentTeamName()} - wasza kolej!"),
-              Container(
-                width: 20,
-                height: 20,
-                color: colorFromString(getCurrentTeamColor()),
-              ),
-            ],
-          ),
-        ),
         body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
           double screenWidth = constraints.maxWidth;
           double screenHeight = constraints.maxHeight;
@@ -118,12 +112,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                         top: 0,
                         child: rightColumnVertical(rightColumnFieldsSvg, screenWidth),
                       ),
+                      Positioned(
+                        top: 0,
+                        child: upRowHorizontal(upRowFieldsSvg, screenWidth),
+                      ),
                       Column(
                         children: [
-                          Positioned(
-                            top: 0,
-                            child: upRowHorizontal(upRowFieldsSvg, screenWidth),
-                          ),
+                          SizedBox(height: 50), // You may need a SizedBox here to account for the height of `upRowHorizontal`
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                           Expanded(
                             child: LayoutBuilder(
@@ -141,7 +136,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                           fourCardsCenter(screenWidth),
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                           downRowHorizontal(downRowFieldsSvg, screenWidth),
-                          ResponsiveSizing.responsiveHeightGap(context, 10),
+                          SizedBox(height: screenWidth * 0.02768 - 4),
                         ],
                       ),
                       buildFlagsStack(widget.teamColors, flagPositions, screenWidth),
@@ -305,7 +300,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             ],
           );
         }),
-      ),
+      )
+    ),
     );
   }
 
@@ -471,6 +467,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
         ...teamColors.asMap().entries.expand((entry) {
           int index = entry.key;
           Color color = entry.value;
+          /*
           List<String> flagAssets = [
             'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
             'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
@@ -478,9 +475,18 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
             'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
             'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
+          ];*/
+          // kolka
+          List<String> flagAssets = [
+            'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
+            'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
+            'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
+            'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
+            'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
+            'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(4);
+            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5);  //zmiana z 4 na 5
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -490,51 +496,71 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           }).map((flag) {
             return AnimatedPositioned(
               duration: Duration(seconds: 1),
-              bottom: (teamColors.length == 2 || teamColors.length == 3)
-                  ? flagPositions[index].dy + 20
+              bottom:
+              (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
+                  ? flagPositions[index].dy + 23
+                  : (teamColors.length == 3 && index == 1)
+                  ? flagPositions[index].dy + 46
                   : teamColors.length == 4
-                      ? flagPositions[index].dy + 10 + (index ~/ 2) * 25
-                      : (teamColors.length == 5 || teamColors.length == 6)
-                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25
-                          : flagPositions[index].dy +
-                              10 +
-                              (index ~/ 3) * 25, // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
-              left: (teamColors.length == 2 || teamColors.length == 4)
-                  ? flagPositions[index].dx + (index % 2) * 25 + 5
+                  ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
+                  : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                  : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                  : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                  : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
+              // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
+              left: (teamColors.length == 2)
+                  ? flagPositions[index].dx + (index % 2) * 45 - 8
+                  : (teamColors.length == 4)
+                  ? flagPositions[index].dx + (index % 2) * 35 - 3
                   : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
                       ? flagPositions[index].dx + (index % 3) * 25 - 8
                       : flagPositions[index].dx +
                           (index % 3) * 25 -
                           8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
-              child: Transform.rotate(
-                angle: (teamColors.length == 4)
-                    ? ((index % 2 == 0) ? -10 : 15) * (3.14 / 180)
-                    : ((index % 3 == 0)
-                            ? -10
-                            : (index % 3 == 2)
-                                ? 15
-                                : 0) *
-                        (3.14 / 180), //obroty flag dopasowane od ilosci
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..scale(
-                        (teamColors.length == 4)
-                            ? ((index == 0 || index == 2) ? -1.0 : 1.0) // odbicia flag ustalone od ilosci
-                            : ((index == 0 || index == 3) ? -1.0 : 1.0),
-                        1.0),
-                  alignment: Alignment.center,
                   child: SvgPicture.asset(
                     flag,
-                    width: screenWidth / 13.09,
-                    height: screenWidth / 13.09,
+                    width: screenWidth / 15.09,
+                    height: screenWidth / 15.09,
                   ),
-                ),
-              ),
             );
           });
         }).toList(),
       ],
     );
+  }
+
+  String getFlagAssetFromColor(Color color) {
+    /*
+          List<String> flagAssets = [
+            'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
+            'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
+            'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
+            'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
+            'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
+            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
+          ];*/
+    // kolka
+    List<String> flagAssets = [
+      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
+      'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
+      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
+    ];
+    for (String flag in flagAssets) {
+      String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
+      Color flagColor = Color(int.parse(flagColorHex, radix: 16));
+      if (color.value == flagColor.value) {
+        return flag;
+      }
+    }
+    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg';
   }
 
   //kolo fortuny
@@ -624,7 +650,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     }
 
     isAnimating = false;
-    //przekaz urzadzenie osobie opisujacej TODO
+    showTransferDeviceDialog(context);
     //showTransferDeviceDialog(context);
     //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
     showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
@@ -642,6 +668,64 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
 
   String getCurrentTeamColor() {
     return widget.teamColors[currentTeamIndex].toString();
+  }
+
+  static void showExitGameDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(
+              context, 'are_you_sure_game_leave', 20, Palette().pink,
+              textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SvgPicture.asset(
+                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+              ),
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette().pink, // color
+                    foregroundColor: Palette().white, // textColor
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  child: Text('OK'),
+                ),
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: translatedText(
+                      context, 'cancel', 16, Palette().bluegrey,
+                      textAlign: TextAlign.center),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   static void showDialogTest(BuildContext context, List<String> newFieldsList) {
@@ -679,7 +763,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'would_you_like_exit', 20, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -687,8 +771,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
               Center(
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              translatedText(context, 'redirected_to_the_website', 16, Palette().menudark, textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
                 child: ElevatedButton(
@@ -706,7 +788,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('OK'),
+                  child: translatedText(context, 'done', 20, Palette().white, textAlign: TextAlign.center),
                 ),
               ),
             ],

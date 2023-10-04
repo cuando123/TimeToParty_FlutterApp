@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import 'src/Language_selector_screen/language_selector.dart';
 import 'src/Loading_screen/loading_screen.dart';
+import 'src/Loading_screen/loading_screen_second.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
@@ -189,7 +190,7 @@ class MyApp extends StatelessWidget {
               path: 'loading',
               pageBuilder: (context, state) =>
                   buildMyTransition<void>(
-                    child: LoaderWidget(key: Key('loading')),
+                    child: LoaderWidgetSecond(key: Key('loading'), countdown: 3),
                     color: context
                         .watch<Palette>()
                         .backgroundPlaySession,
@@ -354,7 +355,7 @@ class MyApp extends StatelessWidget {
           } else {
             return MaterialApp(
                 home: Scaffold(
-                  body: LoaderWidget(),
+                  body: LoaderWidget()
                 )
             );
           }

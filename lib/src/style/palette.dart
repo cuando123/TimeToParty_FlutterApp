@@ -107,7 +107,7 @@ class LogoWidget extends StatelessWidget {
           SvgPicture.asset(
             'assets/time_to_party_assets/time_to_party_logo.svg',
             width: ResponsiveSizing.scaleWidth(context, 257),
-            height: ResponsiveSizing.scaleHeight(context, 134),
+            //height: ResponsiveSizing.scaleHeight(context, 134),
           ),
           SizedBox(height: 10),
         ],
