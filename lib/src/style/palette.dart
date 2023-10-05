@@ -86,10 +86,6 @@ class LogoWidget_notitle extends StatelessWidget {
 class LogoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    print("Screen Height: $screenHeight");
-    print("Screen Width: $screenWidth");
     return Padding(
       padding: EdgeInsets.only(
           top: MediaQuery.of(context).size.height < 650

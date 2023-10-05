@@ -70,6 +70,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
 
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _scaleAnimationPlusButton;
+  late Animation<double> _scaleAnimationSelectColorButton;
 
   @override
   void initState() {
@@ -100,6 +102,52 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
       TweenSequenceItem(
           tween: ConstantTween<double>(1.0),
           weight: 0.85
+      ),
+    ]).animate(_animationController);
+
+    _scaleAnimationPlusButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.4
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.45
+      ),
+    ]).animate(_animationController);
+
+    _scaleAnimationSelectColorButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.6
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.25
       ),
     ]).animate(_animationController);
   }
@@ -161,6 +209,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+                      AnimatedBuilder(
+                      animation: _scaleAnimationPlusButton,
+                      builder: (context, child) => Transform.scale(
+                      scale: _scaleAnimationPlusButton.value,
+                      child: child,
+                      ), child:
                               CustomElevatedButton(
                                 child: Icon(Icons.add),
                                 style: ElevatedButton.styleFrom(
@@ -187,7 +241,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               context, numberOfTeams);
                                         });
                                       },
-                              ),
+                              ),),
                               ResponsiveSizing.responsiveWidthGapWithCondition(
                                   context, 5, 10, 300),
                               CustomElevatedButton(
@@ -321,6 +375,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                 ResponsiveSizing
                                     .responsiveWidthGapWithCondition(
                                         context, 5, 10, 300),
+                            AnimatedBuilder(
+                              animation: _scaleAnimationSelectColorButton,
+                              builder: (context, child) => Transform.scale(
+                                scale: _scaleAnimationSelectColorButton.value,
+                                child: child,
+                              ), child:
                                 ElevatedButton(
                                   child: Icon(Icons.color_lens),
                                   style: ElevatedButton.styleFrom(
@@ -344,7 +404,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                           0, numberOfTeams);
                                     });
                                   },
-                                ),
+                                ),),
                               ],
                             ),
                           ),
