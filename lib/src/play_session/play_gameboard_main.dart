@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import '../app_lifecycle/translated_text.dart';
+import '../instruction_dialog/instruction_dialog.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
 
@@ -20,13 +21,15 @@ class PlayGameboard extends StatefulWidget {
   _PlayGameboardState createState() => _PlayGameboardState();
 }
 
-class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProviderStateMixin {
+class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
   late StreamController<int> _selectedController = StreamController<int>.broadcast();
-  late AnimationController _animationController;
   late StreamSubscription<int> _subscription;
   late List<Offset> flagPositions;
   late List<int> flagSteps;
   final List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
+  bool hasShownAlertDialog = false;
   int selectedValue = 0;
   int currentTeamIndex = 0;
   int currentFlagIndex = 0;
@@ -41,17 +44,15 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+        duration: const Duration(seconds: 2),
+        vsync: this);
     allFieldsSvg = _getShuffledFields();
     upRowFieldsSvg = allFieldsSvg.sublist(0, 4);
     downRowFieldsSvg = allFieldsSvg.sublist(4, 8);
     leftColumnFieldsSvg = allFieldsSvg.sublist(8, 14);
     rightColumnFieldsSvg = allFieldsSvg.sublist(14, 20);
     newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg, leftColumnFieldsSvg, rightColumnFieldsSvg);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    );
-    _animationController.stop();
     _selectedController = StreamController<int>.broadcast();
     flagPositions = List.generate(widget.teamColors.length, (index) => Offset(0, 0));
     flagSteps = List.filled(widget.teamColors.length, 0);
@@ -60,7 +61,17 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
         selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
       });
     });
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+    _controller.value = 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!hasShownAlertDialog) {
+        _showAnimatedAlertDialog();
+        _controller.forward(from: 0);
+        hasShownAlertDialog = true;
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +136,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                   ),
                                 ),
                                 ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                fourCardsCenter(screenWidth * scale),
+                                fourCardsCenter(screenWidth * scale, myCardList, isFlippedList),
                                 ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                 downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                               ],
@@ -287,6 +298,14 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                                   0.04),
                                         ),
                                         onPressed: () {
+                                          Future.delayed(Duration(milliseconds: 150), () {
+                                            showDialog<void>(
+                                              context: context,
+                                              builder: (context) {
+                                                return InstructionDialog();
+                                              },
+                                            );
+                                          });
                                         },
                                       ),
                                       ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -305,6 +324,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                                   0.04),
                                         ),
                                         onPressed: () {
+                                          _controller.forward(from: 0);
                                         },
                                       )
                                     ],
@@ -325,6 +345,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       )),
     );
   }
+
+  List<GameCard> myCardList = [
+    GameCard('assets/time_to_party_assets/card_microphone.svg', 'assets/time_to_party_assets/card_star_green.svg'),
+    GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_pink.svg'),
+    GameCard('assets/time_to_party_assets/card_letters.svg', 'assets/time_to_party_assets/card_star_yellow.svg'),
+    GameCard('assets/time_to_party_assets/card_pantomime.svg', 'assets/time_to_party_assets/card_star_blue_dark.svg'),
+  ];
 
   List<String> generateNewFieldsList(
       List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
@@ -349,22 +376,27 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     return newFields;
   }
 
-  Widget fourCardsCenter(double screenWidth) {
+  List<bool> isFlippedList = [false, false, false, false];  // zakładam domyślnie, że karty są odwrócone
+
+  Widget fourCardsCenter(double screenWidth, List<GameCard> cardList, List<bool> isFlippedList) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_microphone.svg', width: screenWidth * 0.1436),
-        SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_rymes.svg', width: screenWidth * 0.1436),
-        SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_letters.svg', width: screenWidth * 0.1436),
-        SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_pantomime.svg', width: screenWidth * 0.1436),
-        SizedBox(width: screenWidth * 0.02768 - 4),
+        for (int i = 0; i < cardList.length; i++) ...[
+          SizedBox(width: screenWidth * 0.02768 - 4),
+          SizedBox(
+            width: screenWidth * 0.1436,
+            child: FlipCard(
+              card: cardList[i],
+              isFlipped: isFlippedList[i],
+            ),
+          ),
+        ],
+        SizedBox(width: screenWidth * 0.02768 - 4),  // dodatkowy SizedBox na końcu
       ],
     );
   }
+
 
   final Random rng = Random();
 
@@ -543,11 +575,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                           : flagPositions[index].dx +
                               (index % 3) * 25 -
                               8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
-              child: SvgPicture.asset(
-                flag,
-                width: screenWidth / 15.09,
-                height: screenWidth / 15.09,
-              ),
+              child: PionekWithRipple(assetPath: flag, animation: _animation, screenWidth: screenWidth),
             );
           });
         }).toList(),
@@ -606,10 +634,48 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   @override
   void dispose() {
     _subscription.cancel();
-    _animationController.dispose();
+    _controller.dispose();
     _selectedController.close();
     selected.close();
     super.dispose();
+  }
+
+  void _showAnimatedAlertDialog() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white,
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        ),
+        title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)
+        )
+        );
+      },
+      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+        // Jeśli dialog się pojawia
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        // Jeśli dialog znika
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pop();
+    });
   }
 
   //cieniowany tekst
@@ -675,8 +741,19 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     //showTransferDeviceDialog(context);
     //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
     showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
-    print(flagSteps[flagIndex]);
-
+    if (newFieldsList[flagSteps[flagIndex]] == 'field_sheet' ||
+        newFieldsList[flagSteps[flagIndex]] == 'field_letters' ||
+        newFieldsList[flagSteps[flagIndex]] == 'field_microphone' ||
+        newFieldsList[flagSteps[flagIndex]] == 'field_pantomime'
+    ) {
+      setState(() {
+        isFlippedList = [false, false, false, false];
+      });
+    } else {
+      setState(() {
+        isFlippedList = [true, true, true, true];
+      });
+    }
     setState(() {
       currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
     });
@@ -691,7 +768,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     return widget.teamColors[currentTeamIndex].toString();
   }
 
-  static void showExitGameDialog(BuildContext context) {
+  void showExitGameDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -724,6 +801,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
+                    hasShownAlertDialog = false;
                   },
                   child: Text('OK'),
                 ),
@@ -830,26 +908,66 @@ enum FieldType {
   starYellow
 }
 
-class CardAnimation extends StatefulWidget {
-  @override
-  _CardAnimationState createState() => _CardAnimationState();
+class GameCard {
+  final String frontAsset;
+  final String backAsset;
+
+  GameCard(this.frontAsset, this.backAsset);
 }
 
-class _CardAnimationState extends State<CardAnimation> with SingleTickerProviderStateMixin<CardAnimation> {
+class FlipCard extends StatefulWidget {
+  final GameCard card;
+  final bool isFlipped;
+
+  FlipCard({required this.card, required this.isFlipped});
+
+  @override
+  _FlipCardState createState() => _FlipCardState();
+}
+
+class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-      lowerBound: 0.0,
-      upperBound: 1.0, // Ustawiamy górną granicę na 2.0, co oznacza dwa obroty
-    );
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
+    if (widget.isFlipped) {
+      _controller.value = 0.5; // jeśli karta ma być odwrócona
+    }
+  }
 
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        double value = _controller.value;
+        bool isFaceUp = value < 0.5;
+        final Matrix4 transform = Matrix4.identity()
+          ..setEntry(3, 2, 0.001) // punkt perspektywy
+          ..rotateY(pi * value);
+        return Transform(
+          transform: transform,
+          alignment: Alignment.center,
+          child: Container(
+            child: isFaceUp ? SvgPicture.asset(widget.card.frontAsset) : SvgPicture.asset(widget.card.backAsset),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant FlipCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isFlipped != oldWidget.isFlipped) {
+      if (widget.isFlipped) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    }
   }
 
   @override
@@ -857,62 +975,61 @@ class _CardAnimationState extends State<CardAnimation> with SingleTickerProvider
     _controller.dispose();
     super.dispose();
   }
+}
+
+
+class PionekWithRipple extends StatelessWidget {
+  final String assetPath;
+  final Animation<double> animation;
+
+  double screenWidth;
+
+  PionekWithRipple({required this.assetPath, required this.animation, required this.screenWidth});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          if (_controller.isAnimating) {
-            _controller.stop();
-          } else {
-            if (_controller.status == AnimationStatus.completed) {
-              _controller.reverse();
-            } else if (_controller.status == AnimationStatus.dismissed) {
-              _controller.forward();
-            }
-          }
-        },
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            final rotationAngle = _animation.value * 2 * 3.14;
-            final isSecondHalf = (_animation.value * 4) % 4 >= 2;
-            final isFrontVisible = (_animation.value * 4) % 2 < 1;
-            final isVisible = (isSecondHalf && !isFrontVisible) || (!isSecondHalf && isFrontVisible);
-
-            return Transform(
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateY(rotationAngle),
-              alignment: Alignment.center,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Opacity(
-                    opacity: isVisible ? 1.0 : 0.0,
-                    child: SvgPicture.asset(
-                      'assets/time_to_party_assets/card_microphone.svg',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Opacity(
-                    opacity: isVisible ? 0.0 : 1.0,
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(3.14),
-                      child: SvgPicture.asset(
-                        'assets/time_to_party_assets/card_pantomime.svg',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+    return Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        SvgPicture.asset(assetPath, width: screenWidth / 15.09, height: screenWidth / 15.09),
+        Positioned(
+            left: -50,
+            top: -50,
+            right: -50,
+            bottom: -50,
+            child: RippleEffect(animation: animation)
         ),
-      ),
+      ],
+    );
+  }
+
+}
+
+class RippleEffect extends StatelessWidget {
+  final Animation<double> animation;
+
+  RippleEffect({required this.animation});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+            children: [
+         Container(
+          width: 20 + (animation.value * 100), // zakładając, że początkowa wielkość pionka to 50
+          height: 20 + (animation.value * 100),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.yellow.withOpacity(1 - animation.value), // zakładając, że pionek jest niebieski
+          ),
+        )
+        ],);
+      },
     );
   }
 }
