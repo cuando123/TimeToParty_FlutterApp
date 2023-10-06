@@ -46,9 +46,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     downRowFieldsSvg = allFieldsSvg.sublist(4, 8);
     leftColumnFieldsSvg = allFieldsSvg.sublist(8, 14);
     rightColumnFieldsSvg = allFieldsSvg.sublist(14, 20);
-
     newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg, leftColumnFieldsSvg, rightColumnFieldsSvg);
-
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
@@ -61,86 +59,82 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       setState(() {
         selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
       });
-      print('Wylosowana wartość: $selectedValue, Wylosowany index: $selectedIndex');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('scaleHeight: ${ResponsiveSizing.scaleHeight(context, 50).toString()}');
-    print('height gap: ${ResponsiveSizing.responsiveHeightGap(context, 7).toString()}');
-    print('width gap: ${ResponsiveSizing.responsiveWidthGap(context, 6).toString()}');
+    print('Wylosowana wartość: $selectedValue');
     return WillPopScope(
-        onWillPop: () async {
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-          showExitGameDialog(context);
-          return false;  // return false to prevent the pop operation
-        },
-    child: Container(
-      decoration: BoxDecoration(
-        gradient: Palette().backgroundLoadingSessionGradient,
-      ),
-      child: Scaffold(
+      onWillPop: () async {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        showExitGameDialog(context);
+        return false; // return false to prevent the pop operation
+      },
+      child: CustomBackground(child: Scaffold(
         body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
           double screenWidth = constraints.maxWidth;
           double screenHeight = constraints.maxHeight;
-          double percentageScreen = ((screenHeight - screenWidth) / screenHeight) * 100;
-          print('percentageScreen: $percentageScreen');
+          print('screenHeight: $screenHeight');
+          print('screenWidth: $screenWidth');
+          double scale = min((screenHeight * 0.55) / screenWidth, 1.0);
           return Column(
             children: <Widget>[
               Container(
-                width: screenWidth,
-                height: screenWidth,
+                height: screenHeight * 0.55,
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: Colors.white, width: 2.0), // To dodaje białą linię na dole kontenera.
                   ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), // left, top, right, bottom
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: leftColumnVertical(leftColumnFieldsSvg, screenWidth),
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: rightColumnVertical(rightColumnFieldsSvg, screenWidth),
-                      ),
-                      Positioned(
-                        top: 0,
-                        child: upRowHorizontal(upRowFieldsSvg, screenWidth),
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(height: 50), // You may need a SizedBox here to account for the height of `upRowHorizontal`
-                          ResponsiveSizing.responsiveHeightGap(context, 10),
-                          Expanded(
-                            child: LayoutBuilder(
-                              builder: (BuildContext context, BoxConstraints constraints) {
-                                return SvgPicture.asset(
-                                  'assets/time_to_party_assets/card_arrows.svg',
-                                  width: constraints.maxWidth,
-                                  height: constraints.maxHeight,
-                                  fit: BoxFit.contain,
-                                );
-                              },
+                child: Center(
+                  child: Transform.scale(
+                    scale: scale,
+                    child: Container(
+                      width: screenWidth * scale,
+                      height: screenWidth * scale,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              child: leftColumnVertical(leftColumnFieldsSvg, screenWidth * scale),
                             ),
-                          ),
-                          ResponsiveSizing.responsiveHeightGap(context, 10),
-                          fourCardsCenter(screenWidth),
-                          ResponsiveSizing.responsiveHeightGap(context, 10),
-                          downRowHorizontal(downRowFieldsSvg, screenWidth),
-                          SizedBox(height: screenWidth * 0.02768 - 4),
-                        ],
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: rightColumnVertical(rightColumnFieldsSvg, screenWidth * scale),
+                            ),
+                            Column(
+                              children: [
+                                upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
+                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                Expanded(
+                                  child: LayoutBuilder(
+                                    builder: (BuildContext context, BoxConstraints constraints) {
+                                      return SvgPicture.asset(
+                                        'assets/time_to_party_assets/card_arrows.svg',
+                                        height: constraints.maxHeight,
+                                        fit: BoxFit.contain,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                fourCardsCenter(screenWidth * scale),
+                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
+                              ],
+                            ),
+                            buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
+                          ],
+                        ),
                       ),
-                      buildFlagsStack(widget.teamColors, flagPositions, screenWidth),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -157,8 +151,41 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
                               child: Column(
                                 children: [
-                                  Text('Wylosowana wartość: $selectedValue'),
-                                  translatedText(context, 'game_rules', 20, Palette().white),
+                                  IntrinsicWidth(
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
+                                      decoration: BoxDecoration(
+                                        color: Colors.black, // Tu ustalamy kolor tła na czarny
+                                        borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
+                                            width: ResponsiveSizing.scaleWidth(context, 15),
+                                            height: ResponsiveSizing.scaleWidth(context, 15),
+                                          ),
+                                          ResponsiveSizing.responsiveWidthGap(context, 10),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${getCurrentTeamName()} - ",
+                                                style: TextStyle(
+                                                  color: Palette().white,
+                                                  fontFamily: 'HindMadurai',
+                                                  fontSize: ResponsiveSizing.scaleHeight(context, 14),
+                                                ),
+                                              ),
+                                              translatedText(context, 'your_turn', 14, Palette().white),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  ResponsiveSizing.responsiveHeightGap(context, 10),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
@@ -174,7 +201,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                             selectedValue = _wheelValues[randomIndex] + 1;
 
                                             moveFlag(selectedValue, currentFlagIndex,
-                                                screenWidth * 0.02768 - 4 + screenWidth * 0.1436);
+                                                screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
                                           });
                                         });
                                       },
@@ -221,76 +248,71 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                       ),
                                     ),
                                   ),
+                                  ResponsiveSizing.responsiveHeightGap(context, 10),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        child: Icon(Icons.pause),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Palette().bluegrey, // color
+                                          foregroundColor: Palette().menudark, // textColor
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          minimumSize: Size(
+                                              MediaQuery.of(context).size.width *
+                                                  0.02,
+                                              MediaQuery.of(context).size.height *
+                                                  0.04),
+                                        ),
+                                        onPressed: () {
+                                          showExitGameDialog(context);
+                                        },
+                                      ),
+                                      ResponsiveSizing.responsiveWidthGap(context, 10),
+                                      ElevatedButton(
+                                        child: Icon(Icons.info_outlined),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Palette().bluegrey, // color
+                                          foregroundColor: Palette().menudark, // textColor
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          minimumSize: Size(
+                                              MediaQuery.of(context).size.width *
+                                                  0.02,
+                                              MediaQuery.of(context).size.height *
+                                                  0.04),
+                                        ),
+                                        onPressed: () {
+                                        },
+                                      ),
+                                      ResponsiveSizing.responsiveWidthGap(context, 10),
+                                      ElevatedButton(
+                                        child: Icon(Icons.highlight),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Palette().bluegrey, // color
+                                          foregroundColor: Palette().menudark, // textColor
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          minimumSize: Size(
+                                              MediaQuery.of(context).size.width *
+                                                  0.02,
+                                              MediaQuery.of(context).size.height *
+                                                  0.04),
+                                        ),
+                                        onPressed: () {
+                                        },
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 0.0), // left, top, right, bottom
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              LayoutBuilder(
-                                builder: (context, constraints) {
-                                  // Oblicz liczbę kolumn na podstawie szerokości ekranu
-                                  int count = percentageScreen < 40
-                                      ? 4
-                                      : 2; // Załóżmy, że chcemy dwie kolumny na szerokich ekranach, a na węższych - tylko jedną.
-                                  print('screen widsth: ${constraints.maxWidth}');
-                                  return GridView.count(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    crossAxisCount: count,
-                                    crossAxisSpacing: 0,
-                                    mainAxisSpacing: 10,
-                                    children: <Widget>[
-                                      CardAnimation(),
-                                      // SvgPicture.asset(
-                                      //   'assets/time_to_party_assets/card_star_green.svg',
-                                      //   fit: BoxFit.contain,
-                                      // ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_blue_light.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_yellow.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_pink.svg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                              Container(
-                                height: 2.0,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white, width: 2.0),
-                                ),
-                              ),
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Palette().pink, // color
-                                  foregroundColor: Palette().white, // textColor
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 220),
-                                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 45, 650)),
-                                  //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
-                                ),
-                                icon: Icon(Icons.play_circle_rounded, size: ResponsiveSizing.scaleHeight(context, 32)),
-                                onPressed: () {},
-                                label: Text('Zakręć kołem'),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ],
@@ -300,12 +322,12 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             ],
           );
         }),
-      )
-    ),
+      )),
     );
   }
 
-  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
+  List<String> generateNewFieldsList(
+      List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
     List<String> newFields = [];
 
     // Dodaj elementy z leftColumn w odwrotnej kolejności, zaczynając od indeksu 14 do 8
@@ -486,7 +508,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5);  //zmiana z 4 na 5
+            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -496,37 +518,36 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           }).map((flag) {
             return AnimatedPositioned(
               duration: Duration(seconds: 1),
-              bottom:
-              (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
+              bottom: (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
                   ? flagPositions[index].dy + 23
                   : (teamColors.length == 3 && index == 1)
-                  ? flagPositions[index].dy + 46
-                  : teamColors.length == 4
-                  ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
-                  : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                  : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                  : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                  : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
+                      ? flagPositions[index].dy + 46
+                      : teamColors.length == 4
+                          ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
+                          : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
+                              ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                              : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
+                                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
+                                      ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                                      : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
+                                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                                          : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
               // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2)
                   ? flagPositions[index].dx + (index % 2) * 45 - 8
                   : (teamColors.length == 4)
-                  ? flagPositions[index].dx + (index % 2) * 35 - 3
-                  : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                      ? flagPositions[index].dx + (index % 3) * 25 - 8
-                      : flagPositions[index].dx +
-                          (index % 3) * 25 -
-                          8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
-                  child: SvgPicture.asset(
-                    flag,
-                    width: screenWidth / 15.09,
-                    height: screenWidth / 15.09,
-                  ),
+                      ? flagPositions[index].dx + (index % 2) * 35 - 3
+                      : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
+                          ? flagPositions[index].dx + (index % 3) * 25 - 8
+                          : flagPositions[index].dx +
+                              (index % 3) * 25 -
+                              8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+              child: SvgPicture.asset(
+                flag,
+                width: screenWidth / 15.09,
+                height: screenWidth / 15.09,
+              ),
             );
           });
         }).toList(),
@@ -679,16 +700,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(
-              context, 'are_you_sure_game_leave', 20, Palette().pink,
-              textAlign: TextAlign.center),
+          title: translatedText(context, 'are_you_sure_game_leave', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
@@ -699,11 +717,10 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize:
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -716,9 +733,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: translatedText(
-                      context, 'cancel', 16, Palette().bluegrey,
-                      textAlign: TextAlign.center),
+                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
                 ),
               ),
             ],
@@ -731,27 +746,27 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   static void showDialogTest(BuildContext context, List<String> newFieldsList) {
     String allFieldsText = newFieldsList.join(", ");
 
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        title: Text("My List"),
-        content:Text(allFieldsText,style: TextStyle(color: Colors.white)),
-        actions: [
-          ElevatedButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("My List"),
+      content: Text(allFieldsText, style: TextStyle(color: Colors.white)),
+      actions: [
+        ElevatedButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
 
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   static void showTransferDeviceDialog(BuildContext context) {
@@ -763,7 +778,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
+          title:
+              translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

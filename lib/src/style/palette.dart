@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/style/palette.dart';
+import 'package:game_template/src/style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 
 /// A palette of colors to be used in the game.
@@ -139,5 +143,168 @@ class CustomElevatedButton extends StatelessWidget {
       child: child,
       style: effectiveStyle,
     );
+  }
+}
+
+class ImageModel {
+  final String assetName;
+  final double topPercentage;
+  final double leftPercentage;
+  final double widthPercentage;
+  final double heightPercentage;
+  final double rotation;
+
+  ImageModel({
+    required this.assetName,
+    required this.topPercentage,
+    required this.leftPercentage,
+    required this.widthPercentage,
+    required this.heightPercentage,
+    required this.rotation
+  });
+}
+
+
+class CustomBackground extends StatelessWidget {
+  final Widget? child;
+
+  CustomBackground({this.child});
+
+  final List<ImageModel> layout1 = [
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        topPercentage: 70, // 5% wysokości ekranu
+        leftPercentage: 80, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        topPercentage: 60, // 5% wysokości ekranu
+        leftPercentage: 40, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 10, // 5% wysokości ekranu
+        leftPercentage: 20, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 90, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 15,
+        heightPercentage: 15,
+        rotation: pi
+    ),
+    // ... pozostałe obrazki
+  ];
+
+  final List<ImageModel> layout2 = [
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        topPercentage: 5, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 20,
+        heightPercentage: 20,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 5, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 20,
+        heightPercentage: 20,
+        rotation: pi
+    ),
+    // ... pozostałe obrazki
+  ];
+
+  final List<ImageModel> layout3 = [
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        topPercentage: 5, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi/4
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 5, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 20,
+        heightPercentage: 20,
+        rotation: pi/4
+    ),
+    // ... pozostałe obrazki
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Tło gradientowe
+        Container(
+          decoration: BoxDecoration(
+            gradient: Palette().backgroundLoadingSessionGradient,
+          ),
+        ),
+        // Obrazki
+        ..._buildRandomImages(context),
+        // Dziecko (jeśli zostało dostarczone)
+        if (child != null) child!,
+      ],
+    );
+  }
+
+  List<Widget> _buildRandomImages(BuildContext context) {
+    // Losowanie jednego z trzech układów
+    Random random = Random();
+    Size screenSize = MediaQuery.of(context).size;
+    int chosenLayout =0; // losuje 0, 1 lub 2
+    //int chosenLayout = random.nextInt(3); // losuje 0, 1 lub 2
+    print('chosen layout $chosenLayout');
+    List<ImageModel> layout;
+    switch (chosenLayout) {
+      case 0:
+        layout = layout1;
+        break;
+      case 1:
+        layout = layout2;
+        break;
+      case 2:
+        layout = layout3;
+        break;
+      default:
+        layout = layout1;  // Domyślna wartość, na wszelki wypadek.
+        break;
+    }
+
+    // Konwersja wybranego układu na listę widgetów
+    return layout.map((imageModel) {
+      double randomRotation = (random.nextDouble() * 2 - 1) * imageModel.rotation;
+      return Positioned(
+        top: imageModel.topPercentage * screenSize.height / 100,
+        left: imageModel.leftPercentage * screenSize.width / 100,
+        child: Transform.rotate(
+          angle: randomRotation,
+          child: SizedBox(
+            width: imageModel.widthPercentage * screenSize.width / 100,
+            height: imageModel.heightPercentage * screenSize.height / 100,
+            child: SvgPicture.asset(
+              imageModel.assetName,
+              colorFilter: ColorFilter.mode(Colors.white10, BlendMode.dstIn),
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 }
