@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/play_session/play_gameboard_card.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -41,6 +42,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   List<String> rightColumnFieldsSvg = [];
   List<String> allFieldsSvg = [];
   List<String> newFieldsList = [];
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +85,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         return false; // return false to prevent the pop operation
       },
       child: CustomBackground(child: Scaffold(
-        body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        body: LayoutBuilder(builder: (context, constraints) {
           double screenWidth = constraints.maxWidth;
           double screenHeight = constraints.maxHeight;
           print('screenHeight: $screenHeight');
@@ -126,18 +128,20 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                 ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                 Expanded(
                                   child: LayoutBuilder(
-                                    builder: (BuildContext context, BoxConstraints constraints) {
-                                      return SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_arrows.svg',
+                                    builder: (context, constraints) {
+                                      return SizedBox(
                                         height: constraints.maxHeight,
-                                        fit: BoxFit.contain,
+                                        child: FlipCard(
+                                          card: mainCard,
+                                          isFlipped: isMainCardFlipped,
+                                        ),
                                       );
                                     },
                                   ),
                                 ),
-                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                fourCardsCenter(screenWidth * scale, myCardList, isFlippedList),
-                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                fourCardsCenter(screenWidth * scale, myCardList, isFlippedList), //obrotowe flagi
+                                //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                 downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                               ],
                             ),
@@ -165,7 +169,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                   IntrinsicWidth(
                                     child: Container(
                                       padding:
-                                          EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
+                                      EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
                                       decoration: BoxDecoration(
                                         color: Colors.black, // Tu ustalamy kolor tła na czarny
                                         borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
@@ -273,9 +277,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             borderRadius: BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery.of(context).size.width *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width *
                                                   0.02,
-                                              MediaQuery.of(context).size.height *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
@@ -292,9 +302,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             borderRadius: BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery.of(context).size.width *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width *
                                                   0.02,
-                                              MediaQuery.of(context).size.height *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
@@ -318,9 +334,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             borderRadius: BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery.of(context).size.width *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width *
                                                   0.02,
-                                              MediaQuery.of(context).size.height *
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
@@ -348,13 +370,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   List<GameCard> myCardList = [
     GameCard('assets/time_to_party_assets/card_microphone.svg', 'assets/time_to_party_assets/card_star_green.svg'),
-    GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_pink.svg'),
+    GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_blue_light.svg'),
     GameCard('assets/time_to_party_assets/card_letters.svg', 'assets/time_to_party_assets/card_star_yellow.svg'),
     GameCard('assets/time_to_party_assets/card_pantomime.svg', 'assets/time_to_party_assets/card_star_blue_dark.svg'),
   ];
+  GameCard mainCard = GameCard(
+      'assets/time_to_party_assets/card_arrows.svg', 'assets/time_to_party_assets/card_star_pink.svg');
 
-  List<String> generateNewFieldsList(
-      List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
+  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow, List<String> leftColumn,
+      List<String> rightColumn) {
     List<String> newFields = [];
 
     // Dodaj elementy z leftColumn w odwrotnej kolejności, zaczynając od indeksu 14 do 8
@@ -376,7 +400,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return newFields;
   }
 
-  List<bool> isFlippedList = [false, false, false, false];  // zakładam domyślnie, że karty są odwrócone
+  List<bool> isFlippedList = [false, false, false, false]; // zakładam domyślnie, że karty są odwrócone
+  bool isMainCardFlipped = false;
+
 
   Widget fourCardsCenter(double screenWidth, List<GameCard> cardList, List<bool> isFlippedList) {
     return Row(
@@ -392,11 +418,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             ),
           ),
         ],
-        SizedBox(width: screenWidth * 0.02768 - 4),  // dodatkowy SizedBox na końcu
+        SizedBox(width: screenWidth * 0.02768 - 4), // dodatkowy SizedBox na końcu
       ],
     );
   }
-
 
   final Random rng = Random();
 
@@ -414,7 +439,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starPink: 'field_star_pink',
     FieldType.starYellow: 'field_star_yellow',
   };
-  //mapowanie pol oraz ich ilosci - TODO cos z niebieska gwiazdka
+
+  //mapowanie pol oraz ich ilosci
   final Map<FieldType, int> fieldCount = {
     FieldType.arrow: 3,
     FieldType.rhyme: 3,
@@ -428,6 +454,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starPink: 1,
     FieldType.starYellow: 1,
   };
+
   //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
   List<String> _getShuffledFields() {
     List<FieldType> fields = [];
@@ -518,7 +545,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        ...teamColors.asMap().entries.expand((entry) {
+        ...teamColors
+            .asMap()
+            .entries
+            .expand((entry) {
           int index = entry.key;
           Color color = entry.value;
           /*
@@ -540,7 +570,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
+            String flagColorHex = 'FF' + flag
+                .split('/')
+                .last
+                .split('.')
+                .first
+                .substring(5); //zmiana z 4 na 5
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -553,28 +588,28 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
               bottom: (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
                   ? flagPositions[index].dy + 23
                   : (teamColors.length == 3 && index == 1)
-                      ? flagPositions[index].dy + 46
-                      : teamColors.length == 4
-                          ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
-                          : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
-                              ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                              : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
-                                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
-                                      ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                                      : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
-                                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                                          : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
+                  ? flagPositions[index].dy + 46
+                  : teamColors.length == 4
+                  ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
+                  : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                  : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                  : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
+                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                  : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
               // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2)
                   ? flagPositions[index].dx + (index % 2) * 45 - 8
                   : (teamColors.length == 4)
-                      ? flagPositions[index].dx + (index % 2) * 35 - 3
-                      : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                          ? flagPositions[index].dx + (index % 3) * 25 - 8
-                          : flagPositions[index].dx +
-                              (index % 3) * 25 -
-                              8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+                  ? flagPositions[index].dx + (index % 2) * 35 - 3
+                  : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
+                  ? flagPositions[index].dx + (index % 3) * 25 - 8
+                  : flagPositions[index].dx +
+                  (index % 3) * 25 -
+                  8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
               child: PionekWithRipple(assetPath: flag, animation: _animation, screenWidth: screenWidth),
             );
           });
@@ -603,7 +638,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
     ];
     for (String flag in flagAssets) {
-      String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
+      String flagColorHex = 'FF' + flag
+          .split('/')
+          .last
+          .split('.')
+          .first
+          .substring(5); //zmiana z 4 na 5
       Color flagColor = Color(int.parse(flagColorHex, radix: 16));
       if (color.value == flagColor.value) {
         return flag;
@@ -644,21 +684,24 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
         return Center(
-          child: AlertDialog(
-            backgroundColor: Palette().white,
-        shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        ),
-        title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)
-        )
+            child: AlertDialog(
+                backgroundColor: Palette().white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)
+            )
         );
       },
-      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
+          Widget child) {
         // Jeśli dialog się pojawia
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
@@ -737,23 +780,33 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     }
 
     isAnimating = false;
-    showTransferDeviceDialog(context);
-    //showTransferDeviceDialog(context);
-    //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
-    showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
+
     if (newFieldsList[flagSteps[flagIndex]] == 'field_sheet' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_letters' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_microphone' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_pantomime'
+        newFieldsList[flagSteps[flagIndex]] == 'field_pantomime' ||
+        newFieldsList[flagSteps[flagIndex]] == 'field_arrows'
     ) {
       setState(() {
         isFlippedList = [false, false, false, false];
+        isMainCardFlipped = false;
       });
     } else {
       setState(() {
         isFlippedList = [true, true, true, true];
+        isMainCardFlipped = true;
       });
     }
+    await Future.delayed(Duration(seconds: 1));
+    String currentTeamName = getCurrentTeamName();
+    Color currentTeamColor = widget.teamColors[currentTeamIndex];
+
+    showTransferDeviceDialog(context, newFieldsList[flagSteps[flagIndex]], currentTeamName, currentTeamColor);
+
+    //showTransferDeviceDialog(context);
+    //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
+    //showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
+
     setState(() {
       currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
     });
@@ -789,15 +842,23 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink, // color
-                    foregroundColor: Palette().white, // textColor
+                    backgroundColor: Palette().pink,
+                    // color
+                    foregroundColor: Palette().white,
+                    // textColor
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize:
-                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    Size(MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.5, MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.05),
                     textStyle:
-                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -847,7 +908,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-  static void showTransferDeviceDialog(BuildContext context) {
+  void showTransferDeviceDialog(BuildContext context, String fieldValue, String currentTeamName, Color currentTeamColor) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -857,7 +918,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             borderRadius: BorderRadius.circular(10),
           ),
           title:
-              translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
+          translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -869,18 +930,34 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink, // color
-                    foregroundColor: Palette().white, // textColor
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize:
-                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    Size(MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.5, MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.05),
                     textStyle:
-                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PlayGameboardCard(
+                              teamNames: [currentTeamName],
+                              teamColors: [currentTeamColor],
+                              currentField: [fieldValue],
+                            ),
+                      ),
+                    );
                   },
                   child: translatedText(context, 'done', 20, Palette().white, textAlign: TextAlign.center),
                 ),
@@ -893,7 +970,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   }
 }
 
-enum FieldType {
+  enum FieldType {
   arrow,
   rhyme,
   alphabet,

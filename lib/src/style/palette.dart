@@ -164,16 +164,23 @@ class ImageModel {
   });
 }
 
-
-class CustomBackground extends StatelessWidget {
+class CustomBackground extends StatefulWidget {
   final Widget? child;
 
   CustomBackground({this.child});
 
+  @override
+  _CustomBackgroundState createState() => _CustomBackgroundState();
+}
+
+class _CustomBackgroundState extends State<CustomBackground> {
+  List<ImageModel>? chosenLayout;
+  List<double>? chosenRotations;
+
   final List<ImageModel> layout1 = [
     ImageModel(
         assetName: 'assets/time_to_party_assets/sheet_vector.svg',
-        topPercentage: 70, // 5% wysokości ekranu
+        topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
@@ -181,70 +188,173 @@ class CustomBackground extends StatelessWidget {
     ),
     ImageModel(
         assetName: 'assets/time_to_party_assets/masks_vector.svg',
-        topPercentage: 60, // 5% wysokości ekranu
-        leftPercentage: 40, // 10% szerokości ekranu
+        topPercentage: 55, // 5% wysokości ekranu
+        leftPercentage: 7, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi
     ),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
-        topPercentage: 10, // 5% wysokości ekranu
+        topPercentage: 15, // 5% wysokości ekranu
+        leftPercentage: 25, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 85, // 5% wysokości ekranu
+        leftPercentage: 80, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        topPercentage: 70, // 5% wysokości ekranu
+        leftPercentage: 5, // 10% szerokości ekranu
+        widthPercentage: 6,
+        heightPercentage: 6,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        topPercentage: 15, // 5% wysokości ekranu
+        leftPercentage: 65, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+  ];
+
+  final List<ImageModel> layout2 = [
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        topPercentage: 80, // 5% wysokości ekranu
+        leftPercentage: 8, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        topPercentage: 58, // 5% wysokości ekranu
+        leftPercentage: 80, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 58, // 5% wysokości ekranu
+        leftPercentage: 15, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 85, // 5% wysokości ekranu
+        leftPercentage: 80, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        topPercentage: 15, // 5% wysokości ekranu
+        leftPercentage: 65, // 10% szerokości ekranu
+        widthPercentage: 6,
+        heightPercentage: 6,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 20, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi
     ),
-    ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
-        topPercentage: 90, // 5% wysokości ekranu
-        leftPercentage: 10, // 10% szerokości ekranu
-        widthPercentage: 15,
-        heightPercentage: 15,
-        rotation: pi
-    ),
-    // ... pozostałe obrazki
-  ];
-
-  final List<ImageModel> layout2 = [
-    ImageModel(
-        assetName: 'assets/time_to_party_assets/masks_vector.svg',
-        topPercentage: 5, // 5% wysokości ekranu
-        leftPercentage: 10, // 10% szerokości ekranu
-        widthPercentage: 20,
-        heightPercentage: 20,
-        rotation: pi
-    ),
-    ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
-        topPercentage: 5, // 5% wysokości ekranu
-        leftPercentage: 10, // 10% szerokości ekranu
-        widthPercentage: 20,
-        heightPercentage: 20,
-        rotation: pi
-    ),
-    // ... pozostałe obrazki
   ];
 
   final List<ImageModel> layout3 = [
     ImageModel(
-        assetName: 'assets/time_to_party_assets/masks_vector.svg',
-        topPercentage: 5, // 5% wysokości ekranu
-        leftPercentage: 10, // 10% szerokości ekranu
+        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        topPercentage: 20, // 5% wysokości ekranu
+        leftPercentage: 70, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi/4
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        topPercentage: 15, // 5% wysokości ekranu
+        leftPercentage: 20, // 10% szerokości ekranu
+        widthPercentage: 12,
+        heightPercentage: 12,
+        rotation: pi
     ),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
-        topPercentage: 5, // 5% wysokości ekranu
-        leftPercentage: 10, // 10% szerokości ekranu
-        widthPercentage: 20,
-        heightPercentage: 20,
-        rotation: pi/4
+        topPercentage: 60, // 5% wysokości ekranu
+        leftPercentage: 15, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
     ),
-    // ... pozostałe obrazki
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        topPercentage: 60, // 5% wysokości ekranu
+        leftPercentage: 80, // 10% szerokości ekranu
+        widthPercentage: 12,
+        heightPercentage: 12,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        topPercentage: 90, // 5% wysokości ekranu
+        leftPercentage: 85, // 10% szerokości ekranu
+        widthPercentage: 6,
+        heightPercentage: 6,
+        rotation: pi
+    ),
+    ImageModel(
+        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        topPercentage: 85, // 5% wysokości ekranu
+        leftPercentage: 10, // 10% szerokości ekranu
+        widthPercentage: 10,
+        heightPercentage: 10,
+        rotation: pi
+    ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Losowanie jednego z trzech układów
+    Random random = Random();
+    int layoutIndex = random.nextInt(3); // losuje 0, 1 lub 2
+    print('chosen layout $layoutIndex');
+    switch (layoutIndex) {
+      case 0:
+        chosenLayout = layout1;
+        break;
+      case 1:
+        chosenLayout = layout2;
+        break;
+      case 2:
+        chosenLayout = layout3;
+        break;
+      default:
+        chosenLayout = layout1;  // Domyślna wartość, na wszelki wypadek.
+        break;
+    }
+    chosenRotations = chosenLayout!.map((imageModel) {
+      return (random.nextDouble() * 2 - 1) * imageModel.rotation;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,42 +369,25 @@ class CustomBackground extends StatelessWidget {
         // Obrazki
         ..._buildRandomImages(context),
         // Dziecko (jeśli zostało dostarczone)
-        if (child != null) child!,
+        if (widget.child != null) widget.child!,
       ],
     );
   }
 
   List<Widget> _buildRandomImages(BuildContext context) {
-    // Losowanie jednego z trzech układów
-    Random random = Random();
     Size screenSize = MediaQuery.of(context).size;
-    int chosenLayout =0; // losuje 0, 1 lub 2
-    //int chosenLayout = random.nextInt(3); // losuje 0, 1 lub 2
-    print('chosen layout $chosenLayout');
-    List<ImageModel> layout;
-    switch (chosenLayout) {
-      case 0:
-        layout = layout1;
-        break;
-      case 1:
-        layout = layout2;
-        break;
-      case 2:
-        layout = layout3;
-        break;
-      default:
-        layout = layout1;  // Domyślna wartość, na wszelki wypadek.
-        break;
-    }
 
-    // Konwersja wybranego układu na listę widgetów
-    return layout.map((imageModel) {
-      double randomRotation = (random.nextDouble() * 2 - 1) * imageModel.rotation;
+    return chosenLayout!.asMap().entries.map((entry) {
+      int index = entry.key;
+      ImageModel imageModel = entry.value;
+
+      double rotation = chosenRotations![index];
+
       return Positioned(
         top: imageModel.topPercentage * screenSize.height / 100,
         left: imageModel.leftPercentage * screenSize.width / 100,
         child: Transform.rotate(
-          angle: randomRotation,
+          angle: rotation,
           child: SizedBox(
             width: imageModel.widthPercentage * screenSize.width / 100,
             height: imageModel.heightPercentage * screenSize.height / 100,
