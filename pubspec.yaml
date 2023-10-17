@@ -68,6 +68,7 @@ flutter:
     - assets/time_to_party_assets/balloons/
     - assets/time_to_party_assets/flags/
     - assets/time_to_party_assets/main_board/flags/
+    - assets/time_to_party_assets/cards_screens/
 
   fonts:
     - family: Permanent Marker

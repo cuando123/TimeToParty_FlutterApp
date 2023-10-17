@@ -64,6 +64,8 @@ class Palette {
   Color get borderSpinningWheel => const Color(0xFF3A3114);
   Color get grey => const Color(0xFF5A5C60);
   Color get darkGrey => const Color(0xFF3D3E41);
+  Color get yellowInd => const Color(0xFFF8EC7D);
+  Color get yellowIndBorder => const Color(0xFFFFC344);
 }
 
 class LogoWidget_notitle extends StatelessWidget {
