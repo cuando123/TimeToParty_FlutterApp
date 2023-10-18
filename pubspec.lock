@@ -216,6 +216,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.8"
+  draw_your_image:
+    dependency: "direct main"
+    description:
+      name: draw_your_image
+      sha256: "4252df5f0bb503e1b581b58e0c682d667eb97a01b1a48a854c606fb881004aa4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   fake_async:
     dependency: transitive
     description:

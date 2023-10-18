@@ -31,6 +31,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   late List<int> flagSteps;
   final List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
   bool hasShownAlertDialog = false;
+  bool showGlow = true;
+  late String selectedCardIndex = 'default';
   int selectedValue = 0;
   int currentTeamIndex = 0;
   int currentFlagIndex = 0;
@@ -77,6 +79,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    List<GameCard> myCardList = [
+      GameCard('assets/time_to_party_assets/card_microphone.svg', 'assets/time_to_party_assets/card_star_green.svg', showGlow: showGlow),
+      GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_blue_light.svg', showGlow: showGlow),
+      GameCard('assets/time_to_party_assets/card_letters.svg', 'assets/time_to_party_assets/card_star_yellow.svg', showGlow: showGlow),
+      GameCard('assets/time_to_party_assets/card_pantomime.svg', 'assets/time_to_party_assets/card_star_blue_dark.svg', showGlow: showGlow),
+    ];
+    GameCard mainCard = GameCard(
+        'assets/time_to_party_assets/card_arrows.svg', 'assets/time_to_party_assets/card_star_pink.svg', showGlow: showGlow);
+
+    print('showGlow: $showGlow');
     print('Wylosowana wartość: $selectedValue');
     return WillPopScope(
       onWillPop: () async {
@@ -131,11 +143,20 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                     builder: (context, constraints) {
                                       return SizedBox(
                                         height: constraints.maxHeight,
+                                          child: GestureDetector(
+                                          onTap: () {
+                                        setState(() {
+                                          if (selectedCardIndex == 'field_arrows'){
+                                            selectedCardIndex = 'field_pantomime';
+                                            navigateWithDelay(context);
+                                          }
+                                        });
+                                      },
                                         child: FlipCard(
                                           card: mainCard,
                                           isFlipped: isMainCardFlipped,
                                         ),
-                                      );
+                                      ),);
                                     },
                                   ),
                                 ),
@@ -368,14 +389,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-  List<GameCard> myCardList = [
-    GameCard('assets/time_to_party_assets/card_microphone.svg', 'assets/time_to_party_assets/card_star_green.svg'),
-    GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_blue_light.svg'),
-    GameCard('assets/time_to_party_assets/card_letters.svg', 'assets/time_to_party_assets/card_star_yellow.svg'),
-    GameCard('assets/time_to_party_assets/card_pantomime.svg', 'assets/time_to_party_assets/card_star_blue_dark.svg'),
-  ];
-  GameCard mainCard = GameCard(
-      'assets/time_to_party_assets/card_arrows.svg', 'assets/time_to_party_assets/card_star_pink.svg');
+
 
   List<String> generateNewFieldsList(List<String> upRow, List<String> downRow, List<String> leftColumn,
       List<String> rightColumn) {
@@ -780,7 +794,18 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     }
 
     isAnimating = false;
-
+    if (newFieldsList[flagSteps[flagIndex]] == 'field_arrows') {
+      setState(() {
+        showGlow = true;
+        selectedCardIndex = 'field_arrows';
+        print('jest show glow i jest fieldarrow');
+      });
+    } else {
+      setState(() {
+        showGlow = false;
+        selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
+      });
+    }
     if (newFieldsList[flagSteps[flagIndex]] == 'field_sheet' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_letters' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_microphone' ||
@@ -797,11 +822,13 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         isMainCardFlipped = true;
       });
     }
+
+
     await Future.delayed(Duration(seconds: 1));
     String currentTeamName = getCurrentTeamName();
     Color currentTeamColor = widget.teamColors[currentTeamIndex];
 
-    showTransferDeviceDialog(context, newFieldsList[flagSteps[flagIndex]], currentTeamName, currentTeamColor);
+    //showTransferDeviceDialog(context, selectedCardIndex, currentTeamName, currentTeamColor);
 
     //showTransferDeviceDialog(context);
     //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
@@ -812,6 +839,22 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     });
     currentTeamIndex = currentFlagIndex;
   }
+
+  void navigateWithDelay(BuildContext context) {
+    Future.delayed(Duration(seconds: 1), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlayGameboardCard(
+            teamNames: [getCurrentTeamName()],
+            teamColors: [widget.teamColors[currentTeamIndex]],
+            currentField: [selectedCardIndex],
+          ),
+        ),
+      );
+    });
+  }
+
 
   String getCurrentTeamName() {
     return widget.teamNames[currentTeamIndex].toString();
@@ -985,12 +1028,26 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   starYellow
 }
 
-class GameCard {
-  final String frontAsset;
-  final String backAsset;
+class GameCard extends StatelessWidget {
+  final String assetPath1;
+  final String assetPath2;
+  final bool showGlow;
 
-  GameCard(this.frontAsset, this.backAsset);
+  GameCard(this.assetPath1, this.assetPath2, {this.showGlow = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Image.asset(assetPath1),
+        if (showGlow) ...[
+          Image.asset(assetPath2),
+        ],
+      ],
+    );
+  }
 }
+
 
 class FlipCard extends StatefulWidget {
   final GameCard card;
@@ -1028,7 +1085,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
           transform: transform,
           alignment: Alignment.center,
           child: Container(
-            child: isFaceUp ? SvgPicture.asset(widget.card.frontAsset) : SvgPicture.asset(widget.card.backAsset),
+            child: isFaceUp ? SvgPicture.asset(widget.card.assetPath1) : SvgPicture.asset(widget.card.assetPath2),
           ),
         );
       },
