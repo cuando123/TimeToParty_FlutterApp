@@ -11,6 +11,15 @@ Widget translatedText(BuildContext context, String translationKey, double fontSi
   );
 }
 
+Widget wordText(BuildContext context, String wordKey, double fontSize, Color textColor, {TextAlign? textAlign}) {
+  return Consumer<TranslationProvider>(
+    builder: (context, translationProvider, child) {
+      String word = translationProvider.getWord(wordKey);
+      return letsText(context, word, fontSize, textColor, textAlign: textAlign);
+    },
+  );
+}
+
 String getTranslatedString(BuildContext context, String translationKey) {
   TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);
   return translationProvider.getTranslationText(translationKey);

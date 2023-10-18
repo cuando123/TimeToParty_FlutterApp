@@ -27,4 +27,23 @@ class TranslationDatabase {
     return translationsMap;
   }
 
+  Future<Map<String, String>> fetchWordsByLanguage(String language) async {
+    Database database = await initDatabase();
+
+    final maps = await database.query(
+      'Cards',
+      columns: ['Key', 'words'], // pobieramy kolumny "Key" oraz "words"
+      where: 'language = ?',
+      whereArgs: [language],
+    );
+
+    // Konwersja List<Map<String, dynamic>> na mapę, gdzie kluczem jest "Key" a wartością "words"
+    Map<String, String> wordsMap = {};
+    for (final row in maps) {
+      wordsMap[row['Key'] as String] = row['words'] as String;
+    }
+
+    return wordsMap;
+  }
+
 }

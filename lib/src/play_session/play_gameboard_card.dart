@@ -219,7 +219,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const <Widget>[
+                                        children: [
+                                          wordText(context, 'taboo15', 24, Colors.white),
                                           Text('Taboo',
                                               style: TextStyle(
                                                 fontFamily: 'HindMadurai',

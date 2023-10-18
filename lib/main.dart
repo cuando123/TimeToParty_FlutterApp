@@ -121,6 +121,7 @@ void guardedMain() async {
     DeviceOrientation.portraitDown,
   ]);
   final translationProvider = TranslationProvider.fromDeviceLanguage();
+  await translationProvider.loadWords();
   await translationProvider.loadTranslations().then((_) {
     runApp(
       MultiProvider(

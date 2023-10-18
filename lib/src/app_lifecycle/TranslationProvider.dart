@@ -5,6 +5,7 @@ import 'dart:async';
 class TranslationProvider extends ChangeNotifier {
   String _currentLanguage;
   Map<String, String> _cachedTranslations = {};
+  Map<String, String> _cachedWords = {};
   TranslationProvider(this._currentLanguage);
 
   factory TranslationProvider.fromDeviceLanguage() {
@@ -57,6 +58,15 @@ class TranslationProvider extends ChangeNotifier {
   Future<void> loadTranslations() async {
     _cachedTranslations = await _translationDatabase.getAllTranslationsForLanguage(_currentLanguage);
     notifyListeners();
+  }
+
+  Future<void> loadWords() async {
+    _cachedWords = await _translationDatabase.fetchWordsByLanguage(_currentLanguage);
+    notifyListeners();
+  }
+
+  String getWord(String key) {
+    return _cachedWords[key] ?? '';
   }
 
 }
