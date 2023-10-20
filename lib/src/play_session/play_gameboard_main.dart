@@ -5,33 +5,38 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/play_session/play_gameboard_card.dart';
+import 'package:game_template/src/play_session/ripple_effect_pionka.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
+import 'flip_card_game_card.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  const PlayGameboard({super.key, required this.teamNames, required this.teamColors});
+  const PlayGameboard(
+      {super.key, required this.teamNames, required this.teamColors});
 
   @override
   _PlayGameboardState createState() => _PlayGameboardState();
 }
 
-class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateMixin {
+class _PlayGameboardState extends State<PlayGameboard>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  late StreamController<int> _selectedController = StreamController<int>.broadcast();
+  late StreamController<int> _selectedController =
+      StreamController<int>.broadcast();
   late StreamSubscription<int> _subscription;
   late List<Offset> flagPositions;
   late List<int> flagSteps;
   final List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
   bool hasShownAlertDialog = false;
-  bool showGlow = true;
+  bool showGlow = false;
   late String selectedCardIndex = 'default';
   int selectedValue = 0;
   int currentTeamIndex = 0;
@@ -48,21 +53,23 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        duration: const Duration(seconds: 2),
-        vsync: this);
+    _controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
     allFieldsSvg = _getShuffledFields();
     upRowFieldsSvg = allFieldsSvg.sublist(0, 4);
     downRowFieldsSvg = allFieldsSvg.sublist(4, 8);
     leftColumnFieldsSvg = allFieldsSvg.sublist(8, 14);
     rightColumnFieldsSvg = allFieldsSvg.sublist(14, 20);
-    newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg, leftColumnFieldsSvg, rightColumnFieldsSvg);
+    newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg,
+        leftColumnFieldsSvg, rightColumnFieldsSvg);
     _selectedController = StreamController<int>.broadcast();
-    flagPositions = List.generate(widget.teamColors.length, (index) => Offset(0, 0));
+    flagPositions =
+        List.generate(widget.teamColors.length, (index) => Offset(0, 0));
     flagSteps = List.filled(widget.teamColors.length, 0);
     _subscription = _selectedController.stream.listen((selectedIndex) {
       setState(() {
-        selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
+        selectedValue = _wheelValues[selectedIndex] +
+            1; // Zaktualizuj wartość selectedValue
       });
     });
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
@@ -76,17 +83,20 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     List<GameCard> myCardList = [
-      GameCard('assets/time_to_party_assets/card_microphone.svg', 'assets/time_to_party_assets/card_star_green.svg', showGlow: showGlow),
-      GameCard('assets/time_to_party_assets/card_rymes.svg', 'assets/time_to_party_assets/card_star_blue_light.svg', showGlow: showGlow),
-      GameCard('assets/time_to_party_assets/card_letters.svg', 'assets/time_to_party_assets/card_star_yellow.svg', showGlow: showGlow),
-      GameCard('assets/time_to_party_assets/card_pantomime.svg', 'assets/time_to_party_assets/card_star_blue_dark.svg', showGlow: showGlow),
+      GameCard('assets/time_to_party_assets/card_microphone.svg',
+          'assets/time_to_party_assets/card_star_green.svg'),
+      GameCard('assets/time_to_party_assets/card_rymes.svg',
+          'assets/time_to_party_assets/card_star_blue_light.svg'),
+      GameCard('assets/time_to_party_assets/card_letters.svg',
+          'assets/time_to_party_assets/card_star_yellow.svg'),
+      GameCard('assets/time_to_party_assets/card_pantomime.svg',
+          'assets/time_to_party_assets/card_star_blue_dark.svg'),
     ];
-    GameCard mainCard = GameCard(
-        'assets/time_to_party_assets/card_arrows.svg', 'assets/time_to_party_assets/card_star_pink.svg', showGlow: showGlow);
+    GameCard mainCard = GameCard('assets/time_to_party_assets/card_arrows.svg',
+        'assets/time_to_party_assets/card_star_pink.svg');
 
     print('showGlow: $showGlow');
     print('Wylosowana wartość: $selectedValue');
@@ -109,7 +119,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                 height: screenHeight * 0.55,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.white, width: 2.0), // To dodaje białą linię na dole kontenera.
+                    bottom: BorderSide(
+                        color: Colors.white,
+                        width: 2.0), // To dodaje białą linię na dole kontenera.
                   ),
                 ),
                 child: Center(
@@ -119,7 +131,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                       width: screenWidth * scale,
                       height: screenWidth * scale,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
+                        padding: EdgeInsets.fromLTRB(
+                            10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
                         child: Stack(
                           clipBehavior: Clip.none,
                           alignment: Alignment.center,
@@ -127,46 +140,57 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                             Positioned(
                               left: 0,
                               top: 0,
-                              child: leftColumnVertical(leftColumnFieldsSvg, screenWidth * scale),
+                              child: leftColumnVertical(
+                                  leftColumnFieldsSvg, screenWidth * scale),
                             ),
                             Positioned(
                               right: 0,
                               top: 0,
-                              child: rightColumnVertical(rightColumnFieldsSvg, screenWidth * scale),
+                              child: rightColumnVertical(
+                                  rightColumnFieldsSvg, screenWidth * scale),
                             ),
                             Column(
                               children: [
-                                upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
-                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                upRowHorizontal(
+                                    upRowFieldsSvg, screenWidth * scale),
+                                ResponsiveSizing.responsiveHeightGap(
+                                    context, screenWidth * scale * 0.02),
                                 Expanded(
                                   child: LayoutBuilder(
                                     builder: (context, constraints) {
                                       return SizedBox(
                                         height: constraints.maxHeight,
-                                          child: GestureDetector(
+                                        child: GestureDetector(
                                           onTap: () {
-                                        setState(() {
-                                          if (selectedCardIndex == 'field_arrows'){
-                                            selectedCardIndex = 'field_pantomime';
-                                            navigateWithDelay(context);
-                                          }
-                                        });
-                                      },
-                                        child: FlipCard(
-                                          card: mainCard,
-                                          isFlipped: isMainCardFlipped,
+                                            setState(() {
+                                              if (selectedCardIndex ==
+                                                  'field_arrows') {
+                                                selectedCardIndex =
+                                                    'field_pantomime';
+                                                navigateWithDelay(context);
+                                              }
+                                            });
+                                          },
+                                          child: FlipCard(
+                                            card: mainCard,
+                                            isFlipped: isMainCardFlipped,
+                                            showGlow: showGlow,
+                                          ),
                                         ),
-                                      ),);
+                                      );
                                     },
                                   ),
                                 ),
                                 //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                fourCardsCenter(screenWidth * scale, myCardList, isFlippedList), //obrotowe flagi
+                                fourCardsCenter(screenWidth * scale, myCardList,
+                                    isFlippedList), //obrotowe flagi
                                 //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
+                                downRowHorizontal(
+                                    downRowFieldsSvg, screenWidth * scale),
                               ],
                             ),
-                            buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
+                            buildFlagsStack(widget.teamColors, flagPositions,
+                                screenWidth * scale),
                           ],
                         ),
                       ),
@@ -184,26 +208,35 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                           alignment: Alignment.center,
                           children: [
                             Padding(
-                              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
+                              padding:
+                                  EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
                               child: Column(
                                 children: [
                                   IntrinsicWidth(
                                     child: Container(
-                                      padding:
-                                      EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
+                                      padding: EdgeInsets.all(
+                                          8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
                                       decoration: BoxDecoration(
-                                        color: Colors.black, // Tu ustalamy kolor tła na czarny
-                                        borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
+                                        color: Colors
+                                            .black, // Tu ustalamy kolor tła na czarny
+                                        borderRadius: BorderRadius.circular(
+                                            3.0), // Jeśli chcesz zaokrąglone rogi
                                       ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SvgPicture.asset(
-                                            getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
-                                            width: ResponsiveSizing.scaleWidth(context, 15),
-                                            height: ResponsiveSizing.scaleWidth(context, 15),
+                                            getFlagAssetFromColor(
+                                                colorFromString(
+                                                    getCurrentTeamColor())),
+                                            width: ResponsiveSizing.scaleWidth(
+                                                context, 15),
+                                            height: ResponsiveSizing.scaleWidth(
+                                                context, 15),
                                           ),
-                                          ResponsiveSizing.responsiveWidthGap(context, 10),
+                                          ResponsiveSizing.responsiveWidthGap(
+                                              context, 10),
                                           Row(
                                             children: [
                                               Text(
@@ -211,17 +244,23 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                 style: TextStyle(
                                                   color: Palette().white,
                                                   fontFamily: 'HindMadurai',
-                                                  fontSize: ResponsiveSizing.scaleHeight(context, 14),
+                                                  fontSize: ResponsiveSizing
+                                                      .scaleHeight(context, 14),
                                                 ),
                                               ),
-                                              translatedText(context, 'your_turn', 14, Palette().white),
+                                              translatedText(
+                                                  context,
+                                                  'your_turn',
+                                                  14,
+                                                  Palette().white),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  ResponsiveSizing.responsiveHeightGap(context, 10),
+                                  ResponsiveSizing.responsiveHeightGap(
+                                      context, 10),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
@@ -229,15 +268,25 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                           return;
                                         }
                                         isAnimating = true;
-                                        final randomIndex = Fortune.randomInt(0, _wheelValues.length);
-                                        _selectedController = StreamController<int>.broadcast();
+                                        final randomIndex = Fortune.randomInt(
+                                            0, _wheelValues.length);
+                                        _selectedController =
+                                            StreamController<int>.broadcast();
                                         selected.add(randomIndex);
-                                        Future.delayed(Duration(seconds: 5), () {
+                                        Future.delayed(Duration(seconds: 5),
+                                            () {
                                           setState(() {
-                                            selectedValue = _wheelValues[randomIndex] + 1;
+                                            selectedValue =
+                                                _wheelValues[randomIndex] + 1;
 
-                                            moveFlag(selectedValue, currentFlagIndex,
-                                                screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
+                                            moveFlag(
+                                                selectedValue,
+                                                currentFlagIndex,
+                                                screenWidth * scale * 0.02768 -
+                                                    4 +
+                                                    screenWidth *
+                                                        scale *
+                                                        0.1436);
                                           });
                                         });
                                       },
@@ -253,9 +302,11 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   offset: Offset(0, -10),
                                                   child: Transform.scale(
                                                     scaleX: 0.75,
-                                                    scaleY: 0.65, // zmniejsza wielkość o połowę
+                                                    scaleY:
+                                                        0.65, // zmniejsza wielkość o połowę
                                                     child: TriangleIndicator(
-                                                      color: Palette().borderSpinningWheel,
+                                                      color: Palette()
+                                                          .borderSpinningWheel,
                                                     ),
                                                   ),
                                                 ),
@@ -263,7 +314,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   offset: Offset(0, -10),
                                                   child: Transform.scale(
                                                     scaleX: 0.6,
-                                                    scaleY: 0.5, // zmniejsza wielkość o połowę
+                                                    scaleY:
+                                                        0.5, // zmniejsza wielkość o połowę
                                                     child: TriangleIndicator(
                                                       color: Color(0xFFFFC344),
                                                     ),
@@ -275,67 +327,74 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                         ],
                                         items: [
                                           buildFortuneItem('1', Palette().pink),
-                                          buildFortuneItem('2', Palette().bluegrey),
-                                          buildFortuneItem('3', Palette().backgroundPlaySession),
+                                          buildFortuneItem(
+                                              '2', Palette().bluegrey),
+                                          buildFortuneItem('3',
+                                              Palette().backgroundPlaySession),
                                           buildFortuneItem('1', Palette().grey),
                                           buildFortuneItem('2', Palette().pink),
-                                          buildFortuneItem('3', Palette().darkGrey),
+                                          buildFortuneItem(
+                                              '3', Palette().darkGrey),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  ResponsiveSizing.responsiveHeightGap(context, 10),
-
+                                  ResponsiveSizing.responsiveHeightGap(
+                                      context, 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       ElevatedButton(
                                         child: Icon(Icons.pause),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Palette().bluegrey, // color
-                                          foregroundColor: Palette().menudark, // textColor
+                                          backgroundColor:
+                                              Palette().bluegrey, // color
+                                          foregroundColor:
+                                              Palette().menudark, // textColor
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
                                                   0.02,
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
                                           showExitGameDialog(context);
                                         },
                                       ),
-                                      ResponsiveSizing.responsiveWidthGap(context, 10),
+                                      ResponsiveSizing.responsiveWidthGap(
+                                          context, 10),
                                       ElevatedButton(
                                         child: Icon(Icons.info_outlined),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Palette().bluegrey, // color
-                                          foregroundColor: Palette().menudark, // textColor
+                                          backgroundColor:
+                                              Palette().bluegrey, // color
+                                          foregroundColor:
+                                              Palette().menudark, // textColor
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
                                                   0.02,
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
-                                          Future.delayed(Duration(milliseconds: 150), () {
+                                          Future.delayed(
+                                              Duration(milliseconds: 150), () {
                                             showDialog<void>(
                                               context: context,
                                               builder: (context) {
@@ -345,25 +404,27 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                           });
                                         },
                                       ),
-                                      ResponsiveSizing.responsiveWidthGap(context, 10),
+                                      ResponsiveSizing.responsiveWidthGap(
+                                          context, 10),
                                       ElevatedButton(
                                         child: Icon(Icons.highlight),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Palette().bluegrey, // color
-                                          foregroundColor: Palette().menudark, // textColor
+                                          backgroundColor:
+                                              Palette().bluegrey, // color
+                                          foregroundColor:
+                                              Palette().menudark, // textColor
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                           minimumSize: Size(
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
                                                   0.02,
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height *
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.04),
                                         ),
                                         onPressed: () {
@@ -389,10 +450,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-
-
-  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow, List<String> leftColumn,
-      List<String> rightColumn) {
+  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow,
+      List<String> leftColumn, List<String> rightColumn) {
     List<String> newFields = [];
 
     // Dodaj elementy z leftColumn w odwrotnej kolejności, zaczynając od indeksu 14 do 8
@@ -414,11 +473,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return newFields;
   }
 
-  List<bool> isFlippedList = [false, false, false, false]; // zakładam domyślnie, że karty są odwrócone
+  List<bool> isFlippedList = [
+    false,
+    false,
+    false,
+    false
+  ]; // zakładam domyślnie, że karty są odwrócone
   bool isMainCardFlipped = false;
 
-
-  Widget fourCardsCenter(double screenWidth, List<GameCard> cardList, List<bool> isFlippedList) {
+  Widget fourCardsCenter(
+      double screenWidth, List<GameCard> cardList, List<bool> isFlippedList) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -429,10 +493,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             child: FlipCard(
               card: cardList[i],
               isFlipped: isFlippedList[i],
+              showGlow: showGlow,
             ),
           ),
         ],
-        SizedBox(width: screenWidth * 0.02768 - 4), // dodatkowy SizedBox na końcu
+        SizedBox(
+            width: screenWidth * 0.02768 - 4), // dodatkowy SizedBox na końcu
       ],
     );
   }
@@ -486,16 +552,19 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       FieldType nextField = fields.removeAt(nextIndex);
 
       if (shuffledFields.last != nextField &&
-          (shuffledFields.length < 3 || shuffledFields[shuffledFields.length - 3] != nextField)) {
+          (shuffledFields.length < 3 ||
+              shuffledFields[shuffledFields.length - 3] != nextField)) {
         shuffledFields.add(nextField);
       } else if (fields.length <= 3) {
-        shuffledFields.add(nextField); // breaking the rule when there are less than 3 fields left
+        shuffledFields.add(
+            nextField); // breaking the rule when there are less than 3 fields left
       } else {
         fields.add(nextField);
       }
     }
     // Zamieniamy FieldType na nazwy plików SVG
-    List<String> shuffledSvgFields = shuffledFields.map((field) => fieldTypes[field]!).toList();
+    List<String> shuffledSvgFields =
+        shuffledFields.map((field) => fieldTypes[field]!).toList();
 
     shuffledSvgFields.remove(fieldTypes[FieldType.start]);
     shuffledSvgFields.insert(13, fieldTypes[FieldType.start]!);
@@ -508,7 +577,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
+      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg',
+          width: screenWidth * 0.1436));
       children.add(SizedBox(width: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -525,7 +595,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
+      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg',
+          width: screenWidth * 0.1436));
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -555,26 +626,14 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   }
 
   //budowanie widgetu flag i liczenie wszystkich przesuniec itp
-  Widget buildFlagsStack(List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
+  Widget buildFlagsStack(
+      List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        ...teamColors
-            .asMap()
-            .entries
-            .expand((entry) {
+        ...teamColors.asMap().entries.expand((entry) {
           int index = entry.key;
           Color color = entry.value;
-          /*
-          List<String> flagAssets = [
-            'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
-            'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
-          ];*/
-          // kolka
           List<String> flagAssets = [
             'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
             'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
@@ -584,12 +643,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF' + flag
-                .split('/')
-                .last
-                .split('.')
-                .first
-                .substring(5); //zmiana z 4 na 5
+            String flagColorHex = 'FF${flag
+                    .split('/')
+                    .last
+                    .split('.')
+                    .first
+                    .substring(5)}'; //zmiana z 4 na 5
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -599,32 +658,57 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
           }).map((flag) {
             return AnimatedPositioned(
               duration: Duration(seconds: 1),
-              bottom: (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
+              bottom: (teamColors.length == 2 ||
+                      (teamColors.length == 3 && index != 1))
                   ? flagPositions[index].dy + 23
                   : (teamColors.length == 3 && index == 1)
-                  ? flagPositions[index].dy + 46
-                  : teamColors.length == 4
-                  ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
-                  : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                  : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
-                  : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
-                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                  : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
+                      ? flagPositions[index].dy + 46
+                      : teamColors.length == 4
+                          ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
+                          : (teamColors.length == 5 &&
+                                  index == 1) // kula nr 2 dla 5 kulek
+                              ? flagPositions[index].dy +
+                                  10 +
+                                  (index ~/ 3) * 25 -
+                                  11
+                              : (teamColors.length == 5 &&
+                                      index == 4) // kula nr 5 dla 5 kulek
+                                  ? flagPositions[index].dy +
+                                      10 +
+                                      (index ~/ 3) * 25 +
+                                      11
+                                  : (teamColors.length == 6 &&
+                                          index == 1) // kula nr 2 dla 6 kulek
+                                      ? flagPositions[index].dy +
+                                          10 +
+                                          (index ~/ 3) * 25 -
+                                          11
+                                      : (teamColors.length == 6 &&
+                                              index ==
+                                                  4) // kula nr 5 dla 6 kulek
+                                          ? flagPositions[index].dy +
+                                              10 +
+                                              (index ~/ 3) * 25 +
+                                              11
+                                          : flagPositions[index].dy +
+                                              10 +
+                                              (index ~/ 3) * 25,
               // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2)
                   ? flagPositions[index].dx + (index % 2) * 45 - 8
                   : (teamColors.length == 4)
-                  ? flagPositions[index].dx + (index % 2) * 35 - 3
-                  : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                  ? flagPositions[index].dx + (index % 3) * 25 - 8
-                  : flagPositions[index].dx +
-                  (index % 3) * 25 -
-                  8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
-              child: PionekWithRipple(assetPath: flag, animation: _animation, screenWidth: screenWidth),
+                      ? flagPositions[index].dx + (index % 2) * 35 - 3
+                      : (teamColors.length == 5 ||
+                              teamColors.length == 6 ||
+                              teamColors.length == 3)
+                          ? flagPositions[index].dx + (index % 3) * 25 - 8
+                          : flagPositions[index].dx +
+                              (index % 3) * 25 -
+                              8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+              child: PionekWithRipple(
+                  assetPath: flag,
+                  animation: _animation,
+                  screenWidth: screenWidth),
             );
           });
         }).toList(),
@@ -633,16 +717,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   }
 
   String getFlagAssetFromColor(Color color) {
-    /*
-          List<String> flagAssets = [
-            'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
-            'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
-          ];*/
-    // kolka
     List<String> flagAssets = [
       'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
       'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
@@ -652,18 +726,23 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
     ];
     for (String flag in flagAssets) {
-      String flagColorHex = 'FF' + flag
-          .split('/')
-          .last
-          .split('.')
-          .first
-          .substring(5); //zmiana z 4 na 5
+      String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
       Color flagColor = Color(int.parse(flagColorHex, radix: 16));
       if (color.value == flagColor.value) {
         return flag;
       }
     }
     return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg';
+  }
+
+  //funkcja do wyswietlania koloru druzyny w app_barze
+  Color colorFromString(String colorAsString) {
+    String colorString = colorAsString
+        .split('(0x')[1]
+        .split(')')[0]; // Extracting hex value from the string.
+    int colorInt = int.parse(colorString,
+        radix: 16); // Parsing hex string into an integer.
+    return Color(colorInt); // Creating a new Color object.
   }
 
   //kolo fortuny
@@ -678,64 +757,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-  //funkcja do wyswietlania koloru druzyny w app_barze
-  Color colorFromString(String colorAsString) {
-    String colorString = colorAsString.split('(0x')[1].split(')')[0]; // Extracting hex value from the string.
-    int colorInt = int.parse(colorString, radix: 16); // Parsing hex string into an integer.
-    return Color(colorInt); // Creating a new Color object.
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    _controller.dispose();
-    _selectedController.close();
-    selected.close();
-    super.dispose();
-  }
-
-  void _showAnimatedAlertDialog() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
-      barrierColor: Colors.black45,
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-        return Center(
-            child: AlertDialog(
-                backgroundColor: Palette().white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)
-            )
-        );
-      },
-      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
-          Widget child) {
-        // Jeśli dialog się pojawia
-        if (animation.status == AnimationStatus.forward) {
-          return ScaleTransition(
-            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          );
-        }
-        // Jeśli dialog znika
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-    );
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pop();
-    });
-  }
-
-  //cieniowany tekst
+  //cieniowany tekst, obramowka kolo fortuny
   Widget strokedText(String text) {
     return Transform.rotate(
       angle: 90 * 3.14 / 180,
@@ -765,6 +787,57 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    _controller.dispose();
+    _selectedController.close();
+    selected.close();
+    super.dispose();
+  }
+
+  void _showAnimatedAlertDialog() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation animation,
+          Animation secondaryAnimation) {
+        return Center(
+            child: AlertDialog(
+                backgroundColor: Palette().white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: letsText(
+                    context, 'Tapnij w koło by zakręcić', 20, Palette().pink,
+                    textAlign: TextAlign.center)));
+      },
+      transitionBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
+        // Jeśli dialog się pojawia
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        // Jeśli dialog znika
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pop();
+    });
+  }
+
+
 
   //funkcja przesuniecia flagi, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
@@ -810,8 +883,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         newFieldsList[flagSteps[flagIndex]] == 'field_letters' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_microphone' ||
         newFieldsList[flagSteps[flagIndex]] == 'field_pantomime' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_arrows'
-    ) {
+        newFieldsList[flagSteps[flagIndex]] == 'field_arrows') {
       setState(() {
         isFlippedList = [false, false, false, false];
         isMainCardFlipped = false;
@@ -822,7 +894,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         isMainCardFlipped = true;
       });
     }
-
 
     await Future.delayed(Duration(seconds: 1));
     String currentTeamName = getCurrentTeamName();
@@ -855,7 +926,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     });
   }
 
-
   String getCurrentTeamName() {
     return widget.teamNames[currentTeamIndex].toString();
   }
@@ -873,13 +943,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'are_you_sure_game_leave', 20, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(
+              context, 'are_you_sure_game_leave', 20, Palette().pink,
+              textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset(
+                    'assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
@@ -892,16 +965,11 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize:
-                    Size(MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.5, MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.05),
-                    textStyle:
-                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -915,7 +983,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
+                  child: translatedText(
+                      context, 'cancel', 16, Palette().bluegrey,
+                      textAlign: TextAlign.center),
                 ),
               ),
             ],
@@ -925,33 +995,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-  static void showDialogTest(BuildContext context, List<String> newFieldsList) {
-    String allFieldsText = newFieldsList.join(", ");
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("My List"),
-      content: Text(allFieldsText, style: TextStyle(color: Colors.white)),
-      actions: [
-        ElevatedButton(
-          child: Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void showTransferDeviceDialog(BuildContext context, String fieldValue, String currentTeamName, Color currentTeamColor) {
+  void showTransferDeviceDialog(BuildContext context, String fieldValue,
+      String currentTeamName, Color currentTeamColor) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -960,14 +1005,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title:
-          translatedText(context, 'pass_the_device_to_the_person', 20, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(
+              context, 'pass_the_device_to_the_person', 20, Palette().pink,
+              textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset(
+                    'assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
@@ -978,31 +1025,26 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize:
-                    Size(MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.5, MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.05),
-                    textStyle:
-                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            PlayGameboardCard(
-                              teamNames: [currentTeamName],
-                              teamColors: [currentTeamColor],
-                              currentField: [fieldValue],
-                            ),
+                        builder: (context) => PlayGameboardCard(
+                          teamNames: [currentTeamName],
+                          teamColors: [currentTeamColor],
+                          currentField: [fieldValue],
+                        ),
                       ),
                     );
                   },
-                  child: translatedText(context, 'done', 20, Palette().white, textAlign: TextAlign.center),
+                  child: translatedText(context, 'done', 20, Palette().white,
+                      textAlign: TextAlign.center),
                 ),
               ),
             ],
@@ -1013,7 +1055,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   }
 }
 
-  enum FieldType {
+enum FieldType {
   arrow,
   rhyme,
   alphabet,
@@ -1026,144 +1068,4 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   starGreen,
   starPink,
   starYellow
-}
-
-class GameCard extends StatelessWidget {
-  final String assetPath1;
-  final String assetPath2;
-  final bool showGlow;
-
-  GameCard(this.assetPath1, this.assetPath2, {this.showGlow = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.asset(assetPath1),
-        if (showGlow) ...[
-          Image.asset(assetPath2),
-        ],
-      ],
-    );
-  }
-}
-
-
-class FlipCard extends StatefulWidget {
-  final GameCard card;
-  final bool isFlipped;
-
-  FlipCard({required this.card, required this.isFlipped});
-
-  @override
-  _FlipCardState createState() => _FlipCardState();
-}
-
-class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
-    if (widget.isFlipped) {
-      _controller.value = 0.5; // jeśli karta ma być odwrócona
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        double value = _controller.value;
-        bool isFaceUp = value < 0.5;
-        final Matrix4 transform = Matrix4.identity()
-          ..setEntry(3, 2, 0.001) // punkt perspektywy
-          ..rotateY(pi * value);
-        return Transform(
-          transform: transform,
-          alignment: Alignment.center,
-          child: Container(
-            child: isFaceUp ? SvgPicture.asset(widget.card.assetPath1) : SvgPicture.asset(widget.card.assetPath2),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant FlipCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isFlipped != oldWidget.isFlipped) {
-      if (widget.isFlipped) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-}
-
-
-class PionekWithRipple extends StatelessWidget {
-  final String assetPath;
-  final Animation<double> animation;
-
-  double screenWidth;
-
-  PionekWithRipple({required this.assetPath, required this.animation, required this.screenWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        SvgPicture.asset(assetPath, width: screenWidth / 15.09, height: screenWidth / 15.09),
-        Positioned(
-            left: -50,
-            top: -50,
-            right: -50,
-            bottom: -50,
-            child: RippleEffect(animation: animation)
-        ),
-      ],
-    );
-  }
-
-}
-
-class RippleEffect extends StatelessWidget {
-  final Animation<double> animation;
-
-  RippleEffect({required this.animation});
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, child) {
-        return Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-            children: [
-         Container(
-          width: 20 + (animation.value * 100), // zakładając, że początkowa wielkość pionka to 50
-          height: 20 + (animation.value * 100),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.yellow.withOpacity(1 - animation.value), // zakładając, że pionek jest niebieski
-          ),
-        )
-        ],);
-      },
-    );
-  }
 }

@@ -1,0 +1,38 @@
+            /*
+            List<String> flagAssets = [
+              'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
+              'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
+              'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
+              'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
+              'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
+              'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
+            ];*/
+            // kolka
+
+            ------------
+
+  static void showDialogTest(BuildContext context, List<String> newFieldsList) {
+    String allFieldsText = newFieldsList.join(", ");
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("My List"),
+      content: Text(allFieldsText, style: TextStyle(color: Colors.white)),
+      actions: [
+        ElevatedButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
