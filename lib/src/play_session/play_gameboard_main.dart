@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/play_session/additional_widgets.dart';
 import 'package:game_template/src/play_session/play_gameboard_card.dart';
 import 'package:game_template/src/play_session/ripple_effect_pionka.dart';
 import 'package:provider/provider.dart';
@@ -100,7 +101,7 @@ class _PlayGameboardState extends State<PlayGameboard>
 
     print('showGlow: $showGlow');
     print('Wylosowana wartość: $selectedValue');
-    return WillPopScope(
+    return WillPopScope( 
       onWillPop: () async {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         showExitGameDialog(context);
@@ -290,53 +291,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                                           });
                                         });
                                       },
-                                      child: FortuneWheel(
-                                        selected: selected.stream,
-                                        animateFirst: false,
-                                        indicators: <FortuneIndicator>[
-                                          FortuneIndicator(
-                                            alignment: Alignment.topCenter,
-                                            child: Stack(
-                                              children: [
-                                                Transform.translate(
-                                                  offset: Offset(0, -10),
-                                                  child: Transform.scale(
-                                                    scaleX: 0.75,
-                                                    scaleY:
-                                                        0.65, // zmniejsza wielkość o połowę
-                                                    child: TriangleIndicator(
-                                                      color: Palette()
-                                                          .borderSpinningWheel,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Transform.translate(
-                                                  offset: Offset(0, -10),
-                                                  child: Transform.scale(
-                                                    scaleX: 0.6,
-                                                    scaleY:
-                                                        0.5, // zmniejsza wielkość o połowę
-                                                    child: TriangleIndicator(
-                                                      color: Color(0xFFFFC344),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                        items: [
-                                          buildFortuneItem('1', Palette().pink),
-                                          buildFortuneItem(
-                                              '2', Palette().bluegrey),
-                                          buildFortuneItem('3',
-                                              Palette().backgroundPlaySession),
-                                          buildFortuneItem('1', Palette().grey),
-                                          buildFortuneItem('2', Palette().pink),
-                                          buildFortuneItem(
-                                              '3', Palette().darkGrey),
-                                        ],
-                                      ),
+                                      child: MyFortuneWheel(selected: selected),
                                     ),
                                   ),
                                   ResponsiveSizing.responsiveHeightGap(
@@ -512,11 +467,11 @@ class _PlayGameboardState extends State<PlayGameboard>
     FieldType.alphabet: 'field_letters',
     FieldType.pantomime: 'field_pantomime',
     FieldType.famousPeople: 'field_microphone',
+    FieldType.starTaboo: 'field_taboo',
     FieldType.start: 'field_start',
     FieldType.starBlueDark: 'field_star_blue_dark',
-    FieldType.starBlueLight: 'field_star_blue_light',
-    FieldType.starGreen: 'field_star_green',
     FieldType.starPink: 'field_star_pink',
+    FieldType.starGreen: 'field_star_green',
     FieldType.starYellow: 'field_star_yellow',
   };
 
@@ -525,13 +480,13 @@ class _PlayGameboardState extends State<PlayGameboard>
     FieldType.arrow: 3,
     FieldType.rhyme: 3,
     FieldType.alphabet: 3,
-    FieldType.pantomime: 3,
-    FieldType.famousPeople: 3,
+    FieldType.pantomime: 2,
+    FieldType.famousPeople: 2,
+    FieldType.starTaboo: 2,
     FieldType.start: 1,
     FieldType.starBlueDark: 1,
-    FieldType.starBlueLight: 1,
-    FieldType.starGreen: 1,
     FieldType.starPink: 1,
+    FieldType.starGreen: 1,
     FieldType.starYellow: 1,
   };
 
@@ -745,49 +700,6 @@ class _PlayGameboardState extends State<PlayGameboard>
     return Color(colorInt); // Creating a new Color object.
   }
 
-  //kolo fortuny
-  FortuneItem buildFortuneItem(String text, Color color) {
-    return FortuneItem(
-      child: strokedText(text),
-      style: FortuneItemStyle(
-        color: color,
-        borderColor: Palette().borderSpinningWheel,
-        borderWidth: 3,
-      ),
-    );
-  }
-
-  //cieniowany tekst, obramowka kolo fortuny
-  Widget strokedText(String text) {
-    return Transform.rotate(
-      angle: 90 * 3.14 / 180,
-      child: Stack(
-        children: <Widget>[
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'Adamina',
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 3
-                ..color = Palette().borderSpinningWheel,
-            ),
-          ),
-          // Tekst
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'Adamina',
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _subscription.cancel();
@@ -836,9 +748,7 @@ class _PlayGameboardState extends State<PlayGameboard>
       Navigator.of(context).pop();
     });
   }
-
-
-
+  
   //funkcja przesuniecia flagi, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
     for (int i = 0; i < steps; i++) {
@@ -994,65 +904,6 @@ class _PlayGameboardState extends State<PlayGameboard>
       },
     );
   }
-
-  void showTransferDeviceDialog(BuildContext context, String fieldValue,
-      String currentTeamName, Color currentTeamColor) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(
-              context, 'pass_the_device_to_the_person', 20, Palette().pink,
-              textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink,
-                    foregroundColor: Palette().white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlayGameboardCard(
-                          teamNames: [currentTeamName],
-                          teamColors: [currentTeamColor],
-                          currentField: [fieldValue],
-                        ),
-                      ),
-                    );
-                  },
-                  child: translatedText(context, 'done', 20, Palette().white,
-                      textAlign: TextAlign.center),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
 enum FieldType {
@@ -1064,8 +915,8 @@ enum FieldType {
   charades,
   start,
   starBlueDark,
-  starBlueLight,
-  starGreen,
   starPink,
+  starGreen,
+  starTaboo,
   starYellow
 }

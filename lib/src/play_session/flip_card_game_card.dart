@@ -65,7 +65,7 @@ class _FlipCardState extends State<FlipCard>
               ),
               if (widget.showGlow) ...[
                 Container(
-
+                  width: 100,
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
                       colors: [Colors.white, Colors.transparent],
