@@ -14,6 +14,7 @@ import '../instruction_dialog/instruction_dialog.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
 import 'flip_card_game_card.dart';
+import 'stacked_card_carousel.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;
@@ -157,35 +158,8 @@ class _PlayGameboardState extends State<PlayGameboard>
                                 ResponsiveSizing.responsiveHeightGap(
                                     context, screenWidth * scale * 0.02),
                                 Expanded(
-                                  child: LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      return SizedBox(
-                                        height: constraints.maxHeight,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (selectedCardIndex ==
-                                                  'field_arrows') {
-                                                selectedCardIndex =
-                                                    'field_pantomime';
-                                                navigateWithDelay(context);
-                                              } navigateWithDelay(context);
-                                            });
-                                          },
-                                          child: FlipCard(
-                                            card: mainCard,
-                                            isFlipped: isMainCardFlipped,
-                                            showGlow: showGlow,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
                                 ),
-                                //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                fourCardsCenter(screenWidth * scale, myCardList,
-                                    isFlippedList), //obrotowe flagi
-                                //ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                 downRowHorizontal(
                                     downRowFieldsSvg, screenWidth * scale),
                               ],
@@ -342,36 +316,6 @@ class _PlayGameboardState extends State<PlayGameboard>
     }
 
     return newFields;
-  }
-
-  List<bool> isFlippedList = [
-    false,
-    false,
-    false,
-    false
-  ]; // zakładam domyślnie, że karty są odwrócone
-  bool isMainCardFlipped = false;
-
-  Widget fourCardsCenter(
-      double screenWidth, List<GameCard> cardList, List<bool> isFlippedList) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (int i = 0; i < cardList.length; i++) ...[
-          SizedBox(width: screenWidth * 0.02768 - 4),
-          SizedBox(
-            width: screenWidth * 0.1436,
-            child: FlipCard(
-              card: cardList[i],
-              isFlipped: isFlippedList[i],
-              showGlow: showGlow,
-            ),
-          ),
-        ],
-        SizedBox(
-            width: screenWidth * 0.02768 - 4), // dodatkowy SizedBox na końcu
-      ],
-    );
   }
 
   final Random rng = Random();
@@ -699,31 +643,18 @@ class _PlayGameboardState extends State<PlayGameboard>
         selectedCardIndex = 'field_arrows';
         print('jest show glow i jest fieldarrow');
       });
+      StackedCard.showAsDialog(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
+
     } else {
       setState(() {
         showGlow = false;
         selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
       });
     }
-    if (newFieldsList[flagSteps[flagIndex]] == 'field_sheet' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_letters' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_microphone' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_pantomime' ||
-        newFieldsList[flagSteps[flagIndex]] == 'field_arrows') {
-      setState(() {
-        isFlippedList = [false, false, false, false];
-        isMainCardFlipped = false;
-      });
-    } else {
-      setState(() {
-        isFlippedList = [true, true, true, true];
-        isMainCardFlipped = true;
-      });
-    }
 
     await Future.delayed(Duration(seconds: 1));
-    String currentTeamName = getCurrentTeamName();
-    Color currentTeamColor = widget.teamColors[currentTeamIndex];
+    //String currentTeamName = getCurrentTeamName();
+    //Color currentTeamColor = widget.teamColors[currentTeamIndex];
 
     //showTransferDeviceDialog(context, selectedCardIndex, currentTeamName, currentTeamColor);
 

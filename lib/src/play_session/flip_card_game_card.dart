@@ -66,8 +66,11 @@ class _FlipCardState extends State<FlipCard>
               if (widget.showGlow) ...[
                 Container(
                   width: 100,
+                  height: 100,  // Ustawiłem też wysokość, aby widoczny był efekt
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
+                      center: Alignment.center,  // Rozpoczęcie gradientu ze środka
+                      radius: 0.7,  // Określa "rozciągnięcie" gradientu, 0.5 to połowa szerokości i wysokości
                       colors: [Colors.white, Colors.transparent],
                       stops: [0.1, 1.0],
                     ),

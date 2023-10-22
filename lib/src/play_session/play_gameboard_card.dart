@@ -10,6 +10,8 @@ import '../play_session/play_gameboard_main.dart';
 import '../style/palette.dart';
 import 'package:flutter/services.dart';
 
+import 'additional_widgets.dart';
+
 class PlayGameboardCard extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
@@ -28,6 +30,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _slideAnimationController;
+  bool hasShownAlertDialog = false;
+
+  final AdditionalWidgets additionalWidgets = AdditionalWidgets();
 
   double _opacity = 0;
   double _offsetX = 0;
@@ -45,7 +50,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
       });
     });
     _showCard(); // By karta pojawiła się na początku
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!hasShownAlertDialog) {
+        additionalWidgets.showTransferDeviceDialog(
+          context,
+          widget.currentField[0],
+          widget.teamNames[0],
+          widget.teamColors[0],
+        );
+        hasShownAlertDialog = true;
+      }
+    });
   }
+
 
   void _dismissCardToLeft() {
     setState(() {
@@ -92,8 +110,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.pause,
-                      color: Colors.white, size: 30), // Ikona pauzy
+                  IconButton(
+                    icon: Icon(Icons.pause, color: Colors.white, size: 30),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   Spacer(),
                   Container(
                     padding:
@@ -311,9 +333,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                     SvgButton(
                       assetName:
                           'assets/time_to_party_assets/cards_screens/button_drop.svg',
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: () => _dismissCardToLeft(),
                     ),
                     Positioned(
                         top: 10,
@@ -425,12 +445,24 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
     'field_letters': 'Literki',
     'field_pantomime': 'Pantomimy',
     'field_microphone': 'Sławne osoby',
-    'field_start': 'Pole startu',
+    'field_taboo': 'Taboo',
     'field_star_blue_dark': 'Trochę ruchu',
-    'field_star_blue_light': 'Antonimy',
+    'field_star_pink': 'Antonimy',
     'field_star_green': 'Rysowanie',
-    'field_star_pink': 'Taboo',
     'field_star_yellow': 'Pytania',
+  };
+
+  final Map<String, String> fieldTypeImagePaths = {
+   'field_arrows':'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',
+   'field_sheet': 'assets/time_to_party_assets/cards_screens/rymes_icon_color.svg',
+   'field_letters':  'assets/time_to_party_assets/cards_screens/letters_icon_color.svg',
+   'field_pantomime':   'assets/time_to_party_assets/cards_screens/pantomime_icon_color.svg',
+   'field_microphone':     'assets/time_to_party_assets/cards_screens/microphone_icon_color.svg',
+   'field_taboo': 'assets/time_to_party_assets/cards_screens/taboo_icon_color.svg',
+   'field_star_blue_dark': 'assets/time_to_party_assets/cards_screens/star_blue_icon_color.svg',
+   'field_star_pink': 'assets/time_to_party_assets/cards_screens/star_pink_icon_color.svg',
+   'field_star_green': 'assets/time_to_party_assets/cards_screens/star_green_icon_color.svg',
+    'field_star_yellow': 'assets/time_to_party_assets/cards_screens/star_yellow_icon_color.svg'
   };
 
   List<Widget> _displayCurrentField() {
@@ -438,8 +470,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
 
     for (String fieldType in widget.currentField) {
       String currentTitle = fieldTypeTranslations[fieldType] ?? fieldType;
+      String? currentImagePath = fieldTypeImagePaths[fieldType];
 
-      displayWidgets.add(
+      List<Widget> rowItems = [];
+
+      rowItems.add(
         Text(
           currentTitle,
           style: TextStyle(
@@ -458,8 +493,25 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
           ),
         ),
       );
+      if (currentImagePath != null) {
+        rowItems.add(
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: SvgPicture.asset(
+              currentImagePath,
+              height: 30.0, // Możesz dostosować wysokość według potrzeb
+              fit: BoxFit.contain,
+            ),
+          ),
+        );
+      }
+      displayWidgets.add(
+        Row(
+          mainAxisSize: MainAxisSize.min, // Dopasowuje wielkość wiersza do zawartości
+          children: rowItems,
+        ),
+      );
     }
-
     return displayWidgets;
   }
 }
@@ -533,8 +585,6 @@ class _SvgButtonState extends State<SvgButton>
     super.dispose();
   }
 }
-
-
 
 // ... poza klasą widgetu:
 class CircleProgressPainter extends CustomPainter {

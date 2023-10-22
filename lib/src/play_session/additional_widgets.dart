@@ -27,8 +27,8 @@ class NeumorphicTripleButton extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
+            Palette().pink,
             Color(0xFF5E0EAD),
-            Color(0xFF1E1E1F),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
@@ -120,7 +120,7 @@ class MyFortuneWheel extends StatelessWidget {
                     end: Alignment.topLeft,
                     colors: [
                       Color(0xFF5E0EAD),
-                      Color(0xFF1E1E1F),
+                      Palette().pink,
                     ], // Przykładowe kolory gradientu
                   ),
                   boxShadow: [
@@ -189,35 +189,23 @@ class MyFortuneWheel extends StatelessWidget {
                   ),
                 ],
                 items: [
-                  buildFortuneItem('1', Palette().pink), //, Palette().white
-                  buildFortuneItem('2', Palette().bluegrey),
-                  buildFortuneItem('3', Palette().backgroundPlaySession),
-                  buildFortuneItem('1', Palette().grey),
+                  buildFortuneItem('1', Palette().bluegrey),
                   buildFortuneItem('2', Palette().pink),
-                  buildFortuneItem('3', Palette().darkGrey),
+                  buildFortuneItem('3', Palette().backgroundPlaySession),
+                  buildFortuneItem('1', Palette().bluegrey),
+                  buildFortuneItem('2', Palette().pink),
+                  buildFortuneItem('3', Palette().backgroundPlaySession),
                 ],
               ),),
-             Center(child:
-               Icon(
-                 Icons.expand_circle_down,
-                 color: Colors.white,
-                 size: 40.0,
-               ),
-             )
             ],
           );
         });
   }
 
   //kolo fortuny
-  FortuneItem buildFortuneItem(String text, Color color ) {//Color color1, Color color2
+  FortuneItem buildFortuneItem(String text, Color color) {
     return FortuneItem(
       style: FortuneItemStyle(
-       /* gradient: LinearGradient(
-          colors: [color1, color2],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),*/
           color: color,
           borderColor: Palette().borderSpinningWheel,
         borderWidth: 3,
@@ -298,60 +286,81 @@ class StripePainter extends CustomPainter {
 class AdditionalWidgets {
   void showTransferDeviceDialog(BuildContext context, String fieldValue,
       String currentTeamName, Color currentTeamColor) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(
-              context, 'pass_the_device_to_the_person', 20, Palette().pink,
-              textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink,
-                    foregroundColor: Palette().white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlayGameboardCard(
-                          teamNames: [currentTeamName],
-                          teamColors: [currentTeamColor],
-                          currentField: [fieldValue],
-                        ),
-                      ),
-                    );
-                  },
-                  child: translatedText(context, 'done', 20, Palette().white,
-                      textAlign: TextAlign.center),
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation animation,
+          Animation secondaryAnimation) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: translatedText(
+                context, 'pass_the_device_to_the_person', 20, Palette().pink,
+                textAlign: TextAlign.center),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Field Value: $fieldValue'),  // Wyświetlanie wartości fieldValue
+                Text('Team Name: $currentTeamName'),
+                Container(
+                  width: 25,
+                  height: 25,
+                  color: currentTeamColor,  // Wyświetlanie koloru drużyny jako prostokątny blok
                 ),
-              ),
-            ],
+                Center(
+                  child: SvgPicture.asset(
+                      'assets/time_to_party_assets/line_instruction_screen.svg'),
+                ),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Palette().pink,
+                      foregroundColor: Palette().white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      minimumSize: Size(
+                        MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05,
+                      ),
+                      textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: translatedText(context, 'done', 20, Palette().white,
+                        textAlign: TextAlign.center),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
+      transitionBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
-  }
+    }
 }
