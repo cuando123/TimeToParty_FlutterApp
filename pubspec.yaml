@@ -35,6 +35,7 @@ dependencies:
   vibration: ^1.7.7
   flutter_native_splash: ^2.2.19
   flutter_fortune_wheel: ^1.3.0
+  #  path: lib/src/flutter_fortune_wheel-1.3.0
   draw_your_image: ^0.2.0
 
   # If you don't need one of the following dependencies,

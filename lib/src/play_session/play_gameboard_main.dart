@@ -37,7 +37,7 @@ class _PlayGameboardState extends State<PlayGameboard>
   late List<int> flagSteps;
   final List<int> _wheelValues = [0, 1, 2, 0, 1, 2];
   bool hasShownAlertDialog = false;
-  bool showGlow = false;
+  bool showGlow = true;
   late String selectedCardIndex = 'default';
   int selectedValue = 0;
   int currentTeamIndex = 0;
@@ -169,7 +169,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                                                 selectedCardIndex =
                                                     'field_pantomime';
                                                 navigateWithDelay(context);
-                                              }
+                                              } navigateWithDelay(context);
                                             });
                                           },
                                           child: FlipCard(
@@ -299,93 +299,9 @@ class _PlayGameboardState extends State<PlayGameboard>
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      ElevatedButton(
-                                        child: Icon(Icons.pause),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Palette().bluegrey, // color
-                                          foregroundColor:
-                                              Palette().menudark, // textColor
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          minimumSize: Size(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.02,
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.04),
-                                        ),
-                                        onPressed: () {
-                                          showExitGameDialog(context);
-                                        },
-                                      ),
-                                      ResponsiveSizing.responsiveWidthGap(
-                                          context, 10),
-                                      ElevatedButton(
-                                        child: Icon(Icons.info_outlined),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Palette().bluegrey, // color
-                                          foregroundColor:
-                                              Palette().menudark, // textColor
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          minimumSize: Size(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.02,
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.04),
-                                        ),
-                                        onPressed: () {
-                                          Future.delayed(
-                                              Duration(milliseconds: 150), () {
-                                            showDialog<void>(
-                                              context: context,
-                                              builder: (context) {
-                                                return InstructionDialog();
-                                              },
-                                            );
-                                          });
-                                        },
-                                      ),
-                                      ResponsiveSizing.responsiveWidthGap(
-                                          context, 10),
-                                      ElevatedButton(
-                                        child: Icon(Icons.highlight),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Palette().bluegrey, // color
-                                          foregroundColor:
-                                              Palette().menudark, // textColor
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          minimumSize: Size(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.02,
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.04),
-                                        ),
-                                        onPressed: () {
-                                          _controller.forward(from: 0);
-                                        },
-                                      )
+                                      NeumorphicTripleButton(_controller, () => showExitGameDialog(context))
+
+                                      ,
                                     ],
                                   ),
                                 ],
