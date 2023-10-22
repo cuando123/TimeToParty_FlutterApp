@@ -84,7 +84,7 @@ class StackedCard extends StatelessWidget {
             children: [
               Text(
                 "Wybierz kartę",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white70),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               SizedBox(height: 20), // Dodaję trochę odstępu między tekstem a kartami
           Expanded(child:StackedCardCarousel(items: exampleCards, spaceBetweenItems: 250, initialOffset: 10)),
@@ -112,14 +112,14 @@ class FancyCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(index), // Dodajemy tę linię
       child: Card(color: Colors.transparent,
-        elevation: 4.0,
+        //elevation: 4.0,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: <Widget>[
               Container(
-                width: 200,
-                height: 200,
+                width: 250,
+                height: 250,
                 child: image,
               ),
             ],

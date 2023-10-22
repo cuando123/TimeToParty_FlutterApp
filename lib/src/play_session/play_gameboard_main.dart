@@ -13,26 +13,23 @@ import '../app_lifecycle/translated_text.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
-import 'flip_card_game_card.dart';
+import '../style/stars_animation.dart';
 import 'stacked_card_carousel.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  const PlayGameboard(
-      {super.key, required this.teamNames, required this.teamColors});
+  const PlayGameboard({super.key, required this.teamNames, required this.teamColors});
 
   @override
   _PlayGameboardState createState() => _PlayGameboardState();
 }
 
-class _PlayGameboardState extends State<PlayGameboard>
-    with TickerProviderStateMixin {
+class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  late StreamController<int> _selectedController =
-      StreamController<int>.broadcast();
+  late StreamController<int> _selectedController = StreamController<int>.broadcast();
   late StreamSubscription<int> _subscription;
   late List<Offset> flagPositions;
   late List<int> flagSteps;
@@ -51,27 +48,25 @@ class _PlayGameboardState extends State<PlayGameboard>
   List<String> rightColumnFieldsSvg = [];
   List<String> allFieldsSvg = [];
   List<String> newFieldsList = [];
+  bool _showStarsAnimation = false;
+
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _controller = AnimationController(duration: const Duration(seconds: 1), vsync: this);
     allFieldsSvg = _getShuffledFields();
     upRowFieldsSvg = allFieldsSvg.sublist(0, 4);
     downRowFieldsSvg = allFieldsSvg.sublist(4, 8);
     leftColumnFieldsSvg = allFieldsSvg.sublist(8, 14);
     rightColumnFieldsSvg = allFieldsSvg.sublist(14, 20);
-    newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg,
-        leftColumnFieldsSvg, rightColumnFieldsSvg);
+    newFieldsList = generateNewFieldsList(upRowFieldsSvg, downRowFieldsSvg, leftColumnFieldsSvg, rightColumnFieldsSvg);
     _selectedController = StreamController<int>.broadcast();
-    flagPositions =
-        List.generate(widget.teamColors.length, (index) => Offset(0, 0));
+    flagPositions = List.generate(widget.teamColors.length, (index) => Offset(0, 0));
     flagSteps = List.filled(widget.teamColors.length, 0);
     _subscription = _selectedController.stream.listen((selectedIndex) {
       setState(() {
-        selectedValue = _wheelValues[selectedIndex] +
-            1; // Zaktualizuj wartość selectedValue
+        selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
       });
     });
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
@@ -87,22 +82,7 @@ class _PlayGameboardState extends State<PlayGameboard>
 
   @override
   Widget build(BuildContext context) {
-    List<GameCard> myCardList = [
-      GameCard('assets/time_to_party_assets/card_microphone.svg',
-          'assets/time_to_party_assets/card_star_green.svg'),
-      GameCard('assets/time_to_party_assets/card_rymes.svg',
-          'assets/time_to_party_assets/card_star_blue_light.svg'),
-      GameCard('assets/time_to_party_assets/card_letters.svg',
-          'assets/time_to_party_assets/card_star_yellow.svg'),
-      GameCard('assets/time_to_party_assets/card_pantomime.svg',
-          'assets/time_to_party_assets/card_star_blue_dark.svg'),
-    ];
-    GameCard mainCard = GameCard('assets/time_to_party_assets/card_arrows.svg',
-        'assets/time_to_party_assets/card_star_pink.svg');
-
-    print('showGlow: $showGlow');
-    print('Wylosowana wartość: $selectedValue');
-    return WillPopScope( 
+    return WillPopScope(
       onWillPop: () async {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         showExitGameDialog(context);
@@ -112,8 +92,6 @@ class _PlayGameboardState extends State<PlayGameboard>
         body: LayoutBuilder(builder: (context, constraints) {
           double screenWidth = constraints.maxWidth;
           double screenHeight = constraints.maxHeight;
-          print('screenHeight: $screenHeight');
-          print('screenWidth: $screenWidth');
           double scale = min((screenHeight * 0.55) / screenWidth, 1.0);
           return Column(
             children: <Widget>[
@@ -121,9 +99,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                 height: screenHeight * 0.55,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(
-                        color: Colors.white,
-                        width: 2.0), // To dodaje białą linię na dole kontenera.
+                    bottom: BorderSide(color: Colors.white, width: 2.0), // To dodaje białą linię na dole kontenera.
                   ),
                 ),
                 child: Center(
@@ -133,8 +109,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                       width: screenWidth * scale,
                       height: screenWidth * scale,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
+                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
                         child: Stack(
                           clipBehavior: Clip.none,
                           alignment: Alignment.center,
@@ -142,30 +117,24 @@ class _PlayGameboardState extends State<PlayGameboard>
                             Positioned(
                               left: 0,
                               top: 0,
-                              child: leftColumnVertical(
-                                  leftColumnFieldsSvg, screenWidth * scale),
+                              child: leftColumnVertical(leftColumnFieldsSvg, screenWidth * scale),
                             ),
                             Positioned(
                               right: 0,
                               top: 0,
-                              child: rightColumnVertical(
-                                  rightColumnFieldsSvg, screenWidth * scale),
+                              child: rightColumnVertical(rightColumnFieldsSvg, screenWidth * scale),
                             ),
                             Column(
                               children: [
-                                upRowHorizontal(
-                                    upRowFieldsSvg, screenWidth * scale),
-                                ResponsiveSizing.responsiveHeightGap(
-                                    context, screenWidth * scale * 0.02),
+                                upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
+                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                 Expanded(
                                   child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
                                 ),
-                                downRowHorizontal(
-                                    downRowFieldsSvg, screenWidth * scale),
+                                downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                               ],
                             ),
-                            buildFlagsStack(widget.teamColors, flagPositions,
-                                screenWidth * scale),
+                            buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
                           ],
                         ),
                       ),
@@ -182,36 +151,28 @@ class _PlayGameboardState extends State<PlayGameboard>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
+                            if (_showStarsAnimation) StarsAnimation(),
                             Padding(
-                              padding:
-                                  EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
+                              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
                               child: Column(
                                 children: [
                                   IntrinsicWidth(
                                     child: Container(
-                                      padding: EdgeInsets.all(
-                                          8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
+                                      padding:
+                                          EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
                                       decoration: BoxDecoration(
-                                        color: Colors
-                                            .black, // Tu ustalamy kolor tła na czarny
-                                        borderRadius: BorderRadius.circular(
-                                            3.0), // Jeśli chcesz zaokrąglone rogi
+                                        color: Colors.black, // Tu ustalamy kolor tła na czarny
+                                        borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
                                       ),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           SvgPicture.asset(
-                                            getFlagAssetFromColor(
-                                                colorFromString(
-                                                    getCurrentTeamColor())),
-                                            width: ResponsiveSizing.scaleWidth(
-                                                context, 15),
-                                            height: ResponsiveSizing.scaleWidth(
-                                                context, 15),
+                                            getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
+                                            width: ResponsiveSizing.scaleWidth(context, 15),
+                                            height: ResponsiveSizing.scaleWidth(context, 15),
                                           ),
-                                          ResponsiveSizing.responsiveWidthGap(
-                                              context, 10),
+                                          ResponsiveSizing.responsiveWidthGap(context, 10),
                                           Row(
                                             children: [
                                               Text(
@@ -219,63 +180,49 @@ class _PlayGameboardState extends State<PlayGameboard>
                                                 style: TextStyle(
                                                   color: Palette().white,
                                                   fontFamily: 'HindMadurai',
-                                                  fontSize: ResponsiveSizing
-                                                      .scaleHeight(context, 14),
+                                                  fontSize: ResponsiveSizing.scaleHeight(context, 14),
                                                 ),
                                               ),
-                                              translatedText(
-                                                  context,
-                                                  'your_turn',
-                                                  14,
-                                                  Palette().white),
+                                              translatedText(context, 'your_turn', 14, Palette().white),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  ResponsiveSizing.responsiveHeightGap(
-                                      context, 10),
+                                  ResponsiveSizing.responsiveHeightGap(context, 10),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
                                         if (isAnimating) {
                                           return;
                                         }
+                                        setState(() {
+                                          _showStarsAnimation = true;  //gwiazdki on
+                                        });
                                         isAnimating = true;
-                                        final randomIndex = Fortune.randomInt(
-                                            0, _wheelValues.length);
-                                        _selectedController =
-                                            StreamController<int>.broadcast();
+                                        final randomIndex = Fortune.randomInt(0, _wheelValues.length);
+                                        _selectedController = StreamController<int>.broadcast();
+
                                         selected.add(randomIndex);
-                                        Future.delayed(Duration(seconds: 5),
+                                        Future.delayed(Duration(seconds: 5), //czas krecenia kolem
                                             () {
                                           setState(() {
-                                            selectedValue =
-                                                _wheelValues[randomIndex] + 1;
-
-                                            moveFlag(
-                                                selectedValue,
-                                                currentFlagIndex,
-                                                screenWidth * scale * 0.02768 -
-                                                    4 +
-                                                    screenWidth *
-                                                        scale *
-                                                        0.1436);
+                                            selectedValue = _wheelValues[randomIndex] + 1;
+                                            _showStarsAnimation = false;
+                                            moveFlag(selectedValue, currentFlagIndex,
+                                                screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
                                           });
                                         });
                                       },
                                       child: MyFortuneWheel(selected: selected),
                                     ),
                                   ),
-                                  ResponsiveSizing.responsiveHeightGap(
-                                      context, 10),
+                                  ResponsiveSizing.responsiveHeightGap(context, 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      NeumorphicTripleButton(_controller, () => showExitGameDialog(context))
-
-                                      ,
+                                      NeumorphicTripleButton(_controller, () => showExitGameDialog(context)),
                                     ],
                                   ),
                                 ],
@@ -295,8 +242,8 @@ class _PlayGameboardState extends State<PlayGameboard>
     );
   }
 
-  List<String> generateNewFieldsList(List<String> upRow, List<String> downRow,
-      List<String> leftColumn, List<String> rightColumn) {
+  List<String> generateNewFieldsList(
+      List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
     List<String> newFields = [];
 
     // Dodaj elementy z leftColumn w odwrotnej kolejności, zaczynając od indeksu 14 do 8
@@ -367,19 +314,16 @@ class _PlayGameboardState extends State<PlayGameboard>
       FieldType nextField = fields.removeAt(nextIndex);
 
       if (shuffledFields.last != nextField &&
-          (shuffledFields.length < 3 ||
-              shuffledFields[shuffledFields.length - 3] != nextField)) {
+          (shuffledFields.length < 3 || shuffledFields[shuffledFields.length - 3] != nextField)) {
         shuffledFields.add(nextField);
       } else if (fields.length <= 3) {
-        shuffledFields.add(
-            nextField); // breaking the rule when there are less than 3 fields left
+        shuffledFields.add(nextField); // breaking the rule when there are less than 3 fields left
       } else {
         fields.add(nextField);
       }
     }
     // Zamieniamy FieldType na nazwy plików SVG
-    List<String> shuffledSvgFields =
-        shuffledFields.map((field) => fieldTypes[field]!).toList();
+    List<String> shuffledSvgFields = shuffledFields.map((field) => fieldTypes[field]!).toList();
 
     shuffledSvgFields.remove(fieldTypes[FieldType.start]);
     shuffledSvgFields.insert(13, fieldTypes[FieldType.start]!);
@@ -392,8 +336,7 @@ class _PlayGameboardState extends State<PlayGameboard>
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg',
-          width: screenWidth * 0.1436));
+      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
       children.add(SizedBox(width: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -410,8 +353,7 @@ class _PlayGameboardState extends State<PlayGameboard>
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg',
-          width: screenWidth * 0.1436));
+      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -441,8 +383,7 @@ class _PlayGameboardState extends State<PlayGameboard>
   }
 
   //budowanie widgetu flag i liczenie wszystkich przesuniec itp
-  Widget buildFlagsStack(
-      List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
+  Widget buildFlagsStack(List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -458,12 +399,7 @@ class _PlayGameboardState extends State<PlayGameboard>
             'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF${flag
-                    .split('/')
-                    .last
-                    .split('.')
-                    .first
-                    .substring(5)}'; //zmiana z 4 na 5
+            String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -472,58 +408,33 @@ class _PlayGameboardState extends State<PlayGameboard>
             }
           }).map((flag) {
             return AnimatedPositioned(
-              duration: Duration(seconds: 1),
-              bottom: (teamColors.length == 2 ||
-                      (teamColors.length == 3 && index != 1))
+              duration: Duration(milliseconds: 500),
+              bottom: (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
                   ? flagPositions[index].dy + 23
                   : (teamColors.length == 3 && index == 1)
                       ? flagPositions[index].dy + 46
                       : teamColors.length == 4
                           ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
-                          : (teamColors.length == 5 &&
-                                  index == 1) // kula nr 2 dla 5 kulek
-                              ? flagPositions[index].dy +
-                                  10 +
-                                  (index ~/ 3) * 25 -
-                                  11
-                              : (teamColors.length == 5 &&
-                                      index == 4) // kula nr 5 dla 5 kulek
-                                  ? flagPositions[index].dy +
-                                      10 +
-                                      (index ~/ 3) * 25 +
-                                      11
-                                  : (teamColors.length == 6 &&
-                                          index == 1) // kula nr 2 dla 6 kulek
-                                      ? flagPositions[index].dy +
-                                          10 +
-                                          (index ~/ 3) * 25 -
-                                          11
-                                      : (teamColors.length == 6 &&
-                                              index ==
-                                                  4) // kula nr 5 dla 6 kulek
-                                          ? flagPositions[index].dy +
-                                              10 +
-                                              (index ~/ 3) * 25 +
-                                              11
-                                          : flagPositions[index].dy +
-                                              10 +
-                                              (index ~/ 3) * 25,
+                          : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
+                              ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                              : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
+                                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                                  : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
+                                      ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                                      : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
+                                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                                          : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
               // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2)
                   ? flagPositions[index].dx + (index % 2) * 45 - 8
                   : (teamColors.length == 4)
                       ? flagPositions[index].dx + (index % 2) * 35 - 3
-                      : (teamColors.length == 5 ||
-                              teamColors.length == 6 ||
-                              teamColors.length == 3)
+                      : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
                           ? flagPositions[index].dx + (index % 3) * 25 - 8
                           : flagPositions[index].dx +
                               (index % 3) * 25 -
                               8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
-              child: PionekWithRipple(
-                  assetPath: flag,
-                  animation: _animation,
-                  screenWidth: screenWidth),
+              child: PionekWithRipple(assetPath: flag, animation: _animation, screenWidth: screenWidth),
             );
           });
         }).toList(),
@@ -552,11 +463,8 @@ class _PlayGameboardState extends State<PlayGameboard>
 
   //funkcja do wyswietlania koloru druzyny w app_barze
   Color colorFromString(String colorAsString) {
-    String colorString = colorAsString
-        .split('(0x')[1]
-        .split(')')[0]; // Extracting hex value from the string.
-    int colorInt = int.parse(colorString,
-        radix: 16); // Parsing hex string into an integer.
+    String colorString = colorAsString.split('(0x')[1].split(')')[0]; // Extracting hex value from the string.
+    int colorInt = int.parse(colorString, radix: 16); // Parsing hex string into an integer.
     return Color(colorInt); // Creating a new Color object.
   }
 
@@ -576,20 +484,18 @@ class _PlayGameboardState extends State<PlayGameboard>
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation,
-          Animation secondaryAnimation) {
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
         return Center(
             child: AlertDialog(
                 backgroundColor: Palette().white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                title: letsText(
-                    context, 'Tapnij w koło by zakręcić', 20, Palette().pink,
-                    textAlign: TextAlign.center)));
+                title:
+                    letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)));
       },
-      transitionBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
+      transitionBuilder:
+          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
         // Jeśli dialog się pojawia
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
@@ -608,7 +514,7 @@ class _PlayGameboardState extends State<PlayGameboard>
       Navigator.of(context).pop();
     });
   }
-  
+
   //funkcja przesuniecia flagi, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
     for (int i = 0; i < steps; i++) {
@@ -633,31 +539,21 @@ class _PlayGameboardState extends State<PlayGameboard>
         flagPositions[flagIndex] = newPosition;
       });
 
-      await Future.delayed(Duration(milliseconds: 1200));
+      await Future.delayed(Duration(milliseconds: 800));
     }
+    await Future.delayed(Duration(milliseconds: 500));
 
+    selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
     isAnimating = false;
-    if (newFieldsList[flagSteps[flagIndex]] == 'field_arrows') {
-      setState(() {
-        showGlow = true;
-        selectedCardIndex = 'field_arrows';
-        print('jest show glow i jest fieldarrow');
-      });
+    if (selectedCardIndex == 'field_arrows') {
       StackedCard.showAsDialog(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
-
     } else {
-      setState(() {
-        showGlow = false;
-        selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
-      });
+      navigateWithDelay(context);
     }
 
-    await Future.delayed(Duration(seconds: 1));
     //String currentTeamName = getCurrentTeamName();
     //Color currentTeamColor = widget.teamColors[currentTeamIndex];
-
     //showTransferDeviceDialog(context, selectedCardIndex, currentTeamName, currentTeamColor);
-
     //showTransferDeviceDialog(context);
     //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
     //showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
@@ -669,18 +565,16 @@ class _PlayGameboardState extends State<PlayGameboard>
   }
 
   void navigateWithDelay(BuildContext context) {
-    Future.delayed(Duration(seconds: 1), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PlayGameboardCard(
-            teamNames: [getCurrentTeamName()],
-            teamColors: [widget.teamColors[currentTeamIndex]],
-            currentField: [selectedCardIndex],
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlayGameboardCard(
+          teamNames: [getCurrentTeamName()],
+          teamColors: [widget.teamColors[currentTeamIndex]],
+          currentField: [selectedCardIndex],
         ),
-      );
-    });
+      ),
+    );
   }
 
   String getCurrentTeamName() {
@@ -700,16 +594,13 @@ class _PlayGameboardState extends State<PlayGameboard>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(
-              context, 'are_you_sure_game_leave', 20, Palette().pink,
-              textAlign: TextAlign.center),
+          title: translatedText(context, 'are_you_sure_game_leave', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
@@ -722,11 +613,10 @@ class _PlayGameboardState extends State<PlayGameboard>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize:
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -740,9 +630,7 @@ class _PlayGameboardState extends State<PlayGameboard>
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: translatedText(
-                      context, 'cancel', 16, Palette().bluegrey,
-                      textAlign: TextAlign.center),
+                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
                 ),
               ),
             ],

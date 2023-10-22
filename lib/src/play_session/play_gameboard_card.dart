@@ -17,17 +17,13 @@ class PlayGameboardCard extends StatefulWidget {
   final List<Color> teamColors;
   final List<String> currentField;
 
-  PlayGameboardCard(
-      {required this.teamNames,
-      required this.teamColors,
-      required this.currentField});
+  PlayGameboardCard({required this.teamNames, required this.teamColors, required this.currentField});
 
   @override
   _PlayGameboardCardState createState() => _PlayGameboardCardState();
 }
 
-class _PlayGameboardCardState extends State<PlayGameboardCard>
-    with TickerProviderStateMixin {
+class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _slideAnimationController;
   bool hasShownAlertDialog = false;
@@ -40,10 +36,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
   @override
   void initState() {
     super.initState();
-    _slideAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _slideAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animationController.addListener(() {
       setState(() {
         _opacity = _animationController.value;
@@ -63,7 +57,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
       }
     });
   }
-
 
   void _dismissCardToLeft() {
     setState(() {
@@ -118,14 +111,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                   ),
                   Spacer(),
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                     // Odstępy wewnątrz prostokąta
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.5),
                       // Przezroczysty czarny kolor
-                      borderRadius:
-                          BorderRadius.circular(8.0), // Zaokrąglenie rogów
+                      borderRadius: BorderRadius.circular(8.0), // Zaokrąglenie rogów
                     ),
                     child: Row(
                       children: [
@@ -136,8 +127,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                     ),
                   ),
                   Spacer(),
-                  Icon(Icons.info_outlined,
-                      color: Colors.white, size: 30), // Ikona zgłoś błąd
+                  Icon(Icons.info_outlined, color: Colors.white, size: 30), // Ikona zgłoś błąd
                 ],
               ),
             ),
@@ -153,7 +143,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                   backgroundColor: Colors.transparent,
                   child: SizedBox.expand(
                     child: CustomPaint(
-                      painter: CircleProgressPainter(segments: 15, progress: 1/15*5),
+                      painter: CircleProgressPainter(segments: 15, progress: 1 / 15 * 5),
                     ),
                   ),
                 ),
@@ -186,8 +176,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                         child: ScaleTransition(
                           scale: _animationController,
                           child: Transform.translate(
-                            offset: Offset(
-                                _offsetX * _slideAnimationController.value, 0),
+                            offset: Offset(_offsetX * _slideAnimationController.value, 0),
                             child: Container(
                               height: 400.0,
                               padding: EdgeInsets.all(13.0),
@@ -195,8 +184,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                 color: Colors.transparent,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
-                                  side: BorderSide(
-                                      color: Palette().white, width: 13.0),
+                                  side: BorderSide(color: Palette().white, width: 13.0),
                                 ),
                                 elevation: 0.0,
                                 child: Column(
@@ -206,19 +194,16 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: List.generate(5, (index) {
                                         return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 2),
+                                            padding: const EdgeInsets.symmetric(horizontal: 2),
                                             child: Icon(
-                                              index < 2
-                                                  ? Icons.star
-                                                  : Icons.star_border,
+                                              index < 2 ? Icons.star : Icons.star_border,
                                               color: index == 0
                                                   ? Colors.green
                                                   : index == 1
-                                                  ? Colors.red
-                                                  : index == 2
-                                                  ? Colors.yellow
-                                                  : Colors.grey,
+                                                      ? Colors.red
+                                                      : index == 2
+                                                          ? Colors.yellow
+                                                          : Colors.grey,
                                               size: 20,
                                               // Dla trzeciej gwiazdki (index == 2) dodajemy cień, aby uzyskać efekt podświetlenia na biało.
                                               //shadowColor: index == 2 ? Colors.white : null,
@@ -230,11 +215,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                       padding: const EdgeInsets.all(20.0),
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
-                                          colors: [
-                                            Color(0xffB46BDF),
-                                            Color(0xff6625FF),
-                                            Color(0xff211753)
-                                          ],
+                                          colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
                                           begin: Alignment.topCenter,
                                           end: Alignment.bottomCenter,
                                         ),
@@ -253,8 +234,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                                   Shadow(
                                                     offset: Offset(1.0, 4.0),
                                                     blurRadius: 15.0,
-                                                    color: Color.fromARGB(255, 0, 0,
-                                                        0), // Kolor cienia, w tym przypadku czarny
+                                                    color: Color.fromARGB(
+                                                        255, 0, 0, 0), // Kolor cienia, w tym przypadku czarny
                                                   ),
                                                 ],
                                               ),
@@ -269,19 +250,16 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: List.generate(5, (index) {
                                         return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 2),
+                                            padding: const EdgeInsets.symmetric(horizontal: 2),
                                             child: Icon(
-                                              index < 2
-                                                  ? Icons.star
-                                                  : Icons.star_border,
+                                              index < 2 ? Icons.star : Icons.star_border,
                                               color: index == 0
                                                   ? Colors.green
                                                   : index == 1
-                                                  ? Colors.red
-                                                  : index == 2
-                                                  ? Colors.yellow
-                                                  : Colors.grey,
+                                                      ? Colors.red
+                                                      : index == 2
+                                                          ? Colors.yellow
+                                                          : Colors.grey,
                                               size: 20,
                                               // Dla trzeciej gwiazdki (index == 2) dodajemy cień, aby uzyskać efekt podświetlenia na biało.
                                               //shadowColor: index == 2 ? Colors.white : null,
@@ -318,10 +296,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
             ),
             //SizedBox(height: 10),
             Text('Karta 1 z 8',
-                style: TextStyle(
-                    color: Palette().white,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'HindMadurai')),
+                style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -331,8 +306,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                   alignment: Alignment.center,
                   children: [
                     SvgButton(
-                      assetName:
-                          'assets/time_to_party_assets/cards_screens/button_drop.svg',
+                      assetName: 'assets/time_to_party_assets/cards_screens/button_drop.svg',
                       onPressed: () => _dismissCardToLeft(),
                     ),
                     Positioned(
@@ -341,8 +315,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                         child: Container(
                           padding: EdgeInsets.all(2), // Grubość obramowania
                           decoration: BoxDecoration(
-                            color:
-                                Palette().yellowIndBorder, // Kolor obramowania
+                            color: Palette().yellowIndBorder, // Kolor obramowania
                             shape: BoxShape.circle,
                           ),
                           child: CircleAvatar(
@@ -360,14 +333,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
                 ),
                 //SizedBox(width: 10),
                 SvgButton(
-                  assetName:
-                      'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                  assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
                   onPressed: () => _dismissCardToLeft(),
                 ),
                 //SizedBox(width: 10),
                 SvgButton(
-                  assetName:
-                      'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                  assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
                   onPressed: () {
                     _dismissCardToRight();
                   },
@@ -398,8 +369,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
       'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
     ];
     for (String flag in flagAssets) {
-      String flagColorHex = 'FF' +
-          flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
+      String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
       Color flagColor = Color(int.parse(flagColorHex, radix: 16));
       if (color.value == flagColor.value) {
         return flag;
@@ -435,7 +405,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
       displayWidgets.add(SizedBox(height: 20.0));
     }
 
-
     return displayWidgets;
   }
 
@@ -453,15 +422,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
   };
 
   final Map<String, String> fieldTypeImagePaths = {
-   'field_arrows':'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',
-   'field_sheet': 'assets/time_to_party_assets/cards_screens/rymes_icon_color.svg',
-   'field_letters':  'assets/time_to_party_assets/cards_screens/letters_icon_color.svg',
-   'field_pantomime':   'assets/time_to_party_assets/cards_screens/pantomime_icon_color.svg',
-   'field_microphone':     'assets/time_to_party_assets/cards_screens/microphone_icon_color.svg',
-   'field_taboo': 'assets/time_to_party_assets/cards_screens/taboo_icon_color.svg',
-   'field_star_blue_dark': 'assets/time_to_party_assets/cards_screens/star_blue_icon_color.svg',
-   'field_star_pink': 'assets/time_to_party_assets/cards_screens/star_pink_icon_color.svg',
-   'field_star_green': 'assets/time_to_party_assets/cards_screens/star_green_icon_color.svg',
+    'field_arrows': 'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',
+    'field_sheet': 'assets/time_to_party_assets/cards_screens/rymes_icon_color.svg',
+    'field_letters': 'assets/time_to_party_assets/cards_screens/letters_icon_color.svg',
+    'field_pantomime': 'assets/time_to_party_assets/cards_screens/pantomime_icon_color.svg',
+    'field_microphone': 'assets/time_to_party_assets/cards_screens/microphone_icon_color.svg',
+    'field_taboo': 'assets/time_to_party_assets/cards_screens/taboo_icon_color.svg',
+    'field_star_blue_dark': 'assets/time_to_party_assets/cards_screens/star_blue_icon_color.svg',
+    'field_star_pink': 'assets/time_to_party_assets/cards_screens/star_pink_icon_color.svg',
+    'field_star_green': 'assets/time_to_party_assets/cards_screens/star_green_icon_color.svg',
     'field_star_yellow': 'assets/time_to_party_assets/cards_screens/star_yellow_icon_color.svg'
   };
 
@@ -486,8 +455,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard>
               Shadow(
                 offset: Offset(1.0, 4.0),
                 blurRadius: 15.0,
-                color: Color.fromARGB(255, 0, 0,
-                    0), // Kolor cienia, w tym przypadku czarny
+                color: Color.fromARGB(255, 0, 0, 0), // Kolor cienia, w tym przypadku czarny
               ),
             ],
           ),
@@ -529,8 +497,7 @@ class SvgButton extends StatefulWidget {
   _SvgButtonState createState() => _SvgButtonState();
 }
 
-class _SvgButtonState extends State<SvgButton>
-    with SingleTickerProviderStateMixin {
+class _SvgButtonState extends State<SvgButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -572,8 +539,7 @@ class _SvgButtonState extends State<SvgButton>
             borderRadius: BorderRadius.circular(25),
           ),
           child: SvgPicture.asset(widget.assetName,
-              height: ResponsiveSizing.scaleHeight(context, 75),
-              width: double.maxFinite),
+              height: ResponsiveSizing.scaleHeight(context, 75), width: double.maxFinite),
         ),
       ),
     );
@@ -609,35 +575,23 @@ class CircleProgressPainter extends CustomPainter {
     final double radius = size.width / 2;
 
     double segmentAngle = 2 * pi / segments;
-    double gapAngle = segmentAngle * 0.1;  // 10% gap, you can adjust
+    double gapAngle = segmentAngle * 0.1; // 10% gap, you can adjust
     double fillAngle = segmentAngle - gapAngle;
 
     // Rysowanie tła
     for (int i = 0; i < segments; i++) {
       double start = i * segmentAngle - pi / 2;
-      canvas.drawArc(
-          Rect.fromCircle(center: center, radius: radius),
-          start,
-          fillAngle,
-          false,
-          paintBackground);
+      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), start, fillAngle, false, paintBackground);
     }
 
     // Rysowanie postępu
     double filledSegments = segments * progress;
     for (int i = 0; i < filledSegments; i++) {
       double start = i * segmentAngle - pi / 2;
-      canvas.drawArc(
-          Rect.fromCircle(center: center, radius: radius),
-          start,
-          fillAngle,
-          false,
-          paintProgress);
+      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), start, fillAngle, false, paintProgress);
     }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
-
-
