@@ -756,6 +756,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  roll_slot_machine:
+    dependency: "direct main"
+    description:
+      path: "lib/libraries/roll_slot_machine-develop"
+      relative: true
+    source: path
+    version: "1.0.0"
   share_plus:
     dependency: "direct main"
     description:

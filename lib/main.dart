@@ -45,6 +45,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 final globalLoading = GlobalLoading();
 
 Future<void> main() async {
+
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
@@ -70,6 +71,7 @@ Future<void> main() async {
 
 /// Without logging and crash reporting, this would be `void main()`.
 void guardedMain() async {
+
   if (kReleaseMode) {
     // Don't log anything below warnings in production.
     Logger.root.level = Level.WARNING;
@@ -83,9 +85,9 @@ void guardedMain() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   _log.info('Going full screen');
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  });
 
   // TODO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.

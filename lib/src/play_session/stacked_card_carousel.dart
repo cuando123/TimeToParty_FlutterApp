@@ -31,7 +31,7 @@ class StackedCard extends StatelessWidget {
 
   void onCardTap(BuildContext context, int index, String currentTeamName, Color currentTeamColor) {
     String selectedFieldName = cardFieldNames[index] ?? 'default_field';
-
+    Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -77,8 +77,11 @@ class StackedCard extends StatelessWidget {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(backgroundColor: Colors.transparent,
+        return WillPopScope(
+            onWillPop: () async => false,  // Blokuje przycisk wstecz
+        child: Dialog(backgroundColor: Colors.transparent,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -87,10 +90,10 @@ class StackedCard extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               SizedBox(height: 20), // Dodaję trochę odstępu między tekstem a kartami
-          Expanded(child:StackedCardCarousel(items: exampleCards, spaceBetweenItems: 250, initialOffset: 10)),
+          Expanded(child:StackedCardCarousel(items: exampleCards, spaceBetweenItems: 240, initialOffset: 1)),
             ],
           ),
-        );
+        ),);
       },
     );
   }
@@ -112,14 +115,14 @@ class FancyCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(index), // Dodajemy tę linię
       child: Card(color: Colors.transparent,
-        //elevation: 4.0,
+        elevation: 15.0,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             children: <Widget>[
               Container(
-                width: 250,
-                height: 250,
+                width: 160,
+                height: 240,
                 child: image,
               ),
             ],

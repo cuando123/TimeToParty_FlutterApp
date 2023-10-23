@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/play_session/roll_slot_machine.dart';
 
 // Zakładam, że importy z twojego drugiego fragmentu są nadal potrzebne
 import '../app_lifecycle/translated_text.dart';
@@ -307,7 +308,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   children: [
                     SvgButton(
                       assetName: 'assets/time_to_party_assets/cards_screens/button_drop.svg',
-                      onPressed: () => _dismissCardToLeft(),
+                      //onPressed: () => _dismissCardToLeft(),
+                      onPressed: () => showRollSlotMachine(context)
                     ),
                     Positioned(
                         top: 10,
@@ -349,6 +351,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           ],
         ),
       ),
+    );
+  }
+
+  void showRollSlotMachine(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Scaffold(body: RollSlotMachine())),
     );
   }
 
@@ -411,7 +420,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   final Map<String, String> fieldTypeTranslations = {
     'field_arrows': 'Wybór',
     'field_sheet': 'Rymowanie',
-    'field_letters': 'Literki',
+    'field_letters': 'Alfabet',
     'field_pantomime': 'Pantomimy',
     'field_microphone': 'Sławne osoby',
     'field_taboo': 'Taboo',
