@@ -15,6 +15,7 @@ import '../settings/settings.dart';
 import '../style/palette.dart';
 import '../style/stars_animation.dart';
 import 'stacked_card_carousel.dart';
+import 'animated_card.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;
@@ -26,7 +27,7 @@ class PlayGameboard extends StatefulWidget {
   _PlayGameboardState createState() => _PlayGameboardState();
 }
 
-class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateMixin {
+class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   late StreamController<int> _selectedController = StreamController<int>.broadcast();
@@ -41,6 +42,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   int currentTeamIndex = 0;
   int currentFlagIndex = 0;
   bool isAnimating = false;
+  bool showCardAnimation = false;
   StreamController<int> selected = StreamController<int>();
   List<String> upRowFieldsSvg = [];
   List<String> downRowFieldsSvg = [];
@@ -49,7 +51,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   List<String> allFieldsSvg = [];
   List<String> newFieldsList = [];
   bool _showStarsAnimation = false;
-
 
   @override
   void initState() {
@@ -88,142 +89,149 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         showExitGameDialog(context);
         return false; // return false to prevent the pop operation
       },
-      child: CustomBackground(child: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
-          double screenWidth = constraints.maxWidth;
-          double screenHeight = constraints.maxHeight;
-          double scale = min((screenHeight * 0.55) / screenWidth, 1.0);
-          return Column(
-            children: <Widget>[
-              Container(
-                height: screenHeight * 0.55,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.white, width: 2.0), // To dodaje białą linię na dole kontenera.
-                  ),
-                ),
-                child: Center(
-                  child: Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      width: screenWidth * scale,
-                      height: screenWidth * scale,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: leftColumnVertical(leftColumnFieldsSvg, screenWidth * scale),
+      child: CustomBackground(
+        child: Scaffold(
+          body: Stack(
+            children: [
+              LayoutBuilder(builder: (context, constraints) {
+                double screenWidth = constraints.maxWidth;
+                double screenHeight = constraints.maxHeight;
+                double scale = min((screenHeight * 0.55) / screenWidth, 1.0);
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: screenHeight * 0.55,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(color: Colors.white, width: 2.0), // To dodaje białą linię na dole kontenera.
+                        ),
+                      ),
+                      child: Center(
+                        child: Transform.scale(
+                          scale: scale,
+                          child: Container(
+                            width: screenWidth * scale,
+                            height: screenWidth * scale,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0), // left, top, right, bottom
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                alignment: Alignment.center,
+                                children: [
+                                  Positioned(
+                                    left: 0,
+                                    top: 0,
+                                    child: leftColumnVertical(leftColumnFieldsSvg, screenWidth * scale),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: rightColumnVertical(rightColumnFieldsSvg, screenWidth * scale),
+                                  ),
+                                  Column(
+                                    children: [
+                                      upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
+                                      ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
+                                      Expanded(
+                                        child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
+                                      ),
+                                      downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
+                                    ],
+                                  ),
+                                  buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
+                                ],
+                              ),
                             ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: rightColumnVertical(rightColumnFieldsSvg, screenWidth * scale),
-                            ),
-                            Column(
-                              children: [
-                                upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
-                                ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
-                                Expanded(
-                                  child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
-                                ),
-                                downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
-                              ],
-                            ),
-                            buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.center,
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                        child: Row(
                           children: [
-                            if (_showStarsAnimation) StarsAnimation(),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
-                              child: Column(
+                            Expanded(
+                              child: Stack(
+                                alignment: Alignment.center,
                                 children: [
-                                  IntrinsicWidth(
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.all(8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
-                                      decoration: BoxDecoration(
-                                        color: Colors.black, // Tu ustalamy kolor tła na czarny
-                                        borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(
-                                            getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
-                                            width: ResponsiveSizing.scaleWidth(context, 15),
-                                            height: ResponsiveSizing.scaleWidth(context, 15),
-                                          ),
-                                          ResponsiveSizing.responsiveWidthGap(context, 10),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "${getCurrentTeamName()} - ",
-                                                style: TextStyle(
-                                                  color: Palette().white,
-                                                  fontFamily: 'HindMadurai',
-                                                  fontSize: ResponsiveSizing.scaleHeight(context, 14),
+                                  if (_showStarsAnimation) StarsAnimation(),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0), //
+                                    child: Column(
+                                      children: [
+                                        IntrinsicWidth(
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                8.0), // Dodaj margines wewnątrz prostokąta, jeśli potrzebujesz
+                                            decoration: BoxDecoration(
+                                              color: Colors.black, // Tu ustalamy kolor tła na czarny
+                                              borderRadius: BorderRadius.circular(3.0), // Jeśli chcesz zaokrąglone rogi
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
+                                                  width: ResponsiveSizing.scaleWidth(context, 15),
+                                                  height: ResponsiveSizing.scaleWidth(context, 15),
                                                 ),
-                                              ),
-                                              translatedText(context, 'your_turn', 14, Palette().white),
-                                            ],
+                                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "${getCurrentTeamName()} - ",
+                                                      style: TextStyle(
+                                                        color: Palette().white,
+                                                        fontFamily: 'HindMadurai',
+                                                        fontSize: ResponsiveSizing.scaleHeight(context, 14),
+                                                      ),
+                                                    ),
+                                                    translatedText(context, 'your_turn', 14, Palette().white),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  ResponsiveSizing.responsiveHeightGap(context, 10),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        if (isAnimating) {
-                                          return;
-                                        }
-                                        setState(() {
-                                          _showStarsAnimation = true;  //gwiazdki on
-                                        });
-                                        isAnimating = true;
-                                        final randomIndex = Fortune.randomInt(0, _wheelValues.length);
-                                        _selectedController = StreamController<int>.broadcast();
+                                        ),
+                                        ResponsiveSizing.responsiveHeightGap(context, 10),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              if (isAnimating) {
+                                                return;
+                                              }
+                                              setState(() {
+                                                _showStarsAnimation = true; //gwiazdki on
+                                              });
+                                              isAnimating = true;
+                                              final randomIndex = Fortune.randomInt(0, _wheelValues.length);
+                                              _selectedController = StreamController<int>.broadcast();
 
-                                        selected.add(randomIndex);
-                                        Future.delayed(Duration(seconds: 5), //czas krecenia kolem
-                                            () {
-                                          setState(() {
-                                            selectedValue = _wheelValues[randomIndex] + 1;
-                                            _showStarsAnimation = false;
-                                            moveFlag(selectedValue, currentFlagIndex,
-                                                screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
-                                          });
-                                        });
-                                      },
-                                      child: MyFortuneWheel(selected: selected),
+                                              selected.add(randomIndex);
+                                              Future.delayed(Duration(seconds: 5), //czas krecenia kolem
+                                                  () {
+                                                setState(() {
+                                                  selectedValue = _wheelValues[randomIndex] + 1;
+                                                  _showStarsAnimation = false;
+                                                  moveFlag(selectedValue, currentFlagIndex,
+                                                      screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
+                                                });
+                                              });
+                                            },
+                                            child: MyFortuneWheel(selected: selected),
+                                          ),
+                                        ),
+                                        ResponsiveSizing.responsiveHeightGap(context, 10),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            NeumorphicTripleButton(_controller, () => showExitGameDialog(context)),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  ResponsiveSizing.responsiveHeightGap(context, 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      NeumorphicTripleButton(_controller, () => showExitGameDialog(context)),
-                                    ],
                                   ),
                                 ],
                               ),
@@ -231,14 +239,26 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
+                  ],
+                );
+              }),
+              if (showCardAnimation)
+                AnimatedCard(
+                    onCardTapped: () {
+                      setState(() {
+                        showCardAnimation = false;
+                      });
+                      navigateWithDelay(context);
+                    },
+                    selectedCardIndex: selectedCardIndex,
+                    parentContext: context,
+                    currentTeamName: getCurrentTeamName(),
+                    teamColor: widget.teamColors[currentTeamIndex])
             ],
-          );
-        }),
-      )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -545,11 +565,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
     selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
     isAnimating = false;
-    if (selectedCardIndex == 'field_arrows') {
-      StackedCard.showAsDialog(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
-    } else {
-      navigateWithDelay(context);
-    }
+
+      setState(() {
+        showCardAnimation = true;
+      });
+      // navigateWithDelay(context);
+
 
     //String currentTeamName = getCurrentTeamName();
     //Color currentTeamColor = widget.teamColors[currentTeamIndex];
@@ -639,6 +660,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 enum FieldType {

@@ -6,8 +6,10 @@ import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 class StackedCard extends StatelessWidget {
   final String title;
   final List<Widget> fancyCards;
+  final VoidCallback? onDialogClose;
 
-  StackedCard({required this.title, required this.fancyCards});
+  StackedCard({required this.title, required this.fancyCards, this.onDialogClose});
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class StackedCard extends StatelessWidget {
   void onCardTap(BuildContext context, int index, String currentTeamName, Color currentTeamColor) {
     String selectedFieldName = cardFieldNames[index] ?? 'default_field';
     Navigator.of(context).pop();
+    if (onDialogClose != null) onDialogClose!();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -44,9 +47,13 @@ class StackedCard extends StatelessWidget {
     );
   }
 
-  static void showAsDialog(BuildContext context, String currentTeamName, Color currentTeamColor) {
-    StackedCard stackedCardInstance = StackedCard(title: "Twój tytuł", fancyCards: []); // Utwórz instancję klasy
-    // Przykładowe karty
+  static void showAsDialog(BuildContext context, String currentTeamName, Color currentTeamColor, {required VoidCallback onDialogClose}) {
+    StackedCard stackedCardInstance = StackedCard(
+        title: "Twój tytuł",
+        fancyCards: [],
+        onDialogClose: onDialogClose );// Przekazujemy callback tutaj
+
+        // Przykładowe karty
     final List<Widget> exampleCards = <Widget>[
       FancyCard(
         image: SvgPicture.asset("assets/time_to_party_assets/card_taboo.svg"),
