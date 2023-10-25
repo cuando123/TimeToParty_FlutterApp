@@ -1,0 +1,17 @@
+name: stacked_card_carousel
+description: A widget for creating a vertical carousel with stacked cards.
+version: 0.0.4
+homepage: https://github.com/grihlo/stacked_card_carousel
+
+environment:
+  sdk: '>=2.19.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:

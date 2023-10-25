@@ -27,6 +27,8 @@ class _AnimatedCardState extends State<AnimatedCard> with SingleTickerProviderSt
   late Animation<double> _rotationAnimation;
   late Animation<double> _scaleAnimation;
   late Animation<Offset> _positionAnimation;
+  late Animation<Offset> _textTopPositionAnimation;
+  late Animation<Offset> _textBottomPositionAnimation;
   bool showCardAnimation = true;
 
   bool _cardVisible = false;
@@ -60,6 +62,16 @@ class _AnimatedCardState extends State<AnimatedCard> with SingleTickerProviderSt
       });
     }
 
+    _textTopPositionAnimation = Tween<Offset>(
+      begin: Offset(0.0, -1.0),
+      end: Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Interval(0.7, 1.0, curve: Curves.easeInOut)));
+
+    _textBottomPositionAnimation = Tween<Offset>(
+      begin: Offset(0.0, 1.0),
+      end: Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Interval(0.7, 1.0, curve: Curves.easeInOut)));
+
     _controller.addListener(() {
       setState(() {});
     });
@@ -78,6 +90,31 @@ class _AnimatedCardState extends State<AnimatedCard> with SingleTickerProviderSt
             ),
           ),
 
+        if (_cardVisible)
+          SlideTransition(
+            position: _textTopPositionAnimation,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                "Kliknij w kartę aby zacząć",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+
+        // Napis na dole
+        if (_cardVisible)
+          SlideTransition(
+            position: _textBottomPositionAnimation,
+            child: Align(
+              alignment: Alignment(0.0, 0.7),  // Aby dostosować położenie napisu, możesz zmienić wartość 0.7
+              child: Text(
+                "Przekaż urządzenie osobie opisującej",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+
         // Karta
         Center(
           child: SlideTransition(
@@ -90,6 +127,7 @@ class _AnimatedCardState extends State<AnimatedCard> with SingleTickerProviderSt
                   onTap: () {
                     if (widget.selectedCardIndex == 'field_arrows') {
                       print("field_arrows tapped");
+
                       // idzie do show dialog, nastepnie idzie do natepnego ekranu.. robi set state, otwiera current ekran i go zamyka zeby nie pokazało karty jako wybór - zawiły bezsens ale dziala tak jak oczekiwano
                       StackedCard.showAsDialog(widget.parentContext, widget.currentTeamName, widget.teamColor, onDialogClose: () {setState(() {widget.onCardTapped();
                       Navigator.of(context).pop();});   });
