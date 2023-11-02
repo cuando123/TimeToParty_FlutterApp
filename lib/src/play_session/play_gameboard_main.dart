@@ -51,6 +51,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   List<String> allFieldsSvg = [];
   List<String> newFieldsList = [];
   bool _showStarsAnimation = false;
+  bool showAnimatedCard = true;
 
   @override
   void initState() {
@@ -134,7 +135,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                       upRowHorizontal(upRowFieldsSvg, screenWidth * scale),
                                       ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                       Expanded(
-                                        child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
+                                        child: InstantTooltip(
+                                            message: "Talia kart",  // Domyślna wartość w przypadku braku opisu
+                                            child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
+                                          ),
                                       ),
                                       downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                                     ],
@@ -243,18 +247,29 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                   ],
                 );
               }),
-              if (showCardAnimation)
+              if (showAnimatedCard && showCardAnimation)
                 AnimatedCard(
+                    showAnimatedCard: showAnimatedCard,
                     onCardTapped: () {
                       setState(() {
                         showCardAnimation = false;
+                        showAnimatedCard = true;
                       });
-                      navigateWithDelay(context);
+                      navigateWithDelay(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
+                    },
+                    onArrowCardTapped: () { // Dodajemy nowy callback
+                      setState(() {
+                        showAnimatedCard = false; // Ukryj AnimatedCard
+                        currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
+                        currentTeamIndex = currentFlagIndex;
+                      });
+                      // Tutaj możesz również wywołać navigateWithDelay, jeśli to konieczne
                     },
                     selectedCardIndex: selectedCardIndex,
                     parentContext: context,
                     currentTeamName: getCurrentTeamName(),
-                    teamColor: widget.teamColors[currentTeamIndex])
+                    teamColor: widget.teamColors[currentTeamIndex]
+                )
             ],
           ),
         ),
@@ -303,6 +318,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   };
 
   //mapowanie pol oraz ich ilosci
+
   final Map<FieldType, int> fieldCount = {
     FieldType.arrow: 3,
     FieldType.rhyme: 3,
@@ -316,6 +332,21 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starGreen: 1,
     FieldType.starYellow: 1,
   };
+
+  final Map<String, String> fieldDescriptions = {
+    'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
+    'field_sheet': 'Układaj rymy, baw się słowami!',
+    'field_letters': 'Rzuć wyzwanie alfabetowi! 20 rzeczowników na daną literę.',
+    'field_pantomime': 'Mów ciałem, nie słowami!',
+    'field_microphone': 'Odgadnij sławne osobowości!',
+    'field_taboo': 'Opisuj, omijając zakazane słowa!',
+    'field_start': 'Start i meta twojej zabawy!',
+    'field_star_blue_dark': 'Zadania fizyczne? Zmierz się z czasem!',
+    'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
+    'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
+    'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+  };
+
 
   //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
   List<String> _getShuffledFields() {
@@ -351,12 +382,18 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return shuffledSvgFields;
   }
 
-  //generowanie widgetu row
+//generowanie widgetu row
   Widget generateRow(List<String> fields, double screenWidth) {
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
+      children.add(
+          InstantTooltip(
+            message: fieldDescriptions[field] ?? "Brak opisu",  // Domyślna wartość w przypadku braku opisu
+            child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+          )
+      );
+
       children.add(SizedBox(width: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -368,12 +405,18 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
+
   //generowanie widgetu kolumny
   Widget generateColumn(List<String> fields, double screenWidth) {
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436));
+      children.add(
+          InstantTooltip(
+            message: fieldDescriptions[field] ?? "Brak opisu",  // Domyślna wartość w przypadku braku opisu
+            child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+          )
+      );
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -384,6 +427,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       children: children,
     );
   }
+
 
   //tworzenie row gornej z listy pol itd..
   Widget upRowHorizontal(List<String> fields, double screenWidth) {
@@ -496,7 +540,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     selected.close();
     super.dispose();
   }
-
+  //tapnij w kolo by zakrecic
   void _showAnimatedAlertDialog() {
     showGeneralDialog(
       context: context,
@@ -535,7 +579,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     });
   }
 
-  //funkcja przesuniecia flagi, kroki
+  //funkcja przesuniecia pionka, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
     for (int i = 0; i < steps; i++) {
       flagSteps[flagIndex]++;
@@ -570,28 +614,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         showCardAnimation = true;
       });
       // navigateWithDelay(context);
-
-
-    //String currentTeamName = getCurrentTeamName();
-    //Color currentTeamColor = widget.teamColors[currentTeamIndex];
-    //showTransferDeviceDialog(context, selectedCardIndex, currentTeamName, currentTeamColor);
-    //showTransferDeviceDialog(context);
-    //wyswietlanie w alert dialogu danego pola na którym stoi dana flaga :) - dziala niezaleznie od przetasowania pól :)
-    //showDialogTest(context, [newFieldsList[flagSteps[flagIndex]]]);
-
-    setState(() {
-      currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
-    });
-    currentTeamIndex = currentFlagIndex;
   }
 
-  void navigateWithDelay(BuildContext context) {
+  void navigateWithDelay(BuildContext context, String currentTeamName, Color teamColor) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PlayGameboardCard(
-          teamNames: [getCurrentTeamName()],
-          teamColors: [widget.teamColors[currentTeamIndex]],
+          teamNames: [currentTeamName],
+          teamColors: [teamColor],
           currentField: [selectedCardIndex],
         ),
       ),

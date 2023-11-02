@@ -33,8 +33,9 @@ class StackedCard extends StatelessWidget {
 
   void onCardTap(BuildContext context, int index, String currentTeamName, Color currentTeamColor) {
     String selectedFieldName = cardFieldNames[index] ?? 'default_field';
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(); //gasi wybor kart
     if (onDialogClose != null) onDialogClose!();
+    Navigator.of(context).pop(); //gasi StackedCard
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -85,26 +86,110 @@ class StackedCard extends StatelessWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return WillPopScope(
-            onWillPop: () async => false,  // Blokuje przycisk wstecz
-        child: Container(color: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
+          onWillPop: () async => false, // Blokuje przycisk wstecz
+          child: Stack(
             children: [
-              Text(
-                "Wybierz kartę",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              // Tło z przezroczystością
+              Container(
+                color: Colors.black.withOpacity(0.5),
               ),
-              SizedBox(height: 230), // Dodaję trochę odstępu między tekstem a kartami
-          Expanded(child:StackedCardCarousel(items: exampleCards, spaceBetweenItems: 170, initialOffset: 1)),
+              // Zawartość nad tłem
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    "Wybierz kartę",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'HindMadurai',
+                    ),
+                  ),
+                  SizedBox(height: 180), // Dodaję trochę odstępu między tekstem a kartami
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedIcon(
+                        direction: AnimatedIconDirection.left, // Kierunek animacji
+                      ),
+                      SizedBox(width: 20), // Odstęp między ikonami
+                      AnimatedIcon(
+                        direction: AnimatedIconDirection.right, // Kierunek animacji
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Expanded(child: StackedCardCarousel(items: exampleCards, spaceBetweenItems: 170, initialOffset: 1)),
+                ],
+              ),
             ],
           ),
-        ),);
+        );
       },
     );
   }
 }
+
+class AnimatedIcon extends StatefulWidget {
+  final AnimatedIconDirection direction;
+
+  const AnimatedIcon({Key? key, required this.direction}) : super(key: key);
+
+  @override
+  _AnimatedIconState createState() => _AnimatedIconState();
+}
+
+class _AnimatedIconState extends State<AnimatedIcon> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true); // Powtarza animację w nieskończoność z odwróceniem
+
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: widget.direction == AnimatedIconDirection.left ? -22.5 : 22.5,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(_animation.value, 0),
+          child: child,
+        );
+      },
+      child: Icon(
+        widget.direction == AnimatedIconDirection.left
+            ? Icons.arrow_back_ios_new_outlined
+            : Icons.arrow_forward_ios_outlined,
+        color: Colors.white,
+        size: 30,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+enum AnimatedIconDirection { left, right }
+
 
 class FancyCard extends StatelessWidget {
   const FancyCard({

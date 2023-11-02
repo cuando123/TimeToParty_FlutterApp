@@ -29,8 +29,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   late AnimationController _slideAnimationController;
   bool hasShownAlertDialog = false;
 
-  final AdditionalWidgets additionalWidgets = AdditionalWidgets();
-
   double _opacity = 0;
   double _offsetX = 0;
 
@@ -46,17 +44,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
     _showCard(); // By karta pojawiła się na początku
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!hasShownAlertDialog) {
-        additionalWidgets.showTransferDeviceDialog(
-          context,
-          widget.currentField[0],
-          widget.teamNames[0],
-          widget.teamColors[0],
-        );
-        hasShownAlertDialog = true;
-      }
-    });
   }
 
   void _dismissCardToLeft() {

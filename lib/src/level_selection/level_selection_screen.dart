@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:provider/provider.dart';
 
@@ -209,6 +210,10 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+                              SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
+                                  height: ResponsiveSizing.scaleHeight(context, 40)),
+                              ResponsiveSizing.responsiveWidthGapWithCondition(
+                                  context, 5, 10, 300),
                       AnimatedBuilder(
                       animation: _scaleAnimationPlusButton,
                       builder: (context, child) => Transform.scale(
