@@ -94,7 +94,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   IconButton(
                     icon: Icon(Icons.pause, color: Colors.white, size: 30),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop('info');
                     },
                   ),
                   Spacer(),

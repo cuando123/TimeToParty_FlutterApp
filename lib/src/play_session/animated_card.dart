@@ -14,7 +14,7 @@ class AnimatedCard extends StatefulWidget {
   final bool showAnimatedCard;
 
   AnimatedCard(
-      {required this.showAnimatedCard,
+      { required this.showAnimatedCard,
         required this.onCardTapped,
         required this.onArrowCardTapped,
       required this.selectedCardIndex,

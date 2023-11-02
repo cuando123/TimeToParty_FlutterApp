@@ -260,8 +260,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                     onArrowCardTapped: () { // Dodajemy nowy callback
                       setState(() {
                         showAnimatedCard = false; // Ukryj AnimatedCard
-                        currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
-                        currentTeamIndex = currentFlagIndex;
                       });
                       // Tutaj możesz również wywołać navigateWithDelay, jeśli to konieczne
                     },
@@ -621,13 +619,24 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       context,
       MaterialPageRoute(
         builder: (context) => PlayGameboardCard(
-          teamNames: [currentTeamName],
-          teamColors: [teamColor],
+          teamNames: [getCurrentTeamName()],
+          teamColors: [widget.teamColors[currentTeamIndex]],
           currentField: [selectedCardIndex],
         ),
       ),
-    );
+    ).then((returnedData) {
+      if (returnedData != null) {
+        setState(() {
+          // Aktualizuj stan na podstawie zwróconych danych
+          currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
+          currentTeamIndex = currentFlagIndex;
+          // Teraz zresetuj wartość zwróconą do null
+          returnedData = null;
+        });
+      }
+    });
   }
+
 
   String getCurrentTeamName() {
     return widget.teamNames[currentTeamIndex].toString();
