@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -27,14 +28,23 @@ class PlayGameboardCard extends StatefulWidget {
 class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _slideAnimationController;
-  bool hasShownAlertDialog = false;
+  late AnimationController _timeUpAnimationController;
+  late Animation<double> _timeUpFadeAnimation;
+  late Animation<double> _timeUpScaleAnimation;
+  late Animation<double> _timeUpFadeOutAnimation;
 
+  bool hasShownAlertDialog = false;
+  late Timer _timer;
   double _opacity = 0;
   double _offsetX = 0;
+  int remainingTime = 30;
+  late int initialTime;
 
   @override
   void initState() {
     super.initState();
+    _setTimerDuration();
+    initialTime = remainingTime;
     _slideAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animationController.addListener(() {
@@ -42,8 +52,80 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         _opacity = _animationController.value;
       });
     });
-    _showCard(); // By karta pojawiła się na początku
 
+    _timeUpAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+
+    _timeUpFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _timeUpAnimationController,
+        curve: Interval(0.0, 0.5, curve: Curves.easeInOut), // Pierwsza połowa czasu
+      ),
+    );
+
+    _timeUpScaleAnimation = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(
+        parent: _timeUpAnimationController,
+        curve: Interval(0.0, 0.5, curve: Curves.easeInOut), // Pierwsza połowa czasu
+      ),
+    );
+
+
+    _timeUpFadeOutAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _timeUpAnimationController,
+        curve: Interval(0.5, 1.0, curve: Curves.easeInOut), // Ostatnia połowa czasu
+      ),
+    );
+
+
+
+    _showCard(); // By karta pojawiła się na początku
+    _startTimer();
+  }
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (remainingTime > 0) {
+          remainingTime--;
+        } else {
+          _showTimeUpAnimation();
+          _timer.cancel();
+        }
+      });
+    });
+  }
+
+  void _showTimeUpAnimation() {
+    _timeUpAnimationController.forward().then((value) => {
+    //Navigator.of(context).pop('response')
+    });
+  }
+
+  void _setTimerDuration() {
+    String cardType = widget.currentField[0];
+    switch(cardType) {
+      case "field_sheet":
+        remainingTime = 10;
+        break;
+      case "field_letters":
+        remainingTime = 15;
+        break;
+      case "field_pantomime":
+        remainingTime = 20;
+        break;
+      case "field_microphone":
+        remainingTime = 20;
+        break;
+      case "field_taboo":
+        remainingTime = 20;
+        break;
+      default:
+        remainingTime = 5; // Domyślny czas, jeśli cardType nie pasuje do żadnego przypadku
+        break;
+    }
   }
 
   void _dismissCardToLeft() {
@@ -94,7 +176,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   IconButton(
                     icon: Icon(Icons.pause, color: Colors.white, size: 30),
                     onPressed: () {
-                      Navigator.of(context).pop('info');
+                      Navigator.of(context).pop('response');
                     },
                   ),
                   Spacer(),
@@ -125,23 +207,48 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             Stack(
               alignment: Alignment.center,
               children: [
-// Tło okrągłe
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.transparent,
-                  child: SizedBox.expand(
-                    child: CustomPaint(
-                      painter: CircleProgressPainter(segments: 15, progress: 1 / 15 * 5),
+                SizedBox(
+                  height: 60, // Dostosuj wysokość tak, aby pasowała do Twojego projektu
+                  child: remainingTime > 0
+                      ? CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.transparent,
+                    child: SizedBox.expand(
+                      child: CustomPaint(
+                        painter: CircleProgressPainter(
+                            segments: initialTime,
+                            progress: 1 / initialTime * remainingTime
+                        ),
+                      ),
                     ),
-                  ),
+                  )
+                      : Center(child:
+                  FadeTransition(
+                    opacity: _timeUpFadeAnimation,
+                    child: ScaleTransition(
+                      scale: _timeUpScaleAnimation,
+                      child: FadeTransition(
+                        opacity: _timeUpFadeOutAnimation,
+                        child: Text(
+                          "Koniec czasu!",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),),
                 ),
-// Tekst w środku
-                Text(
-                  '15',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                Positioned(
+                  top: 15, // Pozycjonowanie tekstu w centrum SizedBox
+                  child: remainingTime > 0
+                      ? Text(
+                    '$remainingTime',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  )
+                      : Container(),
                 ),
               ],
             ),
+
             SizedBox(height: 15.0),
             Stack(
               alignment: Alignment.center,
@@ -350,6 +457,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   void dispose() {
+    _timer.cancel();
+    _timeUpAnimationController.dispose();
     _animationController.dispose();
     _slideAnimationController.dispose();
     super.dispose();
@@ -479,7 +588,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     return displayWidgets;
   }
 }
-
+// klasa svg przycisk
 class SvgButton extends StatefulWidget {
   final VoidCallback onPressed;
   final String assetName; // Ścieżka do pliku SVG
@@ -548,7 +657,7 @@ class _SvgButtonState extends State<SvgButton> with SingleTickerProviderStateMix
   }
 }
 
-// ... poza klasą widgetu:
+// ... poza klasą widgetu: rysowanie kolka progresu
 class CircleProgressPainter extends CustomPainter {
   final int segments;
   final double progress;

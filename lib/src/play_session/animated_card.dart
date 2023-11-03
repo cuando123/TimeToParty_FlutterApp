@@ -92,12 +92,6 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
 
     // Inicjalizacja kontrolera animacji pulsowania
     _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 500), // Okres jednego pulsowania
-      vsync: this,
-    )..repeat(reverse: true); // Powtarza animację w nieskończoność z odwróceniem
-
-    // Inicjalizacja kontrolera animacji pulsowania
-    _pulseController = AnimationController(
       duration: Duration(seconds: 4), // Całkowity czas trwania cyklu animacji
       vsync: this,
     )..repeat(); // Powtarza animację w nieskończoność
@@ -128,7 +122,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     );
 
 // Dodaj opóźnienie przed rozpoczęciem powtarzania animacji
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 1), () {
       _questionMarkPulseController.repeat(reverse: true); // Powtarza animację w nieskończoność z odwróceniem
     });
 

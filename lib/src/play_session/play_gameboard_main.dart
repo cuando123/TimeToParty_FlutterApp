@@ -625,6 +625,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         ),
       ),
     ).then((returnedData) {
+      print(returnedData);
       if (returnedData != null) {
         setState(() {
           // Aktualizuj stan na podstawie zwróconych danych
