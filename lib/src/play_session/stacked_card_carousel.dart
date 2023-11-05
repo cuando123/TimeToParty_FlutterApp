@@ -102,9 +102,9 @@ class StackedCard extends StatelessWidget {
                   SizedBox(height: 50),
                   PulsatingSvg(
                     svgAsset: 'assets/time_to_party_assets/cards_screens/choose_card_static_text.svg', // Ścieżka do pliku SVG w Twoich zasobach
-                    size: 201.0, // Rozmiar obrazu SVG (zarówno szerokość, jak i wysokość)
+                    size: 20.0, // Rozmiar obrazu SVG (zarówno szerokość, jak i wysokość)
                   ),
-                  SizedBox(height: 110), // Dodaję trochę odstępu między tekstem a kartami
+                  SizedBox(height: 150), // Dodaję trochę odstępu między tekstem a kartami
                   Expanded(child: StackedCardCarousel(items: exampleCards, spaceBetweenItems: 170, initialOffset: 1)),
                   SizedBox(height: 10),
                   AnimatedHandArrow(),

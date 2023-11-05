@@ -147,9 +147,25 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     });
   }
 
+  final Map<String, String> fieldDescriptions = {
+    'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
+    'field_sheet': 'Układaj rymy i baw się słowami!',
+    'field_letters': 'Wymyśl 20 rzeczowników na daną literę!',
+    'field_pantomime': 'Mów ciałem, nie słowami!',
+    'field_microphone': 'Odgadnij sławne osobowości!',
+    'field_taboo': 'Taboo - Opisuj, omijając zakazane słowa!',
+    'field_star_blue_dark': 'Zadanie fizyczne? Zmierz się z czasem!',
+    'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
+    'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
+    'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+  };
+  String getCardDescription(String cardIndex) {
+    return fieldDescriptions[cardIndex] ?? 'Brak opisu dla tej karty'; // Użycie operatora ??, aby zapewnić wartość domyślną
+  }
 
   @override
   Widget build(BuildContext context) {
+    String cardDescription = getCardDescription(widget.selectedCardIndex);
     if (!widget.showAnimatedCard) {
       return Container();
     } else {
@@ -185,6 +201,19 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             child:  SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
                 height: 40, color: widget.teamColor)
         ),),
+        SlideTransition(
+          position: _textTopPositionAnimation,
+          child: Align(
+              alignment: Alignment(0.0, -2),
+              child:  Text(cardDescription,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic, // Ustawienie tekstu na kursywę
+                  height: 40.0, // Ustawienie wysokości tekstu
+                  fontFamily: 'HindMadurai', // Ustawienie czcionki na Hind Madurai
+                  color: Colors.white, // Ustawienie koloru tekstu na biały
+                  fontSize: 15, // Możesz dostosować rozmiar czcionki zgodnie z potrzebami
+                ),)
+          ),),
 
         SlideTransition(
           position: _textTopPositionAnimation,
