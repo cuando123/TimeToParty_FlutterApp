@@ -11,14 +11,31 @@ Widget translatedText(BuildContext context, String translationKey, double fontSi
   );
 }
 
-Widget wordText(BuildContext context, String wordKey, double fontSize, Color textColor, {TextAlign? textAlign}) {
+Widget wordText(BuildContext context, String wordKey, double fontSize, Color textColor, {TextAlign? textAlign, int? index}) {
   return Consumer<TranslationProvider>(
     builder: (context, translationProvider, child) {
       String word = translationProvider.getWord(wordKey);
-      return letsText(context, word, fontSize, textColor, textAlign: textAlign);
+      List<String> words = word.split(';'); // Dzielenie tekstu na słowa
+
+      if (index != null && index >= 0 && index < words.length) {
+        // Zwracanie widgetu Text tylko dla wybranego słowa
+        return letsText(context, words[index], fontSize, textColor, textAlign: textAlign);
+      } else {
+        // Zwracanie wszystkich słów, jeśli indeks nie jest podany lub jest nieprawidłowy
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (String word in words)
+              letsText(context, word, fontSize, textColor, textAlign: textAlign),
+          ],
+        );
+      }
     },
   );
 }
+
+
+
 
 String getTranslatedString(BuildContext context, String translationKey) {
   TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);

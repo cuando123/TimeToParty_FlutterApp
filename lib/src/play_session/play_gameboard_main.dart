@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
@@ -617,7 +618,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   void navigateWithDelay(BuildContext context, String currentTeamName, Color teamColor) {
     Navigator.push(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => PlayGameboardCard(
           teamNames: [getCurrentTeamName()],
           teamColors: [widget.teamColors[currentTeamIndex]],
