@@ -254,23 +254,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
   }
 
-  void _nextStarRed(){
-    if (currentCardIndex < totalCards - 1) {
-      // Jest więcej kart do wyświetlenia
-      setState(() {
-        // Ustaw obecną gwiazdkę na zielono
-        starsColors[currentCardIndex] = Colors.red;
-        // Inkrementuj currentCardIndex, aby przejść do następnej karty
-        // Ustaw nową obecną gwiazdkę na żółto
-        starsColors[currentCardIndex+1] = Colors.yellow;
-        currentCardIndex++;
-      });
-    } else if (currentCardIndex == totalCards - 1) {
-      // Jeśli to była ostatnia karta
-      Navigator.of(context).pop('response');
-    }
-  }
-
   void _showCard() {
     // Ustawiamy opóźnienie, aby dać czas na zniknięcie karty
     Future.delayed(Duration(milliseconds:0), () {
@@ -286,7 +269,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     });
   }
-
 
   void _dismissCardToRight() {
     _rotationAnimation = Tween<double>(
@@ -363,6 +345,24 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
   }
 
+  void _nextStarRed(){
+    if (currentCardIndex < totalCards - 1) {
+      // Jest więcej kart do wyświetlenia
+      setState(() {
+        // Ustaw obecną gwiazdkę na zielono
+        starsColors[currentCardIndex] = Colors.red;
+        // Inkrementuj currentCardIndex, aby przejść do następnej karty
+        // Ustaw nową obecną gwiazdkę na żółto
+        starsColors[currentCardIndex+1] = Colors.yellow;
+        currentCardIndex++;
+      });
+    } else if (currentCardIndex == totalCards - 1) {
+      starsColors[currentCardIndex] = Colors.red;
+      Navigator.of(context).pop('response');
+      showPointsDialog(context, starsColors, totalCards);
+    }
+  }
+
   void _nextCard() {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
@@ -376,8 +376,50 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     } else if (currentCardIndex == totalCards - 1) {
       // Jeśli to była ostatnia karta
+      starsColors[currentCardIndex] = Colors.green;
       Navigator.of(context).pop('response');
+      showPointsDialog(context, starsColors, totalCards);
     }
+  }
+
+  void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
+    // Obliczenie punktów
+    int greenCount = starsColors.where((color) => color == Colors.green).length;
+    int redCount = starsColors.where((color) => color == Colors.red).length;
+    int points;
+    if (greenCount > totalCards / 2) {
+      points = 2;
+    } else if (greenCount == totalCards / 2) {
+      points = 1;
+    } else {
+      points = 0;
+    }
+    // Wyświetlenie alert dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(backgroundColor: Colors.white,
+          title: Text('Zdobywasz $points punktów!'),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.star, color: Colors.red),
+              Text('$redCount '),
+              Icon(Icons.star, color: Colors.green),
+              Text('$greenCount'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Zamknięcie dialogu
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _skipCard() {
@@ -390,8 +432,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -554,14 +594,14 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                           ),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [wordText(context, 'taboo13', 24, Colors.white, index: 0)],
+                                            children: [wordText(context, 'taboo43', 24, Colors.white, index: 0)],
                                           ),
                                         ),
-                                        wordText(context, 'taboo13', 24, Colors.white, index: 1),
-                                        wordText(context, 'taboo13', 24, Colors.white, index: 2),
-                                        wordText(context, 'taboo13', 24, Colors.white, index: 3),
-                                        wordText(context, 'taboo13', 24, Colors.white, index: 4),
-                                        wordText(context, 'taboo13', 24, Colors.white, index: 5),
+                                        wordText(context, 'taboo43', 24, Colors.white, index: 1),
+                                        wordText(context, 'taboo43', 24, Colors.white, index: 2),
+                                        wordText(context, 'taboo43', 24, Colors.white, index: 3),
+                                        wordText(context, 'taboo43', 24, Colors.white, index: 4),
+                                        wordText(context, 'taboo43', 24, Colors.white, index: 5),
                                         SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
