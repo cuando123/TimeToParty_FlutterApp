@@ -58,26 +58,31 @@ class StackedCard extends StatelessWidget {
         // Przykładowe karty
     final List<Widget> exampleCards = <Widget>[
       FancyCard(
+        title: 'Taboo',
         image: SvgPicture.asset("assets/time_to_party_assets/card_taboo.svg"),
         onTap: (index) => stackedCardInstance.onCardTap(context, index, currentTeamName, currentTeamColor), // Używam instancji
         index: 0,
       ),
       FancyCard(
+        title: 'Sławne osoby',
         image: SvgPicture.asset("assets/time_to_party_assets/card_microphone.svg"),
         onTap: (index) => stackedCardInstance.onCardTap(context, index, currentTeamName, currentTeamColor),
         index: 1,
       ),
       FancyCard(
+        title: '20 rzeczowników',
         image: SvgPicture.asset("assets/time_to_party_assets/card_letters.svg"),
         onTap: (index) => stackedCardInstance.onCardTap(context, index, currentTeamName, currentTeamColor),
         index: 2,
       ),
       FancyCard(
+        title: 'Pantomimy',
         image: SvgPicture.asset("assets/time_to_party_assets/card_pantomime.svg"),
         onTap: (index) => stackedCardInstance.onCardTap(context, index, currentTeamName, currentTeamColor),
         index: 3,
       ),
       FancyCard(
+        title: 'Rymowanie',
         image: SvgPicture.asset("assets/time_to_party_assets/card_rymes.svg"),
         onTap: (index) => stackedCardInstance.onCardTap(context, index, currentTeamName, currentTeamColor),
         index: 4,
@@ -263,24 +268,32 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark>
 
 class FancyCard extends StatelessWidget {
   const FancyCard({
+    required this.title, // Adding the new line for title variable
     required this.image,
-    required this.onTap, // Dodajemy tę linię
-    required this.index, // Dodajemy tę linię
+    required this.onTap,
+    required this.index,
   });
 
+  final String title; // Declare title as a final String variable
   final Widget image;
-  final Function(int) onTap; // Dodajemy tę linię
-  final int index; // Dodajemy tę linię
+  final Function(int) onTap;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     return Align(
-        alignment: Alignment.centerLeft,
-        child: GestureDetector(
-      onTap: () => onTap(index), // Dodajemy tę linię
-      child: Card(color: Colors.transparent,
-        child: Column(
+      alignment: Alignment.centerLeft,
+      child: GestureDetector(
+        onTap: () => onTap(index),
+        child: Card(
+          color: Colors.black,
+          child: Column(
             children: <Widget>[
+              Text(title, style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontFamily: 'HindMadurai')), // This will display the title
               SizedBox(
                 width: 160,
                 height: 240,
@@ -289,9 +302,11 @@ class FancyCard extends StatelessWidget {
             ],
           ),
         ),
-    ),);
+      ),
+    );
   }
 }
+
 
 class PulsatingSvg extends StatefulWidget {
   final String svgAsset;

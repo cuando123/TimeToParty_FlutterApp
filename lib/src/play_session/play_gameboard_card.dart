@@ -50,6 +50,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   bool _isButtonXDisabled = false;
   bool _isButtonTickDisabled = false;
   bool _isButtonSkipDisabled = false;
+  late String generatedCardTypeWithNumber;
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         _opacity = _opacityController.value;
       });
     });
+    _generateCardTypeAndNumber();
 
     _rotationAnimationController = AnimationController(
       duration: Duration(milliseconds: 300),
@@ -128,6 +130,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     // Opóźnij działanie przycisku
     Future.delayed(Duration(milliseconds: 200), () {
+      _updateCardTypeAndNumber();
       _dismissCardToLeft();
       _nextStarRed();
     });
@@ -157,8 +160,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     // Opóźnij działanie przycisku
     Future.delayed(Duration(milliseconds: 200), () {
+      _updateCardTypeAndNumber();
       _dismissCardToRight();
-      _nextCard();
+      _nextStarGreen();
     });
 
     // Odblokuj przycisk po 300 milisekundach
@@ -187,6 +191,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     if (skipCount > 0) {
       // Wykonanie opóźnienia
       Future.delayed(Duration(milliseconds: 200), () {
+        _updateCardTypeAndNumber();
         _dismissCardToLeft();
         _skipCard(); // Ta funkcja zmniejszy skipCount
       });
@@ -205,11 +210,40 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   }
 
   void determineTotalCards() {
-    // Tutaj logika, która ustala totalCards na podstawie rodzaju karty
-    // Na przykład, możesz mieć funkcję, która na podstawie danych z API określa totalCards
-    // Załóżmy, że otrzymujesz te dane i ustalasz totalCards:
+    int cardNumbers;
+    switch (widget.currentField[0]) {
+      case 'field_sheet':
+        cardNumbers = 5;
+        break;
+      case 'field_letters':
+        cardNumbers = 1;
+        break;
+      case 'field_pantomime':
+        cardNumbers = 2;
+        break;
+      case 'field_microphone':
+        cardNumbers = 5;
+        break;
+      case 'field_taboo':
+        cardNumbers = 5;
+        break;
+      case 'field_star_blue_dark':
+        cardNumbers = 1;
+        break;
+      case 'field_star_pink':
+        cardNumbers = 2;
+        break;
+      case 'field_star_green':
+        cardNumbers = 1;
+        break;
+      case 'field_star_yellow':
+        cardNumbers = 1;
+        break;
+      default:
+        cardNumbers = 1; // Domyślna wartość cardType, jeśli currentField nie pasuje do żadnego przypadku
+    }
     setState(() {
-      totalCards = 8; // Ustal odpowiednią wartość dla totalCards
+      totalCards = cardNumbers; // Ustal odpowiednią wartość dla totalCards
       starsColors = List.generate(totalCards, (index) => Colors.grey);
       // Ustawienie pierwszej gwiazdki na żółto, zakładając że zaczynamy od pierwszej karty
       if (totalCards > 0) {
@@ -321,7 +355,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
   }
 
-  void _setTimerDuration() {
+  void _setTimerDuration() { //TODO do ustalenia konkretne czasy dla danych kart
     String cardType = widget.currentField[0];
     switch (cardType) {
       case "field_sheet":
@@ -345,6 +379,65 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
   }
 
+  void _generateCardTypeAndNumber() {
+    // Przydzielenie wyniku do zmiennej stanu
+    generatedCardTypeWithNumber = generateCardTypeWithNumber(widget.currentField[0]);
+  }
+
+  void _updateCardTypeAndNumber() {
+    setState(() {
+      generatedCardTypeWithNumber = generateCardTypeWithNumber(widget.currentField[0]);
+    });
+  }
+
+  String generateCardTypeWithNumber(String currentField) {
+    Random random = Random();
+    int maxNumber = 1;
+
+    String cardType;
+    switch (currentField) {
+      case 'field_sheet':
+        cardType = 'rymes';
+        maxNumber = 119;
+        break;
+      case 'field_letters':
+        cardType = 'alphabet';
+        break;
+      case 'field_pantomime':
+        cardType = 'pantomimes';
+        maxNumber = 135;
+        break;
+      case 'field_microphone':
+        cardType = 'peoples';
+        maxNumber = 138;
+        break;
+      case 'field_taboo':
+        cardType = 'taboo';
+        maxNumber = 220;
+        break;
+      case 'field_star_blue_dark':
+        cardType = 'phisycal';
+        break;
+      case 'field_star_pink':
+        cardType = 'antonimes';
+        maxNumber = 113;
+        break;
+      case 'field_star_green':
+        cardType = 'draw_movie';
+        maxNumber = 100;
+        break;
+      case 'field_star_yellow':
+        cardType = 'compare_question';
+        maxNumber = 250;
+        break;
+      default:
+        cardType = 'default'; // Domyślna wartość cardType, jeśli currentField nie pasuje do żadnego przypadku
+    }
+    int randomNumber = random.nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber
+
+    return '$cardType$randomNumber'; // Zwraca połączony ciąg znaków
+  }
+
   void _nextStarRed(){
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
@@ -363,7 +456,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
   }
 
-  void _nextCard() {
+  void _nextStarGreen() {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
       setState(() {
@@ -539,95 +632,22 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             Stack(
               alignment: Alignment.center,
               children: [
-                Center(
-                  child: TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 0, end: _offsetX),
-                    duration: Duration(milliseconds: 250),
-                    builder: (BuildContext context, double value, Widget? child) {
-                      return Transform.translate(
-                        offset: Offset(value, 0),
-                        child: Transform.rotate(
-                          angle: _rotationAnimation.value, // Używanie wartości animacji obrotu tutaj
-                          child: FractionallySizedBox(
-                            widthFactor: 0.7, //szerokosc karty
-                            child: AnimatedOpacity(
-                              opacity: _opacity,
-                              duration: Duration(milliseconds: 250),
-                              child: ScaleTransition(
-                                scale: _slideAnimationController, // Kontroler animacji skali
-                                child: Container(
-                                  height: 400.0,
-                                  padding: EdgeInsets.all(13.0),
-                                  child: Card(
-                                    color: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      side: BorderSide(color: Palette().white, width: 13.0),
-                                    ),
-                                    elevation: 0.0,
-                                    child: Column(
-                                      children: <Widget>[
-                                        SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: List.generate(totalCards, (index) {
-                                            // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 2),
-                                              child: Icon(
-                                                Icons.star,
-                                                color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                                size: 20,
-                                              ),
-                                            );
-                                          }),
-                                        ),
-                                        SizedBox(height: 15),
-                                        Container(
-                                          padding: const EdgeInsets.all(20.0),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [wordText(context, 'taboo43', 24, Colors.white, index: 0)],
-                                          ),
-                                        ),
-                                        wordText(context, 'taboo43', 24, Colors.white, index: 1),
-                                        wordText(context, 'taboo43', 24, Colors.white, index: 2),
-                                        wordText(context, 'taboo43', 24, Colors.white, index: 3),
-                                        wordText(context, 'taboo43', 24, Colors.white, index: 4),
-                                        wordText(context, 'taboo43', 24, Colors.white, index: 5),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: List.generate(totalCards, (index) {
-                                            // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 2),
-                                              child: Icon(
-                                                Icons.star,
-                                                color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                                size: 20,
-                                              ),
-                                            );
-                                          }),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                Center( //KARTA
+                  child: CustomCard(
+                    totalCards: totalCards,
+                    starsColors: starsColors,
+                    word: generatedCardTypeWithNumber,
+                    skipCount: skipCount,
+                    onSkipButtonPressed: _onSkipButtonPressed,
+                    onButtonXPressed: _onButtonXPressed,
+                    onButtonTickPressed: _onButtonTickPressed,
+                    currentCardIndex: currentCardIndex,
+                    slideAnimationController: _slideAnimationController,
+                    rotationAnimation: _rotationAnimation,
+                    opacity: _opacity,
+                    offsetX: _offsetX,
+                    cardType: widget.currentField[0]
+                  )
                 ),
               ],
             ),
@@ -983,4 +1003,190 @@ class CircleProgressPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class CustomCard extends StatelessWidget {
+  final int totalCards;
+  final List<Color> starsColors;
+  final String word;
+  final int skipCount;
+  final Function() onSkipButtonPressed;
+  final Function() onButtonXPressed;
+  final Function() onButtonTickPressed;
+  final int currentCardIndex;
+  final AnimationController slideAnimationController;
+  final Animation<double> rotationAnimation;
+  final double opacity;
+  final double offsetX;
+  final String cardType; // Dodatkowy parametr określający typ karty
+
+  const CustomCard({
+    Key? key,
+    required this.totalCards,
+    required this.starsColors,
+    required this.word,
+    required this.skipCount,
+    required this.onSkipButtonPressed,
+    required this.onButtonXPressed,
+    required this.onButtonTickPressed,
+    required this.currentCardIndex,
+    required this.slideAnimationController,
+    required this.rotationAnimation,
+    required this.opacity,
+    required this.offsetX,
+    required this.cardType, // Przekazanie typu karty jako parametru
+  }) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    switch (cardType) {
+      case 'field_sheet':
+        return buildSheetCard(totalCards, starsColors, slideAnimationController, rotationAnimation, opacity, offsetX, word); // Możesz tutaj zdefiniować wygląd karty dla 'field_sheet'
+    // ... inne przypadki dla różnych typów kart
+      default:
+        return buildSheetCard(totalCards, starsColors, slideAnimationController, rotationAnimation, opacity, offsetX, word); // Możesz tutaj zdefiniować wygląd karty dla 'field_sheet'
+    }
+  }
+  Widget buildSheetCard(int totalCards, List<Color> starsColors, AnimationController slideAnimationController, Animation<double> rotationAnimation, double opacity, double offsetX, String word) {
+     return TweenAnimationBuilder(
+        tween: Tween<double>(begin: 0, end: offsetX),
+        duration: Duration(milliseconds: 250),
+        builder: (BuildContext context, double value, Widget? child) {
+          return Transform.translate(
+            offset: Offset(value, 0),
+            child: Transform.rotate(
+              angle: rotationAnimation.value, // Używanie wartości animacji obrotu tutaj
+              child: FractionallySizedBox(
+                widthFactor: 0.7, //szerokosc karty
+                child: AnimatedOpacity(
+                  opacity: opacity,
+                  duration: Duration(milliseconds: 250),
+                  child: ScaleTransition(
+                    scale: slideAnimationController, // Kontroler animacji skali
+                    child: Container(
+                      height: 400.0,
+                      padding: EdgeInsets.all(13.0),
+                      child: Card(
+                        color: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          side: BorderSide(color: Palette().white, width: 13.0),
+                        ),
+                        elevation: 0.0,
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(totalCards, (index) {
+                                // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
+                                    size: 20,
+                                  ),
+                                );
+                              }),
+                            ),
+                            SizedBox(height: 15),
+                            Container(
+                              padding: const EdgeInsets.all(20.0),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [wordText(context, word, 24, Colors.white, index: 0)],
+                              ),
+                            ),
+                            wordText(context, word, 24, Colors.white, index: 1),
+                            wordText(context, word, 24, Colors.white, index: 2),
+                            wordText(context, word, 24, Colors.white, index: 3),
+                            wordText(context, word, 24, Colors.white, index: 4),
+                            wordText(context, word, 24, Colors.white, index: 5),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(totalCards, (index) {
+                                // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
+                                    size: 20,
+                                  ),
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+  Widget buildDefaultCard() {
+    return Card(
+      // ... szczegóły konstrukcji karty
+    );
+  }
+
+}
+
+class CardAnimation extends StatelessWidget {
+  final Widget child;
+  final AnimationController slideAnimationController;
+  final Animation<double> rotationAnimation;
+  final double opacity;
+  final double offsetX;
+
+  const CardAnimation({
+    Key? key,
+    required this.child,
+    required this.slideAnimationController,
+    required this.rotationAnimation,
+    required this.opacity,
+    required this.offsetX,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: offsetX),
+      duration: Duration(milliseconds: 250),
+      builder: (BuildContext context, double value, Widget? child) {
+        return Transform.translate(
+          offset: Offset(value, 0),
+          child: Transform.rotate(
+            angle: rotationAnimation.value,
+            child: FractionallySizedBox(
+              widthFactor: 0.7,
+              child: AnimatedOpacity(
+                opacity: opacity,
+                duration: Duration(milliseconds: 250),
+                child: ScaleTransition(
+                  scale: slideAnimationController,
+                  child: child, // Tutaj podstawiamy naszą kartę
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
