@@ -34,8 +34,13 @@ Widget wordText(BuildContext context, String wordKey, double fontSize, Color tex
   );
 }
 
+List<String> getWordsList(BuildContext context, String wordKey) {
+  TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);
+  String word = translationProvider.getWord(wordKey);
+  List<String> words = word.split(';'); // Dzielenie tekstu na słowa
 
-
+  return words;
+}
 
 String getTranslatedString(BuildContext context, String translationKey) {
   TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);
