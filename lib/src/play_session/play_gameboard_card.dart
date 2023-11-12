@@ -14,6 +14,7 @@ import '../style/palette.dart';
 import 'package:flutter/services.dart';
 
 import 'additional_widgets.dart';
+import 'drawing_screen.dart';
 
 class PlayGameboardCard extends StatefulWidget {
   final List<String> teamNames;
@@ -494,15 +495,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         maxNumber = 220;
         break;
       case 'field_star_blue_dark':
-        cardType = 'phisycal';
+        cardType = 'physical';
         break;
       case 'field_star_pink':
         cardType = 'antonimes';
         maxNumber = 113;
         break;
       case 'field_star_green':
-        cardType = 'draw_movie';
-        maxNumber = 100;
+        cardType = 'draw_movie'; //problem jest taki ze idzie lista, która definiowana jest z jednego pola np.: field_star_green
+        // i wtedy generuje się np: field_star_green79 - i on na tej podstawie pobiera metodą: buildFortuneItemsList -> i tu dostaniemy listę słów,
+        // wziętych po separatorach ';' i zamienioną na listę Stringów i następnie ta lista jest przekazywana..
+        // w przypadku tej karty, musiałbym to robić w zupełnie inny sposób albo wysyłać 3 listy
+        //możnaby zrobić tak: jeżeli cardType (ustawiony tu przeze mnie) np. jako ==draw.
+        // to spróbować zrobić przekazanie 3 list:
+        //getWordsList(context, generateCardTypeWithNumber('draw_movie')); - trzebaby zrobić to na sztywno, albo specjalną metode dla tej jednej karty?
         break;
       case 'field_star_yellow':
         cardType = 'compare_question';
@@ -612,6 +618,43 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   List<String> buildFortuneItemsList(BuildContext context) {
     // Zwróć bezpośrednio listę słów, bez konwersji na obiekty FortuneItem
     return getWordsList(context, generateCardTypeWithNumber(widget.currentField[0]));
+  }
+
+  Map<String, List<String>> buildSpecificListsForStarGreen(BuildContext context, String cardType) {
+    if (cardType == 'field_star_green') {
+      Map<String, List<String>> lists = {
+        'movies': [],
+        'proverbs': [],
+        'lovePossibilities': []
+      };
+
+      int maxMovies = 100;
+      int maxProverbs = 88;
+      int maxLovePossibilities = 44;
+
+      for (int i = 1; i <= maxMovies; i++) {
+        var words = getWordsList(context, 'draw_movie$i');
+        if (words.isNotEmpty) {
+          lists['movies']!.addAll(words);
+        }
+      }
+      for (int i = 1; i <= maxProverbs; i++) {
+        var words = getWordsList(context, 'draw_proverb$i');
+        if (words.isNotEmpty) {
+          lists['proverbs']!.addAll(words);
+        }
+      }
+      for (int i = 1; i <= maxLovePossibilities; i++) {
+        var words = getWordsList(context, 'draw_love_pos$i');
+        if (words.isNotEmpty) {
+          lists['lovePossibilities']!.addAll(words);
+        }
+      }
+
+      return lists;
+    } else {
+      return {};
+    }
   }
 
   @override
@@ -734,17 +777,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   word: isTabooCard
                       ? generatedCardTypeWithNumber
                       : (wordsList.isNotEmpty ? wordsList[currentWordIndex] : "defaultWord"),
-                  skipCount: skipCount,
-                  onSkipButtonPressed: _onSkipButtonPressed,
-                  onButtonXPressed: _onButtonXPressed,
-                  onButtonTickPressed: _onButtonTickPressed,
-                  currentCardIndex: currentCardIndex,
                   slideAnimationController: _slideAnimationController,
                   rotationAnimation: _rotationAnimation,
                   opacity: _opacity,
                   offsetX: _offsetX,
                   cardType: widget.currentField[0],
-                  buildFortuneItemsList: _fortuneItemsList,
+                  buildFortuneItemsList:
+                      _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
+                      // tak samo to będzie dla compare_questions uzywane
+                      specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
                 )),
               ],
             ),
@@ -1108,53 +1149,54 @@ class CircleProgressPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
+// Zakładając, że te klasy są już zdefiniowane gdzieś w Twoim projekcie.
 class CustomCard extends StatefulWidget {
   final int totalCards;
   final List<Color> starsColors;
-  final String word;
-  final int skipCount;
-  final Function() onSkipButtonPressed;
-  final Function() onButtonXPressed;
-  final Function() onButtonTickPressed;
-  final int currentCardIndex;
   final AnimationController slideAnimationController;
   final Animation<double> rotationAnimation;
   final double opacity;
   final double offsetX;
+  final String word;
   final String cardType;
   final List<String> buildFortuneItemsList;
+  final Map<String, List<String>> specificLists;
 
-  const CustomCard({
-    Key? key,
-    required this.totalCards,
-    required this.starsColors,
-    required this.word,
-    required this.skipCount,
-    required this.onSkipButtonPressed,
-    required this.onButtonXPressed,
-    required this.onButtonTickPressed,
-    required this.currentCardIndex,
-    required this.slideAnimationController,
-    required this.rotationAnimation,
-    required this.opacity,
-    required this.offsetX,
-    required this.cardType,
-    required this.buildFortuneItemsList,
-  }) : super(key: key);
+  CustomCard(
+      {Key? key,
+      required this.totalCards,
+      required this.starsColors,
+      required this.slideAnimationController,
+      required this.rotationAnimation,
+      required this.opacity,
+      required this.offsetX,
+      required this.word,
+      required this.cardType,
+      required this.buildFortuneItemsList,
+        this.specificLists = const {},})
+      : super(key: key);
 
   @override
   _CustomCardState createState() => _CustomCardState();
 }
 
+class CardData {
+  int totalCards;
+  List<Color> starsColors;
+  String word;
+
+  CardData({required this.totalCards, required this.starsColors, required this.word});
+}
+
 class _CustomCardState extends State<CustomCard> {
   late StreamController<int> _alphabetController;
-  late String randomWord;
+  late String randomLetter;
 
   @override
   void initState() {
     super.initState();
     _alphabetController = StreamController<int>();
-    randomWord = _getRandomWord();
+    randomLetter = _getRandomLetter();
   }
 
   @override
@@ -1166,32 +1208,230 @@ class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
     switch (widget.cardType) {
-      case 'field_sheet':
-        return buildCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
-            widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
-      case 'field_pantomime':
-        return buildCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
-            widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
-      case 'field_microphone':
-        return buildCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
-            widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
       case 'field_taboo':
         return buildTabooCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
             widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
-      case 'field_letters':
-        return buildAlphabetCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
-            widget.rotationAnimation, widget.opacity, widget.offsetX);
-      //case 'field_star_blue_dark':
-
-      //case 'field_star_pink':
-
-      //case 'field_star_green':
-
-      //case 'field_star_yellow':
+      case 'field_star_blue_dark':
+        return buildBlueDarkCard(); //zadanie fizyczne
+      case 'field_star_pink':
+        return buildPinkCard(); // antonimy synonimy
+      case 'field_star_green':
+        return buildGreenCard(); // rysowanie
+      case 'field_star_yellow':
+        return buildYellowCard(); //pytania porownujace
       default:
-        return buildTabooCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
-            widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
+        return buildGeneralCard();
     }
+  }
+
+  Widget buildGeneralCard() {
+    CardData cardData = CardData(
+      totalCards: widget.totalCards,
+      starsColors: widget.starsColors,
+      word: widget.cardType == 'field_letters' ? randomLetter : widget.word,
+    );
+    return buildCustomCard(cardData);
+  }
+
+  Widget buildGreenCard() {
+    String cardType = getRandomCardType();
+    int maxNumber;
+
+    switch (cardType) {
+      case 'draw_movie':
+        maxNumber = 100;
+        break;
+      case 'draw_proverb':
+        maxNumber = 88;
+        break;
+      case 'draw_love_pos':
+        maxNumber = 44;
+        break;
+      default:
+        maxNumber = 100; // Domyślna wartość, jeśli cardType nie pasuje
+    }
+
+    int randomNumber = Random().nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber
+    String cardText = '$cardType$randomNumber';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen()));
+      },
+      child: buildGeneralCardWithText(widget.specificLists, 'lovePossibilities', 43), //0 wywali out of range, movies, proverbs, lovePossibilities 100, 88, 44
+    );
+  }
+
+  String getRandomCardType() {
+    List<String> cardTypes = ['draw_movie', 'draw_proverb', 'draw_love_pos'];
+    return cardTypes[Random().nextInt(cardTypes.length)];
+  }
+
+  Widget buildGeneralCardWithText(Map<String, List<String>> specificLists, String key, int index) {
+    // Pobieranie elementu z listy dla danego klucza i indeksu
+    String itemToShow = "";
+    if (specificLists.containsKey(key) && index - 1 < specificLists[key]!.length) {
+      itemToShow = specificLists[key]![index - 1];
+    }
+
+    // Tworzenie widoku karty z wybranym elementem
+    return Card(
+      child: Center(
+        child: Text('$itemToShow:: kliknij mnie', style: TextStyle(color: Colors.black)),
+      ),
+    );
+  }
+
+
+  Widget buildPinkCard() {
+    // Implementacja dla Pink Card
+    return buildGeneralCard();
+  }
+
+  Widget buildBlueDarkCard() { //
+    // Implementacja dla Green Card
+    return buildGeneralCard();
+  }
+
+  Widget buildYellowCard() {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: widget.offsetX),
+      duration: Duration(milliseconds: 250),
+      builder: (BuildContext context, double value, Widget? child) {
+        return Transform.translate(
+          offset: Offset(value, 0),
+          child: Transform.rotate(
+            angle: widget.rotationAnimation.value,
+            child: FractionallySizedBox(
+              widthFactor: 0.7,
+              child: AnimatedOpacity(
+                opacity: widget.opacity,
+                duration: Duration(milliseconds: 250),
+                child: ScaleTransition(
+                  scale: widget.slideAnimationController,
+                  child: Container(
+                    height: 400.0,
+                    padding: EdgeInsets.all(13.0),
+                    child: Card(
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: BorderSide(color: Palette().white, width: 13.0),
+                      ),
+                      elevation: 0.0,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          buildStarsRow(widget.totalCards, widget.starsColors),
+                          SizedBox(height: 15),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: widget.buildFortuneItemsList.length,
+                              itemBuilder: (context, index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(widget.buildFortuneItemsList[index],
+                                    style: TextStyle(color: Colors.white, fontSize: 24)),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          buildStarsRow(widget.totalCards, widget.starsColors),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildCustomCard(CardData cardData) {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: widget.offsetX),
+      duration: Duration(milliseconds: 250),
+      builder: (BuildContext context, double value, Widget? child) {
+        return Transform.translate(
+          offset: Offset(value, 0),
+          child: Transform.rotate(
+            angle: widget.rotationAnimation.value,
+            child: FractionallySizedBox(
+              widthFactor: 0.7,
+              child: AnimatedOpacity(
+                opacity: widget.opacity,
+                duration: Duration(milliseconds: 250),
+                child: ScaleTransition(
+                  scale: widget.slideAnimationController,
+                  child: buildCardLayout(cardData),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildCardLayout(CardData cardData) {
+    return Container(
+      height: 400.0,
+      padding: EdgeInsets.all(13.0),
+      child: Card(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          side: BorderSide(color: Palette().white, width: 13.0),
+        ),
+        elevation: 0.0,
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            buildStarsRow(cardData.totalCards, cardData.starsColors),
+            SizedBox(height: 15),
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(cardData.word, style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            buildStarsRow(cardData.totalCards, cardData.starsColors),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildStarsRow(int totalCards, List<Color> starsColors) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalCards, (index) => buildStarIcon(starsColors[index])),
+    );
+  }
+
+  Widget buildStarIcon(Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: Icon(Icons.star, color: color, size: 20),
+    );
+  }
+
+  String _getRandomLetter() {
+    var randomIndex = Random().nextInt(widget.buildFortuneItemsList.length);
+    return widget.buildFortuneItemsList[randomIndex];
   }
 
   // karta taboo
@@ -1286,199 +1526,4 @@ class _CustomCardState extends State<CustomCard> {
       },
     );
   }
-
-// karta pantomimy, rymy (sheet), slawni ludzie (mikrofon)
-  Widget buildCard(int totalCards, List<Color> starsColors, AnimationController slideAnimationController,
-      Animation<double> rotationAnimation, double opacity, double offsetX, String word) {
-    print(word);
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 0, end: offsetX),
-      duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
-        return Transform.translate(
-          offset: Offset(value, 0),
-          child: Transform.rotate(
-            angle: rotationAnimation.value, // Używanie wartości animacji obrotu tutaj
-            child: FractionallySizedBox(
-              widthFactor: 0.7, //szerokosc karty
-              child: AnimatedOpacity(
-                opacity: opacity,
-                duration: Duration(milliseconds: 250),
-                child: ScaleTransition(
-                  scale: slideAnimationController, // Kontroler animacji skali
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.all(13.0),
-                    child: Card(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: BorderSide(color: Palette().white, width: 13.0),
-                      ),
-                      elevation: 0.0,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
-                                ),
-                              );
-                            }),
-                          ),
-                          SizedBox(height: 15),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(word,
-                                    style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24))
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
-                                ),
-                              );
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildAlphabetCard(int totalCards, List<Color> starsColors, AnimationController slideAnimationController,
-      Animation<double> rotationAnimation, double opacity, double offsetX) {
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 0, end: offsetX),
-      duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
-        return Transform.translate(
-          offset: Offset(value, 0),
-          child: Transform.rotate(
-            angle: rotationAnimation.value, // Używanie wartości animacji obrotu tutaj
-            child: FractionallySizedBox(
-              widthFactor: 0.7, //szerokosc karty
-              child: AnimatedOpacity(
-                opacity: opacity,
-                duration: Duration(milliseconds: 250),
-                child: ScaleTransition(
-                  scale: slideAnimationController, // Kontroler animacji skali
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.all(13.0),
-                    child: Card(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: BorderSide(color: Palette().white, width: 13.0),
-                      ),
-                      elevation: 0.0,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
-                                ),
-                              );
-                            }),
-                          ),
-                          SizedBox(height: 15),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(randomWord,
-                                    style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24))
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
-                                ),
-                              );
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  String _getRandomWord() {
-    var randomIndex = Random().nextInt(widget.buildFortuneItemsList.length);
-    return widget.buildFortuneItemsList[randomIndex];
-  }
-
-  Widget buildDefaultCard() {
-    return Card(
-        // ... szczegóły konstrukcji karty
-        );
-  }
-
-// Reszta metod...
 }
