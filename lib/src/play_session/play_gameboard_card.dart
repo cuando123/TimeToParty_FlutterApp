@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/roll_slot_machine.dart';
+import 'package:game_template/src/play_session/slot_machine_page.dart';
 
 // Zakładam, że importy z twojego drugiego fragmentu są nadal potrzebne
 import '../app_lifecycle/translated_text.dart';
@@ -673,9 +674,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.pause, color: Colors.white, size: 30),
+                    icon: Icon(Icons.home, color: Colors.white, size: 30),
                     onPressed: () {
-                      Navigator.of(context).pop('response');
+                      AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+                      //Navigator.of(context).pop('response');
                     },
                   ),
                   Spacer(),
@@ -1288,9 +1290,54 @@ class _CustomCardState extends State<CustomCard> {
     return buildGeneralCard();
   }
 
-  Widget buildBlueDarkCard() { //
-    // Implementacja dla Green Card
-    return buildGeneralCard();
+  Widget buildBlueDarkCard() {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: widget.offsetX),
+      duration: Duration(milliseconds: 250),
+      builder: (BuildContext context, double value, Widget? child) {
+        return Transform.translate(
+          offset: Offset(value, 0),
+          child: Transform.rotate(
+            angle: widget.rotationAnimation.value,
+            child: FractionallySizedBox(
+              widthFactor: 0.7,
+              child: AnimatedOpacity(
+                opacity: widget.opacity,
+                duration: Duration(milliseconds: 250),
+                child: ScaleTransition(
+                  scale: widget.slideAnimationController,
+                  child: Container(
+                    height: 400.0,
+                    padding: EdgeInsets.all(13.0),
+                    child: Card(
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: BorderSide(color: Palette().white, width: 13.0),
+                      ),
+                      elevation: 0.0,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          buildStarsRow(widget.totalCards, widget.starsColors),
+                          SizedBox(height: 15),
+                          Expanded(
+                            child: PhysicalChallengeCard(),
+                            //SlotMachinePage(title: 'tytul')
+                          ),
+                          SizedBox(height: 10),
+                          buildStarsRow(widget.totalCards, widget.starsColors),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget buildYellowCard() {
@@ -1524,6 +1571,96 @@ class _CustomCardState extends State<CustomCard> {
           ),
         );
       },
+    );
+  }
+}
+
+class PhysicalChallengeCard extends StatefulWidget {
+  @override
+  _PhysicalChallengeCardState createState() => _PhysicalChallengeCardState();
+}
+
+class _PhysicalChallengeCardState extends State<PhysicalChallengeCard> {
+  StreamController<int> selectedController1 = StreamController<int>.broadcast();
+  StreamController<int> selectedController2 = StreamController<int>.broadcast();
+  StreamController<int> selectedController3 = StreamController<int>.broadcast();
+
+  final List<String> players = ['Gracz 1', 'Gracz 2'];
+  final List<String> numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+  final List<String> exercises = ['pompki', 'brzuszki', 'przysiady', 'pajacyki'];
+
+  @override
+  void dispose() {
+    selectedController1.close();
+    selectedController2.close();
+    selectedController3.close();
+    super.dispose();
+  }
+
+  void startFling() {
+    int playerIndex = Fortune.randomInt(0, players.length);
+    int numberIndex = Fortune.randomInt(0, numbers.length);
+    int exerciseIndex = Fortune.randomInt(0, exercises.length);
+
+    selectedController1.add(playerIndex);
+    selectedController2.add(numberIndex);
+    selectedController3.add(exerciseIndex);
+
+    Future.delayed(Duration(seconds: 5), () {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Wynik Losowania'),
+              content: Text('${players[playerIndex]} robi ${numbers[numberIndex]} ${exercises[exerciseIndex]}',style: TextStyle(color: Colors.white70)),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+    });
+  });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        ElevatedButton(
+          onPressed: startFling,
+          child: Text('Rozpocznij Losowanie'),
+        ),
+        SizedBox(height: 10), // Odstęp
+        buildFortuneBar(players, selectedController1),
+        SizedBox(height: 10), // Odstęp
+        buildFortuneBar(numbers, selectedController2),
+        SizedBox(height: 10), // Odstęp
+        buildFortuneBar(exercises, selectedController3),
+      ],
+    );
+  }
+
+  Widget buildFortuneBar(List<String> items, StreamController<int> controller) {
+    return Expanded(
+      child: FortuneBar(
+        physics: CircularPanPhysics(
+          duration: Duration(seconds: 1),
+          curve: Curves.decelerate,
+        ),
+        onFling: () {
+          controller.add(Fortune.randomInt(0, items.length));
+        },
+        selected: controller.stream,
+        styleStrategy: AlternatingStyleStrategy(),
+        visibleItemCount: 3, // Zmniejszona ilość widocznych elementów
+        items: [
+          for (var item in items) FortuneItem(child: Text(item)),
+        ],
+      ),
     );
   }
 }

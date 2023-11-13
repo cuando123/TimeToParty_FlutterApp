@@ -40,6 +40,7 @@ dependencies:
     path: lib/libraries/stacked_card_carousel-0.0.4
   roll_slot_machine:
     path: lib/libraries/roll_slot_machine-develop
+  flutter_slot_machine: ^0.0.1
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

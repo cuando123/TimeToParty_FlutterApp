@@ -76,7 +76,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     _controller.value = 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasShownAlertDialog) {
-        _showAnimatedAlertDialog();
+        AnimatedAlertDialog.showAnimatedDialog(context);
         _controller.forward(from: 0);
         hasShownAlertDialog = true;
       }
@@ -88,7 +88,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return WillPopScope(
       onWillPop: () async {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        showExitGameDialog(context);
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
         return false; // return false to prevent the pop operation
       },
       child: CustomBackground(
@@ -232,7 +232,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            NeumorphicTripleButton(_controller, () => showExitGameDialog(context)),
+                                            NeumorphicTripleButton(_controller, () => AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '')),
                                           ],
                                         ),
                                       ],
@@ -539,44 +539,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     selected.close();
     super.dispose();
   }
-  //tapnij w kolo by zakrecic
-  void _showAnimatedAlertDialog() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black45,
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-        return Center(
-            child: AlertDialog(
-                backgroundColor: Palette().white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                title:
-                    letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center)));
-      },
-      transitionBuilder:
-          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-        // Jeśli dialog się pojawia
-        if (animation.status == AnimationStatus.forward) {
-          return ScaleTransition(
-            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          );
-        }
-        // Jeśli dialog znika
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-    );
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pop();
-    });
-  }
 
   //funkcja przesuniecia pionka, kroki
   Future<void> moveFlag(int steps, int flagIndex, double stepSize) async {
@@ -646,61 +608,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   String getCurrentTeamColor() {
     return widget.teamColors[currentTeamIndex].toString();
-  }
-
-  void showExitGameDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(context, 'are_you_sure_game_leave', 20, Palette().pink, textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink,
-                    // color
-                    foregroundColor: Palette().white,
-                    // textColor
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize:
-                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
-                    textStyle:
-                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    hasShownAlertDialog = false;
-                  },
-                  child: Text('OK'),
-                ),
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   @override

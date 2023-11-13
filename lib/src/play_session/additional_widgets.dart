@@ -389,4 +389,101 @@ class _InstantTooltipState extends State<InstantTooltip> {
   }
 }
 
+class AnimatedAlertDialog {
+
+  static void showAnimatedDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center),
+          ),
+        );
+      },
+      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+        if (animation.status == AnimationStatus.forward) {
+          // Jeśli dialog się pojawia
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        // Jeśli dialog znika
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pop();
+    });
+  }
+
+  static void showExitGameDialog(BuildContext context, bool hasShownAlertDialog, String response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, 'are_you_sure_game_leave', 20, Palette().pink, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+              ),
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette().pink,
+                    // color
+                    foregroundColor: Palette().white,
+                    // textColor
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize:
+                    Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    hasShownAlertDialog = false;
+                  },
+                  child: Text('OK'),
+                ),
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(response);
+                  },
+                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 
