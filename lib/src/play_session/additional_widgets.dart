@@ -54,7 +54,7 @@ class NeumorphicTripleButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildButtonIcon(Icons.pause, showExitGameDialogCallback),
+          _buildButtonIcon(Icons.home_rounded, showExitGameDialogCallback),
           _buildButtonIcon(Icons.info_outlined, () {
             Future.delayed(Duration(milliseconds: 150), () {
               showDialog<void>(

@@ -10,26 +10,29 @@ class RollSlotMachine extends StatefulWidget {
 }
 
 class _RollSlotMachineState extends State<RollSlotMachine> {
-  List<int> values = List.generate(100, (index) => index);
   final controller = StreamController<int>();
   final _rollSlotController = RollSlotController();
   final _rollSlotController1 = RollSlotController();
   final _rollSlotController2 = RollSlotController();
   final _rollSlotController3 = RollSlotController();
   final random = Random();
-  final List<String> emojiList = [
+  final List<String> emojiList1 = [
     '😀',
     '😃',
     '😄',
-    '😁',
-    '😆',
-    '😅',
-    '🤣',
-    '😂',
-    '🙂',
-    '🙃',
-    '😉',
     '😊',
+  ];
+  final List<String> emojiList2 = [
+    'A',
+    'B',
+  ];
+  final List<String> emojiList3 = [
+    'X',
+    'Z',
+  ];
+  final List<String> emojiList4 = [
+    '1',
+    '2',
   ];
 
   @override
@@ -65,22 +68,22 @@ class _RollSlotMachineState extends State<RollSlotMachine> {
                 child: Row(
                   children: [
                     RollSlotWidget(
-                      emojiList: emojiList,
+                      emojiList: emojiList1,
                       rollSlotController: _rollSlotController,
                     ),
                     if (size.width > 100)
                       RollSlotWidget(
-                        emojiList: emojiList,
+                        emojiList: emojiList2,
                         rollSlotController: _rollSlotController1,
                       ),
                     if (size.width > 150)
                       RollSlotWidget(
-                        emojiList: emojiList,
+                        emojiList: emojiList3,
                         rollSlotController: _rollSlotController2,
                       ),
                     if (size.width > 200)
                       RollSlotWidget(
-                        emojiList: emojiList,
+                        emojiList: emojiList4,
                         rollSlotController: _rollSlotController3,
                       ),
                   ],
@@ -148,10 +151,10 @@ class _RollSlotMachineState extends State<RollSlotMachine> {
   }
 
   String getText() {
-    final String x = emojiList.elementAt(_rollSlotController.currentIndex) +
-        emojiList.elementAt(_rollSlotController1.currentIndex) +
-        emojiList.elementAt(_rollSlotController2.currentIndex) +
-        emojiList.elementAt(_rollSlotController3.currentIndex);
+    final String x = emojiList1.elementAt(_rollSlotController.currentIndex) +
+        emojiList2.elementAt(_rollSlotController1.currentIndex) +
+        emojiList3.elementAt(_rollSlotController2.currentIndex) +
+        emojiList4.elementAt(_rollSlotController3.currentIndex);
     return x;
   }
 }

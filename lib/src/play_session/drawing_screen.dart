@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:draw_your_image/draw_your_image.dart';
+
+import '../style/palette.dart';
 
 class DrawingScreen extends StatefulWidget {
   @override
@@ -10,6 +15,22 @@ class _DrawingScreenState extends State<DrawingScreen> {
   var _currentColor = Colors.black;
   var _currentWidth = 4.0;
   final _drawController = DrawController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _convertAndNavigate() async {
+    // Wywołaj convertToImage, który uruchomi callback onConvertImage
+    _drawController.convertToImage();
+  }
+
+  void _navigateToDisplayScreen(ui.Image image) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => DisplayDrawingScreen(image: image),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +64,10 @@ class _DrawingScreenState extends State<DrawingScreen> {
           ),
         ],
       ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
+    body: Container(
+    decoration: BoxDecoration(
+    gradient: Palette().backgroundLoadingSessionGradient,
+    ),
         child: Column(
           children: [
             const SizedBox(height: 32),
@@ -57,13 +79,23 @@ class _DrawingScreenState extends State<DrawingScreen> {
                   strokeColor: _currentColor,
                   strokeWidth: _currentWidth,
                   isErasing: false,
-                  ),  // Upewnij się, że Draw() jest odpowiednim widżetem/widgetem
+                  onConvertImage: (Uint8List imageData) async {
+                    // Tutaj przetwarzaj dane obrazu
+                    // Na przykład konwertuj na ui.Image i zapisz w stanie
+                    ui.Image image = await convertUint8ListToUiImage(imageData);
+                    _navigateToDisplayScreen(image);
+                  },
+                  ),
             ),
             const SizedBox(height: 32),
             buildColorPicker(),
             const SizedBox(height: 32),
             buildBrushSizeSlider(),
             const SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: _convertAndNavigate,
+              child: Text('Confirm and Continue'),
+            )
           ],
         ),
       ),
@@ -115,5 +147,65 @@ class _DrawingScreenState extends State<DrawingScreen> {
         });
       },
     );
+  }
+
+  Future<ui.Image> convertUint8ListToUiImage(Uint8List imageData) async {
+    // Tworzenie kodeka obrazu z danych binarnych
+    final ui.Codec codec = await ui.instantiateImageCodec(imageData);
+
+    // Dekodowanie pierwszej klatki obrazu (w przypadku obrazów statycznych, będzie to jedyna klatka)
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    // Zwrócenie obrazu
+    return frameInfo.image;
+  }
+
+}
+class DisplayDrawingScreen extends StatelessWidget {
+  final ui.Image image;
+
+  const DisplayDrawingScreen({Key? key, required this.image}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your Drawing'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: CustomPaint(
+            painter: ImagePainter(image: image),
+            child: SizedBox(
+              width: image.width.toDouble(),
+              height: image.height.toDouble(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// Twoja klasa ImagePainter
+class ImagePainter extends CustomPainter {
+  final ui.Image image;
+
+  ImagePainter({required this.image});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    paintImage(canvas: canvas, rect: Offset.zero & size, image: image, fit: BoxFit.contain);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

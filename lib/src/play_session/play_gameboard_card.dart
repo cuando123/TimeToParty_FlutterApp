@@ -674,7 +674,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.home, color: Colors.white, size: 30),
+                    icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                     onPressed: () {
                       AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
                       //Navigator.of(context).pop('response');
@@ -1193,6 +1193,7 @@ class CardData {
 class _CustomCardState extends State<CustomCard> {
   late StreamController<int> _alphabetController;
   late String randomLetter;
+  final controller = StreamController<int>();
 
   @override
   void initState() {
@@ -1225,7 +1226,7 @@ class _CustomCardState extends State<CustomCard> {
         return buildGeneralCard();
     }
   }
-
+// random letter albo reszta kart
   Widget buildGeneralCard() {
     CardData cardData = CardData(
       totalCards: widget.totalCards,
@@ -1236,9 +1237,10 @@ class _CustomCardState extends State<CustomCard> {
   }
 
   Widget buildGreenCard() {
-    String cardType = getRandomCardType();
-    int maxNumber;
+    List<String> cardTypes = ['draw_movie', 'draw_proverb', 'draw_love_pos'];
+    String cardType = cardTypes[Random().nextInt(cardTypes.length)];
 
+    int maxNumber;
     switch (cardType) {
       case 'draw_movie':
         maxNumber = 100;
@@ -1250,40 +1252,68 @@ class _CustomCardState extends State<CustomCard> {
         maxNumber = 44;
         break;
       default:
-        maxNumber = 100; // Domyślna wartość, jeśli cardType nie pasuje
+        maxNumber = 100;
     }
 
-    int randomNumber = Random().nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber
+    int randomNumber = Random().nextInt(maxNumber) + 1;
     String cardText = '$cardType$randomNumber';
 
+    String itemToShow = "";
+    String key = 'lovePossibilities'; // lub inny klucz w zależności od potrzeb
+    int index = randomNumber; // lub inny indeks w zależności od potrzeb
+    if (widget.specificLists.containsKey(key) && index - 1 < widget.specificLists[key]!.length) {
+      itemToShow = widget.specificLists[key]![index - 1];
+    }
+    print ('itemtoshow:$itemToShow, randomnumber: $randomNumber, cardtype: $cardType');
+    // Tworzenie widoku karty
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen()));
-      },
-      child: buildGeneralCardWithText(widget.specificLists, 'lovePossibilities', 43), //0 wywali out of range, movies, proverbs, lovePossibilities 100, 88, 44
-    );
-  }
+      }, child: FractionallySizedBox(
+    widthFactor: 0.7,
+      child: Container(
+      height: 400.0,
+      padding: EdgeInsets.all(13.0),
+      child: Card(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          side: BorderSide(color: Palette().white, width: 13.0),
+        ),
+        elevation: 0.0,
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            SizedBox(height: 15),
+            Expanded(
+              child: Text('$itemToShow: kliknij mnie', style: TextStyle(color: Colors.black)),
+              //SlotMachinePage(title: 'tytul')
+            ),
+        FortuneBar(
+          physics: CircularPanPhysics(
+            duration: Duration(seconds: 1),
+            curve: Curves.decelerate,
+          ),
+          onFling: () {
+            controller.add(3);
+          },
+          selected: controller.stream,
+          styleStrategy: AlternatingStyleStrategy(),
+          visibleItemCount: 3,
 
-  String getRandomCardType() {
-    List<String> cardTypes = ['draw_movie', 'draw_proverb', 'draw_love_pos'];
-    return cardTypes[Random().nextInt(cardTypes.length)];
-  }
-
-  Widget buildGeneralCardWithText(Map<String, List<String>> specificLists, String key, int index) {
-    // Pobieranie elementu z listy dla danego klucza i indeksu
-    String itemToShow = "";
-    if (specificLists.containsKey(key) && index - 1 < specificLists[key]!.length) {
-      itemToShow = specificLists[key]![index - 1];
-    }
-
-    // Tworzenie widoku karty z wybranym elementem
-    return Card(
-      child: Center(
-        child: Text('$itemToShow:: kliknij mnie', style: TextStyle(color: Colors.black)),
+          items: [
+            FortuneItem(child: Text('Filmy')),
+            FortuneItem(child: Text('Pozycje Miłosne')),
+            FortuneItem(child: Text('Powiedzenia')),
+          ]
+        ),
+            SizedBox(height: 10),
+          ],
+        ),
       ),
+      ),),
     );
   }
-
 
   Widget buildPinkCard() {
     // Implementacja dla Pink Card
@@ -1396,6 +1426,7 @@ class _CustomCardState extends State<CustomCard> {
     );
   }
 
+  // pantomima, slawne osoby, rymowanie,
   Widget buildCustomCard(CardData cardData) {
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
@@ -1412,53 +1443,49 @@ class _CustomCardState extends State<CustomCard> {
                 duration: Duration(milliseconds: 250),
                 child: ScaleTransition(
                   scale: widget.slideAnimationController,
-                  child: buildCardLayout(cardData),
+                  child: Container(
+                    height: 400.0,
+                    padding: EdgeInsets.all(13.0),
+                    child: Card(
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: BorderSide(color: Palette().white, width: 13.0),
+                      ),
+                      elevation: 0.0,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          buildStarsRow(cardData.totalCards, cardData.starsColors),
+                          SizedBox(height: 15),
+                          Container(
+                            padding: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(cardData.word, style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          buildStarsRow(cardData.totalCards, cardData.starsColors),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget buildCardLayout(CardData cardData) {
-    return Container(
-      height: 400.0,
-      padding: EdgeInsets.all(13.0),
-      child: Card(
-        color: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(color: Palette().white, width: 13.0),
-        ),
-        elevation: 0.0,
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            buildStarsRow(cardData.totalCards, cardData.starsColors),
-            SizedBox(height: 15),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(cardData.word, style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            buildStarsRow(cardData.totalCards, cardData.starsColors),
-          ],
-        ),
-      ),
     );
   }
 
