@@ -280,7 +280,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
   void _showRateDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -355,7 +355,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
   static void showExitDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -472,7 +472,7 @@ class GlobalLoading {
   void _connectionProblemDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(

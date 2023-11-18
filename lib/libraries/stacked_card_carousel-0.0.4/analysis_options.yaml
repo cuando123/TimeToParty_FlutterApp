@@ -1,7 +1,3 @@
-analyzer:
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
 errors:
   missing_required_param: warning
   missing_return: warning
@@ -66,7 +62,6 @@ linter:
     - prefer_const_declarations
     - prefer_const_literals_to_create_immutables
     - prefer_contains
-    - prefer_equal_for_default_values
     - prefer_final_fields
     - prefer_final_in_for_each
     - prefer_final_locals

@@ -233,6 +233,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             NeumorphicTripleButton(_controller, () => AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '')),
+                                            //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE
+                                            ElevatedButton(  onPressed: () {
+                setState(() {
+                showAnimatedCard = true;
+                showCardAnimation = true;
+                selectedCardIndex = 'field_star_blue_dark';
+                });
+                // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
+                }, child: Text('Kliknij')),
                                           ],
                                         ),
                                       ],

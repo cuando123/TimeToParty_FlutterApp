@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
 class RollSlotMachine extends StatefulWidget {
+
+  RollSlotMachine({Key? key}) : super(key: key);
+
   @override
   _RollSlotMachineState createState() => _RollSlotMachineState();
 }
+
 
 class _RollSlotMachineState extends State<RollSlotMachine> {
   final controller = StreamController<int>();
@@ -17,54 +20,54 @@ class _RollSlotMachineState extends State<RollSlotMachine> {
   final _rollSlotController3 = RollSlotController();
   final random = Random();
   final List<String> emojiList1 = [
-    '😀',
-    '😃',
-    '😄',
-    '😊',
+    'Gracz 1',
+    'Gracz 2',
   ];
   final List<String> emojiList2 = [
-    'A',
-    'B',
-  ];
-  final List<String> emojiList3 = [
-    'X',
-    'Z',
-  ];
-  final List<String> emojiList4 = [
     '1',
     '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+  ];
+  final List<String> emojiList3 = [
+    'pompki',
+    'przysiady',
+    'brzuszki',
+    'pajacyki',
   ];
 
   @override
   void initState() {
     _rollSlotController.addListener(() {
-      // trigger setState method to reload ui with new index
-      // in our case the AppBar title will change
+
       setState(() {});
     });
     super.initState();
   }
+
   @override
   void dispose() {
     controller.close();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(getText()),
-      ),
       body: Center(
         child: Stack(
           children: [
             Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Row(
                   children: [
                     RollSlotWidget(
@@ -81,61 +84,13 @@ class _RollSlotMachineState extends State<RollSlotMachine> {
                         emojiList: emojiList3,
                         rollSlotController: _rollSlotController2,
                       ),
-                    if (size.width > 200)
-                      RollSlotWidget(
-                        emojiList: emojiList4,
-                        rollSlotController: _rollSlotController3,
-                      ),
                   ],
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: FortuneBar(
-                  physics: CircularPanPhysics(
-                    duration: Duration(seconds: 1),
-                    curve: Curves.decelerate,
-                  ),
-                  onFling: () {
-                    controller.add(1);
-                  },
-                  selected: controller.stream,
-                        styleStrategy: AlternatingStyleStrategy(),
-                        visibleItemCount: 7,
-
-                  items: [
-                    FortuneItem(child: Text('Han Solo')),
-                    FortuneItem(child: Text('Yoda')),
-                    FortuneItem(child: Text('Obi-Wan Kenobi')),
-                    FortuneItem(child: Text('Han Solo')),
-                    FortuneItem(child: Text('Yoda')),
-                    FortuneItem(child: Text('Obi-Wan Kenobi')),
-                  ],
-                ),
-              ),
-                  ),
-                  Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                        border:
-                        Border.all(color: Color(0xff2f5d62), width: 5)),
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            Text(getText())
           ],
+
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -144,17 +99,20 @@ class _RollSlotMachineState extends State<RollSlotMachine> {
           if (size.width > 100) _rollSlotController1.animateRandomly();
           if (size.width > 150) _rollSlotController2.animateRandomly();
           if (size.width > 200) _rollSlotController3.animateRandomly();
+          Timer(Duration(seconds: 4), () { // Załóżmy, że animacja trwa 4 sekundy
+            Navigator.of(context).pop(getText()); // Zamknięcie RollSlotMachine
+          });
         },
         child: Icon(Icons.refresh),
       ),
     );
   }
 
+
   String getText() {
     final String x = emojiList1.elementAt(_rollSlotController.currentIndex) +
         emojiList2.elementAt(_rollSlotController1.currentIndex) +
-        emojiList3.elementAt(_rollSlotController2.currentIndex) +
-        emojiList4.elementAt(_rollSlotController3.currentIndex);
+        emojiList3.elementAt(_rollSlotController2.currentIndex);
     return x;
   }
 }
@@ -176,7 +134,7 @@ class RollSlotWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: RollSlot(
-                  duration: Duration(milliseconds: 6000),
+                  duration: Duration(milliseconds: 4000),
                   itemExtend: 150,
                   shuffleList: false,
                   rollSlotController: rollSlotController,

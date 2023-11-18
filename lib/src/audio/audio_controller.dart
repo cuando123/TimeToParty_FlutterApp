@@ -165,6 +165,9 @@ class AudioController {
       case AppLifecycleState.inactive:
         // No need to react to this state change.
         break;
+      case AppLifecycleState.hidden:
+      // No need to react to this state change.
+        break;
     }
   }
 

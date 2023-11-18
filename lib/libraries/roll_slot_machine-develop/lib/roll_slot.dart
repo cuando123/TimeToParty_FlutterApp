@@ -111,7 +111,7 @@ class _RollSlotState extends State<RollSlot> {
   }
 
   void shuffleAndFillTheList() {
-    if (widget.children != null && widget.children.isNotEmpty) {
+    if (widget.children.isNotEmpty) {
       double d = (widget.duration.inMilliseconds / 100);
       if (widget.additionalListToEndAndStart) {
         addToCurrentList();
@@ -121,7 +121,7 @@ class _RollSlotState extends State<RollSlot> {
       }
       if (widget.additionalListToEndAndStart) {
         addToCurrentList();
-        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           jump();
         });
       }

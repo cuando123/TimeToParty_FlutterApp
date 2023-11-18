@@ -199,7 +199,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   void showDialogMoreFun(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(

@@ -6,9 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/roll_slot_machine.dart';
-import 'package:game_template/src/play_session/slot_machine_page.dart';
 
-// Zakładam, że importy z twojego drugiego fragmentu są nadal potrzebne
 import '../app_lifecycle/translated_text.dart';
 import '../play_session/play_gameboard_main.dart';
 import '../style/palette.dart';
@@ -786,7 +784,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   cardType: widget.currentField[0],
                   buildFortuneItemsList:
                       _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
-                      // tak samo to będzie dla compare_questions uzywane
+                      // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
                       specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
                 )),
               ],
@@ -1151,7 +1149,6 @@ class CircleProgressPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-// Zakładając, że te klasy są już zdefiniowane gdzieś w Twoim projekcie.
 class CustomCard extends StatefulWidget {
   final int totalCards;
   final List<Color> starsColors;
@@ -1194,6 +1191,8 @@ class _CustomCardState extends State<CustomCard> {
   late StreamController<int> _alphabetController;
   late String randomLetter;
   final controller = StreamController<int>();
+  String textFromRollSlotMachine = "";
+  bool _isDialogShown = false;
 
   @override
   void initState() {
@@ -1215,7 +1214,13 @@ class _CustomCardState extends State<CustomCard> {
         return buildTabooCard(widget.totalCards, widget.starsColors, widget.slideAnimationController,
             widget.rotationAnimation, widget.opacity, widget.offsetX, widget.word);
       case 'field_star_blue_dark':
-        return buildBlueDarkCard(); //zadanie fizyczne
+        Future.microtask(() {
+          if (!_isDialogShown) {
+            _isDialogShown = true;
+            _showCustomDialog(context);
+          }
+        });
+        return buildBlueDarkCard();
       case 'field_star_pink':
         return buildPinkCard(); // antonimy synonimy
       case 'field_star_green':
@@ -1320,6 +1325,32 @@ class _CustomCardState extends State<CustomCard> {
     return buildGeneralCard();
   }
 
+  void _showCustomDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            width: 300, // Szerokość dialogu
+            height: 400, // Wysokość dialogu
+            child: RollSlotMachine(),
+          ),
+          actions: const <Widget>[],
+        );
+      },
+    ).then((returnedValue) {
+      if (returnedValue != null) {
+        setState(() {
+          textFromRollSlotMachine = returnedValue as String;
+          print('Text $textFromRollSlotMachine');
+        });
+      }
+    });
+  }
+
+
   Widget buildBlueDarkCard() {
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
@@ -1352,8 +1383,20 @@ class _CustomCardState extends State<CustomCard> {
                           buildStarsRow(widget.totalCards, widget.starsColors),
                           SizedBox(height: 15),
                           Expanded(
-                            child: PhysicalChallengeCard(),
-                            //SlotMachinePage(title: 'tytul')
+                            //child: PhysicalChallengeCard(),
+                            child: Text(textFromRollSlotMachine, style: TextStyle(
+                              fontFamily: 'HindMadurai',
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(1.0, 4.0),
+                                  blurRadius: 15.0,
+                                  color: Color.fromARGB(255, 0, 0, 0), // Kolor cienia, w tym przypadku czarny
+                                ),
+                              ],
+                            ),)
                           ),
                           SizedBox(height: 10),
                           buildStarsRow(widget.totalCards, widget.starsColors),
@@ -1370,6 +1413,7 @@ class _CustomCardState extends State<CustomCard> {
     );
   }
 
+  //compare questions
   Widget buildYellowCard() {
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
