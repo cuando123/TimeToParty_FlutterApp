@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:ui';
 
 import '../app_lifecycle/translated_text.dart';
-import '../play_session/play_gameboard_main.dart';
+import '../play_session/main_board/play_gameboard_main.dart';
 import '../style/palette.dart';
 
 

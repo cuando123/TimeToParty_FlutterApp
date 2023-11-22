@@ -9,17 +9,17 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
 import 'package:provider/provider.dart';
 
-import '../ads/ads_controller.dart';
-import '../audio/audio_controller.dart';
-import '../audio/sounds.dart';
-import '../game_internals/level_state.dart';
-import '../games_services/games_services.dart';
-import '../games_services/score.dart';
-import '../in_app_purchase/in_app_purchase.dart';
-import '../level_selection/levels.dart';
-import '../player_progress/player_progress.dart';
-import '../style/confetti.dart';
-import '../style/palette.dart';
+import '../../ads/ads_controller.dart';
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
+import '../../game_internals/level_state.dart';
+import '../../games_services/games_services.dart';
+import '../../games_services/score.dart';
+import '../../in_app_purchase/in_app_purchase.dart';
+import '../../level_selection/levels.dart';
+import '../../player_progress/player_progress.dart';
+import '../../style/confetti.dart';
+import '../../style/palette.dart';
 
 class PlaySessionScreen extends StatefulWidget {
   final GameLevel level;

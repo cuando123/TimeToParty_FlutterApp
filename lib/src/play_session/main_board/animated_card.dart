@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:game_template/src/play_session/stacked_card_carousel.dart';
+import 'package:game_template/src/play_session/main_board/stacked_card_carousel.dart';
 
 class AnimatedCard extends StatefulWidget {
   final Function onCardTapped;

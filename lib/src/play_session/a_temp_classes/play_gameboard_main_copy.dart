@@ -4,9 +4,9 @@ import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-import '../app_lifecycle/translated_text.dart';
-import '../settings/settings.dart';
-import '../style/palette.dart';
+import '../../app_lifecycle/translated_text.dart';
+import '../../settings/settings.dart';
+import '../../style/palette.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;

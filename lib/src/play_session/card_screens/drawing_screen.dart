@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:draw_your_image/draw_your_image.dart';
+import 'package:flutter/material.dart';
 
-import '../style/palette.dart';
+import '../../style/palette.dart';
 
 class DrawingScreen extends StatefulWidget {
   @override

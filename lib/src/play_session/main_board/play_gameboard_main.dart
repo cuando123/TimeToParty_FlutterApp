@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:game_template/src/play_session/additional_widgets.dart';
-import 'package:game_template/src/play_session/play_gameboard_card.dart';
-import 'package:game_template/src/play_session/ripple_effect_pionka.dart';
-import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
-import '../app_lifecycle/translated_text.dart';
-import '../instruction_dialog/instruction_dialog.dart';
-import '../settings/settings.dart';
-import '../style/palette.dart';
-import '../style/stars_animation.dart';
-import 'stacked_card_carousel.dart';
+import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
+import 'package:game_template/src/play_session/card_screens/play_gameboard_card.dart';
+import 'package:game_template/src/play_session/main_board/main_fortune_wheel.dart';
+import 'package:game_template/src/play_session/main_board/ripple_effect_pionka.dart';
+import 'package:game_template/src/play_session/main_board/triple_button.dart';
+
+import '../../app_lifecycle/translated_text.dart';
+import '../../style/palette.dart';
+import '../../style/stars_animation.dart';
+import 'InstantTooltip.dart';
 import 'animated_card.dart';
 
 class PlayGameboard extends StatefulWidget {
@@ -232,7 +232,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            NeumorphicTripleButton(_controller, () => AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '')),
+                                            TripleButton(_controller, () => AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '')),
                                             //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE
                                             ElevatedButton(  onPressed: () {
                 setState(() {

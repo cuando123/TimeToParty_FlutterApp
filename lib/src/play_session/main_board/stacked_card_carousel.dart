@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:game_template/src/play_session/play_gameboard_card.dart';
+import 'package:game_template/src/play_session/card_screens/play_gameboard_card.dart';
 import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 
 class StackedCard extends StatelessWidget {
