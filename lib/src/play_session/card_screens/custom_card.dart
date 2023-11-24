@@ -20,6 +20,7 @@ class CustomCard extends StatefulWidget {
   final String cardType;
   final List<String> buildFortuneItemsList;
   final Map<String, List<String>> specificLists;
+  final void Function(String result) onRollSlotMachineResult;
 
   CustomCard(
       {Key? key,
@@ -32,11 +33,14 @@ class CustomCard extends StatefulWidget {
         required this.word,
         required this.cardType,
         required this.buildFortuneItemsList,
-        this.specificLists = const {},})
+        required this.onRollSlotMachineResult,
+        this.specificLists = const {},
+      })
       : super(key: key);
 
   @override
   _CustomCardState createState() => _CustomCardState();
+
 }
 
 class CardData {
@@ -204,6 +208,8 @@ class _CustomCardState extends State<CustomCard> {
       if (returnedValue != null) {
         setState(() {
           textFromRollSlotMachine = returnedValue as String;
+          // Po zakończeniu działania Roll Slot Machine
+          widget.onRollSlotMachineResult(textFromRollSlotMachine);
           print('Text $textFromRollSlotMachine');
         });
       }

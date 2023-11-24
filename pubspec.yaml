@@ -71,6 +71,7 @@ flutter:
     - assets/music/
     - assets/sfx/
     - assets/time_to_party_assets/
+    - assets/time_to_party_assets/activities/
     - assets/time_to_party_assets/balloons/
     - assets/time_to_party_assets/flags/
     - assets/time_to_party_assets/main_board/flags/

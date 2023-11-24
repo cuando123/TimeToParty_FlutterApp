@@ -115,9 +115,16 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       ),
     );
     _showCard(); // By karta pojawiła się na początku
-    _startTimer();
+    if (shouldStartTimerInitially()) {
+      _startTimer();
+    }
     determineTotalCards();
     _initializeCards();
+  }
+
+  bool shouldStartTimerInitially() { //wylaczenie dla danej karty uruchomienia timera od razu
+    // Zwraca true lub false w zależności od warunku, np. typu karty
+    return widget.currentField[0] != 'field_star_blue_dark'; // Przykład
   }
 
   void _prepareCurrentWordOrKey() {
@@ -386,6 +393,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 // timer
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!mounted) return;
       setState(() {
         if (remainingTime > 0) {
           remainingTime--;
@@ -394,6 +402,14 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           _timer.cancel();
         }
       });
+    });
+  }
+  void handleRollSlotMachineResult(String result) {
+    setState(() {
+      var textFromRollSlotMachine = result;
+      print('mam cie kolego xd $result');
+      initialTime = remainingTime = 10;
+      _startTimer(); // Uruchom timer na podstawie nowej wartości
     });
   }
 
@@ -737,6 +753,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   opacity: _opacity,
                   offsetX: _offsetX,
                   cardType: widget.currentField[0],
+                  onRollSlotMachineResult: handleRollSlotMachineResult,
                   buildFortuneItemsList:
                       _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
                       // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
@@ -818,7 +835,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _opacityController.dispose();
     _timeUpAnimationController.dispose();
     _animationController.dispose();
