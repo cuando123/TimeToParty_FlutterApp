@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
+import 'package:game_template/src/play_session/extensions.dart';
 
 import '../../app_lifecycle/translated_text.dart';
 import '../../style/palette.dart';
@@ -67,7 +68,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       duration: Duration(milliseconds: 500),
     );
     _opacityController.addListener(() {
-      setState(() {
+      safeSetState(() {
         _opacity = _opacityController.value;
       });
     });
@@ -122,9 +123,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _initializeCards();
   }
 
-  bool shouldStartTimerInitially() { //wylaczenie dla danej karty uruchomienia timera od razu
-    // Zwraca true lub false w zależności od warunku, np. typu karty
-    return widget.currentField[0] != 'field_star_blue_dark'; // Przykład
+  bool shouldStartTimerInitially() {
+    // Zwraca true, jeśli nie jest to ani 'field_star_blue_dark', ani 'field_star_green'
+    return widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green';
   }
 
   void _prepareCurrentWordOrKey() {
@@ -143,7 +144,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
 
     // Zablokuj przycisk
-    setState(() {
+    safeSetState(() {
       _isButtonXDisabled = true;
       _isButtonTickDisabled = true;
       _isButtonSkipDisabled = true;
@@ -164,7 +165,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     // Odblokuj przycisk po 300 milisekundach
     Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
+      safeSetState(() {
         _isButtonXDisabled = false;
         _isButtonTickDisabled = false;
         _isButtonSkipDisabled = false;
@@ -179,7 +180,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
 
     // Zablokuj przycisk
-    setState(() {
+    safeSetState(() {
       _isButtonXDisabled = true;
       _isButtonTickDisabled = true;
       _isButtonSkipDisabled = true;
@@ -200,7 +201,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
     // Odblokuj przycisk po 300 milisekundach
     Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
+      safeSetState(() {
         _isButtonXDisabled = false;
         _isButtonTickDisabled = false;
         _isButtonSkipDisabled = false;
@@ -215,7 +216,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
 
     // Zablokuj przycisk
-    setState(() {
+    safeSetState(() {
       _isButtonXDisabled = true;
       _isButtonTickDisabled = true;
       _isButtonSkipDisabled = true;
@@ -242,7 +243,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     // Odblokuj przycisk po 300 milisekundach
     Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
+      safeSetState(() {
         _isButtonXDisabled = false;
         _isButtonTickDisabled = false;
         _isButtonSkipDisabled = false;
@@ -293,7 +294,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       default:
         cardNumbers = 1; // Domyślna wartość cardType, jeśli currentField nie pasuje do żadnego przypadku
     }
-    setState(() {
+    safeSetState(() {
       totalCards = cardNumbers; // Ustal odpowiednią wartość dla totalCards
       starsColors = List.generate(totalCards, (index) => Colors.grey);
       // Ustawienie pierwszej gwiazdki na żółto, zakładając że zaczynamy od pierwszej karty
@@ -315,7 +316,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       ),
     );
 
-    setState(() {
+    safeSetState(() {
       _offsetX = -MediaQuery.of(context).size.width;
     });
     Future.delayed(Duration(milliseconds: 50), () {
@@ -324,7 +325,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     // Czekamy aż karta opuści ekran
     Future.delayed(Duration(milliseconds: 300), () {
       // Teraz karta jest poza ekranem, możemy ją "ukryć"
-      setState(() {
+      safeSetState(() {
         _opacity = 0;
       });
       //_animationController.stop();
@@ -344,7 +345,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   void _showCard() {
     // Ustawiamy opóźnienie, aby dać czas na zniknięcie karty
     Future.delayed(Duration(milliseconds: 0), () {
-      setState(() {
+      safeSetState(() {
         _opacity = 1; // Karta staje się widoczna
         _offsetX = 0; // Reset pozycji
       });
@@ -369,7 +370,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       ),
     );
 
-    setState(() {
+    safeSetState(() {
       _offsetX = MediaQuery.of(context).size.width;
     });
     Future.delayed(Duration(milliseconds: 50), () {
@@ -379,7 +380,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     // Czekamy aż karta opuści ekran
     Future.delayed(Duration(milliseconds: 250), () {
       // Teraz karta jest poza ekranem, możemy ją "ukryć"
-      setState(() {
+      safeSetState(() {
         _opacity = 0;
       });
       _animationController.reset();
@@ -394,7 +395,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (!mounted) return;
-      setState(() {
+      safeSetState(() {
         if (remainingTime > 0) {
           remainingTime--;
         } else {
@@ -405,19 +406,33 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
   }
   void handleRollSlotMachineResult(String result) {
-    setState(() {
+    safeSetState(() {
       var textFromRollSlotMachine = result;
       print('mam cie kolego xd $result');
-      initialTime = remainingTime = 10;
-      _startTimer(); // Uruchom timer na podstawie nowej wartości
+
+      // Użyj wyrażenia regularnego do znalezienia wszystkich liczb w tekście
+      RegExp regExp = RegExp(r'\d+');
+      Iterable<RegExpMatch> matches = regExp.allMatches(result);
+
+      if (matches.isNotEmpty) {
+        // Pobierz pierwsze dopasowanie (liczbę) i przekształć je na int
+        String numberString = matches.first.group(0) ?? '';
+        int number = int.tryParse(numberString) ?? 0;
+
+        print('Znaleziona liczba: $number');
+
+        initialTime = remainingTime = number*2;
+        _startTimer();
+      }
     });
   }
 
 // animacja time up
   void _showTimeUpAnimation() {
     _timeUpAnimationController.forward().then((value) => {
-          //Navigator.of(context).pop('response')
-        });
+         // Navigator.of(context).pop('response'),
+    AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)
+    });
   }
 
 // ustalenie konkretnego czasu dla danej karty
@@ -461,7 +476,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 // nastepne slowo
   void _nextWord() {
     if (wordsList.isNotEmpty) {
-      setState(() {
+      safeSetState(() {
         currentWordIndex = (currentWordIndex + 1) % wordsList.length;
       });
     }
@@ -475,7 +490,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 //updatujemy zmienna w set state
   void _updateCardTypeAndNumber() {
-    setState(() {
+    safeSetState(() {
       generatedCardTypeWithNumber = generateCardTypeWithNumber(widget.currentField[0]);
     });
   }
@@ -538,7 +553,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   void _nextStarRed() {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
-      setState(() {
+      safeSetState(() {
         // Ustaw obecną gwiazdkę na zielono
         starsColors[currentCardIndex] = Colors.red;
         // Inkrementuj currentCardIndex, aby przejść do następnej karty
@@ -557,7 +572,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   void _nextStarGreen() {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
-      setState(() {
+      safeSetState(() {
         // Ustaw obecną gwiazdkę na zielono
         starsColors[currentCardIndex] = Colors.green;
         // Inkrementuj currentCardIndex, aby przejść do następnej karty
@@ -576,7 +591,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 // pomin karte (dekrementacja ilosci skipow)
   void _skipCard() {
     if (skipCount > 0) {
-      setState(() {
+      safeSetState(() {
         skipCount--;
         if (skipCount == 0) {
           // Logika deaktywacji przycisku, jeśli skipCount osiągnie 0
@@ -769,7 +784,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Spacer(),
-                widget.currentField[0] != 'field_letters'
+                (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark')
                     ? Stack(
                         alignment: Alignment.center,
                         children: [

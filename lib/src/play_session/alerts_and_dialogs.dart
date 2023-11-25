@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../app_lifecycle/translated_text.dart';
 import '../style/palette.dart';
+import 'card_screens/svgbutton_enabled_dis.dart';
 
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
@@ -26,7 +27,8 @@ class AnimatedAlertDialog {
           ),
         );
       },
-      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+      transitionBuilder:
+          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
         if (animation.status == AnimationStatus.forward) {
           // Jeśli dialog się pojawia
           return ScaleTransition(
@@ -78,9 +80,9 @@ class AnimatedAlertDialog {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize:
-                    Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
                     textStyle:
-                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -185,6 +187,54 @@ class AnimatedAlertDialog {
     );
   }
 
+  static void showAnimatedDialogFinishedTask(
+      BuildContext context, VoidCallback onButtonXPressed, VoidCallback onButtonTickPressed) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: letsText(context, 'Czy zadanie zostało wykonane?', 20, Palette().pink, textAlign: TextAlign.center),
+            actions: <Widget>[
+              SvgButton(
+                assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onButtonXPressed();
+                },
+              ),
+              SvgButton(
+                assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onButtonTickPressed();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+      transitionBuilder:
+          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
 }
-
-

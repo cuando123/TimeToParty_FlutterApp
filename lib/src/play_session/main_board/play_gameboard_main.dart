@@ -8,6 +8,7 @@ import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/card_screens/play_gameboard_card.dart';
+import 'package:game_template/src/play_session/extensions.dart';
 import 'package:game_template/src/play_session/main_board/main_fortune_wheel.dart';
 import 'package:game_template/src/play_session/main_board/ripple_effect_pionka.dart';
 import 'package:game_template/src/play_session/main_board/triple_button.dart';
@@ -68,7 +69,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     flagPositions = List.generate(widget.teamColors.length, (index) => Offset(0, 0));
     flagSteps = List.filled(widget.teamColors.length, 0);
     _subscription = _selectedController.stream.listen((selectedIndex) {
-      setState(() {
+      safeSetState(() {
         selectedValue = _wheelValues[selectedIndex] + 1; // Zaktualizuj wartość selectedValue
       });
     });
@@ -77,7 +78,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasShownAlertDialog) {
         AnimatedAlertDialog.showAnimatedDialog(context);
-        _controller.forward(from: 0);
+        if (mounted) {
+          _controller.forward(from: 0);
+        }
         hasShownAlertDialog = true;
       }
     });
@@ -137,9 +140,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                       ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                       Expanded(
                                         child: InstantTooltip(
-                                            message: "Talia kart",  // Domyślna wartość w przypadku braku opisu
-                                            child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
-                                          ),
+                                          message: "Talia kart", // Domyślna wartość w przypadku braku opisu
+                                          child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
+                                        ),
                                       ),
                                       downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                                     ],
@@ -207,7 +210,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                               if (isAnimating) {
                                                 return;
                                               }
-                                              setState(() {
+                                              safeSetState(() {
                                                 _showStarsAnimation = true; //gwiazdki on
                                               });
                                               isAnimating = true;
@@ -217,12 +220,18 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                               selected.add(randomIndex);
                                               Future.delayed(Duration(seconds: 5), //czas krecenia kolem
                                                   () {
-                                                setState(() {
-                                                  selectedValue = _wheelValues[randomIndex] + 1;
-                                                  _showStarsAnimation = false;
-                                                  moveFlag(selectedValue, currentFlagIndex,
-                                                      screenWidth * scale * 0.02768 - 4 + screenWidth * scale * 0.1436);
-                                                });
+                                                if (mounted) {
+                                                  safeSetState(() {
+                                                    selectedValue = _wheelValues[randomIndex] + 1;
+                                                    _showStarsAnimation = false;
+                                                    moveFlag(
+                                                        selectedValue,
+                                                        currentFlagIndex,
+                                                        screenWidth * scale * 0.02768 -
+                                                            4 +
+                                                            screenWidth * scale * 0.1436);
+                                                  });
+                                                }
                                               });
                                             },
                                             child: MyFortuneWheel(selected: selected),
@@ -232,16 +241,21 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            TripleButton(_controller, () => AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '')),
+                                            TripleButton(
+                                                _controller,
+                                                () => AnimatedAlertDialog.showExitGameDialog(
+                                                    context, hasShownAlertDialog, '')),
                                             //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE
-                                            ElevatedButton(  onPressed: () {
-                setState(() {
-                showAnimatedCard = true;
-                showCardAnimation = true;
-                selectedCardIndex = 'field_star_blue_dark';
-                });
-                // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
-                }, child: Text('Kliknij')),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  safeSetState(() {
+                                                    showAnimatedCard = true;
+                                                    showCardAnimation = true;
+                                                    selectedCardIndex = 'field_star_green';
+                                                  });
+                                                  // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
+                                                },
+                                                child: Text('Kliknij')),
                                           ],
                                         ),
                                       ],
@@ -261,14 +275,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                 AnimatedCard(
                     showAnimatedCard: showAnimatedCard,
                     onCardTapped: () {
-                      setState(() {
+                      safeSetState(() {
                         showCardAnimation = false;
                         showAnimatedCard = true;
                       });
                       navigateWithDelay(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
                     },
-                    onArrowCardTapped: () { // Dodajemy nowy callback
-                      setState(() {
+                    onArrowCardTapped: () {
+                      // Dodajemy nowy callback
+                      safeSetState(() {
                         showAnimatedCard = false; // Ukryj AnimatedCard
                       });
                       // Tutaj możesz również wywołać navigateWithDelay, jeśli to konieczne
@@ -276,8 +291,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                     selectedCardIndex: selectedCardIndex,
                     parentContext: context,
                     currentTeamName: getCurrentTeamName(),
-                    teamColor: widget.teamColors[currentTeamIndex]
-                )
+                    teamColor: widget.teamColors[currentTeamIndex])
             ],
           ),
         ),
@@ -355,7 +369,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
   };
 
-
   //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
   List<String> _getShuffledFields() {
     List<FieldType> fields = [];
@@ -395,12 +408,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(
-          InstantTooltip(
-            message: fieldDescriptions[field] ?? "Brak opisu",  // Domyślna wartość w przypadku braku opisu
-            child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
-          )
-      );
+      children.add(InstantTooltip(
+        message: fieldDescriptions[field] ?? "Brak opisu", // Domyślna wartość w przypadku braku opisu
+        child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+      ));
 
       children.add(SizedBox(width: screenWidth * 0.02768 - 4));
     }
@@ -413,18 +424,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
-
   //generowanie widgetu kolumny
   Widget generateColumn(List<String> fields, double screenWidth) {
     List<Widget> children = [];
 
     for (String field in fields) {
-      children.add(
-          InstantTooltip(
-            message: fieldDescriptions[field] ?? "Brak opisu",  // Domyślna wartość w przypadku braku opisu
-            child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
-          )
-      );
+      children.add(InstantTooltip(
+        message: fieldDescriptions[field] ?? "Brak opisu", // Domyślna wartość w przypadku braku opisu
+        child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+      ));
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));
     }
     // Usunięcie ostatniego SizedBox
@@ -435,7 +443,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       children: children,
     );
   }
-
 
   //tworzenie row gornej z listy pol itd..
   Widget upRowHorizontal(List<String> fields, double screenWidth) {
@@ -542,7 +549,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
     _controller.dispose();
     _selectedController.close();
     selected.close();
@@ -569,7 +576,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         flagSteps[flagIndex] = 0;
       }
 
-      setState(() {
+      safeSetState(() {
         flagPositions[flagIndex] = newPosition;
       });
 
@@ -580,10 +587,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     selectedCardIndex = newFieldsList[flagSteps[flagIndex]];
     isAnimating = false;
 
-      setState(() {
-        showCardAnimation = true;
-      });
-      // navigateWithDelay(context);
+    safeSetState(() {
+      showCardAnimation = true;
+    });
+    // navigateWithDelay(context);
   }
 
   void navigateWithDelay(BuildContext context, String currentTeamName, Color teamColor) {
@@ -598,8 +605,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       ),
     ).then((returnedData) {
       print(returnedData);
-      if (returnedData != null) {
-        setState(() {
+      if (mounted && returnedData != null) {
+        safeSetState(() {
           // Aktualizuj stan na podstawie zwróconych danych
           currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
           currentTeamIndex = currentFlagIndex;
@@ -609,7 +616,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       }
     });
   }
-
 
   String getCurrentTeamName() {
     return widget.teamNames[currentTeamIndex].toString();

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
+import '../custom_style_buttons.dart';
+
 class RollSlotMachine extends StatefulWidget {
 
   RollSlotMachine({Key? key}) : super(key: key);
@@ -77,6 +79,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    bool shouldDimBackground = isRollSlotVisible || isConfirmButtonVisible;
     return Scaffold(
       body: Center(
         child: Stack(
@@ -104,11 +107,14 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                   ],
                 ),
               ),
-            Text(getText()),
             if (isDrawButtonVisible)
               Align(
                 alignment: Alignment.center,
-                child:  FloatingActionButton(
+                child: ScaleTransition(
+                  scale: _pulseAnimation,
+                child: CustomStyledButton(
+                  icon: Icons.play_arrow_rounded, // Tutaj możesz wybrać odpowiednią ikonę
+                  text: 'Losuj!', // Tekst przycisku
                   onPressed: () {
                     setState(() {
                       isRollSlotVisible = true;
@@ -120,27 +126,27 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                       if (size.width > 150) _rollSlotController2.animateRandomly();
                       if (size.width > 200) _rollSlotController3.animateRandomly();
                     });
-                    Timer(Duration(seconds: 4), () {
+                    Timer(Duration(seconds: 3), () {
                       setState(() {
                         isConfirmButtonVisible = true;
                       });
-                      //Navigator.of(context).pop(getText());
                     });
                   },
-                  child: Text('Tap to ROLL!'),
                 ),),
+              ),
             Visibility(
               visible: isConfirmButtonVisible,
-              child: Positioned(
-                right: 100,
-                bottom: 100,
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: ScaleTransition(
                   scale: _pulseAnimation,
-                  child: FloatingActionButton(
+                  child:
+                  CustomStyledButton(
+                    icon: Icons.play_arrow_rounded,
+                    text: 'Zacznij zadanie!', // Or use your translated text function
                     onPressed: () {
                       Navigator.of(context).pop(getText());
                     },
-                    child: Text('Kliknij aby zaczac!'), // Przykładowa ikona
                   ),
                 ),
               ),

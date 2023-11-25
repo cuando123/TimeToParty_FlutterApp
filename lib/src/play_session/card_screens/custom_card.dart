@@ -88,7 +88,13 @@ class _CustomCardState extends State<CustomCard> {
       case 'field_star_pink':
         return buildPinkCard(); // antonimy synonimy
       case 'field_star_green':
-        return buildGreenCard(); // rysowanie
+        Future.microtask(() {
+          if (!_isDialogShown) {
+            _isDialogShown = true;
+            _showCustomDialogGreen(context);
+          }
+        });
+        return buildGreenCard();// rysowanie
       case 'field_star_yellow':
         return buildYellowCard(); //pytania porownujace
       default:
@@ -105,7 +111,7 @@ class _CustomCardState extends State<CustomCard> {
     return buildCustomCard(cardData);
   }
 
-  Widget buildGreenCard() {
+  void _showCustomDialogGreen(BuildContext context) {
     List<String> cardTypes = ['draw_movie', 'draw_proverb', 'draw_love_pos'];
     String cardType = cardTypes[Random().nextInt(cardTypes.length)];
 
@@ -123,7 +129,6 @@ class _CustomCardState extends State<CustomCard> {
       default:
         maxNumber = 100;
     }
-
     int randomNumber = Random().nextInt(maxNumber) + 1;
     String cardText = '$cardType$randomNumber';
 
@@ -133,12 +138,71 @@ class _CustomCardState extends State<CustomCard> {
     if (widget.specificLists.containsKey(key) && index - 1 < widget.specificLists[key]!.length) {
       itemToShow = widget.specificLists[key]![index - 1];
     }
-    print ('itemtoshow:$itemToShow, randomnumber: $randomNumber, cardtype: $cardType');
-    // Tworzenie widoku karty
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen()));
-      }, child: FractionallySizedBox(
+    print('itemtoshow:$itemToShow, randomnumber: $randomNumber, cardtype: $cardType');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            width: 300,
+            height: 400,
+            child: GestureDetector(
+              onTap: () {
+                if (Navigator.canPop(context)) { // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                  Navigator.of(context).pop(); // Zamknij dialog
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen())); // Następnie przejdź do nowego ekranu
+                }
+              },
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: Text('$itemToShow: kliknij mnie', style: TextStyle(color: Colors.black)),
+                  ),
+                  FortuneBar(
+                      physics: CircularPanPhysics(
+                        duration: Duration(seconds: 1),
+                        curve: Curves.decelerate,
+                      ),
+                      onFling: () {
+                        controller.add(3);
+                      },
+                      selected: controller.stream,
+                      styleStrategy: AlternatingStyleStrategy(),
+                      visibleItemCount: 3,
+
+                      items: const [
+                        FortuneItem(child: Text('Filmy')),
+                        FortuneItem(child: Text('Pozycje Miłosne')),
+                        FortuneItem(child: Text('Powiedzenia')),
+                      ]
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
+
+
+              ),
+            ),
+          actions: const <Widget>[],
+        );
+      },
+    ).then((returnedValue) {
+      if (returnedValue != null) {
+        setState(() {
+          textFromRollSlotMachine = returnedValue as String;
+          widget.onRollSlotMachineResult(textFromRollSlotMachine);
+          print('Text $textFromRollSlotMachine');
+        });
+      }
+    });
+  }
+
+  Widget buildGreenCard() {
+    return FractionallySizedBox(
       widthFactor: 0.7,
       child: Container(
         height: 400.0,
@@ -150,45 +214,19 @@ class _CustomCardState extends State<CustomCard> {
             side: BorderSide(color: Palette().white, width: 13.0),
           ),
           elevation: 0.0,
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              SizedBox(height: 15),
-              Expanded(
-                child: Text('$itemToShow: kliknij mnie', style: TextStyle(color: Colors.black)),
-                //SlotMachinePage(title: 'tytul')
-              ),
-              FortuneBar(
-                  physics: CircularPanPhysics(
-                    duration: Duration(seconds: 1),
-                    curve: Curves.decelerate,
-                  ),
-                  onFling: () {
-                    controller.add(3);
-                  },
-                  selected: controller.stream,
-                  styleStrategy: AlternatingStyleStrategy(),
-                  visibleItemCount: 3,
-
-                  items: const [
-                    FortuneItem(child: Text('Filmy')),
-                    FortuneItem(child: Text('Pozycje Miłosne')),
-                    FortuneItem(child: Text('Powiedzenia')),
-                  ]
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
+           // Tutaj dodaj odpowiednią zawartość
         ),
-      ),),
+      ),
     );
   }
+
 
   Widget buildPinkCard() {
     // Implementacja dla Pink Card
     return buildGeneralCard();
   }
 
+  //blue dark card start
   void _showCustomDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -216,6 +254,64 @@ class _CustomCardState extends State<CustomCard> {
     });
   }
 
+  List<Widget> createWidgetsFromText(String text) {
+    RegExp regExp = RegExp(r'(\D+)(\d+)(\D+)');
+    RegExpMatch? match = regExp.firstMatch(text);
+
+    if (match != null) {
+      String person = match.group(1) ?? '';
+      String number = match.group(2) ?? '';
+      String activity = match.group(3) ?? '';
+
+      // Mapowanie tekstów na obrazki osób
+      Map<String, String> personToImage = {
+        'woman': 'assets/time_to_party_assets/activities/woman.png',
+        'man': 'assets/time_to_party_assets/activities/man.png',
+      };
+
+      // Mapowanie aktywności na obrazki
+      Map<String, String> activityToImage = {
+        'pajacyki': 'assets/time_to_party_assets/activities/jumping_jacks.png',
+        'brzuszki': 'assets/time_to_party_assets/activities/situps.png',
+        'pompki': 'assets/time_to_party_assets/activities/pushups.png',
+        'przysiady': 'assets/time_to_party_assets/activities/squats.png',
+      };
+
+      return [
+        _getImageWidget(personToImage[person] ?? ''),
+        _getTextWidget(person == 'woman' ? 'kobieta' : 'mężczyzna'),
+        _getTextWidget('robi'),
+        _getTextWidget(number),
+        _getImageWidget(activityToImage[activity] ?? ''),
+        _getTextWidget(activity)
+      ];
+    }
+
+    return [_getTextWidget('Niepoprawny format')];
+  }
+
+  Widget _getTextWidget(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontFamily: 'HindMadurai',
+        fontSize: 30.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        shadows: const [
+          Shadow(
+            offset: Offset(1.0, 4.0),
+            blurRadius: 15.0,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getImageWidget(String imagePath) {
+    return Image.asset(imagePath, height: 50, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
+  }
 
   Widget buildBlueDarkCard() {
     return TweenAnimationBuilder(
@@ -247,25 +343,15 @@ class _CustomCardState extends State<CustomCard> {
                         children: [
                           SizedBox(height: 20),
                           buildStarsRow(widget.totalCards, widget.starsColors),
-                          SizedBox(height: 15),
+                          SizedBox(height: 5),
                           Expanded(
-                            //child: PhysicalChallengeCard(),
-                              child: Text(textFromRollSlotMachine, style: TextStyle(
-                                fontFamily: 'HindMadurai',
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(1.0, 4.0),
-                                    blurRadius: 15.0,
-                                    color: Color.fromARGB(255, 0, 0, 0), // Kolor cienia, w tym przypadku czarny
-                                  ),
-                                ],
-                              ),)
+                            child: Column(
+                              children: createWidgetsFromText(textFromRollSlotMachine),
+                            ),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 5),
                           buildStarsRow(widget.totalCards, widget.starsColors),
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -278,6 +364,7 @@ class _CustomCardState extends State<CustomCard> {
       },
     );
   }
+// blue dark card end
 
   //compare questions
   Widget buildYellowCard() {
