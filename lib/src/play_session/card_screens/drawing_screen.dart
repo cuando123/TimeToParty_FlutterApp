@@ -7,9 +7,15 @@ import 'package:flutter/material.dart';
 import '../../style/palette.dart';
 
 class DrawingScreen extends StatefulWidget {
+  final String itemToShow;
+  final String category;
+
+  DrawingScreen({Key? key, required this.itemToShow, required this.category}) : super(key: key);
+
   @override
   _DrawingScreenState createState() => _DrawingScreenState();
 }
+
 
 class _DrawingScreenState extends State<DrawingScreen> {
   var _currentColor = Colors.black;
@@ -36,7 +42,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Draw Your Image'),
+        title: Text('Rysuj'),
         actions: [
           IconButton(
             icon: Icon(Icons.undo),
@@ -71,7 +77,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            const Text('DRAW WHAT YOU WANT!'),
+            Text('Draw ${widget.itemToShow}'),
+            Text('Category: ${widget.category}'),
             const SizedBox(height: 50),
             Expanded(
               child: Draw(controller: _drawController,

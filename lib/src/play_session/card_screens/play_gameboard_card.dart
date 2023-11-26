@@ -430,8 +430,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 // animacja time up
   void _showTimeUpAnimation() {
     _timeUpAnimationController.forward().then((value) => {
-         // Navigator.of(context).pop('response'),
-    AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)
+
+      if (widget.currentField[0]=='field_star_blue_dark'){
+       AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)} else Navigator.of(context).pop('response'),
     });
   }
 
@@ -456,7 +457,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         remainingTime = 40;
         break;
       default:
-        remainingTime = 5; // Domyślny czas, jeśli cardType nie pasuje do żadnego przypadku
+        remainingTime = 50; // Domyślny czas, jeśli cardType nie pasuje do żadnego przypadku
         break;
     }
   }
