@@ -23,25 +23,23 @@ class CustomCard extends StatefulWidget {
   final Map<String, List<String>> specificLists;
   final void Function(String result) onRollSlotMachineResult;
 
-  CustomCard(
-      {Key? key,
-        required this.totalCards,
-        required this.starsColors,
-        required this.slideAnimationController,
-        required this.rotationAnimation,
-        required this.opacity,
-        required this.offsetX,
-        required this.word,
-        required this.cardType,
-        required this.buildFortuneItemsList,
-        required this.onRollSlotMachineResult,
-        this.specificLists = const {},
-      })
-      : super(key: key);
+  CustomCard({
+    Key? key,
+    required this.totalCards,
+    required this.starsColors,
+    required this.slideAnimationController,
+    required this.rotationAnimation,
+    required this.opacity,
+    required this.offsetX,
+    required this.word,
+    required this.cardType,
+    required this.buildFortuneItemsList,
+    required this.onRollSlotMachineResult,
+    this.specificLists = const {},
+  }) : super(key: key);
 
   @override
   _CustomCardState createState() => _CustomCardState();
-
 }
 
 class CardData {
@@ -109,13 +107,14 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
             _showCustomDialogGreen(context);
           }
         });
-        return buildGreenCard();// rysowanie
+        return buildGreenCard(); // rysowanie
       case 'field_star_yellow':
         return buildYellowCard(); //pytania porownujace
       default:
         return buildGeneralCard();
     }
   }
+
 // random letter albo reszta kart
   Widget buildGeneralCard() {
     CardData cardData = CardData(
@@ -158,80 +157,92 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     String itemToShow = "";
     if (widget.specificLists.containsKey(key) && randomNumber - 1 < widget.specificLists[key]!.length) {
       itemToShow = widget.specificLists[key]![randomNumber - 1];
-
     }
     print('itemtoshow:$itemToShow, randomnumber: $randomNumber, cardtype: $cardType');
     showDialog(
       context: context,
       barrierDismissible: false,
-        builder: (BuildContext context) {
-          bool showDelayedText = false;
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              // Rozpoczęcie opóźnienia tylko raz, w momencie budowania dialogu
-              if (!showDelayedText) {
-                Future.delayed(Duration(seconds: 4), () {
-                  if (mounted) {
-                    setState(() {
-                      showDelayedText = true;
-                    });
-                  }
-                });
-              }
-              return AlertDialog(
-          backgroundColor: Colors.white,
-          content: SizedBox(
-            width: 300,
-            height: 400,
-            child: GestureDetector(
-              onTap: () {
-                if (Navigator.canPop(context)) { // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                  Navigator.of(context).pop(); // Zamknij dialog
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen(itemToShow: itemToShow, category: cardType))); // Następnie przejdź do nowego ekranu
+      builder: (BuildContext context) {
+        bool showDelayedText = false;
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            // Rozpoczęcie opóźnienia tylko raz, w momencie budowania dialogu
+            if (!showDelayedText) {
+              Future.delayed(Duration(seconds: 4), () {
+                if (mounted) {
+                  setState(() {
+                    showDelayedText = true;
+                  });
                 }
-              },
-              child: Column(
-                children: [
-                  SizedBox(height: 20),
-                  FortuneBar(
-                      physics: CircularPanPhysics(
-                        duration: Duration(seconds: 1),
-                        curve: Curves.decelerate,
+              });
+            }
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: SizedBox(
+                width: 300,
+                height: 400,
+                child: GestureDetector(
+                  onTap: () {
+                    if (Navigator.canPop(context)) {
+                      // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                      Navigator.of(context).pop(); // Zamknij dialog
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DrawingScreen(
+                                  itemToShow: itemToShow, category: cardType))); // Następnie przejdź do nowego ekranu
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      FortuneBar(
+                          physics: CircularPanPhysics(
+                            duration: Duration(seconds: 1),
+                            curve: Curves.decelerate,
+                          ),
+                          selected: Stream.value(
+                              selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
+                          styleStrategy: AlternatingStyleStrategy(),
+                          visibleItemCount: 3,
+                          items: const [
+                            FortuneItem(child: Text('Filmy')),
+                            FortuneItem(child: Text('Pozycje Miłosne')),
+                            FortuneItem(child: Text('Powiedzenia')),
+                          ]),
+                      Expanded(
+                          child: showDelayedText
+                              ? Text('$itemToShow', style: TextStyle(color: Colors.black))
+                              : Text('Losuje...', style: TextStyle(color: Colors.black))),
+                      ScaleTransition(
+                        scale: _pulseAnimation,
+                        child: CustomStyledButton(
+                          icon: Icons.play_arrow_rounded,
+                          text: 'Zacznij zadanie!', // Or use your translated text function
+                          onPressed: () {
+                            if (Navigator.canPop(context)) {
+                              // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                              Navigator.of(context).pop(); // Zamknij dialog
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DrawingScreen(
+                                          itemToShow: itemToShow,
+                                          category: cardType))); // Następnie przejdź do nowego ekranu
+                            }
+                          },
+                        ),
                       ),
-                      selected: Stream.value(selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
-                      styleStrategy: AlternatingStyleStrategy(),
-                      visibleItemCount: 3,
-                      items: const [
-                        FortuneItem(child: Text('Filmy')),
-                        FortuneItem(child: Text('Pozycje Miłosne')),
-                        FortuneItem(child: Text('Powiedzenia')),
-                      ]
+                      SizedBox(height: 10),
+                    ],
                   ),
-                  Expanded(
-                    child: showDelayedText
-                        ? Text('$itemToShow', style: TextStyle(color: Colors.black))
-                        : Text('Losuje...', style: TextStyle(color: Colors.black))
-                  ),
-               ScaleTransition(
-                scale: _pulseAnimation,
-                child: CustomStyledButton(
-                    icon: Icons.play_arrow_rounded,
-                    text: 'Zacznij zadanie!', // Or use your translated text function
-                    onPressed: () {
-                      if (Navigator.canPop(context)) { // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                        Navigator.of(context).pop(); // Zamknij dialog
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DrawingScreen(itemToShow: itemToShow, category: cardType))); // Następnie przejdź do nowego ekranu
-                      }
-                    },
-                  ),
-               ),
-                  SizedBox(height: 10),
-                ],
+                ),
               ),
-              ),
-            ),
-          actions: const <Widget>[],
-        );},);},
+              actions: const <Widget>[],
+            );
+          },
+        );
+      },
     ).then((returnedValue) {
       if (returnedValue != null) {
         setState(() {
@@ -257,12 +268,11 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
             side: BorderSide(color: Palette().white, width: 13.0),
           ),
           elevation: 0.0,
-           // Tutaj dodaj odpowiednią zawartość
+          // Tutaj dodaj odpowiednią zawartość
         ),
       ),
     );
   }
-
 
   Widget buildPinkCard() {
     // Implementacja dla Pink Card
@@ -353,7 +363,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   }
 
   Widget _getImageWidget(String imagePath) {
-    return Image.asset(imagePath, height: 50, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
+    return Image.asset(imagePath,
+        height: 50, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
   }
 
   Widget buildBlueDarkCard() {
@@ -410,6 +421,9 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 // blue dark card end
 
   //compare questions
+
+  int selectedValue = -1; // Początkowa wartość, wskazująca, że nic nie jest wybrane
+
   Widget buildYellowCard() {
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
@@ -440,19 +454,39 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                         children: [
                           SizedBox(height: 20),
                           buildStarsRow(widget.totalCards, widget.starsColors),
-                          SizedBox(height: 15),
                           Expanded(
                             child: ListView.builder(
                               itemCount: widget.buildFortuneItemsList.length,
-                              itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(widget.buildFortuneItemsList[index],
-                                    style: TextStyle(color: Colors.white, fontSize: 14)),
-                              ),
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  // Dla pierwszego elementu wyświetl tylko tekst
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+                                    child: Text(widget.buildFortuneItemsList[index],
+                                        style: TextStyle(color: Colors.white, fontSize: 14)),
+                                  );
+                                } else {
+                                  // Dla pozostałych elementów użyj RadioListTile
+                                  return RadioListTile<int>(
+                                    title: Text(
+                                      widget.buildFortuneItemsList[index],
+                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                    ),
+                                    value: index,
+                                    groupValue: selectedValue,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        selectedValue = value!;
+                                      });
+                                    },
+                                    activeColor: Colors.white,
+                                  );
+                                }
+                              },
                             ),
                           ),
-                          SizedBox(height: 10),
                           buildStarsRow(widget.totalCards, widget.starsColors),
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -498,23 +532,25 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           SizedBox(height: 20),
                           buildStarsRow(cardData.totalCards, cardData.starsColors),
                           SizedBox(height: 100),
-                          Expanded(child:
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(20.0),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(cardData.word,
+                                      style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
+                                ],
                               ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(cardData.word, style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
-                              ],
-                            ),
-                          ),),
+                          ),
                           SizedBox(height: 100),
                           buildStarsRow(cardData.totalCards, cardData.starsColors),
                           SizedBox(height: 20),

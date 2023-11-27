@@ -10,6 +10,7 @@ import 'package:game_template/src/play_session/extensions.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
+import '../custom_style_buttons.dart';
 import 'circle_progress_painter.dart';
 import 'custom_card.dart';
 
@@ -781,7 +782,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             Text('Karta ${currentCardIndex + 1} z $totalCards',
                 style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
             SizedBox(height: 10),
-            Row(
+            (widget.currentField[0] != "field_star_yellow")
+            ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Spacer(),
@@ -834,7 +836,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 ),
                 Spacer(),
               ],
-            )
+            ) : CustomStyledButton(icon: Icons.arrow_forward_outlined, onPressed: () {
+
+            }, text: "Przejdź dalej"), //przejscie do nastepnej karty, button ekran czy cos
+
+
           ],
         ),
       ),
