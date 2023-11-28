@@ -41,7 +41,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
     _controller = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
-    )..addListener(_updateAnimation);
+    );
     _startNextPhase();
   }
 
@@ -50,6 +50,12 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
       _phaseTimer!.cancel();
     }
     _controller.forward(from: 0); // Zawsze zaczynamy od początku
+
+    _phaseTimer?.cancel();
+    _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (Timer t) {
+      _updateAnimation();
+    });
+
     // Ustawienie timera dla aktualnej fazy
     var phaseDuration = Duration(seconds: 3); // Domyślny czas trwania fazy
     switch (_currentPhase) {
@@ -58,18 +64,20 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
         phaseDuration = Duration(seconds: 3); // Czas trwania dla tych faz
         break;
       case AnimationPhase.blinking:
-        phaseDuration = Duration(seconds: 3); // Czas na mryganie
+        phaseDuration = Duration(seconds: 2); // Czas na mryganie
         break;
       case AnimationPhase.pausing:
       // Pausing ma swój własny timer
         _pauseTimer = Timer(Duration(seconds: 3), () {
-          _highlightedStripe = -1;
           _currentPhase = AnimationPhase.movingForward;
           _startNextPhase();
         });
         return; // Wychodzimy, aby nie ustawić dodatkowego timera
     }
-    _phaseTimer = Timer(phaseDuration, _nextPhase); // Ustawienie timera
+    Timer(phaseDuration, () {
+      _phaseTimer?.cancel();
+      _nextPhase();
+    });
   }
 
   void _nextPhase() {
@@ -92,30 +100,33 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
   }
 
   Future _updateAnimation() async {
-    if (!mounted) return; // Sprawdzenie, czy widget jest nadal w drzewie
 
+    if (!mounted) return;
     setState(() {
       switch (_currentPhase) {
         case AnimationPhase.movingForward:
         // Przesunięcie podświetlenia do przodu
+          _highlightedStripe ??= -1;
           _highlightedStripe = (_highlightedStripe! + 1) % 10;
           break;
         case AnimationPhase.movingBackward:
-        // Przesunięcie podświetlenia do tyłu
           if (_highlightedStripe! > 0) {
             _highlightedStripe = _highlightedStripe! - 1;
+          } else if (_highlightedStripe! == 0) {
+            _nextPhase(); // Przejście do następnej fazy po osiągnięciu 0
           }
           break;
+
         case AnimationPhase.blinking:
         // Mryganie: przełączanie podświetlenia
           _highlightedStripe = _blinkCounter % 2 == 0 ? -1 : null;
           _blinkCounter++;
           if (_blinkCounter >= 8) {
-            _blinkCounter = 0; // Resetowanie licznika mrygania
+            _blinkCounter = 0;
           }
           break;
         case AnimationPhase.pausing:
-        // Faza pauzy - nie wymaga aktualizacji stanu, ponieważ jest zarządzana przez Timer
+          _highlightedStripe = -1;
           break;
       }
     });
@@ -180,7 +191,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
                   dotRadius: 3,
                         color: Colors.white70,
                          highlightDotRadius: 4,
-                         highlightColor: Colors.red,
+                         highlightColor: Colors.yellow,
                          highlightedDot: _highlightedStripe,
                          padding: constraints.maxWidth * 0.138,
                     ),

@@ -838,7 +838,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
               ],
             ) : CustomStyledButton(icon: Icons.arrow_forward_outlined, onPressed: () {
 
-            }, text: "Przejdź dalej"), //przejscie do nastepnej karty, button ekran czy cos
+            }, text: "Kontynuuj"), //przejscie do nastepnej karty, button ekran czy cos
 
 
           ],
