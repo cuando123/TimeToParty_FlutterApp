@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/main_board/stacked_card_carousel.dart';
 
 class AnimatedCard extends StatefulWidget {
@@ -46,7 +47,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1500), //czas animacji wyskoku karty
       vsync: this,
     );
     _arrowController = AnimationController(
@@ -192,7 +193,12 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     child: Align(
           alignment: Alignment(0.0, -0.9),
           child:   Text('${widget.currentTeamName}',
-              style: TextStyle(color: Colors.white, fontSize: 20)),
+              style:  TextStyle(
+                fontStyle: FontStyle.normal,
+                fontFamily: 'HindMadurai',
+                color: Colors.white,
+                fontSize: 20,
+              ),)
         ),),
     SlideTransition(
     position: _textTopPositionAnimation,
@@ -249,7 +255,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     child:
     GestureDetector(
           onTap: () {
-            _showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
+            AnimatedAlertDialog.showCardDescriptionDialog(context, widget.selectedCardIndex);
+            //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
           },
           child: Align(
             alignment: Alignment(0.0, 0.45),

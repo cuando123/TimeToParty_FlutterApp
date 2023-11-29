@@ -218,7 +218,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                               _selectedController = StreamController<int>.broadcast();
 
                                               selected.add(randomIndex);
-                                              Future.delayed(Duration(seconds: 5), //czas krecenia kolem
+                                              Future.delayed(Duration(seconds: 3), //czas krecenia kolem
                                                   () {
                                                 if (mounted) {
                                                   safeSetState(() {

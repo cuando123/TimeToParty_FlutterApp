@@ -205,6 +205,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
               FortuneWheel(
                 selected: widget.selected.stream,
                 animateFirst: false,
+                duration: Duration(seconds: 3),
                 indicators: <FortuneIndicator>[
                   FortuneIndicator(
                     alignment: Alignment.topCenter,

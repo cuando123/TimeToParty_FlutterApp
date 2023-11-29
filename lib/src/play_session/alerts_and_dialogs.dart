@@ -237,4 +237,60 @@ class AnimatedAlertDialog {
       },
     );
   }
+
+  static void showCardDescriptionDialog(BuildContext context, String cardIndex) {
+    final Map<String, String> fieldDescriptions = {
+      'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
+      'field_sheet': 'Układaj rymy i baw się słowami!',
+      'field_letters': 'Wymyśl 20 rzeczowników na daną literę!',
+      'field_pantomime': 'Mów ciałem, nie słowami!',
+      'field_microphone': 'Odgadnij sławne osobowości!',
+      'field_taboo': 'Taboo - Opisuj, omijając zakazane słowa!',
+      'field_star_blue_dark': 'Zadanie fizyczne? Zmierz się z czasem!',
+      'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
+      'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
+      'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+    };
+
+    // Wybierz tytuł i opis na podstawie cardIndex
+    String title = "Tytuł karty"; // Możesz to zmienić na bardziej odpowiedni tytuł
+    String description = fieldDescriptions[cardIndex] ?? 'Brak opisu';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, title, 20, Palette().pink, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+              ),
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              Center(
+                child: Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+              ),
+              // ... reszta Twojego UI
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Zamknięcie AlertDialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }

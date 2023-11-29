@@ -60,11 +60,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) {
         return Stack(
-          children: [
+          children: const [
             LevelSelectionScreen(
               key: Key('level selection'),
             ),
-            StarsAnimation(),
           ],
         );
       },
