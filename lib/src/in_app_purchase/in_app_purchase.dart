@@ -183,7 +183,7 @@ class InAppPurchaseController extends ChangeNotifier {
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     _log.info('Verifying purchase: ${purchaseDetails.verificationData}');
-    // TODO: verify the purchase.
+    //TO_DO: verify the purchase.
     // See the info in [purchaseDetails.verificationData] to learn more.
     // There's also a codelab that explains purchase verification
     // on the backend:

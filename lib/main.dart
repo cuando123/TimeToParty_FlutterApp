@@ -85,7 +85,7 @@ void guardedMain() async {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   });
 
-  // TODO: When ready, uncomment the following lines to enable integrations.
+  //TO_DO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.
 
   AdsController? adsController;

@@ -64,7 +64,8 @@ class TripleButton extends StatelessWidget {
       ),
     );
   }
-
+/*TO_DO - poprawienie ikonek na głównym ekranie (tych 3 na dole) bo nie są zbyt spektakularne, coś trzeba wymyślić lepszego
+ już lepiej ale jeszcze trzeba nad tym popracować, chyba lepiej aby były takie jak z main menu czy coś?*/
   Widget _buildButtonIcon(IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,

@@ -44,7 +44,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
     );
     _startNextPhase();
   }
-
+//TO_DO animacja kropek na kole fortuny do poprawienia aby nie sypała nullami – poza tym jest spoko
   void _startNextPhase() {
     if (_phaseTimer != null && _phaseTimer!.isActive) {
       _phaseTimer!.cancel();

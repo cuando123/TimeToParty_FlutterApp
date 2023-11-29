@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../style/palette.dart';
 import 'card_screens/svgbutton_enabled_dis.dart';
+import 'custom_style_buttons.dart';
 
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
@@ -13,7 +14,9 @@ class AnimatedAlertDialog {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
@@ -80,9 +83,15 @@ class AnimatedAlertDialog {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize:
-                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    Size(MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.5, MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.05),
                     textStyle:
-                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -111,7 +120,9 @@ class AnimatedAlertDialog {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
@@ -148,8 +159,12 @@ class AnimatedAlertDialog {
   // punkty
   static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
     // Obliczenie punktów
-    int greenCount = starsColors.where((color) => color == Colors.green).length;
-    int redCount = starsColors.where((color) => color == Colors.red).length;
+    int greenCount = starsColors
+        .where((color) => color == Colors.green)
+        .length;
+    int redCount = starsColors
+        .where((color) => color == Colors.red)
+        .length;
     int points;
     if (greenCount > totalCards / 2) {
       points = 2;
@@ -187,12 +202,14 @@ class AnimatedAlertDialog {
     );
   }
 
-  static void showAnimatedDialogFinishedTask(
-      BuildContext context, VoidCallback onButtonXPressed, VoidCallback onButtonTickPressed) {
+  static void showAnimatedDialogFinishedTask(BuildContext context, VoidCallback onButtonXPressed,
+      VoidCallback onButtonTickPressed) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
@@ -239,58 +256,76 @@ class AnimatedAlertDialog {
   }
 
   static void showCardDescriptionDialog(BuildContext context, String cardIndex) {
-    final Map<String, String> fieldDescriptions = {
-      'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
-      'field_sheet': 'Układaj rymy i baw się słowami!',
-      'field_letters': 'Wymyśl 20 rzeczowników na daną literę!',
-      'field_pantomime': 'Mów ciałem, nie słowami!',
-      'field_microphone': 'Odgadnij sławne osobowości!',
-      'field_taboo': 'Taboo - Opisuj, omijając zakazane słowa!',
-      'field_star_blue_dark': 'Zadanie fizyczne? Zmierz się z czasem!',
-      'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
-      'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
-      'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+    //TO_DO jezeli ekran karty bedzie to wtedy dodamy do tego dialogu mozliwosc zgloszenia bledu poprzez stronke
+    final Map<String, Widget> fieldDescriptions = {
+      'field_arrows': translatedText(context, 'instruction_dialog_choice',
+          16, Palette().menudark),
+      'field_sheet': translatedText(context, 'instruction_dialog_rymes',
+          16, Palette().menudark),
+      'field_letters': translatedText(context, 'instruction_dialog_20_words',
+          16, Palette().menudark),
+      'field_pantomime': translatedText(context, 'instruction_dialog_pantomime',
+          16, Palette().menudark),
+      'field_microphone': translatedText(context, 'instruction_dialog_famous_people',
+          16, Palette().menudark),
+      'field_taboo': translatedText(context, 'instruction_dialog_stars_fields',
+          16, Palette().menudark),
+      'field_star_blue_dark': translatedText(context, 'more_fun', //TO_DO to jest do zrobienai tez
+          16, Palette().menudark),
+      'field_star_pink': translatedText(context, 'more_fun',
+          16, Palette().menudark),
+      'field_star_green': translatedText(context, 'more_fun',
+          16, Palette().menudark),
+      'field_star_yellow': translatedText(context, 'more_fun',
+          16, Palette().menudark),
     };
 
-    // Wybierz tytuł i opis na podstawie cardIndex
-    String title = "Tytuł karty"; // Możesz to zmienić na bardziej odpowiedni tytuł
-    String description = fieldDescriptions[cardIndex] ?? 'Brak opisu';
+    final Map<String, String> fieldTitlesDb = {
+      'field_arrows': "ok", //TO_DO do ustawienia w bazie tutaj beda jeszcze nazwy przy tlumaczeniach
+      'field_sheet': "rymes",
+      'field_letters': "alphabet",
+      'field_pantomime': "pantomime",
+      'field_microphone': "famous_people",
+      'field_taboo': "taboo_words",
+      'field_star_blue_dark': "ok",
+      'field_star_pink': "ok",
+      'field_star_green': "ok",
+      'field_star_yellow': "ok"
+    };
+    String title = fieldTitlesDb[cardIndex] ?? "Default Title";
+    Widget? description = fieldDescriptions[cardIndex];
 
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(context, title, 20, Palette().pink, textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
-              ),
-              // ... reszta Twojego UI
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Zamknięcie AlertDialog
-              },
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Palette().white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
-        );
-      },
+            content: SingleChildScrollView( // Add SingleChildScrollView to handle overflow
+               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  translatedText(context, title, 20, Palette().pink, textAlign: TextAlign.center),
+                  ResponsiveSizing.responsiveHeightGap(context, 10),
+                  Center (child: description),
+                  ResponsiveSizing.responsiveHeightGap(context, 10),
+                  SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  ResponsiveSizing.responsiveHeightGap(context, 10),
+                  CustomStyledButton(
+                    icon: null,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "OK",
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
     );
   }
-
-
 }

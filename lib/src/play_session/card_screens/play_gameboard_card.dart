@@ -439,7 +439,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 // ustalenie konkretnego czasu dla danej karty
   void _setTimerDuration() {
-    //TODO do ustalenia konkretne czasy dla danych kart
+    //TO_DO do ustalenia konkretne czasy dla danych kart
     String cardType = widget.currentField[0];
     switch (cardType) {
       case "field_sheet":

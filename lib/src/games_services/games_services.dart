@@ -85,7 +85,7 @@ class GamesServicesController {
 
     try {
       await gs.GamesServices.showLeaderboards(
-        // TODO: When ready, change both these leaderboard IDs.
+        //TO_DO: When ready, change both these leaderboard IDs.
         iOSLeaderboardID: "some_id_from_app_store",
         androidLeaderboardID: "sOmE_iD_fRoM_gPlAy",
       );
@@ -106,7 +106,7 @@ class GamesServicesController {
     try {
       await gs.GamesServices.submitScore(
         score: gs.Score(
-          // TODO: When ready, change these leaderboard IDs.
+          //TO_DO: When ready, change these leaderboard IDs.
           iOSLeaderboardID: 'some_id_from_app_store',
           androidLeaderboardID: 'sOmE_iD_fRoM_gPlAy',
           value: score.score,

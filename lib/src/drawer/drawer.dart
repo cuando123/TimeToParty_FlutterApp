@@ -177,7 +177,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Divider(
                     color: Palette().white,
                   ),
-                  //Przywróć platnosci: TODO
+                  //TO_DO Przywróć platnosci
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),

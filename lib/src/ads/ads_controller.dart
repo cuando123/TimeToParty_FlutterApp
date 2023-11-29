@@ -34,7 +34,7 @@ class AdsController {
   /// The work doesn't start immediately so that calling this doesn't have
   /// adverse effects (jank) during start of a new screen.
   void preloadAd() {
-    // TODO: When ready, change this to the Ad Unit IDs provided by AdMob.
+    //TO_DO: When ready, change this to the Ad Unit IDs provided by AdMob.
     //       The current values are AdMob's sample IDs.
     final adUnitId = defaultTargetPlatform == TargetPlatform.android
         ? 'ca-app-pub-3940256099942544/6300978111'

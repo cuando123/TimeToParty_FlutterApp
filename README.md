@@ -130,7 +130,7 @@ Ads are implemented using the official `google_mobile_ads` package
 and are disabled by default. 
 
 ```dart
-// TODO: When ready, uncomment the following lines to enable integrations.
+//TO_DO: When ready, uncomment the following lines to enable integrations.
 
 AdsController? adsController;
 // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
@@ -373,7 +373,7 @@ and have your achievement & leaderboard IDs ready, it's finally Dart time.
    IDs in the `showLeaderboard()` function.
    
    ```dart
-   // TODO: When ready, change both these leaderboard IDs.
+   //TO_DO: When ready, change both these leaderboard IDs.
    iOSLeaderboardID: "some_id_from_app_store",
    androidLeaderboardID: "sOmE_iD_fRoM_gPlAy",
    ```
@@ -408,7 +408,7 @@ and have your achievement & leaderboard IDs ready, it's finally Dart time.
 3. Uncomment the code relating to games services in `lib/main.dart`.
    
     ```dart
-    // TODO: When ready, uncomment the following lines.
+    //TO_DO: When ready, uncomment the following lines.
 
     GamesServicesController? gamesServicesController;
     // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
@@ -476,7 +476,7 @@ Now everything is ready to enable the integration in your Dart code:
 2. Uncomment the code relating to in-app purchases in `lib/main.dart`.
 
     ```dart
-    // TODO: When ready, uncomment the following lines.
+    //TO_DO: When ready, uncomment the following lines.
    
     InAppPurchaseController? inAppPurchaseController;
     // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {

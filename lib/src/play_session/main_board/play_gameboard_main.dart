@@ -54,6 +54,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   List<String> newFieldsList = [];
   bool _showStarsAnimation = false;
   bool showAnimatedCard = true;
+  Timer? _inactivityTimer;
 
   @override
   void initState() {
@@ -88,13 +89,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return WillPopScope(
       onWillPop: () async {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
         return false; // return false to prevent the pop operation
       },
-      child: CustomBackground(
+      child:
+      CustomBackground(
         child: Scaffold(
           body: Stack(
             children: [
@@ -549,7 +552,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    _inactivityTimer?.cancel();
+    _subscription.cancel();
     _controller.dispose();
     _selectedController.close();
     selected.close();
@@ -604,7 +608,6 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         ),
       ),
     ).then((returnedData) {
-      print(returnedData);
       if (mounted && returnedData != null) {
         safeSetState(() {
           // Aktualizuj stan na podstawie zwróconych danych

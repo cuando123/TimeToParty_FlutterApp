@@ -4,7 +4,7 @@ import '../app_lifecycle/translated_text.dart';
 import '../style/palette.dart';
 
 class CustomStyledButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
   final String text;
   final VoidCallback onPressed;
 
@@ -13,7 +13,7 @@ class CustomStyledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      icon: Icon(icon, size: 32),
+        icon: icon != null ? Icon(icon, size: 32) : SizedBox.shrink(),
       label: Text(
         text,
         style: TextStyle(
