@@ -25,14 +25,12 @@ class MyFortuneWheel extends StatefulWidget {
   _MyFortuneWheelState createState() => _MyFortuneWheelState();
 }
 
-enum AnimationPhase { movingForward, movingBackward, blinking, pausing }
+enum AnimationPhase { movingForward, movingBackward }
 
 class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int? _highlightedStripe = -1; // Start z -1, aby na początku nic nie było podświetlone
   AnimationPhase _currentPhase = AnimationPhase.movingForward;
-  int _blinkCounter = 0;
-  Timer? _pauseTimer;
   Timer? _phaseTimer;
 
   @override
@@ -44,90 +42,32 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
     );
     _startNextPhase();
   }
-//TO_DO animacja kropek na kole fortuny do poprawienia aby nie sypała nullami – poza tym jest spoko
-  void _startNextPhase() {
-    if (_phaseTimer != null && _phaseTimer!.isActive) {
-      _phaseTimer!.cancel();
-    }
-    _controller.forward(from: 0); // Zawsze zaczynamy od początku
 
+  void _startNextPhase() {
     _phaseTimer?.cancel();
+    var phaseDuration = Duration(seconds: 5); // Czas trwania dla ruchu do przodu i do tyłu
+    _controller.forward(from: 0);
     _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (Timer t) {
       _updateAnimation();
     });
 
-    // Ustawienie timera dla aktualnej fazy
-    var phaseDuration = Duration(seconds: 3); // Domyślny czas trwania fazy
-    switch (_currentPhase) {
-      case AnimationPhase.movingForward:
-      case AnimationPhase.movingBackward:
-        phaseDuration = Duration(seconds: 3); // Czas trwania dla tych faz
-        break;
-      case AnimationPhase.blinking:
-        phaseDuration = Duration(seconds: 2); // Czas na mryganie
-        break;
-      case AnimationPhase.pausing:
-      // Pausing ma swój własny timer
-        _pauseTimer = Timer(Duration(seconds: 3), () {
-          _currentPhase = AnimationPhase.movingForward;
-          _startNextPhase();
-        });
-        return; // Wychodzimy, aby nie ustawić dodatkowego timera
-    }
     Timer(phaseDuration, () {
-      _phaseTimer?.cancel();
       _nextPhase();
     });
   }
 
   void _nextPhase() {
-    // Logika przejścia do następnej fazy
-    switch (_currentPhase) {
-      case AnimationPhase.movingForward:
-        _currentPhase = AnimationPhase.movingBackward;
-        break;
-      case AnimationPhase.movingBackward:
-        _currentPhase = AnimationPhase.blinking;
-        break;
-      case AnimationPhase.blinking:
-        _currentPhase = AnimationPhase.pausing;
-        break;
-      case AnimationPhase.pausing:
-        _currentPhase = AnimationPhase.movingForward;
-        break;
-    }
+    _currentPhase = (_currentPhase == AnimationPhase.movingForward) ? AnimationPhase.movingBackward : AnimationPhase.movingForward;
     _startNextPhase(); // Rozpocznij następną fazę
   }
 
   Future _updateAnimation() async {
-
     if (!mounted) return;
     setState(() {
-      switch (_currentPhase) {
-        case AnimationPhase.movingForward:
-        // Przesunięcie podświetlenia do przodu
-          _highlightedStripe ??= -1;
-          _highlightedStripe = (_highlightedStripe! + 1) % 10;
-          break;
-        case AnimationPhase.movingBackward:
-          if (_highlightedStripe! > 0) {
-            _highlightedStripe = _highlightedStripe! - 1;
-          } else if (_highlightedStripe! == 0) {
-            _nextPhase(); // Przejście do następnej fazy po osiągnięciu 0
-          }
-          break;
-
-        case AnimationPhase.blinking:
-        // Mryganie: przełączanie podświetlenia
-          _highlightedStripe = _blinkCounter % 2 == 0 ? -1 : null;
-          _blinkCounter++;
-          if (_blinkCounter >= 8) {
-            _blinkCounter = 0;
-          }
-          break;
-        case AnimationPhase.pausing:
-          _highlightedStripe = -1;
-          break;
+      if (_currentPhase == AnimationPhase.movingForward) {
+        _highlightedStripe = (_highlightedStripe! + 1) % 10;
+      } else if (_currentPhase == AnimationPhase.movingBackward) {
+        _highlightedStripe = (_highlightedStripe! > 0) ? _highlightedStripe! - 1 : 0;
       }
     });
   }
@@ -135,11 +75,9 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
   @override
   void dispose() {
     _controller.dispose();
-    _pauseTimer?.cancel();
     _phaseTimer?.cancel();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +264,7 @@ class StripePainter extends CustomPainter {
       final double dotY = centerY + radius * sin(angle);
 
       // Jeśli highlightedDot jest null, wszystkie kółeczka powinny być podświetlone
-      if (highlightedDot == null) {
+      if (highlightedDot == 9) {
         paint.color = highlightColor;
         canvas.drawCircle(
           Offset(dotX, dotY),

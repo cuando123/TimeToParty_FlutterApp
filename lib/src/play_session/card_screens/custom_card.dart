@@ -84,6 +84,19 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  List<String> splitText(String text) {
+    if (text.length > 15) {
+      int spaceIndex = text.indexOf(' ', 1);
+      if (spaceIndex != -1) {
+        return [
+          text.substring(0, spaceIndex),
+          text.substring(spaceIndex + 1)
+        ];
+      }
+    }
+    return [text];
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (widget.cardType) {
@@ -502,6 +515,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   // pantomima, slawne osoby, rymowanie, literka
   Widget buildCustomCard(CardData cardData) {
+    List<String> splitWords = splitText(cardData.word);
+    EdgeInsets padding = splitWords.length > 1 ? const EdgeInsets.all(8.0) : const EdgeInsets.all(20.0); //padding do posplitowanych
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
@@ -534,7 +549,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           SizedBox(height: 100),
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: padding,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
@@ -543,12 +558,19 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(cardData.word,
-                                      style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24)),
+                                  Expanded(
+                                    child: Column(
+                                      children: splitWords.map((word) => Text(
+                                        word,
+                                        style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24),
+                                        softWrap: true,
+                                      )).toList(),
+                                    ),
+                                  ),
                                 ],
                               ),
+
                             ),
                           ),
                           SizedBox(height: 100),

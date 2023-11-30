@@ -85,7 +85,7 @@ class InstructionDialog extends StatelessWidget {
                           ],
                         ),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_stars_fields',
+                        translatedText(context, 'instruction_dialog_taboo_fields',
                             16, Palette().menudark),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
                         SvgPicture.asset(

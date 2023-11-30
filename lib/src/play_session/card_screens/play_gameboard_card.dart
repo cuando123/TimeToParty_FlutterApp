@@ -686,7 +686,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      showRollSlotMachine(context); // Wywołanie funkcji podczas kliknięcia
+                      AnimatedAlertDialog.showCardDescriptionDialog(context, widget.currentField[0]);
                     },
                     child: Container(
                       child: CircleAvatar(
