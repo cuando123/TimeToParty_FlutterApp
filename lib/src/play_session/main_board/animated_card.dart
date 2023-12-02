@@ -255,7 +255,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     child:
     GestureDetector(
           onTap: () {
-            AnimatedAlertDialog.showCardDescriptionDialog(context, widget.selectedCardIndex);
+            AnimatedAlertDialog.showCardDescriptionDialog(context, widget.selectedCardIndex, AlertOrigin.otherScreen);
             //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
           },
           child: Align(

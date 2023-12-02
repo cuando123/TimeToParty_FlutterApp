@@ -255,7 +255,7 @@ class AnimatedAlertDialog {
     );
   }
 
-  static void showCardDescriptionDialog(BuildContext context, String cardIndex) {
+  static Future<void> showCardDescriptionDialog(BuildContext context, String cardIndex, AlertOrigin origin) async {
     //TO_DO jezeli ekran karty bedzie to wtedy dodamy do tego dialogu mozliwosc zgloszenia bledu poprzez stronke
     final Map<String, Widget> fieldDescriptions = {
       'field_arrows': translatedText(context, 'instruction_dialog_choice',
@@ -296,7 +296,7 @@ class AnimatedAlertDialog {
     String title = fieldTitlesDb[cardIndex] ?? "Default Title";
     Widget? description = fieldDescriptions[cardIndex];
 
-    showDialog(
+    return showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -322,16 +322,21 @@ class AnimatedAlertDialog {
                     },
                     text: "OK",
                   ),
-                  //TO_DO to będzie opcjonalne od ekranu + problem jest taki ze jak jest odpalony alert na karcie i minie czas to zamyka nam go a nie zamyka screena
-                  ResponsiveSizing.responsiveHeightGap(context, 10),
-                  letsText(context, 'Znalazłeś błąd? Zgłoś go nam! Będziemy wdzięczni!', 12, Palette().darkGrey),
-                  CustomStyledButton(
-                    icon: Icons.edit,
-                    onPressed: () {
-                      showExitDialog(context);
-                    },
-                    text: "Zglos",
-                  ),
+                  if (origin == AlertOrigin.otherScreen) ...[
+                    Container()
+                  ],
+                  if (origin == AlertOrigin.cardScreen) ...[
+                    ResponsiveSizing.responsiveHeightGap(context, 10),
+                    letsText(context, 'Znalazłeś błąd? Zgłoś go nam! Będziemy wdzięczni!', 12, Palette().darkGrey),
+                    CustomStyledButton(
+                      icon: Icons.edit,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        showExitDialog(context);
+                      },
+                      text: "Zglos",
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -409,3 +414,4 @@ class AnimatedAlertDialog {
     );
   }
 }
+enum AlertOrigin { cardScreen, otherScreen }

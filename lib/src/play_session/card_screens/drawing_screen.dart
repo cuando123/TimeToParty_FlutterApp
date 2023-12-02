@@ -32,10 +32,11 @@ class _DrawingScreenState extends State<DrawingScreen> {
     _drawController.convertToImage();
   }
 
-  void _navigateToDisplayScreen(ui.Image image) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DisplayDrawingScreen(image: image),
-    ));
+  Future<void> onConvertImage(Uint8List imageData) async {
+    // Konwersja na ui.Image i zwrócenie jako wynik
+    ui.Image image = await convertUint8ListToUiImage(imageData);
+    Navigator.of(context).pop(DrawingResult(image: image, category: widget.category));
+
   }
 
   @override
@@ -86,11 +87,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
                   strokeColor: _currentColor,
                   strokeWidth: _currentWidth,
                   isErasing: false,
-                  onConvertImage: (Uint8List imageData) async {
-                    // Tutaj przetwarzaj dane obrazu
-                    // Na przykład konwertuj na ui.Image i zapisz w stanie
-                    ui.Image image = await convertUint8ListToUiImage(imageData);
-                    _navigateToDisplayScreen(image);
+                  onConvertImage: (imageData) async {
+                    await onConvertImage(imageData);
                   },
                   ),
             ),
@@ -168,51 +166,10 @@ class _DrawingScreenState extends State<DrawingScreen> {
   }
 
 }
-class DisplayDrawingScreen extends StatelessWidget {
+class DrawingResult {
   final ui.Image image;
+  final String category;
 
-  const DisplayDrawingScreen({Key? key, required this.image}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Your Drawing'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: Center(
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: CustomPaint(
-            painter: ImagePainter(image: image),
-            child: SizedBox(
-              width: image.width.toDouble(),
-              height: image.height.toDouble(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  DrawingResult({required this.image, required this.category});
 }
 
-
-// Twoja klasa ImagePainter
-class ImagePainter extends CustomPainter {
-  final ui.Image image;
-
-  ImagePainter({required this.image});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    paintImage(canvas: canvas, rect: Offset.zero & size, image: image, fit: BoxFit.contain);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}

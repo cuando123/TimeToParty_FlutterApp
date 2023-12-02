@@ -96,8 +96,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
         return false; // return false to prevent the pop operation
       },
-      child:
-      CustomBackground(
+      child: CustomBackground(
         child: Scaffold(
           body: Stack(
             children: [
@@ -248,13 +247,13 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                 _controller,
                                                 () => AnimatedAlertDialog.showExitGameDialog(
                                                     context, hasShownAlertDialog, '')),
-                                            //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE
+                                            //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE, KARTA, TEST
                                             ElevatedButton(
                                                 onPressed: () {
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_microphone';
+                                                    selectedCardIndex = 'field_star_green';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },

@@ -56,6 +56,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   bool isTabooCard = false;
   late String currentWordOrKey;
   late List<String> _fortuneItemsList;
+  bool isAlertOpened = false;
 
   @override
   void initState() {
@@ -433,7 +434,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _timeUpAnimationController.forward().then((value) => {
 
       if (widget.currentField[0]=='field_star_blue_dark'){
-       AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)} else Navigator.of(context).pop('response'),
+       AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)} else {
+        if (isAlertOpened){
+          Navigator.of(context).pop(),
+          Navigator.of(context).pop('response'),
+        } else
+        Navigator.of(context).pop('response'),
+      }
     });
   }
 
@@ -684,11 +691,18 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     ),
                   ),
                   Spacer(),
-                  InkWell(
-                    onTap: () {
-                      AnimatedAlertDialog.showCardDescriptionDialog(context, widget.currentField[0]);
-                    },
-                    child: Container(
+      InkWell(
+        onTap: () {
+          setState(() {
+            isAlertOpened = true;
+          });
+          AnimatedAlertDialog.showCardDescriptionDialog(context, widget.currentField[0], AlertOrigin.cardScreen).then((_) {
+            setState(() {
+              isAlertOpened = false;
+            });
+          });
+        },
+      child: Container(
                       child: CircleAvatar(
                         radius: 18, // Dostosuj rozmiar w zależności od potrzeb
                         backgroundColor: Color(0xFF2899F3),
@@ -989,4 +1003,5 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     return displayWidgets;
   }
+
 }

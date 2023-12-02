@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
+import 'package:game_template/src/play_session/extensions.dart';
 
 import '../../app_lifecycle/translated_text.dart';
 import '../../style/palette.dart';
@@ -58,6 +60,9 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   final controller = StreamController<int>();
   String textFromRollSlotMachine = "";
   bool _isDialogShown = false;
+  ui.Image? image;
+  String itemToShow = "";
+  String category = "";
 
   @override
   void initState() {
@@ -88,10 +93,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     if (text.length > 15) {
       int spaceIndex = text.indexOf(' ', 1);
       if (spaceIndex != -1) {
-        return [
-          text.substring(0, spaceIndex),
-          text.substring(spaceIndex + 1)
-        ];
+        return [text.substring(0, spaceIndex), text.substring(spaceIndex + 1)];
       }
     }
     return [text];
@@ -167,7 +169,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         selectedFortuneItem = 0;
     }
     int randomNumber = Random().nextInt(maxNumber) + 1; //losowanie z listy slow
-    String itemToShow = "";
     if (widget.specificLists.containsKey(key) && randomNumber - 1 < widget.specificLists[key]!.length) {
       itemToShow = widget.specificLists[key]![randomNumber - 1];
     }
@@ -236,12 +237,30 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             if (Navigator.canPop(context)) {
                               // Sprawdź, czy możesz wyjść z obecnego kontekstu
                               Navigator.of(context).pop(); // Zamknij dialog
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DrawingScreen(
-                                          itemToShow: itemToShow,
-                                          category: cardType))); // Następnie przejdź do nowego ekranu
+
+                              // Następnie przejdź do nowego ekranu i oczekuj na wynik
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                builder: (context) => DrawingScreen(
+                                  itemToShow: itemToShow,
+                                  category: cardType,
+                                ),
+                              ))
+                                  .then((result) {
+                                if (result is DrawingResult) {
+                                  print('zwracam');
+                                  safeSetState(() {
+                                    // Przechowywanie obrazu w stanie, aby można było go wyświetlić
+                                    image = result.image;
+
+                                    // Wypisanie itemToShow i category w konsoli
+                                    print("Category: ${result.category}");
+
+                                    // Możesz też przechować te wartości w stanie, jeśli będą używane w widgetach
+                                    category = result.category;
+                                  });
+                                }
+                              });
                             }
                           },
                         ),
@@ -259,10 +278,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     ).then((returnedValue) {
       if (returnedValue != null) {
         setState(() {
-          //a tu trzeba zwrocic do green card'a obrazek image z klasy Drawing Screen
-          textFromRollSlotMachine = returnedValue as String;
-          widget.onRollSlotMachineResult(textFromRollSlotMachine);
-          print('Text $textFromRollSlotMachine');
+          print('maluski tescik');
         });
       }
     });
@@ -281,7 +297,27 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
             side: BorderSide(color: Palette().white, width: 13.0),
           ),
           elevation: 0.0,
-          // Tutaj dodaj odpowiednią zawartość
+          child: image != null //TO_DO tu musze wiedziec ze trzeba uruchomic timer
+              ? Column(
+                  children: [
+                    SizedBox(height: 20),
+                    letsText(context, itemToShow, 20, Colors.white),
+                    Text('category: $category', style: TextStyle(color: Colors.white)),
+                    Expanded( child:
+                    Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: CustomPaint(
+                        painter: ImagePainter(image: image!),
+                        child: SizedBox(
+                          width: image!.width.toDouble(),
+                          height: image!.height.toDouble(),
+                        ),
+                      ),
+                    ),),
+                    SizedBox(height: 20),
+                  ],
+                )
+              : Center(child: Text("No images selected")), // Tu możesz umieścić dowolny widget, gdy obraz jest null
         ),
       ),
     );
@@ -516,7 +552,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   // pantomima, slawne osoby, rymowanie, literka
   Widget buildCustomCard(CardData cardData) {
     List<String> splitWords = splitText(cardData.word);
-    EdgeInsets padding = splitWords.length > 1 ? const EdgeInsets.all(8.0) : const EdgeInsets.all(20.0); //padding do posplitowanych
+    EdgeInsets padding =
+        splitWords.length > 1 ? const EdgeInsets.all(8.0) : const EdgeInsets.all(20.0); //padding do posplitowanych
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
@@ -561,16 +598,18 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      children: splitWords.map((word) => Text(
-                                        word,
-                                        style: TextStyle(fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24),
-                                        softWrap: true,
-                                      )).toList(),
+                                      children: splitWords
+                                          .map((word) => Text(
+                                                word,
+                                                style: TextStyle(
+                                                    fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24),
+                                                softWrap: true,
+                                              ))
+                                          .toList(),
                                     ),
                                   ),
                                 ],
                               ),
-
                             ),
                           ),
                           SizedBox(height: 100),
@@ -699,5 +738,21 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         );
       },
     );
+  }
+}
+
+class ImagePainter extends CustomPainter {
+  final ui.Image image;
+
+  ImagePainter({required this.image});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    paintImage(canvas: canvas, rect: Offset.zero & size, image: image, fit: BoxFit.contain);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
