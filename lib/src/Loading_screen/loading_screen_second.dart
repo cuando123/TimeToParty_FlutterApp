@@ -1,17 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'dart:ui';
 
 import '../app_lifecycle/translated_text.dart';
 import '../play_session/main_board/play_gameboard_main.dart';
 import '../style/palette.dart';
-import 'dart:async';
 
 class LoadingScreenSecond extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  LoadingScreenSecond({required this.teamNames, required this.teamColors});
+  const LoadingScreenSecond({super.key, required this.teamNames, required this.teamColors});
 
   @override
   _LoadingScreenSecondState createState() => _LoadingScreenSecondState();
@@ -60,7 +59,7 @@ class _LoadingScreenSecondState extends State<LoadingScreenSecond> {
 class LoaderWidgetSecond extends StatelessWidget {
   final int countdown;
 
-  const LoaderWidgetSecond({Key? key, required this.countdown}) : super(key: key);
+  const LoaderWidgetSecond({super.key, required this.countdown});
 
   @override
   Widget build(BuildContext context) {

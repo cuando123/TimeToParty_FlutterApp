@@ -7,7 +7,7 @@ class GameCard extends StatelessWidget {
   final String assetPath1;
   final String assetPath2;
 
-  GameCard(this.assetPath1, this.assetPath2);
+  const GameCard(this.assetPath1, this.assetPath2, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class FlipCard extends StatefulWidget {
   final bool isFlipped;
   final bool showGlow;
 
-  FlipCard({required this.card, required this.isFlipped, this.showGlow = false});
+  const FlipCard({super.key, required this.card, required this.isFlipped, this.showGlow = false});
 
   @override
   _FlipCardState createState() => _FlipCardState();
@@ -70,8 +70,8 @@ class _FlipCardState extends State<FlipCard>
                     gradient: RadialGradient(
                       center: Alignment.center,  // Rozpoczęcie gradientu ze środka
                       radius: 0.7,  // Określa "rozciągnięcie" gradientu, 0.5 to połowa szerokości i wysokości
-                      colors: [Colors.white, Colors.transparent],
-                      stops: [0.1, 1.0],
+                      colors: const [Colors.white, Colors.transparent],
+                      stops: const [0.1, 1.0],
                     ),
                   ),
                 )

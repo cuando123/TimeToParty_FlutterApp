@@ -17,8 +17,8 @@ class Palette {
   Gradient get backgroundLoadingSessionGradient => LinearGradient(
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
-        stops: [0.0, 0.46, 1.0],
-        colors: [
+        stops: const [0.0, 0.46, 1.0],
+        colors: const [
           Color(0xff1E1E1E),
           Color(0xff24173C),
           Color(0xff674D80),
@@ -27,7 +27,7 @@ class Palette {
   Gradient get drawerGradient => LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
+        colors: const [
           Color(0xFF604779), // 0.0
           Color(0xFF2E1F46), // 0.5
           Color(0xFF1F1D23), // 1.0
@@ -49,6 +49,8 @@ class Palette {
 }
 
 class LogoWidget_notitle extends StatelessWidget {
+  const LogoWidget_notitle({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,6 +72,8 @@ class LogoWidget_notitle extends StatelessWidget {
 }
 
 class LogoWidget extends StatelessWidget {
+  const LogoWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -105,12 +109,12 @@ class CustomElevatedButton extends StatelessWidget {
   final Color disabledColor;
 
   const CustomElevatedButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
     this.style,
     this.disabledColor = Colors.grey,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +126,8 @@ class CustomElevatedButton extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: onPressed,
-      child: child,
       style: effectiveStyle,
+      child: child,
     );
   }
 }
@@ -149,7 +153,7 @@ class ImageModel {
 class CustomBackground extends StatefulWidget {
   final Widget? child;
 
-  CustomBackground({this.child});
+  const CustomBackground({super.key, this.child});
 
   @override
   _CustomBackgroundState createState() => _CustomBackgroundState();

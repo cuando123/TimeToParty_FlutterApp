@@ -25,8 +25,8 @@ class CustomCard extends StatefulWidget {
   final Map<String, List<String>> specificLists;
   final void Function(String result) onRollSlotMachineResult;
 
-  CustomCard({
-    Key? key,
+  const CustomCard({
+    super.key,
     required this.totalCards,
     required this.starsColors,
     required this.slideAnimationController,
@@ -38,7 +38,7 @@ class CustomCard extends StatefulWidget {
     required this.buildFortuneItemsList,
     required this.onRollSlotMachineResult,
     this.specificLists = const {},
-  }) : super(key: key);
+  });
 
   @override
   _CustomCardState createState() => _CustomCardState();
@@ -176,10 +176,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         bool showDelayedText = false;
         return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
+          builder: (context, setState) {
             // Rozpoczęcie opóźnienia tylko raz, w momencie budowania dialogu
             if (!showDelayedText) {
               Future.delayed(Duration(seconds: 4), () {
@@ -226,7 +226,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           ]),
                       Expanded(
                           child: showDelayedText
-                              ? Text('$itemToShow', style: TextStyle(color: Colors.black))
+                              ? Text(itemToShow, style: TextStyle(color: Colors.black))
                               : Text('Losuje...', style: TextStyle(color: Colors.black))),
                       ScaleTransition(
                         scale: _pulseAnimation,
@@ -333,7 +333,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
@@ -420,7 +420,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
+      builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(value, 0),
           child: Transform.rotate(
@@ -477,7 +477,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
+      builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(value, 0),
           child: Transform.rotate(
@@ -523,7 +523,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                     ),
                                     value: index,
                                     groupValue: selectedValue,
-                                    onChanged: (int? value) {
+                                    onChanged: (value) {
                                       setState(() {
                                         selectedValue = value!;
                                       });
@@ -557,7 +557,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
+      builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(value, 0),
           child: Transform.rotate(
@@ -589,7 +589,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               padding: padding,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                  colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
@@ -653,7 +653,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: offsetX),
       duration: Duration(milliseconds: 250),
-      builder: (BuildContext context, double value, Widget? child) {
+      builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(value, 0),
           child: Transform.rotate(
@@ -697,7 +697,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             padding: const EdgeInsets.all(20.0),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),

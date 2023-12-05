@@ -14,11 +14,11 @@ class StackedCard extends StatelessWidget {
   final List<Widget> fancyCards;
   final VoidCallback? onDialogClose;
 
-  StackedCard({required this.title, required this.fancyCards, this.onDialogClose});
+  StackedCard({super.key, required this.title, required this.fancyCards, this.onDialogClose});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.maxFinite, // Możesz dostosować szerokość do swoich potrzeb
       height: double.maxFinite, // Możesz dostosować wysokość do swoich potrzeb
       child: ListView(
@@ -55,7 +55,7 @@ class StackedCard extends StatelessWidget {
   static void showAsDialog(BuildContext context, String currentTeamName, Color currentTeamColor,
       {required VoidCallback onDialogClose}) {
     StackedCard stackedCardInstance =
-        StackedCard(title: "", fancyCards: [], onDialogClose: onDialogClose); // Przekazujemy callback tutaj
+        StackedCard(title: "", fancyCards: const [], onDialogClose: onDialogClose); // Przekazujemy callback tutaj
 
     // Przykładowe karty
     final List<Widget> exampleCards = <Widget>[
@@ -123,6 +123,8 @@ class StackedCard extends StatelessWidget {
 }
 
 class AnimatedHandArrow extends StatefulWidget {
+  const AnimatedHandArrow({super.key});
+
   @override
   _AnimatedHandArrowState createState() => _AnimatedHandArrowState();
 }
@@ -176,6 +178,8 @@ class _AnimatedHandArrowState extends State<AnimatedHandArrow> with SingleTicker
 }
 
 class AnimatedQuestionMark extends StatefulWidget {
+  const AnimatedQuestionMark({super.key});
+
   @override
   _AnimatedQuestionMarkState createState() => _AnimatedQuestionMarkState();
 }
@@ -291,7 +295,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
 }
 
 class FancyCard extends StatelessWidget {
-  const FancyCard({
+  const FancyCard({super.key, 
     required this.image,
     required this.onTap,
     required this.index,
@@ -328,7 +332,7 @@ class PulsatingSvg extends StatefulWidget {
   final String svgAsset;
   final double size;
 
-  const PulsatingSvg({Key? key, required this.svgAsset, required this.size}) : super(key: key);
+  const PulsatingSvg({super.key, required this.svgAsset, required this.size});
 
   @override
   _PulsatingSvgState createState() => _PulsatingSvgState();

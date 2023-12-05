@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:roll_slot_machine/roll_slot_controller.dart';
 
 typedef SelectedItemCallback = void Function({
-  required int currentIndex,
-  required Widget currentWidget,
+required int currentIndex,
+required Widget currentWidget,
 });
 
 class RollSlot extends StatefulWidget {

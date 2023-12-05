@@ -203,7 +203,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                     builder: (context, teamProvider, child) {
                       return Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: ResponsiveSizing.scaleHeight(context, 155),
                             child: LogoWidget_notitle(),
                           ),
@@ -221,7 +221,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                       child: child,
                       ), child:
                               CustomElevatedButton(
-                                child: Icon(Icons.add),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white, // color
                                   foregroundColor:
@@ -246,11 +245,11 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               context, numberOfTeams);
                                         });
                                       },
+                                child: Icon(Icons.add),
                               ),),
                               ResponsiveSizing.responsiveWidthGapWithCondition(
                                   context, 5, 10, 300),
                               CustomElevatedButton(
-                                child: Icon(Icons.remove),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white, // color
                                   foregroundColor:
@@ -274,6 +273,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               context, numberOfTeams);
                                         });
                                       },
+                                child: Icon(Icons.remove),
                               ),
                             ],
                           ),
@@ -305,7 +305,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                             }
                                           },
                                           decoration: InputDecoration(
-                                            hintText: '${teamProvider.teamNames[index]}',
+                                            hintText: teamProvider.teamNames[index],
                                             hintStyle: TextStyle(
                                               color: Color(0xFFA0A0A0),
                                             ),
@@ -387,7 +387,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                 child: child,
                               ), child:
                                 ElevatedButton(
-                                  child: Icon(Icons.color_lens),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white, // color
                                     foregroundColor:
@@ -409,6 +408,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                           0, numberOfTeams);
                                     });
                                   },
+                                  child: Icon(Icons.color_lens),
                                 ),),
                               ],
                             ),

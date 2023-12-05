@@ -6,8 +6,8 @@ class CustomAppBar_notitle extends StatelessWidget
   final VoidCallback? onBackButtonPressed;
   final VoidCallback? onMenuButtonPressed;
 
-  CustomAppBar_notitle(
-      {required this.title,
+  const CustomAppBar_notitle(
+      {super.key, required this.title,
       this.onBackButtonPressed,
       this.onMenuButtonPressed});
 

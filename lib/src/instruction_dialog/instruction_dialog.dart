@@ -4,6 +4,8 @@ import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 
 class InstructionDialog extends StatelessWidget {
+  const InstructionDialog({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -19,12 +21,12 @@ class InstructionDialog extends StatelessWidget {
             ),
       ),
       child: Builder(
-        builder: (BuildContext context) {
+        builder: (context) {
           return AlertDialog(
             title: Center(
                 child: translatedText(context, 'game_rules', 24, Palette().pink,
                     textAlign: TextAlign.center)),
-            content: Container(
+            content: SizedBox(
               width: double.maxFinite,
               child: Column(
                 children: [

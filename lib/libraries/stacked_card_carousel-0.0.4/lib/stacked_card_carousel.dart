@@ -166,7 +166,7 @@ class _StackedCardCarouselState extends State<StackedCardCarousel> {
 /// To allow all gestures detections to go through
 /// https://stackoverflow.com/questions/57466767/how-to-make-a-gesturedetector-capture-taps-inside-a-stack
 class ClickThroughStack extends Stack {
-  ClickThroughStack({required List<Widget> children})
+  const ClickThroughStack({required List<Widget> children})
       : super(children: children);
 
   @override

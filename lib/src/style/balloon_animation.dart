@@ -4,15 +4,15 @@ import 'dart:math';
 import '../app_lifecycle/translated_text.dart';
 
 class BalloonAnimation extends StatefulWidget {
-  BalloonAnimation({Key? key}) : super(key: key);
+  const BalloonAnimation({super.key});
 
   @override
   _BalloonAnimationState createState() => _BalloonAnimationState();
 }
 
 class _BalloonAnimationState extends State<BalloonAnimation> with TickerProviderStateMixin {
-  late List<AnimationController> _controllers = [];
-  late List<Animation<double>> _animations = [];
+  late final List<AnimationController> _controllers = [];
+  late final List<Animation<double>> _animations = [];
   late Random random = Random();
 
   // Add your balloon image paths here
@@ -53,7 +53,7 @@ class _BalloonAnimationState extends State<BalloonAnimation> with TickerProvider
           bottom: 0,
           child: AnimatedBuilder(
             animation: animation,
-            builder: (BuildContext context, Widget? child) {
+            builder: (context, child) {
               return Transform.translate(
                   offset: Offset(
                     startPos * MediaQuery.of(context).size.width + (MediaQuery.of(context).size.width / 4) * sin(animation.value * 2 * pi),

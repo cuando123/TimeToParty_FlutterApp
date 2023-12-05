@@ -48,7 +48,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         borderRadius: BorderRadius.circular(4),
                         onTap: () async {
                           await Future.delayed(Duration(milliseconds: 150));
-                          GoRouter.of(context).push('/card_advertisement');
+                          await GoRouter.of(context).push('/card_advertisement');
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -268,12 +268,12 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
 
   Future<void> _shareContent(BuildContext context) async {
     String message =
-        await getTranslatedString(context, 'look_what_we_played_notification');
+        getTranslatedString(context, 'look_what_we_played_notification');
     String subject =
-        await getTranslatedString(context, 'lets_play_time_to_party');
+        getTranslatedString(context, 'lets_play_time_to_party');
 
-    Share.share(
-        '${await message}https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
+    await Share.share(
+        '${message}https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
         subject: subject);
   }
 
@@ -324,7 +324,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
-                    final String url =
+                    const String url =
                         'https://play.google.com/store/apps/details?id=<YOUR_APP_PACKAGE_NAME>';
                     if (await canLaunchUrlString(url)) {
                       await launchUrlString(url);
@@ -425,9 +425,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
 class GlobalLoading {
   Future<void> privacy_policy_function(BuildContext context) async {
     Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
-    final url =
+    const url =
         'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
-    final fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
+    const fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
 
     try {
       final file = await downloadAndCachePdf(url, fileName);
@@ -443,9 +443,9 @@ class GlobalLoading {
   Future<void> eula_function(BuildContext context) async {
     Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
 
-    final url =
+    const url =
         'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
-    final fileName = 'EndUserLicenseAgreement_EULA.pdf';
+    const fileName = 'EndUserLicenseAgreement_EULA.pdf';
     try {
       final file = await downloadAndCachePdf(url, fileName);
       _openPdfViewer(context, file, "Umowa licencyjna EULA");
@@ -537,8 +537,8 @@ class GlobalLoading {
             onPageError: (page, error) {
               print('$page: ${error.toString()}');
             },
-            onViewCreated: (PDFViewController controller) {},
-            onPageChanged: (int? page, int? total) {},
+            onViewCreated: (controller) {},
+            onPageChanged: (page, total) {},
           ),
         ),
       ),
@@ -547,6 +547,8 @@ class GlobalLoading {
 }
 
 class GlobalLoadingIndicator extends StatelessWidget {
+  const GlobalLoadingIndicator({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LoadingStatus>(

@@ -9,7 +9,7 @@ import '../app_lifecycle/translated_text.dart';
 import '../app_lifecycle/TranslationProvider.dart';
 
 class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({Key? key, required this.scaffoldKey}) : super(key: key);
+  const LanguageSelector({super.key, required this.scaffoldKey});
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
@@ -45,7 +45,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
           10.0, 10.0, 10.0, 2.0),
     child: Column(
           children: [
-            Container(
+            SizedBox(
               height: ResponsiveSizing.scaleHeight(context, 155),
               child: LogoWidget_notitle(),
             ),
@@ -77,13 +77,13 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     );
   }
 
-  Widget languageButton(BuildContext context, String language, String path, String lang_prefix) {
+  Widget languageButton(BuildContext context, String language, String path, String langPrefix) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
         onPressed: () async {
-          Provider.of<TranslationProvider>(context, listen: false)
-              .changeLanguage(lang_prefix);
+          await Provider.of<TranslationProvider>(context, listen: false)
+              .changeLanguage(langPrefix);
           Navigator.of(context).popUntil((route) => route.isFirst);
           scaffoldKey.currentState?.openEndDrawer();
           showLanguageChangedSnackbar(context);

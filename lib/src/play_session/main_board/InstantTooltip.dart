@@ -4,7 +4,7 @@ class InstantTooltip extends StatefulWidget {
   final Widget child;
   final String message;
 
-  InstantTooltip({required this.child, required this.message});
+  const InstantTooltip({super.key, required this.child, required this.message});
 
   @override
   _InstantTooltipState createState() => _InstantTooltipState();
@@ -74,7 +74,7 @@ class _InstantTooltipState extends State<InstantTooltip> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
                   ],
                 ),

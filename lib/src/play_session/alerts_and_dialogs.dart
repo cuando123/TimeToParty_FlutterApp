@@ -20,7 +20,7 @@ class AnimatedAlertDialog {
           .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+      pageBuilder: (buildContext, animation, secondaryAnimation) {
         return Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
@@ -32,7 +32,7 @@ class AnimatedAlertDialog {
         );
       },
       transitionBuilder:
-          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           // Jeśli dialog się pojawia
           return ScaleTransition(
@@ -58,7 +58,7 @@ class AnimatedAlertDialog {
   static void showExitGameDialog(BuildContext context, bool hasShownAlertDialog, String response) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -126,7 +126,7 @@ class AnimatedAlertDialog {
           .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+      pageBuilder: (buildContext, animation, secondaryAnimation) {
         return Center(
             child: AlertDialog(
                 backgroundColor: Palette().white,
@@ -136,7 +136,7 @@ class AnimatedAlertDialog {
                 title: translatedText(context, 'cannot_skip_card' , 20, Palette().pink,textAlign: TextAlign.center)));
       },
       transitionBuilder:
-          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          (context, animation, secondaryAnimation, child) {
         // Jeśli dialog się pojawia
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
@@ -176,7 +176,7 @@ class AnimatedAlertDialog {
     // Wyświetlenie alert dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
           title: Text('Zdobywasz $points punktów!'),
@@ -212,7 +212,7 @@ class AnimatedAlertDialog {
           .modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+      pageBuilder: (buildContext, animation, secondaryAnimation) {
         return Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
@@ -240,7 +240,7 @@ class AnimatedAlertDialog {
         );
       },
       transitionBuilder:
-          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -298,7 +298,7 @@ class AnimatedAlertDialog {
 
     return showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return AlertDialog(
             backgroundColor: Palette().white,
             shape: RoundedRectangleBorder(

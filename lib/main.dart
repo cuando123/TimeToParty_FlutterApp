@@ -66,7 +66,7 @@ Future<void> main() async {
 }
 
 /// Without logging and crash reporting, this would be `void main()`.
-void guardedMain() async {
+Future<void> guardedMain() async {
 
   if (kReleaseMode) {
     // Don't log anything below warnings in production.
@@ -251,7 +251,7 @@ class MyApp extends StatelessWidget {
     Future<void>.delayed(Duration(seconds: 3)),
   ]);
 
-  MyApp({
+  MyApp({super.key, 
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,

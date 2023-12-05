@@ -5,7 +5,7 @@ import 'package:flutter_slot_machine/slot_machine.dart';
 class SlotMachinePage extends StatefulWidget {
   final String title;
 
-  const SlotMachinePage({Key? key, required this.title}) : super(key: key);
+  const SlotMachinePage({super.key, required this.title});
 
   @override
   _SlotMachinePageState createState() => _SlotMachinePageState();

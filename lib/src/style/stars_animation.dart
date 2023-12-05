@@ -1,19 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/translated_text.dart';
 
 class StarsAnimation extends StatefulWidget {
-  StarsAnimation({Key? key}) : super(key: key);
+  const StarsAnimation({super.key});
 
   @override
   _StarsAnimationState createState() => _StarsAnimationState();
 }
 
 class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStateMixin {
-  late List<AnimationController> _controllers = [];
-  late List<Animation<double>> _animations = [];
+  late final List<AnimationController> _controllers = [];
+  late final List<Animation<double>> _animations = [];
   late Random random = Random();
 
   // Add your Stars image paths here
@@ -54,7 +55,7 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
           bottom: 0,
           child: AnimatedBuilder(
             animation: animation,
-            builder: (BuildContext context, Widget? child) {
+            builder: (context, child) {
               return Transform.translate(
                   offset: Offset(
                     startPos * MediaQuery.of(context).size.width + (MediaQuery.of(context).size.width / 4) * sin(animation.value * 2 * pi),

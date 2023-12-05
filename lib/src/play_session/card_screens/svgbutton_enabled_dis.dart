@@ -7,7 +7,7 @@ class SvgButton extends StatefulWidget {
   final VoidCallback onPressed;
   final String assetName; // Ścieżka do pliku SVG
 
-  SvgButton({
+  const SvgButton({super.key, 
     required this.onPressed,
     required this.assetName,
   });

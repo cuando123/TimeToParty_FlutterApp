@@ -14,7 +14,7 @@ import '../style/responsive_screen.dart';
 import 'settings.dart';
 
 class SettingsScreen extends StatefulWidget  {
-  const SettingsScreen({Key? key, required this.scaffoldKey}) : super(key: key);
+  const SettingsScreen({super.key, required this.scaffoldKey});
   final GlobalKey<ScaffoldState> scaffoldKey;
 
 
@@ -138,8 +138,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ElevatedButton(
               onPressed: () async {
                 if (settingsController.notificationsEnabled.value) {
-                  String translatedTitle = await getTranslatedString(context, 'weekly_notification_up');
-                  String translatedBody = await getTranslatedString(context, 'weekly_notification_down');
+                  String translatedTitle = getTranslatedString(context, 'weekly_notification_up');
+                  String translatedBody = getTranslatedString(context, 'weekly_notification_down');
                   tz.initializeTimeZones();
                   NotificationsManager notificationsManager =
                   NotificationsManager();
@@ -173,7 +173,7 @@ class TogglesControl extends StatelessWidget {
   final IconData iconOn;
   final IconData iconOff;
 
-  TogglesControl({
+  const TogglesControl({super.key, 
     required this.valueNotifier,
     required this.onToggle,
     required this.title,
@@ -259,8 +259,8 @@ class TogglesControl extends StatelessWidget {
                             ),
                           ),
                     transitionBuilder: (child, animation) => ScaleTransition(
-                      child: child,
                       scale: animation,
+                      child: child,
                     ),
                   ),
                 ),

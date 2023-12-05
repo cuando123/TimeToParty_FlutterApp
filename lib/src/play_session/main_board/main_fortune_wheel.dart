@@ -19,7 +19,7 @@ class CircleClipper extends CustomClipper<Path> {
 class MyFortuneWheel extends StatefulWidget {
   final StreamController<int> selected;
 
-  MyFortuneWheel({required this.selected});
+  const MyFortuneWheel({super.key, required this.selected});
 
   @override
   _MyFortuneWheelState createState() => _MyFortuneWheelState();
@@ -47,7 +47,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
     _phaseTimer?.cancel();
     var phaseDuration = Duration(seconds: 5); // Czas trwania dla ruchu do przodu i do tyłu
     _controller.forward(from: 0);
-    _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (Timer t) {
+    _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (t) {
       _updateAnimation();
     });
 

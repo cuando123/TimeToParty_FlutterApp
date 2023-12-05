@@ -2,10 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 import '../../app_lifecycle/translated_text.dart';
-import '../../settings/settings.dart';
 import '../../style/palette.dart';
 
 class PlayGameboard extends StatefulWidget {
@@ -74,7 +71,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             ],
           ),
         ),
-        body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        body: LayoutBuilder(builder: (context, constraints) {
           double screenWidth = constraints.maxWidth;
           double screenHeight = constraints.maxHeight;
           double percentageScreen = ((screenHeight - screenWidth) / screenHeight) * 100;
@@ -114,7 +111,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                           ResponsiveSizing.responsiveHeightGap(context, 10),
                           Expanded(
                             child: LayoutBuilder(
-                              builder: (BuildContext context, BoxConstraints constraints) {
+                              builder: (context, constraints) {
                                 return SvgPicture.asset(
                                   'assets/time_to_party_assets/card_arrows.svg',
                                   width: constraints.maxWidth,
@@ -401,7 +398,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
             'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
           ];
           return flagAssets.where((flag) {
-            String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(4);
+            String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(4)}';
             Color flagColor = Color(int.parse(flagColorHex, radix: 16));
             if (color.value == flagColor.value) {
               return true;
@@ -571,6 +568,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
 
 
 class CardAnimation extends StatefulWidget {
+  const CardAnimation({super.key});
+
 
   @override
   _CardAnimationState createState() => _CardAnimationState();

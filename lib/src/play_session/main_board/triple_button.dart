@@ -7,7 +7,7 @@ class TripleButton extends StatelessWidget {
   final AnimationController _controller;
   final VoidCallback showExitGameDialogCallback;
 
-  TripleButton(this._controller, this.showExitGameDialogCallback);
+  const TripleButton(this._controller, this.showExitGameDialogCallback, {super.key});
 
   @override
   Widget build(BuildContext context) {

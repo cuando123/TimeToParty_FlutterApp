@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
 class PhysicalChallengeCard extends StatefulWidget {
+  const PhysicalChallengeCard({super.key});
+
   @override
   _PhysicalChallengeCardState createState() => _PhysicalChallengeCardState();
 }

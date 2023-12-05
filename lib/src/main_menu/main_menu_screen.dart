@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
@@ -10,8 +11,6 @@ import '../drawer/drawer.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translated_text.dart';
-import '../style/stars_animation.dart';
 
 class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});

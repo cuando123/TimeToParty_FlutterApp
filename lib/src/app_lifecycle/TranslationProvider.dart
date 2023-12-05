@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
-import 'translation_database.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import 'translation_database.dart';
 
 class TranslationProvider extends ChangeNotifier {
   String _currentLanguage;

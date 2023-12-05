@@ -45,7 +45,7 @@ class _MySlideTransition extends StatelessWidget {
         begin: const Offset(1, 0), // You can adjust these as needed
         end: Offset.zero,
       ).animate(animation),
-      child: this.child,
+      child: child,
     );
   }
 }

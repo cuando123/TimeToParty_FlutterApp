@@ -92,7 +92,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     super.build(context);
     return WillPopScope(
       onWillPop: () async {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
         return false; // return false to prevent the pop operation
       },
@@ -117,7 +117,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                       child: Center(
                         child: Transform.scale(
                           scale: scale,
-                          child: Container(
+                          child: SizedBox(
                             width: screenWidth * scale,
                             height: screenWidth * scale,
                             child: Padding(

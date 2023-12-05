@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'dart:ui';
 
 import '../app_lifecycle/translated_text.dart';
 import '../play_session/main_board/play_gameboard_main.dart';
@@ -11,7 +9,7 @@ class LoadingScreen extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  LoadingScreen({required this.teamNames, required this.teamColors});
+  const LoadingScreen({super.key, required this.teamNames, required this.teamColors});
 
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
@@ -42,7 +40,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 }
 
 class LoaderWidget extends StatelessWidget {
-  const LoaderWidget({Key? key}) : super(key: key);
+  const LoaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

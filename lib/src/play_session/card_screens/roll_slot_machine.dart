@@ -7,7 +7,7 @@ import '../custom_style_buttons.dart';
 
 class RollSlotMachine extends StatefulWidget {
 
-  RollSlotMachine({Key? key}) : super(key: key);
+  const RollSlotMachine({super.key});
 
   @override
   _RollSlotMachineState createState() => _RollSlotMachineState();
@@ -200,9 +200,9 @@ class RollSlotWidget extends StatelessWidget {
 
 class BuildItem extends StatelessWidget {
   const BuildItem({
-    Key? key,
+    super.key,
     required this.emoji,
-  }) : super(key: key);
+  });
 
   final String emoji;
 

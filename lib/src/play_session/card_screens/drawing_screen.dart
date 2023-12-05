@@ -10,7 +10,7 @@ class DrawingScreen extends StatefulWidget {
   final String itemToShow;
   final String category;
 
-  DrawingScreen({Key? key, required this.itemToShow, required this.category}) : super(key: key);
+  const DrawingScreen({super.key, required this.itemToShow, required this.category});
 
   @override
   _DrawingScreenState createState() => _DrawingScreenState();

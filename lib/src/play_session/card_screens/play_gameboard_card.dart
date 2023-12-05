@@ -19,7 +19,7 @@ class PlayGameboardCard extends StatefulWidget {
   final List<Color> teamColors;
   final List<String> currentField;
 
-  PlayGameboardCard({required this.teamNames, required this.teamColors, required this.currentField});
+  const PlayGameboardCard({super.key, required this.teamNames, required this.teamColors, required this.currentField});
 
   @override
   _PlayGameboardCardState createState() => _PlayGameboardCardState();
@@ -472,7 +472,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 //icijalizuj karty: jesli taboo -> generuj co kliknięcie kartę i numer
   // jeśli inna od taboo -> generuj karty na podstawie slow z pobranej listy
-  void _initializeCards() async {
+  Future<void> _initializeCards() async {
     if (widget.currentField[0] == 'field_taboo') {
       isTabooCard = true;
       _generateCardTypeAndNumber(); // Dla kart taboo
@@ -871,7 +871,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     _opacityController.dispose();
     _timeUpAnimationController.dispose();
     _animationController.dispose();
@@ -890,7 +890,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
     ];
     for (String flag in flagAssets) {
-      String flagColorHex = 'FF' + flag.split('/').last.split('.').first.substring(5); //zmiana z 4 na 5
+      String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
       Color flagColor = Color(int.parse(flagColorHex, radix: 16));
       if (color.value == flagColor.value) {
         return flag;
@@ -972,7 +972,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             fontSize: 30.0,
             fontWeight: FontWeight.bold,
             color: Colors.white,
-            shadows: [
+            shadows: const [
               Shadow(
                 offset: Offset(1.0, 4.0),
                 blurRadius: 15.0,

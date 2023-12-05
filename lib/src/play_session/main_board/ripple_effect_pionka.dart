@@ -8,7 +8,7 @@ class PionekWithRipple extends StatelessWidget {
   double screenWidth;
 
   PionekWithRipple(
-      {required this.assetPath,
+      {super.key, required this.assetPath,
         required this.animation,
         required this.screenWidth});
 
@@ -34,7 +34,7 @@ class PionekWithRipple extends StatelessWidget {
 class RippleEffect extends StatelessWidget {
   final Animation<double> animation;
 
-  RippleEffect({required this.animation});
+  const RippleEffect({super.key, required this.animation});
 
   @override
   Widget build(BuildContext context) {

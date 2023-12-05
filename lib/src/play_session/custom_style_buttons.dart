@@ -8,7 +8,7 @@ class CustomStyledButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  CustomStyledButton({required this.icon, required this.text, required this.onPressed});
+  const CustomStyledButton({super.key, required this.icon, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

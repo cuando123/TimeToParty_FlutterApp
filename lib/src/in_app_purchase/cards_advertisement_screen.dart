@@ -252,7 +252,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   void showDialogMoreRandomEvents(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -306,7 +306,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   void showDialogLongerGameplay(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
