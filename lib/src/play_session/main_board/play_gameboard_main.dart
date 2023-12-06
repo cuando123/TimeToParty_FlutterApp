@@ -86,6 +86,14 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       }
     });
   }
+  void onCardSelected(String selectedCardIndex) {
+    // aktualizacja stanu na podstawie wybranej karty i przekazanie
+    setState(() {
+      this.selectedCardIndex = selectedCardIndex;
+      Navigator.of(context).pop();
+      navigateWithDelay(context, getCurrentTeamName(), widget.teamColors[currentTeamIndex]);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +298,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                       });
                       // Tutaj możesz również wywołać navigateWithDelay, jeśli to konieczne
                     },
+                    onCardSelected: onCardSelected,
                     selectedCardIndex: selectedCardIndex,
                     parentContext: context,
                     currentTeamName: getCurrentTeamName(),
@@ -592,6 +601,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
     safeSetState(() {
       showCardAnimation = true;
+      showAnimatedCard = true;
     });
     // navigateWithDelay(context);
   }

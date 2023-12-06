@@ -99,6 +99,7 @@ class StackedCard extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 50),
                 PulsatingSvg(
@@ -295,7 +296,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
 }
 
 class FancyCard extends StatelessWidget {
-  const FancyCard({super.key, 
+  const FancyCard({super.key,
     required this.image,
     required this.onTap,
     required this.index,

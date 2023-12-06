@@ -27,6 +27,7 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.autoPlayInterval = const Duration(milliseconds: 3000),
     this.autoPlay = true,
     this.userCanDrag = true,
+    this.onImageTaps,
     this.currentItemShadow = const [
       BoxShadow(offset: Offset(1, 1), color: Colors.grey, blurRadius: 10),
       BoxShadow(offset: Offset(-1, -1), color: Colors.grey, blurRadius: 10),
@@ -48,6 +49,7 @@ class FanCarouselImageSlider extends StatefulWidget {
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
 
+  final List<Function(int)>? onImageTaps;
   /// List of images to be shown in the slider; Accepts two types of link.
   /// For example: `https://...jpg` for online images and `assets/...` for local images.
   final List<String> imagesLink;
@@ -217,7 +219,7 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
               if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
               expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
               return AnimatedContainer(
-                  margin: const EdgeInsets.only(top: 15),
+                 // margin: const EdgeInsets.only(top: 15),
                   duration: widget.sliderDuration,
                   width: (!isExpand)
                       ? 100
@@ -294,8 +296,8 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                         currentItemShadow: widget.currentItemShadow,
                         sideItemsShadow: widget.sideItemsShadow,
                         onSlideClick: () {
-                          if (widget.isClickable && index == actualIndex) {
-                            _isExpandSlide.value = true;
+                          if (widget.onImageTaps != null && widget.onImageTaps!.length > index) {
+                            widget.onImageTaps![index](index);
                           }
                         },
                       );

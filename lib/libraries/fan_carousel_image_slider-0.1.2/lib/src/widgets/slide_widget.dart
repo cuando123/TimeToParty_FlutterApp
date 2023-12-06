@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SlideWidget extends StatelessWidget {
   const SlideWidget({
@@ -20,7 +21,6 @@ class SlideWidget extends StatelessWidget {
   });
 
   final Function onSlideClick;
-
   final int index;
   final int actualIndex;
   final Duration sliderDuration;
@@ -35,6 +35,8 @@ class SlideWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageWidget = _buildImageWidget(imageLink, imageFitMode, isAssets);
+
     return AnimatedRotation(
       turns: _getSlideTurn(index, actualIndex),
       duration: sliderDuration,
@@ -42,7 +44,7 @@ class SlideWidget extends StatelessWidget {
         duration: sliderDuration,
         margin: (index == actualIndex)
             ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
-            : const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+            : const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(imageRadius),
           boxShadow: _getSlideBoxShadow(index, actualIndex),
@@ -52,22 +54,33 @@ class SlideWidget extends StatelessWidget {
           opacity: (index == actualIndex) ? 1 : sidesOpacity,
           child: InkWell(
             onTap: () => onSlideClick(),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(imageRadius),
-                image: DecorationImage(
-                  image: (!isAssets)
-                      ? NetworkImage(imageLink)
-                      : AssetImage(imageLink) as ImageProvider,
-                  fit: imageFitMode,
-                ),
-              ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(imageRadius),
+              child: imageWidget, // Tutaj wstawiamy wybrany widget obrazu
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildImageWidget(String imagePath, BoxFit fitMode, bool isAssets) {
+    // Sprawdź, czy ścieżka kończy się na '.svg'
+    bool isSvg = imagePath.toLowerCase().endsWith('.svg');
+
+    if (isSvg) {
+      // Użyj SvgPicture dla plików SVG
+      return isAssets
+          ? SvgPicture.asset(imagePath, fit: fitMode)
+          : SvgPicture.network(imagePath, fit: fitMode);
+    } else {
+      // Użyj standardowego widgetu obrazu dla innych formatów
+      return isAssets
+          ? Image.asset(imagePath, fit: fitMode)
+          : Image.network(imagePath, fit: fitMode);
+    }
+  }
+
 
   List<BoxShadow>? _getSlideBoxShadow(index, actualIndex) =>
       (index == actualIndex) ? currentItemShadow : sideItemsShadow;
