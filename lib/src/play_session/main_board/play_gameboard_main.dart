@@ -261,7 +261,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_arrows';
+                                                    selectedCardIndex = 'field_star_pink';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },
@@ -375,7 +375,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     'field_taboo': 'Opisuj, omijając zakazane słowa!',
     'field_start': 'Start i meta twojej zabawy!',
     'field_star_blue_dark': 'Zadania fizyczne? Zmierz się z czasem!',
-    'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
+    'field_star_pink': 'Baw się językiem! Twórz antonimy!.',
     'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
     'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
   };

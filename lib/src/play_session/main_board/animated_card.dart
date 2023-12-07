@@ -157,7 +157,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     'field_microphone': 'Odgadnij sławne osobowości!',
     'field_taboo': 'Taboo - Opisuj, omijając zakazane słowa!',
     'field_star_blue_dark': 'Zadanie fizyczne? Zmierz się z czasem!',
-    'field_star_pink': 'Baw się językiem! Twórz antonimy i synonimy.',
+    'field_star_pink': 'Baw się językiem! Twórz antonimy!',
     'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
     'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
   };

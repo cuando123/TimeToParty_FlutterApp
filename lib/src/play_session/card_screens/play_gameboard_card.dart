@@ -282,7 +282,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         skipCount = 1;
         break;
       case 'field_star_pink':
-        cardNumbers = 2;
+        cardNumbers = 5;
         skipCount = 1;
         break;
       case 'field_star_green':

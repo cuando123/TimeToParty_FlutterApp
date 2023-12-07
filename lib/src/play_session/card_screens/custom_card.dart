@@ -113,8 +113,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           }
         });
         return buildBlueDarkCard();
-      case 'field_star_pink':
-        return buildPinkCard(); // antonimy synonimy
       case 'field_star_green':
         Future.microtask(() {
           if (!_isDialogShown) {
@@ -321,11 +319,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         ),
       ),
     );
-  }
-
-  Widget buildPinkCard() {
-    // Implementacja dla Pink Card
-    return buildGeneralCard();
   }
 
   //blue dark card start
@@ -549,7 +542,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     );
   }
 
-  // pantomima, slawne osoby, rymowanie, literka
+  // pantomima, slawne osoby, rymowanie, literka - pobieraja z 1 rekordu
   Widget buildCustomCard(CardData cardData) {
     List<String> splitWords = splitText(cardData.word);
     EdgeInsets padding =
