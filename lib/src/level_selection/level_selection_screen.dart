@@ -4,6 +4,8 @@ import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/translated_text.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
@@ -178,6 +180,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
             if (!FocusScope.of(context).hasPrimaryFocus) {
               FocusScope.of(context).requestFocus(FocusNode());
             }
+            final audioController = context.read<AudioController>();
+            audioController.playSfx(SfxType.button_back_exit);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -190,10 +194,14 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                 title: translatedText(
                     context, 'enter_team_names', 14, Palette().white),
                 onMenuButtonPressed: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.button_back_exit);
                   scaffoldKey.currentState?.openDrawer();
                 },
                 onBackButtonPressed: () {
                   Navigator.pop(context);
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.button_back_exit);
                 },
               ),
               body: SafeArea(
@@ -244,6 +252,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                           teamProvider.updateTeams(
                                               context, numberOfTeams);
                                         });
+                                        final audioController = context.read<AudioController>();
+                                        audioController.playSfx(SfxType.button_back_exit);
                                       },
                                 child: Icon(Icons.add),
                               ),),
@@ -272,6 +282,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                           teamProvider.updateTeams(
                                               context, numberOfTeams);
                                         });
+                                        final audioController = context.read<AudioController>();
+                                        audioController.playSfx(SfxType.button_back_exit);
                                       },
                                 child: Icon(Icons.remove),
                               ),
@@ -300,6 +312,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                             fontWeight: FontWeight.bold,
                                           ),
                                           onTap: () {
+                                            final audioController = context.read<AudioController>();
+                                            audioController.playSfx(SfxType.button_back_exit);
                                             if (!teamProvider.hasUserInput[index]) {
                                               teamProvider.updateTeamName(index, '');
                                             }
@@ -363,6 +377,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                   icon:
                                       Icon(Icons.play_arrow_rounded, size: 32),
                                   onPressed: () {
+                                    final audioController = context.read<AudioController>();
+                                    audioController.playSfx(SfxType.button_accept);
                                     _toggleCelebration();
                                     Navigator.push(
                                       context,
@@ -401,6 +417,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                             0.05),
                                   ),
                                   onPressed: () {
+                                    final audioController = context.read<AudioController>();
+                                    audioController.playSfx(SfxType.button_back_exit);
                                     setState(() {
                                       List<Color> shuffledColors =
                                           List.from(availableColors)..shuffle();

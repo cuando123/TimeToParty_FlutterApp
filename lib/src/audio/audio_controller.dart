@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'dart:collection';
 import 'dart:math';
 
@@ -13,14 +9,11 @@ import '../settings/settings.dart';
 import 'songs.dart';
 import 'sounds.dart';
 
-/// Allows playing music and sound. A facade to `package:audioplayers`.
 class AudioController {
   static final _log = Logger('AudioController');
 
   final AudioPlayer _musicPlayer;
 
-  /// This is a list of [AudioPlayer] instances which are rotated to play
-  /// sound effects.
   final List<AudioPlayer> _sfxPlayers;
 
   int _currentSfxPlayer = 0;
@@ -33,15 +26,6 @@ class AudioController {
 
   ValueNotifier<AppLifecycleState>? _lifecycleNotifier;
 
-  /// Creates an instance that plays music and sound.
-  ///
-  /// Use [polyphony] to configure the number of sound effects (SFX) that can
-  /// play at the same time. A [polyphony] of `1` will always only play one
-  /// sound (a new sound will stop the previous one). See discussion
-  /// of [_sfxPlayers] to learn why this is the case.
-  ///
-  /// Background music does not count into the [polyphony] limit. Music will
-  /// never be overridden by sound effects because that would be silly.
   AudioController({int polyphony = 2})
       : assert(polyphony >= 1),
         _musicPlayer = AudioPlayer(playerId: 'musicPlayer'),
@@ -52,9 +36,6 @@ class AudioController {
     _musicPlayer.onPlayerComplete.listen(_changeSong);
   }
 
-  /// Enables the [AudioController] to listen to [AppLifecycleState] events,
-  /// and therefore do things like stopping playback when the game
-  /// goes into the background.
   void attachLifecycleNotifier(
       ValueNotifier<AppLifecycleState> lifecycleNotifier) {
     _lifecycleNotifier?.removeListener(_handleAppLifecycle);
@@ -63,17 +44,12 @@ class AudioController {
     _lifecycleNotifier = lifecycleNotifier;
   }
 
-  /// Enables the [AudioController] to track changes to settings.
-  /// Namely, when any of [SettingsController.muted],
-  /// [SettingsController.musicOn] or [SettingsController.soundsOn] changes,
-  /// the audio controller will act accordingly.
   void attachSettings(SettingsController settingsController) {
     if (_settings == settingsController) {
       // Already attached to this instance. Nothing to do.
       return;
     }
 
-    // Remove handlers from the old settings controller if present
     final oldSettings = _settings;
     if (oldSettings != null) {
       oldSettings.muted.removeListener(_mutedHandler);
@@ -104,38 +80,24 @@ class AudioController {
 
   /// Preloads all sound effects.
   Future<void> initialize() async {
-    _log.info('Preloading sound effects');
-    // This assumes there is only a limited number of sound effects in the game.
-    // If there are hundreds of long sound effect files, it's better
-    // to be more selective when preloading.
     await AudioCache.instance.loadAll(SfxType.values
         .expand(soundTypeToFilename)
         .map((path) => 'sfx/$path')
         .toList());
   }
 
-  /// Plays a single sound effect, defined by [type].
-  ///
-  /// The controller will ignore this call when the attached settings'
-  /// [SettingsController.muted] is `true` or if its
-  /// [SettingsController.soundsOn] is `false`.
   void playSfx(SfxType type) {
     final muted = _settings?.muted.value ?? false;
     if (!muted) {
-      _log.info(() => 'Ignoring playing sound ($type) because audio is muted.');
       return;
     }
     final soundsOn = _settings?.soundsOn.value ?? false;
     if (!soundsOn) {
-      _log.info(() =>
-          'Ignoring playing sound ($type) because sounds are turned off.');
       return;
     }
 
-    _log.info(() => 'Playing sound: $type');
     final options = soundTypeToFilename(type);
     final filename = options[_random.nextInt(options.length)];
-    _log.info(() => '- Chosen filename: $filename');
 
     final currentPlayer = _sfxPlayers[_currentSfxPlayer];
     currentPlayer.play(AssetSource('sfx/$filename'),
@@ -144,10 +106,7 @@ class AudioController {
   }
 
   void _changeSong(void _) {
-    _log.info('Last song finished playing.');
-    // Put the song that just finished playing to the end of the playlist.
     _playlist.addLast(_playlist.removeFirst());
-    // Play the next song.
     _playFirstSongInPlaylist();
   }
 
@@ -202,10 +161,8 @@ class AudioController {
   }
 
   Future<void> _resumeMusic() async {
-    _log.info('Resuming music');
     switch (_musicPlayer.state) {
       case PlayerState.paused:
-        _log.info('Calling _musicPlayer.resume()');
         try {
           await _musicPlayer.resume();
         } catch (e) {
@@ -215,19 +172,11 @@ class AudioController {
         }
         break;
       case PlayerState.stopped:
-        _log.info("resumeMusic() called when music is stopped. "
-            "This probably means we haven't yet started the music. "
-            "For example, the game was started with sound off.");
         await _playFirstSongInPlaylist();
         break;
       case PlayerState.playing:
-        _log.warning('resumeMusic() called when music is playing. '
-            'Nothing to do.');
         break;
       case PlayerState.completed:
-        _log.warning('resumeMusic() called when music is completed. '
-            "Music should never be 'completed' as it's either not playing "
-            "or looping forever.");
         await _playFirstSongInPlaylist();
         break;
     }
@@ -242,7 +191,6 @@ class AudioController {
   }
 
   void _startMusic() {
-    _log.info('starting music');
     _playFirstSongInPlaylist();
   }
 
@@ -256,7 +204,6 @@ class AudioController {
   }
 
   void _stopMusic() {
-    _log.info('Stopping music');
     if (_musicPlayer.state == PlayerState.playing) {
       _musicPlayer.pause();
     }

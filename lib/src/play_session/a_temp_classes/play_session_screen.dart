@@ -156,7 +156,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     });
 
     final audioController = context.read<AudioController>();
-    audioController.playSfx(SfxType.congrats);
+    audioController.playSfx(SfxType.aplauz);
 
     final gamesServicesController = context.read<GamesServicesController?>();
     if (gamesServicesController != null) {

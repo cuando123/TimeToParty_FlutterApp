@@ -1,71 +1,106 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 List<String> soundTypeToFilename(SfxType type) {
   switch (type) {
-    case SfxType.huhsh:
+    case SfxType.animation_card_sound:
       return const [
-        'hash1.mp3',
-        'hash2.mp3',
-        'hash3.mp3',
+        'animation_card_sound.mp3',
+        //'hash2.mp3',
+        //'hash3.mp3', TO_DO mozna uzywac wiecej soundow jednoczesnie
       ];
-    case SfxType.wssh:
+    case SfxType.aplauz:
       return const [
-        'wssh1.mp3',
-        'wssh2.mp3',
-        'dsht1.mp3',
-        'ws1.mp3',
-        'spsh1.mp3',
-        'hh1.mp3',
-        'hh2.mp3',
-        'kss1.mp3',
+        'aplauz.mp3',
       ];
-    case SfxType.buttonTap:
+    case SfxType.booing_sound:
       return const [
-        'k1.mp3',
-        'k2.mp3',
-        'p1.mp3',
-        'p2.mp3',
+        'booing_sound.mp3',
       ];
-    case SfxType.congrats:
+    case SfxType.button_accept:
       return const [
-        'yay1.mp3',
-        'wehee1.mp3',
-        'oo1.mp3',
+        'button_accept.mp3',
       ];
-    case SfxType.erase:
+    case SfxType.button_back_exit:
       return const [
-        'fwfwfwfwfw1.mp3',
-        'fwfwfwfw1.mp3',
+        'button_back_exit.mp3',
       ];
-    case SfxType.swishSwish:
+    case SfxType.button_infos:
       return const [
-        'swishswish1.mp3',
+        'button_infos.mp3',
+      ];
+    case SfxType.buzzer_sound:
+      return const [
+        'buzzer_sound.mp3',
+      ];
+    case SfxType.card_skip_sound:
+      return const [
+        'card_skip_sound.mp3',
+      ];
+    case SfxType.card_tick_sound:
+      return const [
+        'card_tick_sound.mp3',
+      ];
+    case SfxType.card_x_sound:
+      return const [
+        'card_x_sound.mp3',
+      ];
+    case SfxType.correct_answer:
+      return const [
+        'correct_answer.mp3',
+      ];
+    case SfxType.heartbeat:
+      return const [
+        'heartbeat.mp3',
+      ];
+    case SfxType.pop_card_sound:
+      return const [
+        'pop_card_sound.mp3',
+      ];
+    case SfxType.ripple_sound:
+      return const [
+        'ripple_sound.mp3',
+      ];
+    case SfxType.roulette_wheel:
+      return const [
+        'roulette_wheel.mp3',
+      ];
+    case SfxType.win_game:
+      return const [
+        'win_game.mp3',
       ];
   }
+
 }
 
-/// Allows control over loudness of different SFX types.
+//glosnosc
 double soundTypeToVolume(SfxType type) {
   switch (type) {
-    case SfxType.huhsh:
+    case SfxType.animation_card_sound:
       return 0.4;
-    case SfxType.wssh:
+    case SfxType.card_x_sound:
       return 0.2;
-    case SfxType.buttonTap:
-    case SfxType.congrats:
-    case SfxType.erase:
-    case SfxType.swishSwish:
+    case SfxType.booing_sound:
+    case SfxType.button_accept:
+    case SfxType.button_back_exit:
+    case SfxType.card_skip_sound:
       return 1.0;
+      default: return 1.0;
   }
 }
 
 enum SfxType {
-  huhsh,
-  wssh,
-  buttonTap,
-  congrats,
-  erase,
-  swishSwish,
+  animation_card_sound,
+  aplauz,
+  booing_sound,
+  button_accept,
+  button_back_exit,
+  button_infos,
+  buzzer_sound,
+  card_skip_sound,
+  card_tick_sound,
+  card_x_sound,
+  correct_answer,
+  heartbeat,
+  pop_card_sound,
+  ripple_sound,
+  roulette_wheel,
+  win_game
 }

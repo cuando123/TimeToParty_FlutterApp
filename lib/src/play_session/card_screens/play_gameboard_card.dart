@@ -6,8 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
 import 'package:game_template/src/play_session/extensions.dart';
+import 'package:provider/provider.dart';
 
 import '../../app_lifecycle/translated_text.dart';
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
@@ -144,7 +147,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli przycisk jest nieaktywny, nie rób nic
       return;
     }
-
+    final audioController = context.read<AudioController>();
+    audioController.playSfx(SfxType.card_x_sound);
     // Zablokuj przycisk
     safeSetState(() {
       _isButtonXDisabled = true;
@@ -180,7 +184,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli przycisk jest nieaktywny, nie rób nic
       return;
     }
-
+    final audioController = context.read<AudioController>();
+    audioController.playSfx(SfxType.card_tick_sound);
     // Zablokuj przycisk
     safeSetState(() {
       _isButtonXDisabled = true;
@@ -216,7 +221,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli przycisk jest nieaktywny, nie rób nic
       return;
     }
-
+    final audioController = context.read<AudioController>();
+    audioController.playSfx(SfxType.card_skip_sound);
     // Zablokuj przycisk
     safeSetState(() {
       _isButtonXDisabled = true;

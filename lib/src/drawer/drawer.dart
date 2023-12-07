@@ -12,6 +12,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../main.dart';
 import '../app_lifecycle/translated_text.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../style/palette.dart';
 
@@ -47,6 +49,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(4),
                         onTap: () async {
+                          final audioController = context.read<AudioController>();
+                          audioController.playSfx(SfxType.button_back_exit);
                           await Future.delayed(Duration(milliseconds: 150));
                           await GoRouter.of(context).push('/card_advertisement');
                         },
@@ -79,6 +83,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         Future.delayed(Duration(milliseconds: 150), () {
                           showDialog<void>(
                             context: context,
@@ -113,6 +119,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           title: translatedText(
                               context, 'privacy_policy', 14, Palette().white),
                           onTap: () async {
+                            final audioController = context.read<AudioController>();
+                            audioController.playSfx(SfxType.button_back_exit);
                             await globalLoading
                                 .privacy_policy_function(context);
                           }),
@@ -123,6 +131,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await globalLoading.eula_function(context);
                       },
                       child: ListTile(
@@ -143,6 +153,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/language_selector');
                       },
@@ -161,6 +173,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/settings');
                       },
@@ -182,6 +196,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                       },
                       child: ListTile(
@@ -199,6 +215,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                         showExitDialog(context);
                       },
@@ -217,6 +235,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                         await _shareContent(context);
                       },
@@ -235,6 +255,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
                         _showRateDialog(context);
                       },
@@ -324,6 +346,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.button_back_exit);
                     const String url =
                         'https://play.google.com/store/apps/details?id=<YOUR_APP_PACKAGE_NAME>';
                     if (await canLaunchUrlString(url)) {
@@ -339,6 +363,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
               Center(
                 child: TextButton(
                   onPressed: () {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).pop();
                   },
                   child:

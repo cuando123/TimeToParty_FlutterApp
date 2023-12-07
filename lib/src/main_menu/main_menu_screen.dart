@@ -96,6 +96,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         key: scaffoldKey,
         appBar: CustomAppBar_notitle(
           onMenuButtonPressed: () {
+            audioController.playSfx(SfxType.button_back_exit);
             scaffoldKey.currentState?.openDrawer();
           },
           title: '',
@@ -135,6 +136,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       },
                     );
                   });
+                  audioController.playSfx(SfxType.button_infos);
                 },
                 label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
@@ -158,7 +160,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                 ),
                 icon: Icon(Icons.play_arrow_rounded, size: 32),
                 onPressed: () {
-                  audioController.playSfx(SfxType.buttonTap);
+                  audioController.playSfx(SfxType.button_accept);
                   Navigator.of(context).push(_createRoute());
                 },
                 label: translatedText(context,'play_now', 20, Palette().white),
@@ -176,7 +178,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
                 icon: Icon(Icons.settings, size: ResponsiveSizing.scaleHeight(context, 32)),
-                onPressed: () => GoRouter.of(context).go('/settings'),
+                onPressed: () {
+                  audioController.playSfx(SfxType.button_back_exit);
+                  GoRouter.of(context).go('/settings');
+                },
                 label: translatedText(context,'settings', 20, Palette().menudark),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),

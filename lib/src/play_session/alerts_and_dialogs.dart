@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../app_lifecycle/translated_text.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../style/palette.dart';
 import 'card_screens/svgbutton_enabled_dis.dart';
 import 'custom_style_buttons.dart';
@@ -95,6 +98,8 @@ class AnimatedAlertDialog {
                     TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     hasShownAlertDialog = false;
                   },
@@ -104,6 +109,8 @@ class AnimatedAlertDialog {
               Center(
                 child: TextButton(
                   onPressed: () {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).pop(response);
                   },
                   child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
@@ -118,6 +125,8 @@ class AnimatedAlertDialog {
 
   // nie mozesz juz pominac karty dialog
   static void showAnimatedDialogNoCards(BuildContext context) {
+    final audioController = context.read<AudioController>();
+    audioController.playSfx(SfxType.buzzer_sound);
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -193,6 +202,8 @@ class AnimatedAlertDialog {
             TextButton(
               child: Text('OK'),
               onPressed: () {
+                final audioController = context.read<AudioController>();
+                audioController.playSfx(SfxType.button_back_exit);
                 Navigator.of(context).pop(); // Zamknięcie dialogu
               },
             ),
@@ -224,6 +235,8 @@ class AnimatedAlertDialog {
               SvgButton(
                 assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
                 onPressed: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.card_x_sound);
                   Navigator.of(context).pop();
                   onButtonXPressed();
                 },
@@ -231,6 +244,8 @@ class AnimatedAlertDialog {
               SvgButton(
                 assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
                 onPressed: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.card_tick_sound);
                   Navigator.of(context).pop();
                   onButtonTickPressed();
                 },
@@ -257,6 +272,8 @@ class AnimatedAlertDialog {
 
   static Future<void> showCardDescriptionDialog(BuildContext context, String cardIndex, AlertOrigin origin) async {
     //TO_DO jezeli ekran karty bedzie to wtedy dodamy do tego dialogu mozliwosc zgloszenia bledu poprzez stronke
+    final audioController = context.read<AudioController>();
+    audioController.playSfx(SfxType.button_infos);
     final Map<String, Widget> fieldDescriptions = {
       'field_arrows': translatedText(context, 'instruction_dialog_choice',
           16, Palette().menudark),
@@ -318,6 +335,8 @@ class AnimatedAlertDialog {
                   CustomStyledButton(
                     icon: null,
                     onPressed: () {
+                      final audioController = context.read<AudioController>();
+                      audioController.playSfx(SfxType.button_back_exit);
                       Navigator.of(context).pop();
                     },
                     text: "OK",

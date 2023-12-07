@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
@@ -22,6 +24,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
+          final audioController = context.read<AudioController>();
+          audioController.playSfx(SfxType.button_back_exit);
           GoRouter.of(context).go('/');
           return false;
         },
@@ -36,6 +40,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         appBar: CustomAppBar(
           title: translatedText(context,'select_language', 14, Palette().white),
           onMenuButtonPressed: () {
+            final audioController = context.read<AudioController>();
+            audioController.playSfx(SfxType.button_back_exit);
             scaffoldKey.currentState?.openDrawer();
           },
         ),
@@ -82,6 +88,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       padding: EdgeInsets.all(8.0),
       child: TextButton.icon(
         onPressed: () async {
+          final audioController = context.read<AudioController>();
+          audioController.playSfx(SfxType.button_back_exit);
           await Provider.of<TranslationProvider>(context, listen: false)
               .changeLanguage(langPrefix);
           Navigator.of(context).popUntil((route) => route.isFirst);

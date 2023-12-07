@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../style/palette.dart';
 import '../app_lifecycle/translated_text.dart';
 
@@ -193,6 +196,8 @@ class InstructionDialog extends StatelessWidget {
                           fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                     ),
                     onPressed: () {
+                      final audioController = context.read<AudioController>();
+                      audioController.playSfx(SfxType.button_back_exit);
                       Navigator.pop(context);
                     },
                     child: Text('OK'),

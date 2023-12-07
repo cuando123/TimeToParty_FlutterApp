@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/style/palette.dart';
+import 'package:provider/provider.dart';
 
 import '../../app_lifecycle/translated_text.dart';
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
 import '../custom_style_buttons.dart';
 
 class AnimatedCard extends StatefulWidget {
@@ -264,6 +267,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             position: _textBottomPositionAnimation,
             child: GestureDetector(
               onTap: () {
+                final audioController = context.read<AudioController>();
+                audioController.playSfx(SfxType.button_infos);
                 AnimatedAlertDialog.showCardDescriptionDialog(
                     context, widget.selectedCardIndex, AlertOrigin.otherScreen);
                 //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
@@ -315,6 +320,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   scale: _scaleAnimation.value,
                   child: GestureDetector( //gesture detector na karcie ktora sie obroci nastepnie w nią klikamy
                     onTap: () {
+                      final audioController = context.read<AudioController>();
+                      audioController.playSfx(SfxType.button_accept);
                       if (widget.selectedCardIndex == 'field_arrows') {
                         widget.onArrowCardTapped();
                         _showStackedCardCrousel(context, widget.onCardSelected);
@@ -604,6 +611,8 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        final audioController = context.read<AudioController>();
+        audioController.playSfx(SfxType.button_accept);
         _showMyDialogStacked(context);
       },
       child: AnimatedBuilder(

@@ -12,8 +12,11 @@ import 'package:game_template/src/play_session/extensions.dart';
 import 'package:game_template/src/play_session/main_board/main_fortune_wheel.dart';
 import 'package:game_template/src/play_session/main_board/ripple_effect_pionka.dart';
 import 'package:game_template/src/play_session/main_board/triple_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../app_lifecycle/translated_text.dart';
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
 import 'InstantTooltip.dart';
@@ -217,32 +220,33 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                         Expanded(
                                           child: GestureDetector(
                                             onTap: () {
-                                              if (isAnimating) {
-                                                return;
-                                              }
-                                              safeSetState(() {
-                                                _showStarsAnimation = true; //gwiazdki on
-                                              });
-                                              isAnimating = true;
-                                              final randomIndex = Fortune.randomInt(0, _wheelValues.length);
-                                              _selectedController = StreamController<int>.broadcast();
-
-                                              selected.add(randomIndex);
-                                              Future.delayed(Duration(seconds: 3), //czas krecenia kolem
-                                                  () {
-                                                if (mounted) {
-                                                  safeSetState(() {
-                                                    selectedValue = _wheelValues[randomIndex] + 1;
-                                                    _showStarsAnimation = false;
-                                                    moveFlag(
-                                                        selectedValue,
-                                                        currentFlagIndex,
-                                                        screenWidth * scale * 0.02768 -
-                                                            4 +
-                                                            screenWidth * scale * 0.1436);
-                                                  });
+                                                if (isAnimating) {
+                                                  return;
                                                 }
-                                              });
+                                                safeSetState(() {
+                                                  _showStarsAnimation = true; //gwiazdki on
+                                                });
+                                                isAnimating = true;
+                                                final randomIndex = Fortune.randomInt(0, _wheelValues.length);
+                                                _selectedController = StreamController<int>.broadcast();
+                                                final audioController = context.read<AudioController>();
+                                                audioController.playSfx(SfxType.roulette_wheel); //sound kola fortuny
+                                                selected.add(randomIndex);
+                                                Future.delayed(Duration(seconds: 3), //czas krecenia kolem
+                                                    () {
+                                                  if (mounted) {
+                                                    safeSetState(() {
+                                                      selectedValue = _wheelValues[randomIndex] + 1;
+                                                      _showStarsAnimation = false;
+                                                      moveFlag(
+                                                          selectedValue,
+                                                          currentFlagIndex,
+                                                          screenWidth * scale * 0.02768 -
+                                                              4 +
+                                                              screenWidth * scale * 0.1436);
+                                                    });
+                                                  }
+                                                });
                                             },
                                             child: MyFortuneWheel(selected: selected),
                                           ),
@@ -261,7 +265,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_star_pink';
+                                                    selectedCardIndex = 'field_arrows';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },
@@ -590,6 +594,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
       safeSetState(() {
         flagPositions[flagIndex] = newPosition;
+        final audioController = context.read<AudioController>();
+        audioController.playSfx(SfxType.ripple_sound);
       });
 
       await Future.delayed(Duration(milliseconds: 800));
@@ -602,6 +608,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     safeSetState(() {
       showCardAnimation = true;
       showAnimatedCard = true;
+      final audioController = context.read<AudioController>();
+      audioController.playSfx(SfxType.animation_card_sound);
     });
     // navigateWithDelay(context);
   }
