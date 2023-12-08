@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
@@ -13,12 +17,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioController = context.watch<AudioController>();
     return AppBar(
       backgroundColor: Colors.transparent,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFFE5E5E5)),
-        onPressed: onBackButtonPressed ?? () => GoRouter.of(context).go('/'),
-      ),
+        onPressed: onBackButtonPressed ?? () {
+    GoRouter.of(context).go('/');
+    audioController.playSfx(SfxType.button_back_exit);
+    },
+    ),
       title: title,
       centerTitle: true,
       actions: [
@@ -36,8 +44,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
     );
-
   }
-
-
 }

@@ -128,6 +128,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                 ),
                 icon: Icon(Icons.question_mark, size: ResponsiveSizing.scaleHeight(context, 32)),
                 onPressed: () {
+                  audioController.playSfx(SfxType.button_infos);
                   Future.delayed(Duration(milliseconds: 150), () {
                     showDialog<void>(
                       context: context,
@@ -136,7 +137,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       },
                     );
                   });
-                  audioController.playSfx(SfxType.button_infos);
                 },
                 label: translatedText(context,'game_rules', 20, Palette().menudark),
               ),
@@ -196,7 +196,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
                   textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                 ),
-                onPressed: () =>  SystemNavigator.pop(), //GoRouter.of(context).go('/loading'),
+                onPressed: () {
+                  audioController.playSfx(SfxType.button_back_exit);
+                  SystemNavigator.pop(); //GoRouter.of(context).go('/loading'),
+                },
                 child: translatedText(context,'exit', 20, Palette().menudark),
               ),
               SizedBox(height:ResponsiveSizing.scaleHeight(context, 80))

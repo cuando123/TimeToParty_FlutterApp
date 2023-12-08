@@ -160,6 +160,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     for (var controller in controllers) {
       controller.dispose();
     }
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -200,8 +201,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                 },
                 onBackButtonPressed: () {
                   Navigator.pop(context);
-                  final audioController = context.read<AudioController>();
-                  audioController.playSfx(SfxType.button_back_exit);
                 },
               ),
               body: SafeArea(

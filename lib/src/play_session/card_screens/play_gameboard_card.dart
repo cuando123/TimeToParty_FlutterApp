@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
@@ -186,6 +187,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     final audioController = context.read<AudioController>();
     audioController.playSfx(SfxType.card_tick_sound);
+
     // Zablokuj przycisk
     safeSetState(() {
       _isButtonXDisabled = true;
@@ -328,7 +330,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       _offsetX = -MediaQuery.of(context).size.width;
     });
     Future.delayed(Duration(milliseconds: 50), () {
-      _rotationAnimationController.forward();
+      if(mounted) {
+        _rotationAnimationController.forward();
+      }
     });
     // Czekamy aż karta opuści ekran
     Future.delayed(Duration(milliseconds: 300), () {
@@ -360,8 +364,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       // Dodajemy dodatkowe opóźnienie przed rozpoczęciem animacji wyskoku
       Future.delayed(Duration(milliseconds: 250), () {
-        _animationController.forward();
-        _slideAnimationController.forward();
+        if(mounted) {
+          _animationController.forward();
+          _slideAnimationController.forward();
+        }
       });
     });
   }
@@ -659,7 +665,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+        return false; // return false to prevent the pop operation
+      },// Zablokowanie możliwości cofnięcia
+    child:  Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: Palette().backgroundLoadingSessionGradient,
@@ -863,7 +875,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
           ],
         ),
-      ),
+      ),),
     );
   }
 

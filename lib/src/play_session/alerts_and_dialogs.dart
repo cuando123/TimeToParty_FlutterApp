@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../settings/settings.dart';
 import '../style/palette.dart';
 import 'card_screens/svgbutton_enabled_dis.dart';
 import 'custom_style_buttons.dart';
@@ -24,19 +25,23 @@ class AnimatedAlertDialog {
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
-        return Center(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child: Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center),
-          ),
+          ),),
         );
       },
       transitionBuilder:
           (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
+          final audioController = context.watch<AudioController>();
+          audioController.playSfx(SfxType.correct_answer);
           // Jeśli dialog się pojawia
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -62,6 +67,8 @@ class AnimatedAlertDialog {
     showDialog(
       context: context,
       builder: (context) {
+        final settings = context.watch<SettingsController>();
+        final settingsController = context.watch<SettingsController>();
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -101,6 +108,10 @@ class AnimatedAlertDialog {
                     final audioController = context.read<AudioController>();
                     audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).popUntil((route) => route.isFirst);
+
+                    if (!settings.musicOn.value) {
+                      settingsController.toggleMusicOn();
+                    }
                     hasShownAlertDialog = false;
                   },
                   child: Text('OK'),

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
@@ -23,8 +26,10 @@ class CardAdvertisementScreen extends StatefulWidget {
 class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   @override
   Widget build(BuildContext context) {
+    final audioController = context.watch<AudioController>();
     return WillPopScope(
       onWillPop: () async {
+        audioController.playSfx(SfxType.button_back_exit);
         GoRouter.of(context).go('/');
         return false;
       },
@@ -38,6 +43,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
           appBar: CustomAppBar(
             title: translatedText(context, 'buy_now', 14, Palette().white),
             onMenuButtonPressed: () {
+              audioController.playSfx(SfxType.button_back_exit);
               widget.scaffoldKey.currentState?.openDrawer();
             },
           ),
@@ -80,6 +86,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            audioController.playSfx(SfxType.button_back_exit);
                             showDialogMoreFun(context);
                           },
                           child: Row(
@@ -104,6 +111,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         ),
                         TextButton(
                           onPressed: () {
+                            audioController.playSfx(SfxType.button_back_exit);
                             showDialogMoreRandomEvents(context);
                           },
                           child: Row(
@@ -127,6 +135,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         ),
                         TextButton(
                           onPressed: () {
+                            audioController.playSfx(SfxType.button_back_exit);
                             showDialogLongerGameplay(context);
                           },
                           child: Row(
@@ -168,12 +177,13 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                           fontFamily: 'HindMadurai',
                           fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {audioController.playSfx(SfxType.button_back_exit);},
                     child: translatedText(
                         context, 'pay_once', 20, Palette().white),
                   ),
                   TextButton(
                     onPressed: () async {
+                      audioController.playSfx(SfxType.button_back_exit);
                       await globalLoading.privacy_policy_function(context);
                     },
                     child: translatedText(context,
@@ -181,7 +191,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         textAlign: TextAlign.center),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {audioController.playSfx(SfxType.button_back_exit);},
                     child: translatedText(
                         context, 'restore_purchases', 14, Palette().white,
                         textAlign: TextAlign.center),
@@ -200,6 +210,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     showDialog(
       context: context,
       builder: (context) {
+        final audioController = context.watch<AudioController>();
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -237,6 +248,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).pop();
                   },
                   child: Text('OK'),
@@ -253,6 +265,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     showDialog(
       context: context,
       builder: (context) {
+        final audioController = context.watch<AudioController>();
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -291,6 +304,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).pop();
                   },
                   child: Text('OK'),
@@ -307,6 +321,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     showDialog(
       context: context,
       builder: (context) {
+        final audioController = context.watch<AudioController>();
         return AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
@@ -348,6 +363,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.of(context).pop();
                   },
                   child: Text('OK'),

@@ -46,7 +46,9 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
   void _startNextPhase() {
     _phaseTimer?.cancel();
     var phaseDuration = Duration(seconds: 5); // Czas trwania dla ruchu do przodu i do tyłu
-    _controller.forward(from: 0);
+    if(mounted) {
+      _controller.forward(from: 0);
+    }
     _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (t) {
       _updateAnimation();
     });

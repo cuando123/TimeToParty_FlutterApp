@@ -47,7 +47,8 @@ class _SvgButtonState extends State<SvgButton> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _controller.forward();
+        if(mounted) {
+        _controller.forward();}
         widget.onPressed();
       },
       child: ScaleTransition(

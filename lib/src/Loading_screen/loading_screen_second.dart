@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../app_lifecycle/translated_text.dart';
 import '../play_session/main_board/play_gameboard_main.dart';
+import '../settings/settings.dart';
 import '../style/palette.dart';
 
 class LoadingScreenSecond extends StatefulWidget {
@@ -52,9 +54,17 @@ class _LoadingScreenSecondState extends State<LoadingScreenSecond> {
 
   @override
   Widget build(BuildContext context) {
-    return LoaderWidgetSecond(countdown: countdown); // Przesyłamy wartość odliczania do widgetu
+    final settings = context.watch<SettingsController>();
+    final settingsController = context.watch<SettingsController>();
+    if (settings.musicOn.value) {
+      settingsController.toggleMusicOn();
+    }
+    return WillPopScope(
+      onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+      child: LoaderWidgetSecond(countdown: countdown),
+    );
   }
-}
+  }
 
 class LoaderWidgetSecond extends StatelessWidget {
   final int countdown;

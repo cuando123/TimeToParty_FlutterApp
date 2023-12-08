@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/style/palette.dart';
@@ -52,6 +53,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   late Animation<Offset> _textBottomPositionAnimation;
   late Animation<Offset> _arrowAnimation;
   bool showCardAnimation = true;
+  bool hasShownAlertDialog = false;
 
   @override
   void initState() {
@@ -179,7 +181,13 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     if (!widget.showAnimatedCard) {
       return Container();
     } else {
-      return Stack(
+      return WillPopScope(
+          onWillPop: () async {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+        return false; // return false to prevent the pop operation
+      },// Zablokowanie możliwości cofnięcia
+    child:  Stack(
         children: [
           // Przyciemnienie
           Positioned.fill(
@@ -340,7 +348,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               ),
             ),
           ),
-        ],
+        ],),
       );
     }
   }
@@ -389,7 +397,9 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
-        return Dialog(
+        return WillPopScope(
+            onWillPop: () async => false,
+        child:   Dialog(
           backgroundColor: Colors.transparent,
          shadowColor: Colors.transparent,
           insetPadding: EdgeInsets.zero,
@@ -444,7 +454,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 AnimatedQuestionMark(),
               ],
             )
-          ),
+          ),),
         );
       },
     );
@@ -554,7 +564,8 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
-        return AlertDialog(
+        return WillPopScope(
+            onWillPop: () async => false, child: AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -589,7 +600,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
               text: "OK",
             )
           ],
-        );
+        ),);
       },
     );
   }

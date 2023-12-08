@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../app_lifecycle/translated_text.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../notifications/notifications_manager.dart';
 import '../style/palette.dart';
@@ -48,8 +50,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
     final settingsController = context.watch<SettingsController>();
+    final audioController = context.watch<AudioController>();
     return WillPopScope(
         onWillPop: () async {
+          audioController.playSfx(SfxType.button_back_exit);
           GoRouter.of(context).go('/');
           return false;
         },
@@ -64,6 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: CustomAppBar(
         title: translatedText(context,'settings', 14, Palette().white),
         onMenuButtonPressed: () {
+          audioController.playSfx(SfxType.button_back_exit);
           widget.scaffoldKey.currentState?.openDrawer();
         },
       ),
@@ -114,7 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settingsController.vibrationsEnabled,
-              onToggle: settingsController.toggleVibrations,
+              onToggle: settingsController.toggleVibrations ,
               title: vibrations,
               iconOn: Icons.vibration,
               iconOff: Icons.close,
@@ -122,6 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(height: 20),
             translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
             TextButton(onPressed: () async {
+              audioController.playSfx(SfxType.button_back_exit);
             await Future.delayed(Duration(milliseconds: 150));
             CustomAppDrawerState.showExitDialog(context);
             },
@@ -137,6 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),),
             ElevatedButton(
               onPressed: () async {
+                audioController.playSfx(SfxType.button_back_exit);
                 if (settingsController.notificationsEnabled.value) {
                   String translatedTitle = getTranslatedString(context, 'weekly_notification_up');
                   String translatedBody = getTranslatedString(context, 'weekly_notification_down');
@@ -183,6 +190,7 @@ class TogglesControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioController = context.watch<AudioController>();
     return ValueListenableBuilder<bool>(
         valueListenable: valueNotifier,
         builder: (context, muted, child) => Container(
@@ -205,14 +213,20 @@ class TogglesControl extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => onToggle(),
+                    onPressed: () {
+                      audioController.playSfx(SfxType.button_back_exit);
+                      onToggle();
+                    },
                     icon: Icon(muted ? iconOn : iconOff,
                         color: muted ? Color(0xFFCB48EF) : Colors.grey),
                   ),
                 ],
               ),
               GestureDetector(
-                onTap: () => onToggle(),
+                onTap: () {
+                  audioController.playSfx(SfxType.button_back_exit);
+    onToggle();
+    },
                 child: Transform.scale(
                   scale: 1.0,
                   child: AnimatedSwitcher(
