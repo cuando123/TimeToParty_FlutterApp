@@ -24,14 +24,23 @@ class _InstantTooltipState extends State<InstantTooltip> {
   String formatMessage(String message) {
     final words = message.split(' ');
     final buffer = StringBuffer();
-    for (int i = 0; i < words.length; i++) {
-      buffer.write(words[i]);
-      if ((i + 1) % 4 == 0 && i != words.length - 1) {
-        buffer.write('\n');
-      } else if (i != words.length - 1) {
-        buffer.write(' ');
+    String currentLine = '';
+
+    for (var word in words) {
+      // Sprawdź, czy dodanie tego słowa przekroczy limit długości
+      if ((currentLine + (currentLine.isEmpty ? '' : ' ') + word).length > 22) {
+        buffer.writeln(currentLine); // Dodaj obecną linię do bufora
+        currentLine = word; // Zacznij nową linię od tego słowa
+      } else {
+        // W przeciwnym razie dodaj słowo do obecnej linii
+        currentLine += (currentLine.isEmpty ? '' : ' ') + word;
       }
     }
+
+    if (currentLine.isNotEmpty) {
+      buffer.write(currentLine); // Dodaj ostatnią linię do bufora
+    }
+
     return buffer.toString();
   }
 

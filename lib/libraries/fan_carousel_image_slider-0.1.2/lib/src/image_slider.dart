@@ -84,7 +84,7 @@ class FanCarouselImageSlider extends StatefulWidget {
   final double sidesOpacity;
 
   /// Determines the value of the [fit] property of the images
-  /// Defaults to BoxFit.cover.
+  /// Defaults to BoxFit.cover.PageView
   final BoxFit imageFitMode;
 
   /// The fraction of the viewport that each page should occupy.

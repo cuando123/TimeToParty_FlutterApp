@@ -26,6 +26,10 @@ class AudioController {
 
   ValueNotifier<AppLifecycleState>? _lifecycleNotifier;
 
+  void setMusicVolume(double volume) {
+    _musicPlayer.setVolume(volume);
+  }
+
   AudioController({int polyphony = 2})
       : assert(polyphony >= 1),
         _musicPlayer = AudioPlayer(playerId: 'musicPlayer'),
@@ -192,6 +196,7 @@ class AudioController {
 
   void _startMusic() {
     _playFirstSongInPlaylist();
+    setMusicVolume(0.2);
   }
 
   void _stopAllSound() {

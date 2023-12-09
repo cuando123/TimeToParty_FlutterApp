@@ -153,7 +153,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                       ResponsiveSizing.responsiveHeightGap(context, screenWidth * scale * 0.02),
                                       Expanded(
                                         child: InstantTooltip(
-                                          message: "Talia kart", // Domyślna wartość w przypadku braku opisu
+                                            message: getTranslatedString(context, 'deck_of_cards'),
                                           child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
                                         ),
                                       ),
@@ -369,19 +369,19 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starGreen: 1,
     FieldType.starYellow: 1,
   };
-
+//TO_DO tlumaczenia
   final Map<String, String> fieldDescriptions = {
-    'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
-    'field_sheet': 'Układaj rymy, baw się słowami!',
-    'field_letters': 'Rzuć wyzwanie alfabetowi! 20 rzeczowników na daną literę.',
-    'field_pantomime': 'Mów ciałem, nie słowami!',
-    'field_microphone': 'Odgadnij sławne osobowości!',
-    'field_taboo': 'Opisuj, omijając zakazane słowa!',
-    'field_start': 'Start i meta twojej zabawy!',
-    'field_star_blue_dark': 'Zadania fizyczne? Zmierz się z czasem!',
-    'field_star_pink': 'Baw się językiem! Twórz antonimy!.',
-    'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
-    'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+    'field_arrows': 'field_arrows_description',
+    'field_sheet': 'field_sheet_description',
+    'field_letters': 'field_letters_description',
+    'field_pantomime': 'field_pantomime_description',
+    'field_microphone': 'field_microphone_description',
+    'field_taboo': 'field_taboo_description',
+    'field_start': 'field_start_description',
+    'field_star_blue_dark': 'field_star_blue_dark_description',
+    'field_star_pink': 'field_star_pink_description',
+    'field_star_green': 'field_star_green_description',
+    'field_star_yellow': 'field_star_yellow_description',
   };
 
   //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
@@ -424,7 +424,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
     for (String field in fields) {
       children.add(InstantTooltip(
-        message: fieldDescriptions[field] ?? "Brak opisu", // Domyślna wartość w przypadku braku opisu
+        message: getTranslatedString(context, fieldDescriptions[field] ?? "default_key"),
         child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
       ));
 
@@ -445,7 +445,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
     for (String field in fields) {
       children.add(InstantTooltip(
-        message: fieldDescriptions[field] ?? "Brak opisu", // Domyślna wartość w przypadku braku opisu
+        message: getTranslatedString(context, fieldDescriptions[field] ?? "default_key"),
         child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
       ));
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));

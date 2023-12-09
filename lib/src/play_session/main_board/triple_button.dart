@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
 import '../../instruction_dialog/instruction_dialog.dart';
 import '../../style/palette.dart';
 
@@ -46,8 +49,8 @@ class TripleButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildButtonIcon(Icons.home_rounded, showExitGameDialogCallback),
-          _buildButtonIcon(Icons.info_outlined, () {
+          _buildButtonIcon(context, Icons.home_rounded, showExitGameDialogCallback),
+          _buildButtonIcon(context, Icons.info_outlined, () {
             Future.delayed(Duration(milliseconds: 150), () {
               showDialog<void>(
                 context: context,
@@ -57,18 +60,25 @@ class TripleButton extends StatelessWidget {
               );
             });
           }),
-          _buildButtonIcon(Icons.highlight, () {
+          _buildButtonIcon(context, Icons.highlight, () {
             _controller.forward(from: 0); // Obsłuż tapnięcie w prawy przycisk
           }),
         ],
       ),
     );
   }
-/*TO_DO - poprawienie ikonek na głównym ekranie (tych 3 na dole) bo nie są zbyt spektakularne, coś trzeba wymyślić lepszego
- już lepiej ale jeszcze trzeba nad tym popracować, chyba lepiej aby były takie jak z main menu czy coś?*/
-  Widget _buildButtonIcon(IconData icon, VoidCallback onTap) {
+
+  Widget _buildButtonIcon(BuildContext context, IconData icon, VoidCallback originalOnTap) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        final audioController = context.read<AudioController>();
+        if (icon == Icons.info_outlined){
+          audioController.playSfx(SfxType.button_infos);
+        } else {
+          audioController.playSfx(SfxType.button_back_exit);
+        }
+        originalOnTap();
+      },
       child: Container(
         width: 70,
         height: 100,

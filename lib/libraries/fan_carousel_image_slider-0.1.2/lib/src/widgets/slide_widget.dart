@@ -40,11 +40,13 @@ class SlideWidget extends StatelessWidget {
     return AnimatedRotation(
       turns: _getSlideTurn(index, actualIndex),
       duration: sliderDuration,
-      child: AnimatedContainer(
+      child: Transform.scale(
+        scale: (index == actualIndex) ? 1.0 : 0.8,  // Skaluj poboczne karty do 90% rozmiaru
+        child: AnimatedContainer(
         duration: sliderDuration,
         margin: (index == actualIndex)
             ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
-            : const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+            : const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(imageRadius),
           boxShadow: _getSlideBoxShadow(index, actualIndex),
@@ -60,7 +62,7 @@ class SlideWidget extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),),
     );
   }
 

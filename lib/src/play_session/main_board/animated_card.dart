@@ -155,21 +155,18 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   }
 
   final Map<String, String> fieldDescriptions = {
-    'field_arrows': 'Wybierz kartę i zaskocz wszystkich!',
-    'field_sheet': 'Układaj rymy i baw się słowami!',
-    'field_letters': 'Wymyśl 20 rzeczowników na daną literę!',
-    'field_pantomime': 'Mów ciałem, nie słowami!',
-    'field_microphone': 'Odgadnij sławne osobowości!',
-    'field_taboo': 'Taboo - Opisuj, omijając zakazane słowa!',
-    'field_star_blue_dark': 'Zadanie fizyczne? Zmierz się z czasem!',
-    'field_star_pink': 'Baw się językiem! Twórz antonimy!',
-    'field_star_green': 'Ty rysujesz, oni zgadują. Gotowi?',
-    'field_star_yellow': 'Porównaj, analizuj, odpowiadaj!',
+    'field_arrows': 'field_arrows_description',
+    'field_sheet': 'field_sheet_description',
+    'field_letters': 'field_letters_description',
+    'field_pantomime': 'field_pantomime_description',
+    'field_microphone': 'field_microphone_description',
+    'field_taboo': 'field_taboo_description',
+    'field_start': 'field_start_description',
+    'field_star_blue_dark': 'field_star_blue_dark_description',
+    'field_star_pink': 'field_star_pink_description',
+    'field_star_green': 'field_star_green_description',
+    'field_star_yellow': 'field_star_yellow_description',
   };
-  String getCardDescription(String cardIndex) {
-    return fieldDescriptions[cardIndex] ??
-        'Brak opisu dla tej karty'; // Użycie operatora ??, aby zapewnić wartość domyślną
-  }
 
   void onCardSelected(String selectedCard) {
     widget.onCardSelected(selectedCard); // Wywołaj callback przekazany do widgetu
@@ -177,7 +174,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    String cardDescription = getCardDescription(widget.selectedCardIndex);
+    String cardDescription = getTranslatedString(context, fieldDescriptions[widget.selectedCardIndex] ?? "default_key");
     if (!widget.showAnimatedCard) {
       return Container();
     } else {
@@ -253,10 +250,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   alignment: Alignment.center, // Zapewnia skalowanie wokół środka widgetu
                   child: child,
                 ),
-                child: Text(
-                  "Kliknij w kartę aby zacząć",
-                  style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'HindMadurai'),
-                ),
+                child: translatedText(context, 'click_the_card_to_start', 18, Colors.white),
               ),
             ),
           ),
@@ -310,10 +304,16 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
           SlideTransition(
             position: _textBottomPositionAnimation,
             child: Align(
-              alignment: Alignment(0.0, 0.6), // Aby dostosować położenie napisu, możesz zmienić wartość 0.7
-              child: Text(
-                "Przekaż urządzenie osobie opisującej!",
-                style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'HindMadurai'),
+              alignment: Alignment.center, // Wyśrodkuj poziomo
+              child: FractionallySizedBox(
+                widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkuj zawartość kolumny
+                  children: <Widget>[
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.6), // Ustaw wysokość, aby tekst był na poziomie 0.6
+                    translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white, textAlign: TextAlign.center),
+                  ],
+                ),
               ),
             ),
           ),
@@ -400,32 +400,29 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
         return WillPopScope(
             onWillPop: () async => false,
         child:   Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.black54,
          shadowColor: Colors.transparent,
           insetPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           elevation: 0,
           child: SizedBox(
             width: MediaQuery.of(context).size.width, // Określ szerokość
             height: MediaQuery.of(context).size.height,
-            child: Column(
+            child: Column(mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 50),
-                PulsatingSvg(
-                  svgAsset:
-                  'assets/time_to_party_assets/cards_screens/choose_card_static_text.svg',
-                  size: 20.0,
-                ),
-                SizedBox(height: 50),
+                SizedBox(height: 20),
+                PulsatingText(text: getTranslatedString(context, 'choose_the_card'), textStyle: TextStyle(fontFamily: 'HindMadurai', color: Colors.white), size: 20),
+                SizedBox(height: 20),
                 AnimatedHandArrow(),
                 Transform.scale(
+                  scale: 1,
                   child: FanCarouselImageSlider(
                   imagesLink: cardTypesToSelect,
-                  slideViewportFraction: 0.5,
+                  slideViewportFraction: 0.4,
                   isAssets: true,
                   autoPlay: false,
-                  autoPlayInterval: Duration(milliseconds: 5000),
                   sliderDuration: Duration(milliseconds: 200),
-                  sliderHeight: 320,
+                  sliderHeight: 250,
                   sliderWidth: MediaQuery.of(context).size.width,
                   imageRadius: 20,
                   indicatorActiveColor: Palette().pink,
@@ -448,9 +445,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                     },
                   ],
                 ),
-                  scale: 0.8,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
                 AnimatedQuestionMark(),
               ],
             )
@@ -575,7 +571,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
               children: [
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: letsText(context, "Przesuwając lewo - prawo wybierz jedną z poniższych kart:", 18, Palette().darkGrey, textAlign: TextAlign.center)
+                    child: translatedText(context, 'moving_left_right_swipe_card', 18, Palette().darkGrey, textAlign: TextAlign.center)
                 ),
                 Wrap(
                   spacing: 15.0, // odstęp między elementami poziomo
@@ -646,17 +642,23 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
   }
 }
 
-class PulsatingSvg extends StatefulWidget {
-  final String svgAsset;
+class PulsatingText extends StatefulWidget {
+  final String text;
+  final TextStyle textStyle;
   final double size;
 
-  const PulsatingSvg({super.key, required this.svgAsset, required this.size});
+  const PulsatingText({
+    super.key,
+    required this.text,
+    required this.textStyle,
+    required this.size,
+  });
 
   @override
-  _PulsatingSvgState createState() => _PulsatingSvgState();
+  _PulsatingTextState createState() => _PulsatingTextState();
 }
 
-class _PulsatingSvgState extends State<PulsatingSvg> with SingleTickerProviderStateMixin {
+class _PulsatingTextState extends State<PulsatingText> with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -664,7 +666,7 @@ class _PulsatingSvgState extends State<PulsatingSvg> with SingleTickerProviderSt
   void initState() {
     super.initState();
     _pulseController = AnimationController(
-      duration: Duration(seconds: 4), // Całkowity czas trwania cyklu animacji
+      duration: const Duration(seconds: 4), // Całkowity czas trwania cyklu animacji
       vsync: this,
     )..repeat(); // Powtarza animację w nieskończoność
 
@@ -692,10 +694,9 @@ class _PulsatingSvgState extends State<PulsatingSvg> with SingleTickerProviderSt
       builder: (context, child) => Transform.scale(
         scale: _pulseAnimation.value,
         alignment: Alignment.center, // Zapewnia skalowanie wokół środka widgetu
-        child: SvgPicture.asset(
-          widget.svgAsset,
-          height: widget.size,
-          width: widget.size,
+        child: Text(
+          widget.text,
+          style: widget.textStyle.copyWith(fontSize: widget.size),
         ),
       ),
     );
@@ -707,3 +708,4 @@ class _PulsatingSvgState extends State<PulsatingSvg> with SingleTickerProviderSt
     super.dispose();
   }
 }
+

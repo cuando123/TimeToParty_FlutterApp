@@ -78,7 +78,7 @@ class LoaderWidgetSecond extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: Palette().backgroundLoadingSessionGradient,
         ),
-        child: Center( // Center automatycznie wyśrodkowuje swój child na ekranie
+        child: Center(
           child: Column(
             children: [
               SizedBox(height: 50.0),
@@ -86,7 +86,8 @@ class LoaderWidgetSecond extends StatelessWidget {
               SizedBox(height: 20.0),
               CircularProgressIndicator(color: Palette().pink),
               SizedBox(height: 50.0),
-              letsText(context,'Gra rozpocznie się za $countdown', 16, Palette().bluegrey),
+              translatedText(context, 'game_will_start_in', 16, Palette().bluegrey),
+              letsText(context,'$countdown', 16, Palette().bluegrey),
             ],
           ),
         ),

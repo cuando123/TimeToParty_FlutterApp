@@ -33,7 +33,7 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: letsText(context, 'Tapnij w koło by zakręcić', 20, Palette().pink, textAlign: TextAlign.center),
+            title: translatedText(context, 'tap_the_wheel_to_spin', 20, Palette().pink, textAlign: TextAlign.center),
           ),),
         );
       },
