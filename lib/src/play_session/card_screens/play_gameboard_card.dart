@@ -15,7 +15,7 @@ import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
-import 'circle_progress_painter.dart';
+import 'styles/circle_progress_painter.dart';
 import 'custom_card.dart';
 
 class PlayGameboardCard extends StatefulWidget {
@@ -122,9 +122,17 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       ),
     );
     _showCard(); // By karta pojawiła się na początku
-    if (shouldStartTimerInitially()) {
-      _startTimer();
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (shouldStartTimerInitially()) {
+          AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26);
+          Future.delayed(Duration(milliseconds: 2000), () {
+            AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 38);
+            _startTimer();
+          });
+        }
+    });
+
     determineTotalCards();
     _initializeCards();
   }
@@ -248,7 +256,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         _prepareCurrentWordOrKey();
       });
     } else {
-      AnimatedAlertDialog.showAnimatedDialogNoCards(context);
+      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20);
     }
 
     // Odblokuj przycisk po 300 milisekundach

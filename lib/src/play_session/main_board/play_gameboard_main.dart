@@ -20,7 +20,7 @@ import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
 import 'InstantTooltip.dart';
-import 'animated_card.dart';
+import 'animated_card/animated_card.dart';
 
 class PlayGameboard extends StatefulWidget {
   final List<String> teamNames;
@@ -81,7 +81,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     _controller.value = 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasShownAlertDialog) {
-        AnimatedAlertDialog.showAnimatedDialog(context);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'tap_the_wheel_to_spin', SfxType.correct_answer, 2, 20);
         if (mounted) {
           _controller.forward(from: 0);
         }
@@ -265,7 +265,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_arrows';
+                                                    selectedCardIndex = 'field_star_green';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },

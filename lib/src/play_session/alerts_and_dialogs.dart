@@ -15,7 +15,7 @@ import 'custom_style_buttons.dart';
 
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
-  static void showAnimatedDialog(BuildContext context) {
+  static void showAnimatedDialog(BuildContext context, String text, SfxType soundType, int delay, double textHeight) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -29,11 +29,11 @@ class AnimatedAlertDialog {
             onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
         child: Center(
           child: AlertDialog(
-            backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+            backgroundColor: Palette().white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: translatedText(context, 'tap_the_wheel_to_spin', 20, Palette().pink, textAlign: TextAlign.center),
+            title: translatedText(context, text, textHeight, Palette().pink, textAlign: TextAlign.center),
           ),),
         );
       },
@@ -41,7 +41,7 @@ class AnimatedAlertDialog {
           (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           final audioController = context.watch<AudioController>();
-          audioController.playSfx(SfxType.correct_answer);
+          audioController.playSfx(soundType);
           // Jeśli dialog się pojawia
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -56,7 +56,7 @@ class AnimatedAlertDialog {
       },
     );
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: delay), () {
       Navigator.of(context).pop();
     });
   }
@@ -132,48 +132,6 @@ class AnimatedAlertDialog {
         );
       },
     );
-  }
-
-  // nie mozesz juz pominac karty dialog
-  static void showAnimatedDialogNoCards(BuildContext context) {
-    final audioController = context.read<AudioController>();
-    audioController.playSfx(SfxType.buzzer_sound);
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
-      barrierColor: Colors.black45,
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (buildContext, animation, secondaryAnimation) {
-        return Center(
-            child: AlertDialog(
-                backgroundColor: Palette().white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                title: translatedText(context, 'cannot_skip_card' , 20, Palette().pink,textAlign: TextAlign.center)));
-      },
-      transitionBuilder:
-          (context, animation, secondaryAnimation, child) {
-        // Jeśli dialog się pojawia
-        if (animation.status == AnimationStatus.forward) {
-          return ScaleTransition(
-            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          );
-        }
-        // Jeśli dialog znika
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-    );
-    Future.delayed(Duration(seconds: 1), () {
-      Navigator.of(context).pop();
-    });
   }
 
   // punkty

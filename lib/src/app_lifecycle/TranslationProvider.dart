@@ -46,6 +46,7 @@ class TranslationProvider extends ChangeNotifier {
   Future<void> changeLanguage(String languageKey) async {
     _currentLanguage = languageKey;
     await loadTranslations();
+    await loadWords();
     notifyListeners();
   }
 
@@ -70,5 +71,6 @@ class TranslationProvider extends ChangeNotifier {
   String getWord(String key) {
     return _cachedWords[key] ?? '';
   }
+
 
 }

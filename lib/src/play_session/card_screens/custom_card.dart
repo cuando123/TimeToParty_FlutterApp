@@ -5,6 +5,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
+import 'package:game_template/src/play_session/card_screens/styles/custom_style_strategy_bar.dart';
+import 'package:game_template/src/play_session/card_screens/styles/image_painter.dart';
 import 'package:game_template/src/play_session/extensions.dart';
 
 import '../../app_lifecycle/translated_text.dart';
@@ -215,13 +217,26 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           ),
                           selected: Stream.value(
                               selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
-                          styleStrategy: AlternatingStyleStrategy(),
+                          styleStrategy: CustomStyleStrategy(),
                           visibleItemCount: 3,
                           items: const [
-                            FortuneItem(child: Text('Filmy')),
-                            FortuneItem(child: Text('Pozycje Miłosne')),
-                            FortuneItem(child: Text('Powiedzenia')),
+                            FortuneItem(child:
+                            Column(children: [
+                              Icon(Icons.movie),
+                              Text('Filmy', textAlign: TextAlign.center,)
+                            ],),),
+                            FortuneItem(child:
+                            Column(children: [
+                              Icon(Icons.man),
+                              Text('Pozycje miłosne', textAlign: TextAlign.center,)
+                            ],),),
+                            FortuneItem(child:
+                            Column(children: [
+                              Icon(Icons.message),
+                              Text('Powiedzenia', textAlign: TextAlign.center,)
+                            ],),),
                           ]),
+                      SizedBox(height: 20),
                       Expanded(
                           child: showDelayedText
                               ? Text(itemToShow, style: TextStyle(color: Colors.black))
@@ -700,11 +715,11 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               children: [wordText(context, word, 24, Colors.white, index: 0)],
                             ),
                           ),
-                          wordText(context, word, 24, Colors.white, index: 1),
-                          wordText(context, word, 24, Colors.white, index: 2),
-                          wordText(context, word, 24, Colors.white, index: 3),
-                          wordText(context, word, 24, Colors.white, index: 4),
-                          wordText(context, word, 24, Colors.white, index: 5),
+                          wordText(context, word, 20, Colors.white, index: 1),
+                          wordText(context, word, 20, Colors.white, index: 2),
+                          wordText(context, word, 20, Colors.white, index: 3),
+                          wordText(context, word, 20, Colors.white, index: 4),
+                          wordText(context, word, 20, Colors.white, index: 5),
                           SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -731,21 +746,5 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         );
       },
     );
-  }
-}
-
-class ImagePainter extends CustomPainter {
-  final ui.Image image;
-
-  ImagePainter({required this.image});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    paintImage(canvas: canvas, rect: Offset.zero & size, image: image, fit: BoxFit.contain);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }
