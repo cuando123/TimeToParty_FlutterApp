@@ -124,13 +124,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _showCard(); // By karta pojawiła się na początku
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (shouldStartTimerInitially()) {
-          AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26);
-          Future.delayed(Duration(milliseconds: 2000), () {
-            AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 38);
-            _startTimer();
-          });
-        }
+      if (shouldStartTimerInitially()) {
+        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26);
+        Future.delayed(Duration(milliseconds: 2000), () {
+          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 38);
+          _startTimer();
+        });
+      }
     });
 
     determineTotalCards();
@@ -338,7 +338,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       _offsetX = -MediaQuery.of(context).size.width;
     });
     Future.delayed(Duration(milliseconds: 50), () {
-      if(mounted) {
+      if (mounted) {
         _rotationAnimationController.forward();
       }
     });
@@ -372,7 +372,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       // Dodajemy dodatkowe opóźnienie przed rozpoczęciem animacji wyskoku
       Future.delayed(Duration(milliseconds: 250), () {
-        if(mounted) {
+        if (mounted) {
           _animationController.forward();
           _slideAnimationController.forward();
         }
@@ -427,6 +427,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     });
   }
+
   void handleRollSlotMachineResult(String result) {
     safeSetState(() {
       var textFromRollSlotMachine = result;
@@ -443,7 +444,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
         print('Znaleziona liczba: $number');
 
-        initialTime = remainingTime = number*2;
+        initialTime = remainingTime = number * 2;
         _startTimer();
       }
     });
@@ -452,16 +453,19 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 // animacja time up
   void _showTimeUpAnimation() {
     _timeUpAnimationController.forward().then((value) => {
-
-      if (widget.currentField[0]=='field_star_blue_dark'){
-       AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)} else {
-        if (isAlertOpened){
-          Navigator.of(context).pop(),
-          Navigator.of(context).pop('response'),
-        } else
-        Navigator.of(context).pop('response'),
-      }
-    });
+          if (widget.currentField[0] == 'field_star_blue_dark')
+            {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
+          else
+            {
+              if (isAlertOpened)
+                {
+                  Navigator.of(context).pop(),
+                  Navigator.of(context).pop('response'),
+                }
+              else
+                Navigator.of(context).pop('response'),
+            }
+        });
   }
 
 // ustalenie konkretnego czasu dla danej karty
@@ -558,7 +562,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         maxNumber = 113;
         break;
       case 'field_star_green':
-        cardType = 'draw_movie'; //problem jest taki ze idzie lista, która definiowana jest z jednego pola np.: field_star_green
+        cardType =
+            'draw_movie'; //problem jest taki ze idzie lista, która definiowana jest z jednego pola np.: field_star_green
         // i wtedy generuje się np: field_star_green79 - i on na tej podstawie pobiera metodą: buildFortuneItemsList -> i tu dostaniemy listę słów,
         // wziętych po separatorach ';' i zamienioną na listę Stringów i następnie ta lista jest przekazywana..
         // w przypadku tej karty, musiałbym to robić w zupełnie inny sposób albo wysyłać 3 listy
@@ -636,11 +641,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   Map<String, List<String>> buildSpecificListsForStarGreen(BuildContext context, String cardType) {
     if (cardType == 'field_star_green') {
-      Map<String, List<String>> lists = {
-        'movies': [],
-        'proverbs': [],
-        'lovePossibilities': []
-      };
+      Map<String, List<String>> lists = {'movies': [], 'proverbs': [], 'lovePossibilities': []};
 
       int maxMovies = 100;
       int maxProverbs = 88;
@@ -678,220 +679,217 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
         return false; // return false to prevent the pop operation
-      },// Zablokowanie możliwości cofnięcia
-    child:  Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: Palette().backgroundLoadingSessionGradient,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
-                    onPressed: () {
-                      AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
-                      //Navigator.of(context).pop('response');
-                    },
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                    // Odstępy wewnątrz prostokąta
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      // Przezroczysty czarny kolor
-                      borderRadius: BorderRadius.circular(8.0), // Zaokrąglenie rogów
+      }, // Zablokowanie możliwości cofnięcia
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: Palette().backgroundLoadingSessionGradient,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
+                      onPressed: () {
+                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+                        //Navigator.of(context).pop('response');
+                      },
                     ),
-                    child: Row(
-                      children: [
-                        ..._displayTeamNames(),
-                        SizedBox(width: 20.0),
-                        ..._displayTeamColors(),
-                      ],
+                    Spacer(),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      // Odstępy wewnątrz prostokąta
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        // Przezroczysty czarny kolor
+                        borderRadius: BorderRadius.circular(8.0), // Zaokrąglenie rogów
+                      ),
+                      child: Row(
+                        children: [
+                          ..._displayTeamNames(),
+                          SizedBox(width: 20.0),
+                          ..._displayTeamColors(),
+                        ],
+                      ),
                     ),
-                  ),
-                  Spacer(),
-      InkWell(
-        onTap: () {
-          setState(() {
-            isAlertOpened = true;
-          });
-          AnimatedAlertDialog.showCardDescriptionDialog(context, widget.currentField[0], AlertOrigin.cardScreen).then((_) {
-            setState(() {
-              isAlertOpened = false;
-            });
-          });
-        },
-      child: Container(
-                      child: CircleAvatar(
-                        radius: 18, // Dostosuj rozmiar w zależności od potrzeb
-                        backgroundColor: Color(0xFF2899F3),
-                        child: Text(
-                          '?',
-                          style: TextStyle(
-                              color: Palette().white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              fontFamily: 'HindMadurai'),
+                    Spacer(),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          isAlertOpened = true;
+                        });
+                        AnimatedAlertDialog.showCardDescriptionDialog(
+                                context, widget.currentField[0], AlertOrigin.cardScreen)
+                            .then((_) {
+                          setState(() {
+                            isAlertOpened = false;
+                          });
+                        });
+                      },
+                      child: Container(
+                        child: CircleAvatar(
+                          radius: 18, // Dostosuj rozmiar w zależności od potrzeb
+                          backgroundColor: Color(0xFF2899F3),
+                          child: Text(
+                            '?',
+                            style: TextStyle(
+                                color: Palette().white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontFamily: 'HindMadurai'),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            ..._displayCurrentField(),
-            SizedBox(height: 15.0),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  height: 60, // Dostosuj wysokość tak, aby pasowała do Twojego projektu
-                  child: remainingTime > 0
-                      ? CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.transparent,
-                          child: SizedBox.expand(
-                            child: CustomPaint(
-                              painter: CircleProgressPainter(
-                                  segments: initialTime, progress: 1 / initialTime * remainingTime),
+              SizedBox(height: 10.0),
+              ..._displayCurrentField(),
+              SizedBox(height: 15.0),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    height: 60, // Dostosuj wysokość tak, aby pasowała do Twojego projektu
+                    child: remainingTime > 0
+                        ? CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.transparent,
+                            child: SizedBox.expand(
+                              child: CustomPaint(
+                                painter: CircleProgressPainter(
+                                    segments: initialTime, progress: 1 / initialTime * remainingTime),
+                              ),
                             ),
-                          ),
-                        )
-                      : Center(
-                          child: FadeTransition(
-                            opacity: _timeUpFadeAnimation,
-                            child: ScaleTransition(
-                              scale: _timeUpScaleAnimation,
-                              child: FadeTransition(
-                                opacity: _timeUpFadeOutAnimation,
-                                child: Text(
-                                  "Koniec czasu!",
-                                  style: TextStyle(fontSize: 20, color: Colors.white),
+                          )
+                        : Center(
+                            child: FadeTransition(
+                              opacity: _timeUpFadeAnimation,
+                              child: ScaleTransition(
+                                scale: _timeUpScaleAnimation,
+                                child: FadeTransition(
+                                  opacity: _timeUpFadeOutAnimation,
+                                  child: Text(
+                                    "Koniec czasu!",
+                                    style: TextStyle(fontSize: 20, color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                ),
-                Positioned(
-                  top: 15, // Pozycjonowanie tekstu w centrum SizedBox
-                  child: remainingTime > 0
-                      ? Text(
-                          '$remainingTime',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        )
-                      : Container(),
-                ),
-              ],
-            ),
+                  ),
+                  Positioned(
+                    top: 15, // Pozycjonowanie tekstu w centrum SizedBox
+                    child: remainingTime > 0
+                        ? Text(
+                            '$remainingTime',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          )
+                        : Container(),
+                  ),
+                ],
+              ),
 
-            SizedBox(height: 15.0),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Center(
-                    //KARTA
-                    child: CustomCard(
-                  totalCards: totalCards,
-                  starsColors: starsColors,
-                  word: isTabooCard
-                      ? generatedCardTypeWithNumber
-                      : (wordsList.isNotEmpty ? wordsList[currentWordIndex] : "defaultWord"),
-                  slideAnimationController: _slideAnimationController,
-                  rotationAnimation: _rotationAnimation,
-                  opacity: _opacity,
-                  offsetX: _offsetX,
-                  cardType: widget.currentField[0],
-                  onRollSlotMachineResult: handleRollSlotMachineResult,
-                  buildFortuneItemsList:
-                      _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
-                      // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
-                      specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
-                )),
-              ],
-            ),
-            //SizedBox(height: 10),
-            Text('Karta ${currentCardIndex + 1} z $totalCards',
-                style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
-            SizedBox(height: 10),
-            (widget.currentField[0] != "field_star_yellow")
-            ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Spacer(),
-                (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark')
-                    ? Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SvgButton(
-                            assetName: skipCount > 0
-                                ? 'assets/time_to_party_assets/cards_screens/button_drop.svg'
-                                : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.svg', // zmień na ścieżkę do szarego przycisku
-                            onPressed: _onSkipButtonPressed,
-                          ),
-                          Positioned(
-                              top: 10,
-                              left: 10,
-                              child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: skipCount > 0
-                                      ? Palette().yellowIndBorder
-                                      : Colors.grey.shade300, // Kolor obramowania
-                                  shape: BoxShape.circle,
-                                ),
-                                child: CircleAvatar(
-                                  radius: 12,
-                                  backgroundColor:
-                                      skipCount > 0 ? Palette().yellowInd : Colors.grey.shade600, // Tło licznika
-                                  child: Text(
-                                    '$skipCount',
-                                    style: TextStyle(
-                                        color:
-                                            skipCount > 0 ? Palette().darkGrey : Colors.grey.shade300, // Kolor tekstu
-                                        fontWeight: FontWeight.normal,
-                                        fontFamily: 'HindMadurai'),
+              SizedBox(height: 15.0),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                      //KARTA
+                      child: CustomCard(
+                    totalCards: totalCards,
+                    starsColors: starsColors,
+                    word: isTabooCard
+                        ? generatedCardTypeWithNumber
+                        : (wordsList.isNotEmpty ? wordsList[currentWordIndex] : "defaultWord"),
+                    slideAnimationController: _slideAnimationController,
+                    rotationAnimation: _rotationAnimation,
+                    opacity: _opacity,
+                    offsetX: _offsetX,
+                    cardType: widget.currentField[0],
+                    onRollSlotMachineResult: handleRollSlotMachineResult,
+                    buildFortuneItemsList:
+                        _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
+                    // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
+                    specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
+                  )),
+                ],
+              ),
+              //SizedBox(height: 10),
+              Text('Karta ${currentCardIndex + 1} z $totalCards',
+                  style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
+              SizedBox(height: 10),
+              (widget.currentField[0] != "field_star_yellow")
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Spacer(),
+                        (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark')
+                            ? Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SvgButton(
+                                    assetName: skipCount > 0
+                                        ? 'assets/time_to_party_assets/cards_screens/button_drop.svg'
+                                        : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.svg', // zmień na ścieżkę do szarego przycisku
+                                    onPressed: _onSkipButtonPressed,
                                   ),
-                                ),
-                              )),
-                        ],
-                      )
-                    : Container(),
-                //SizedBox(width: 10),
-                SvgButton(
-                  assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
-                  onPressed: _onButtonXPressed,
-                ),
-                SvgButton(
-                  assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
-                  onPressed: _onButtonTickPressed,
-                ),
-                Spacer(),
-              ],
-            ) : CustomStyledButton(icon: Icons.arrow_forward_outlined, onPressed: () {
-
-            }, text: "Kontynuuj"), //przejscie do nastepnej karty, button ekran czy cos
-
-
-          ],
+                                  Positioned(
+                                      top: 10,
+                                      left: 10,
+                                      child: Container(
+                                        padding: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: skipCount > 0
+                                              ? Palette().yellowIndBorder
+                                              : Colors.grey.shade300, // Kolor obramowania
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: CircleAvatar(
+                                          radius: 12,
+                                          backgroundColor: skipCount > 0
+                                              ? Palette().yellowInd
+                                              : Colors.grey.shade600, // Tło licznika
+                                          child: Text(
+                                            '$skipCount',
+                                            style: TextStyle(
+                                                color: skipCount > 0
+                                                    ? Palette().darkGrey
+                                                    : Colors.grey.shade300, // Kolor tekstu
+                                                fontWeight: FontWeight.normal,
+                                                fontFamily: 'HindMadurai'),
+                                          ),
+                                        ),
+                                      )),
+                                ],
+                              )
+                            : Container(),
+                        //SizedBox(width: 10),
+                        SvgButton(
+                          assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                          onPressed: _onButtonXPressed,
+                        ),
+                        SvgButton(
+                          assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                          onPressed: _onButtonTickPressed,
+                        ),
+                        Spacer(),
+                      ],
+                    )
+                  : CustomStyledButton(
+                      icon: Icons.arrow_forward_outlined,
+                      onPressed: () {},
+                      text: "Kontynuuj"), //przejscie do nastepnej karty, button ekran czy cos
+            ],
+          ),
         ),
-      ),),
-    );
-  }
-
-// dziwne rzeczy do testu
-  void showRollSlotMachine(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Scaffold(body: RollSlotMachine())),
+      ),
     );
   }
 
@@ -1029,5 +1027,4 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     return displayWidgets;
   }
-
 }

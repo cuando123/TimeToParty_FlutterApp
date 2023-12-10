@@ -313,9 +313,21 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           child: image != null //TO_DO tu musze wiedziec ze trzeba uruchomic timer
               ? Column(
                   children: [
-                    SizedBox(height: 20),
-                    letsText(context, itemToShow, 20, Colors.white),
-                    Text('category: $category', style: TextStyle(color: Colors.white)),
+                    SizedBox(height: 30),
+                    //letsText(context, itemToShow, 20, Colors.white),
+                    letsText(
+                        context,
+                        getTranslatedString(
+                            context,
+                            category == 'draw_movie'
+                                ? 'category_draw_movie'
+                                : category == 'draw_proverb'
+                                ? 'category_draw_proverbs'
+                                : category == 'draw_love_pos'
+                                ? 'category_love_positions'
+                                : 'default_category'),
+                        14,
+                        Palette().white),
                     Expanded( child:
                     Padding(
                       padding: EdgeInsets.all(15.0),
@@ -327,7 +339,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                         ),
                       ),
                     ),),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                   ],
                 )
               : Center(child: Text("No images selected")), // Tu możesz umieścić dowolny widget, gdy obraz jest null
