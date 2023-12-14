@@ -413,10 +413,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             height: MediaQuery.of(context).size.height,
             child: Column(mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
-                PulsatingText(text: getTranslatedString(context, 'choose_the_card'), textStyle: TextStyle(fontFamily: 'HindMadurai', color: Colors.white), size: 20),
-                SizedBox(height: 20),
+                PulsatingText(text: getTranslatedString(context, 'choose_the_card'), textStyle: TextStyle(fontFamily: 'HindMadurai', color: Colors.white), size: 22),
+                SizedBox(height: 30),
                 AnimatedHandArrow(),
+                SizedBox(height: 20),
                 Transform.scale(
                   scale: 1,
                   child: FanCarouselImageSlider(
@@ -451,6 +451,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 ),
                 SizedBox(height: 30),
                 AnimatedQuestionMark(),
+                SizedBox(height: 90)
               ],
             )
           ),),
