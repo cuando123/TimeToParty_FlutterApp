@@ -245,25 +245,25 @@ class AnimatedAlertDialog {
     audioController.playSfx(SfxType.button_infos);
     final Map<String, Widget> fieldDescriptions = {
       'field_arrows': translatedText(context, 'instruction_dialog_choice',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_sheet': translatedText(context, 'instruction_dialog_rymes', //TO_DO to jest do pomyslenia jak to przetlumaczyc
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_letters': translatedText(context, 'instruction_dialog_20_words',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_pantomime': translatedText(context, 'instruction_dialog_pantomime',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_microphone': translatedText(context, 'instruction_dialog_famous_people',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_taboo': translatedText(context, 'instruction_dialog_taboo_fields',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_star_blue_dark': translatedText(context, 'instruction_dialog_physical_challenge',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_star_pink': translatedText(context, 'instruction_dialog_synonimes_antonimes',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_star_green': translatedText(context, 'instruction_dialog_drawing',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
       'field_star_yellow': translatedText(context, 'instruction_dialog_compare_questions',
-          16, Palette().menudark),
+          16, Palette().menudark, textAlign: TextAlign.center),
     };
 
     final Map<String, String> fieldTitlesDb = {
@@ -315,7 +315,7 @@ class AnimatedAlertDialog {
                   ],
                   if (origin == AlertOrigin.cardScreen) ...[
                     ResponsiveSizing.responsiveHeightGap(context, 10),
-                    letsText(context, 'Znalazłeś błąd? Zgłoś go nam! Będziemy wdzięczni!', 12, Palette().darkGrey),
+                    letsText(context, 'Znalazłeś błąd? Zgłoś go nam! Będziemy wdzięczni!', 12, Palette().darkGrey, textAlign: TextAlign.center),
                     CustomStyledButton(
                       icon: Icons.edit,
                       onPressed: () {

@@ -24,7 +24,7 @@ class RollSlot extends StatefulWidget {
   final EdgeInsets itemPadding;
 
   const RollSlot({
-    Key? key,
+    super.key,
     required this.itemExtend,
     required this.children,
     this.rollSlotController,
@@ -38,7 +38,7 @@ class RollSlot extends StatefulWidget {
     this.shuffleList = true,
     this.additionalListToEndAndStart = true,
     this.itemPadding = const EdgeInsets.all(8.0),
-  }) : super(key: key);
+  });
 
   @override
   _RollSlotState createState() => _RollSlotState();
@@ -73,10 +73,10 @@ class _RollSlotState extends State<RollSlot> {
       controller: _controller,
       squeeze: widget.squeeze,
       perspective: widget.perspective,
-      children: currentList.map((_widget) {
+      children: currentList.map((widget) {
         return Padding(
-          padding: widget.itemPadding,
-          child: _widget,
+          padding: EdgeInsets.all(8.0),
+          child: widget,
         );
       }).toList(),
     );
@@ -165,11 +165,12 @@ class _RollSlotState extends State<RollSlot> {
   /// Returns a random number.
   int randomIndex() {
     int randomInt;
-    if (widget.additionalListToEndAndStart)
+    if (widget.additionalListToEndAndStart) {
       randomInt = widget.children.length +
           Random().nextInt(currentList.length - widget.children.length);
-    else
+    } else {
       randomInt = Random().nextInt(currentList.length);
+    }
     return randomInt == currentIndex ? randomIndex() : randomInt;
   }
 }

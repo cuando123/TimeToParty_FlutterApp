@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
 import 'package:game_template/src/play_session/extensions.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +14,8 @@ import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
-import 'styles/circle_progress_painter.dart';
 import 'custom_card.dart';
+import 'styles/circle_progress_painter.dart';
 
 class PlayGameboardCard extends StatefulWidget {
   final List<String> teamNames;
@@ -488,6 +487,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       case "field_taboo":
         remainingTime = 40;
         break;
+      case "field_star_green":
+        remainingTime = 30;
+        break;
       default:
         remainingTime = 50; // Domyślny czas, jeśli cardType nie pasuje do żadnego przypadku
         break;
@@ -803,6 +805,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   Center(
                       //KARTA
                       child: CustomCard(
+                        onImageSet: _startTimer,
+                        teamColors: widget.teamColors,
+                    teamNames: widget.teamNames,
                     totalCards: totalCards,
                     starsColors: starsColors,
                     word: isTabooCard
@@ -830,7 +835,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Spacer(),
-                        (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark')
+                        (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green')
                             ? Stack(
                                 alignment: Alignment.center,
                                 children: [

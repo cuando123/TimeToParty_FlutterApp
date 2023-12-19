@@ -11,6 +11,7 @@ import 'package:game_template/src/play_session/extensions.dart';
 
 import '../../app_lifecycle/translated_text.dart';
 import '../../style/palette.dart';
+import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
 import 'drawing_screen.dart';
 
@@ -25,7 +26,10 @@ class CustomCard extends StatefulWidget {
   final String cardType;
   final List<String> buildFortuneItemsList;
   final Map<String, List<String>> specificLists;
+  final List<String> teamNames;
+  final List<Color> teamColors;
   final void Function(String result) onRollSlotMachineResult;
+  final Function onImageSet;
 
   const CustomCard({
     super.key,
@@ -39,6 +43,9 @@ class CustomCard extends StatefulWidget {
     required this.cardType,
     required this.buildFortuneItemsList,
     required this.onRollSlotMachineResult,
+    required this.teamColors,
+    required this.teamNames,
+    required this.onImageSet,
     this.specificLists = const {},
   });
 
@@ -140,6 +147,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return buildCustomCard(cardData);
   }
 
+
+  //green card start
   void _showCustomDialogGreen(BuildContext context) {
     List<String> cardTypes = ['draw_movie', 'draw_love_pos', 'draw_proverb'];
     String cardType = cardTypes[Random().nextInt(cardTypes.length)];
@@ -204,11 +213,35 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           context,
                           MaterialPageRoute(
                               builder: (context) => DrawingScreen(
-                                  itemToShow: itemToShow, category: cardType))); // Następnie przejdź do nowego ekranu
+                                  itemToShow: itemToShow, category: cardType, teamColors: widget.teamColors, teamNames: widget.teamNames))); // Następnie przejdź do nowego ekranu
                     }
                   },
                   child: Column(
                     children: [
+                      SizedBox(height: 20),
+                      InkWell(
+                        onTap: () {
+                          AnimatedAlertDialog.showCardDescriptionDialog(
+                              context, 'field_star_green', AlertOrigin.cardScreen)
+                              .then((_) {
+
+                          });
+                        },
+                        child: Container(
+                          child: CircleAvatar(
+                            radius: 18, // Dostosuj rozmiar w zależności od potrzeb
+                            backgroundColor: Color(0xFF2899F3),
+                            child: Text(
+                              '?',
+                              style: TextStyle(
+                                  color: Palette().white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontFamily: 'HindMadurai'),
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 20),
                       FortuneBar(
                           physics: CircularPanPhysics(
@@ -219,66 +252,71 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
                           styleStrategy: CustomStyleStrategy(),
                           visibleItemCount: 3,
-                          items: const [
+                          items: [
                             FortuneItem(child:
                             Column(children: [
-                              Icon(Icons.movie),
+                              Icon(Icons.movie, color: Palette().bluegrey),
                               Text('Filmy', textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
-                              Icon(Icons.man),
+                              Icon(Icons.man, color: Palette().bluegrey),
                               Text('Pozycje miłosne', textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
-                              Icon(Icons.message),
+                              Icon(Icons.message, color: Palette().bluegrey),
                               Text('Powiedzenia', textAlign: TextAlign.center,)
                             ],),),
                           ]),
-                      SizedBox(height: 20),
+                      SizedBox(height: 50),
                       Expanded(
                           child: showDelayedText
-                              ? Text(itemToShow, style: TextStyle(color: Colors.black))
-                              : Text('Losuje...', style: TextStyle(color: Colors.black))),
-                      ScaleTransition(
-                        scale: _pulseAnimation,
-                        child: CustomStyledButton(
-                          icon: Icons.play_arrow_rounded,
-                          text: 'Zacznij zadanie!', // Or use your translated text function
-                          onPressed: () {
-                            if (Navigator.canPop(context)) {
-                              // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                              Navigator.of(context).pop(); // Zamknij dialog
+                              ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center, // lub inny sposób wyrównania
+                            children: [
+                              letsText(context, itemToShow, 20, Palette().pink),
+                              SizedBox(height: 50),
+                              ScaleTransition(
+                                scale: _pulseAnimation,
+                                child: CustomStyledButton(
+                                  icon: Icons.play_arrow_rounded,
+                                  text: 'Zacznij zadanie!', // Or use your translated text function
+                                  onPressed: () {
+                                    if (Navigator.canPop(context)) {
+                                      // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                                      Navigator.of(context).pop(); // Zamknij dialog
+                                      // Następnie przejdź do nowego ekranu i oczekuj na wynik
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => DrawingScreen(
+                                          itemToShow: itemToShow,
+                                          category: cardType,teamColors: widget.teamColors, teamNames: widget.teamNames
+                                        ),
+                                      ))
+                                          .then((result) {
+                                        if (result is DrawingResult) {
+                                          print('zwracam obraz');
+                                          safeSetState(() {
+                                            // Przechowywanie obrazu w stanie, aby można było go wyświetlić
+                                            image = result.image;
+                                            widget.onImageSet(); // Wywołanie callbacku
+                                            // Wypisanie itemToShow i category w konsoli
+                                            print("Category: ${result.category}");
 
-                              // Następnie przejdź do nowego ekranu i oczekuj na wynik
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                builder: (context) => DrawingScreen(
-                                  itemToShow: itemToShow,
-                                  category: cardType,
+                                            // Możesz też przechować te wartości w stanie, jeśli będą używane w widgetach
+                                            category = result.category;
+                                          });
+                                        }
+                                      });
+                                    }
+                                  },
                                 ),
-                              ))
-                                  .then((result) {
-                                if (result is DrawingResult) {
-                                  print('zwracam');
-                                  safeSetState(() {
-                                    // Przechowywanie obrazu w stanie, aby można było go wyświetlić
-                                    image = result.image;
-
-                                    // Wypisanie itemToShow i category w konsoli
-                                    print("Category: ${result.category}");
-
-                                    // Możesz też przechować te wartości w stanie, jeśli będą używane w widgetach
-                                    category = result.category;
-                                  });
-                                }
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 10),
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          )
+                              : letsText(context, '...losowanie...', 20, Palette().pink)),
                     ],
                   ),
                 ),
@@ -315,6 +353,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                   children: [
                     SizedBox(height: 30),
                     //letsText(context, itemToShow, 20, Colors.white),
+                    letsText(context, 'Odgadnij:', 14, Colors.white, textAlign: TextAlign.center),
                     letsText(
                         context,
                         getTranslatedString(
@@ -339,7 +378,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                         ),
                       ),
                     ),),
-                    SizedBox(height: 30),
+                    SizedBox(height: 40),
                   ],
                 )
               : Center(child: Text("No images selected")), // Tu możesz umieścić dowolny widget, gdy obraz jest null
@@ -347,6 +386,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       ),
     );
   }
+  //green card end
 
   //blue dark card start
   void _showCustomDialog(BuildContext context) {

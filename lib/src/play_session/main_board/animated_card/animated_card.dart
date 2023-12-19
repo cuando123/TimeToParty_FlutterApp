@@ -12,21 +12,20 @@ import 'package:provider/provider.dart';
 import '../../../app_lifecycle/translated_text.dart';
 import '../../../audio/audio_controller.dart';
 import '../../../audio/sounds.dart';
-import '../../custom_style_buttons.dart';
 import 'animated_hand.dart';
 import 'animated_question_mark.dart';
 
 class AnimatedCard extends StatefulWidget {
   final Function onCardTapped;
   final Function onArrowCardTapped;
-  late final String selectedCardIndex;
+  final String selectedCardIndex;
   final BuildContext parentContext;
   final String currentTeamName;
   final Color teamColor;
   final bool showAnimatedCard;
   final Function(String) onCardSelected;
 
-  AnimatedCard(
+  const AnimatedCard(
       {super.key,
       required this.showAnimatedCard,
       required this.onCardTapped,

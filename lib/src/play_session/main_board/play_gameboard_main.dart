@@ -265,7 +265,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_arrows';
+                                                    selectedCardIndex = 'field_star_green';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },
