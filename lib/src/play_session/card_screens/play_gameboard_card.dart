@@ -124,9 +124,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (shouldStartTimerInitially()) {
-        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26, false);
         Future.delayed(Duration(milliseconds: 2000), () {
-          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 38);
+          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true);
           _startTimer();
         });
       }
@@ -255,7 +255,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         _prepareCurrentWordOrKey();
       });
     } else {
-      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20);
+      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false);
     }
 
     // Odblokuj przycisk po 300 milisekundach

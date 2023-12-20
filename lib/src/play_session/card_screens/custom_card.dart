@@ -393,15 +393,19 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: SizedBox(
+      //barrierColor: Colors.black.withOpacity(0.5), // Przyciemnienie tła
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Tło kontenera powinno być przezroczyste
+          child: Container(
             width: 300, // Szerokość dialogu
             height: 400, // Wysokość dialogu
+            decoration: BoxDecoration(
+              color: Colors.white, // kolor tła RollSlotMachine
+              borderRadius: BorderRadius.circular(15), // Zaokrąglenie rogów
+            ),
             child: RollSlotMachine(),
           ),
-          actions: const <Widget>[],
         );
       },
     ).then((returnedValue) {
@@ -415,6 +419,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       }
     });
   }
+
 
   List<Widget> createWidgetsFromText(String text) {
     RegExp regExp = RegExp(r'(\D+)(\d+)(\D+)');

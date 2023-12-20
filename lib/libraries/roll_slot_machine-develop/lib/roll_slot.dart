@@ -48,6 +48,7 @@ class _RollSlotState extends State<RollSlot> {
   late ScrollController _controller;
   List<Widget> currentList = [];
   int currentIndex = 0;
+  bool isUserScrollAllowed = true;
 
   @override
   void initState() {
@@ -67,7 +68,7 @@ class _RollSlotState extends State<RollSlot> {
   @override
   Widget build(BuildContext context) {
     return ListWheelScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: isUserScrollAllowed ? BouncingScrollPhysics() : NeverScrollableScrollPhysics(),
       itemExtent: widget.itemExtend,
       diameterRatio: widget.diameterRation,
       controller: _controller,
@@ -139,6 +140,9 @@ class _RollSlotState extends State<RollSlot> {
     if (widget.rollSlotController != null) {
       widget.rollSlotController!.currentIndex = random % widget.children.length;
     }
+    setState(() {
+      isUserScrollAllowed = false;
+    });
   }
 
   /// When [additionalListToEndAndStart] is true,

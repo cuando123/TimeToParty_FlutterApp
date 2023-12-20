@@ -81,7 +81,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     _controller.value = 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasShownAlertDialog) {
-        AnimatedAlertDialog.showAnimatedDialog(context, 'tap_the_wheel_to_spin', SfxType.correct_answer, 2, 20);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'tap_the_wheel_to_spin', SfxType.correct_answer, 2, 20, false);
         if (mounted) {
           _controller.forward(from: 0);
         }
@@ -265,7 +265,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    selectedCardIndex = 'field_star_green';
+                                                    selectedCardIndex = 'field_star_blue_dark';
                                                   });
                                                   // Tutaj możesz również wykonać inne akcje, takie jak navigateWithDelay
                                                 },

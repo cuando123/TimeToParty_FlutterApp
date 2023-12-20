@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
 import '../custom_style_buttons.dart';
 
 class RollSlotMachine extends StatefulWidget {
-
   const RollSlotMachine({super.key});
 
   @override
   _RollSlotMachineState createState() => _RollSlotMachineState();
 }
 
-
-class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProviderStateMixin{
+class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProviderStateMixin {
   final controller = StreamController<int>();
   final _rollSlotController = RollSlotController();
   final _rollSlotController1 = RollSlotController();
@@ -23,9 +22,9 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
   late AnimationController _pulseAnimationController;
   late Animation<double> _pulseAnimation;
   final random = Random();
-  bool isRollSlotVisible = false;
   bool isConfirmButtonVisible = false;
   bool isDrawButtonVisible = true;
+  double _shadowOpacity = 0.7;
 
   final List<String> emojiList1 = [
     'man',
@@ -79,32 +78,45 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    bool shouldDimBackground = isRollSlotVisible || isConfirmButtonVisible;
     return Scaffold(
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
-            if (isRollSlotVisible)
             Align(
               alignment: Alignment.center,
-                child: Row(
-                  children: [
+              child: Row(
+                children: [
+                  RollSlotWidget(
+                    emojiList: emojiList1,
+                    rollSlotController: _rollSlotController,
+                  ),
+                  if (size.width > 100)
                     RollSlotWidget(
-                      emojiList: emojiList1,
-                      rollSlotController: _rollSlotController,
+                      emojiList: emojiList2,
+                      rollSlotController: _rollSlotController1,
                     ),
-                    if (size.width > 100)
-                      RollSlotWidget(
-                        emojiList: emojiList2,
-                        rollSlotController: _rollSlotController1,
-                      ),
-                    if (size.width > 150)
-                      RollSlotWidget(
-                        emojiList: emojiList3,
-                        rollSlotController: _rollSlotController2,
-                      ),
-                  ],
+                  if (size.width > 150)
+                    RollSlotWidget(
+                      emojiList: emojiList3,
+                      rollSlotController: _rollSlotController2,
+                    ),
+                ],
+              ),
+            ),
+            if (isDrawButtonVisible)
+              Positioned.fill(
+                child: AnimatedOpacity(
+                  opacity: _shadowOpacity,
+                  duration: Duration(milliseconds: 300),
+                  child: !isDrawButtonVisible && isConfirmButtonVisible // Warunek na wyświetlenie CustomPaint
+                      ? CustomPaint(
+                    painter: ShadowPainter(),
+                    child: Container(),
+                  )
+                      : Container(
+                    color: Colors.black.withOpacity(0.8),
+                  ),
                 ),
               ),
             if (isDrawButtonVisible)
@@ -112,41 +124,44 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                 alignment: Alignment.center,
                 child: ScaleTransition(
                   scale: _pulseAnimation,
-                child: CustomStyledButton(
-                  icon: Icons.play_arrow_rounded, // Tutaj możesz wybrać odpowiednią ikonę
-                  text: 'Losuj!', // Tekst przycisku
-                  onPressed: () {
-                    setState(() {
-                      isRollSlotVisible = true;
-                      isDrawButtonVisible = false;
-                    });
-                    Future.delayed(Duration(milliseconds: 100), () {
-                      _rollSlotController.animateRandomly();
-                      if (size.width > 100) _rollSlotController1.animateRandomly();
-                      if (size.width > 150) _rollSlotController2.animateRandomly();
-                      if (size.width > 200) _rollSlotController3.animateRandomly();
-                    });
-                    Timer(Duration(seconds: 3), () {
+                  child: CustomStyledButton(
+                    icon: Icons.play_arrow_rounded, // Tutaj możesz wybrać odpowiednią ikonę
+                    text: 'Losuj!', // Tekst przycisku
+                    onPressed: () {
                       setState(() {
-                        isConfirmButtonVisible = true;
+                        isDrawButtonVisible = false;
                       });
-                    });
-                  },
-                ),),
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        _rollSlotController.animateRandomly();
+                        if (size.width > 100) _rollSlotController1.animateRandomly();
+                        if (size.width > 150) _rollSlotController2.animateRandomly();
+                        if (size.width > 200) _rollSlotController3.animateRandomly();
+                      });
+                      Timer(Duration(seconds: 3), () {
+                        setState(() {
+                          isConfirmButtonVisible = true;
+                          _shadowOpacity = 0.7;
+                        });
+                      });
+                    },
+                  ),
+                ),
               ),
             Visibility(
               visible: isConfirmButtonVisible,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ScaleTransition(
-                  scale: _pulseAnimation,
-                  child:
-                  CustomStyledButton(
-                    icon: Icons.play_arrow_rounded,
-                    text: 'Zacznij zadanie!', // Or use your translated text function
-                    onPressed: () {
-                      Navigator.of(context).pop(getText());
-                    },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0), // Dodaje padding na dole
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ScaleTransition(
+                    scale: _pulseAnimation,
+                    child: CustomStyledButton(
+                      icon: Icons.play_arrow_rounded,
+                      text: 'Zacznij zadanie!',
+                      onPressed: () {
+                        Navigator.of(context).pop(getText());
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -154,7 +169,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
           ],
         ),
       ),
-          );
+    );
   }
 
   String getText() {
@@ -166,11 +181,10 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
 }
 
 class RollSlotWidget extends StatelessWidget {
-  List<String> emojiList= [];
+  List<String> emojiList = [];
   final RollSlotController rollSlotController;
 
-  RollSlotWidget(
-      {super.key, required this.emojiList, required this.rollSlotController});
+  RollSlotWidget({super.key, required this.emojiList, required this.rollSlotController});
 
   @override
   Widget build(BuildContext context) {
@@ -179,19 +193,19 @@ class RollSlotWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Flexible(
-      child: RollSlot(
-                  duration: Duration(milliseconds: 4000),
-                  itemExtend: 150,
-                  shuffleList: false,
-                  rollSlotController: rollSlotController,
-                  children: emojiList.map(
-                        (e) {
-                      return BuildItem(
-                        emoji: e,
-                      );
-                    },
-                  ).toList()),
-            ),
+            child: RollSlot(
+                duration: Duration(milliseconds: 4000),
+                itemExtend: 150,
+                shuffleList: false,
+                rollSlotController: rollSlotController,
+                children: emojiList.map(
+                  (e) {
+                    return BuildItem(
+                      emoji: e,
+                    );
+                  },
+                ).toList()),
+          ),
         ],
       ),
     );
@@ -210,17 +224,13 @@ class BuildItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: Colors.white,
         boxShadow: [
-          BoxShadow(
-              color: Colors.deepPurple.withOpacity(.2), offset: Offset(5, 5)),
-          BoxShadow(
-              color: Colors.deepPurple.withOpacity(.2), offset: Offset(-5, -5)),
+          BoxShadow(color: Colors.black.withOpacity(.2), offset: Offset(5, 5)),
+          //BoxShadow(color: Colors.deepPurple.withOpacity(.2), offset: Offset(-5, -5)),
         ],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.deepPurple
-        ),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.deepPurple, width: 3),
       ),
       alignment: Alignment.center,
       child: getImageForCode(emoji),
@@ -255,6 +265,25 @@ class BuildItem extends StatelessWidget {
       );
     }
   }
+}
 
+class ShadowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Rysowanie przyciemnionego tła
+    var rect = Offset.zero & size;
+    var paint = Paint()..color = Colors.black.withOpacity(0.7);
+    canvas.drawRect(rect, paint);
 
+    // Rysowanie białego paska
+    var barPaint = Paint()..color = Colors.white;
+    var barHeight = 50.0; // Wysokość białego paska
+    var barRect = Rect.fromLTWH(0, (size.height - barHeight) / 2, size.width, barHeight);
+    canvas.drawRect(barRect, barPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }

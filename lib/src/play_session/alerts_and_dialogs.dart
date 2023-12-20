@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,30 +16,49 @@ import 'custom_style_buttons.dart';
 
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
-  static void showAnimatedDialog(BuildContext context, String text, SfxType soundType, int delay, double textHeight) {
+  static void showAnimatedDialog(
+      BuildContext context,
+      String text,
+      SfxType soundType,
+      int delay,
+      double textHeight,
+      bool showBackground) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
-      barrierColor: Colors.black45,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
+        Widget dialogContent = AlertDialog(
+          backgroundColor: showBackground ? Colors.transparent : Palette().white,
+          elevation: 0,
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(context, text, textHeight, Palette().pink, textAlign: TextAlign.center),
+        );
+
+        if (showBackground) {
+          dialogContent = Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset('assets/time_to_party_assets/tlo.svg'), // Załaduj tło
+              Transform.rotate(
+                angle: -pi / 180 * 5, // Obrót o kilka stopni
+                child: dialogContent,
+              ),
+            ],
+          );
+        }
+
         return WillPopScope(
-            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
-        child: Center(
-          child: AlertDialog(
-            backgroundColor: Palette().white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: translatedText(context, text, textHeight, Palette().pink, textAlign: TextAlign.center),
-          ),),
+          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          child: Center(child: dialogContent),
         );
       },
-      transitionBuilder:
-          (context, animation, secondaryAnimation, child) {
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           final audioController = context.watch<AudioController>();
           audioController.playSfx(soundType);

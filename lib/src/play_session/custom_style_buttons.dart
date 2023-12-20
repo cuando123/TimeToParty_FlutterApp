@@ -21,6 +21,7 @@ class CustomStyledButton extends StatelessWidget {
           fontSize: ResponsiveSizing.scaleHeight(context, 20),
           color: Palette().white,
         ),
+        textAlign: TextAlign.center,
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Palette().pink,
