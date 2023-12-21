@@ -80,19 +80,6 @@ class InstructionDialog extends StatelessWidget {
                         translatedText(context, 'instruction_dialog_mistakes',
                             16, Palette().menudark),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'taboo_words', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_star_blue_dark.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_taboo_fields',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
                         SvgPicture.asset(
                             'assets/time_to_party_assets/instruction_cards_linear_2.svg'),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -101,6 +88,19 @@ class InstructionDialog extends StatelessWidget {
                         translatedText(context, 'instruction_dialog_words_forms',
                             16, Palette().menudark),
                        ResponsiveSizing.responsiveWidthGap(context, 10),
+                        Row(
+                          children: [
+                            translatedText(
+                                context, 'taboo_words', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            SvgPicture.asset(
+                                'assets/time_to_party_assets/field_taboo.svg'),
+                          ],
+                        ),
+                        ResponsiveSizing.responsiveWidthGap(context, 10),
+                        translatedText(context, 'instruction_dialog_taboo_fields',
+                            16, Palette().menudark),
+                        ResponsiveSizing.responsiveWidthGap(context, 10),
                         Row(
                           children: [
                             translatedText(
@@ -151,8 +151,7 @@ class InstructionDialog extends StatelessWidget {
                         ),
                         ResponsiveSizing.responsiveWidthGap(context, 10),
                         translatedText(context, 'instruction_dialog_famous_people',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
+                            16, Palette().menudark),                        ResponsiveSizing.responsiveWidthGap(context, 10),
                         Row(
                           children: [
                             translatedText(
