@@ -219,7 +219,7 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: letsText(context, 'Czy zadanie zostało wykonane?', 20, Palette().pink, textAlign: TextAlign.center),
+            title: translatedText(context, 'has_the_task_been_completed', 20, Palette().pink, textAlign: TextAlign.center),
             actions: <Widget>[
               SvgButton(
                 assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
@@ -260,7 +260,6 @@ class AnimatedAlertDialog {
   }
 
   static Future<void> showCardDescriptionDialog(BuildContext context, String cardIndex, AlertOrigin origin) async {
-    //TO_DO jezeli ekran karty bedzie to wtedy dodamy do tego dialogu mozliwosc zgloszenia bledu poprzez stronke
     final audioController = context.read<AudioController>();
     audioController.playSfx(SfxType.button_infos);
     final Map<String, Widget> fieldDescriptions = {
@@ -287,7 +286,6 @@ class AnimatedAlertDialog {
     };
 
     final Map<String, String> fieldTitlesDb = {
-      //TO_DO do ustawienia w bazie tutaj beda jeszcze nazwy przy tlumaczeniach
       'field_arrows': "choose_card",
       'field_sheet': "rymes",
       'field_letters': "alphabet",
@@ -335,14 +333,14 @@ class AnimatedAlertDialog {
                   ],
                   if (origin == AlertOrigin.cardScreen) ...[
                     ResponsiveSizing.responsiveHeightGap(context, 10),
-                    letsText(context, 'Znalazłeś błąd? Zgłoś go nam! Będziemy wdzięczni!', 12, Palette().darkGrey, textAlign: TextAlign.center),
+                    translatedText(context, 'found_a_mistake_report_it', 12, Palette().darkGrey, textAlign: TextAlign.center),
                     CustomStyledButton(
                       icon: Icons.edit,
                       onPressed: () {
                         Navigator.of(context).pop();
                         showExitDialog(context);
                       },
-                      text: "Zglos",
+                      text: getTranslatedString(context, 'report_a_bug'),
                     ),
                   ],
                 ],
@@ -399,7 +397,7 @@ class AnimatedAlertDialog {
                       await launchUrlString(url,
                           mode: LaunchMode.externalApplication);
                     } else {
-                      throw 'Nie można otworzyć $url';
+                      throw 'Could not launch $url';
                     }
                   },
                   child: Text('OK'),

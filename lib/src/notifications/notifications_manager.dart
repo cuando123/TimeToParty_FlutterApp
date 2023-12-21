@@ -1,8 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../app_lifecycle/translated_text.dart';
+
 class NotificationsManager {
+  BuildContext context;
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
@@ -10,7 +15,7 @@ class NotificationsManager {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  NotificationsManager() {
+  NotificationsManager(this.context) {
     tz.initializeTimeZones();
     initializeNotifications();
   }
@@ -38,8 +43,9 @@ class NotificationsManager {
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        'Hej! Dawno Cię u nas nie było!',
-        'Co ty na to aby zagrać?',
+        //TO_DO do rozkminy aby działało bez build contextu, lub trzeba dodać tu context
+        getTranslatedString(context, 'weekly_notification_up'),
+        getTranslatedString(context, 'weekly_notification_down'),
         _nextInstanceOfMonday1900(),
         platformChannelSpecifics,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

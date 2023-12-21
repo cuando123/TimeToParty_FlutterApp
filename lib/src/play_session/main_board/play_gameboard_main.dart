@@ -369,7 +369,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starGreen: 1,
     FieldType.starYellow: 1,
   };
-//TO_DO tlumaczenia
+
   final Map<String, String> fieldDescriptions = {
     'field_arrows': 'field_arrows_description',
     'field_sheet': 'field_sheet_description',

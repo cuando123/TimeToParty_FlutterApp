@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
+import '../../app_lifecycle/translated_text.dart';
 import '../custom_style_buttons.dart';
 
 class RollSlotMachine extends StatefulWidget {
@@ -43,10 +44,10 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
     '10',
   ];
   final List<String> emojiList3 = [
-    'pompki',
-    'przysiady',
-    'brzuszki',
-    'pajacyki',
+    'push-ups',
+    'squats',
+    'sit-ups',
+    'jumping_jacks',
   ];
 
   @override
@@ -126,7 +127,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                   scale: _pulseAnimation,
                   child: CustomStyledButton(
                     icon: Icons.play_arrow_rounded, // Tutaj możesz wybrać odpowiednią ikonę
-                    text: 'Losuj!', // Tekst przycisku
+                    text: getTranslatedString(context, 'randomize'), // Tekst przycisku
                     onPressed: () {
                       setState(() {
                         isDrawButtonVisible = false;
@@ -157,7 +158,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                     scale: _pulseAnimation,
                     child: CustomStyledButton(
                       icon: Icons.play_arrow_rounded,
-                      text: 'Zacznij zadanie!',
+                      text: getTranslatedString(context, 'start_the_task'),
                       onPressed: () {
                         Navigator.of(context).pop(getText());
                       },
@@ -233,17 +234,17 @@ class BuildItem extends StatelessWidget {
         border: Border.all(color: Colors.deepPurple, width: 3),
       ),
       alignment: Alignment.center,
-      child: getImageForCode(emoji),
+      child: getImageForCode(context, emoji),
     );
   }
 
-  Widget getImageForCode(String code) {
+  Widget getImageForCode(BuildContext context, String code) {
     // Mapowanie kodów do ścieżek obrazków
     Map<String, String> codeToImagePath = {
-      'pompki': 'assets/time_to_party_assets/activities/pushups.png',
-      'przysiady': 'assets/time_to_party_assets/activities/squats.png',
-      'brzuszki': 'assets/time_to_party_assets/activities/situps.png',
-      'pajacyki': 'assets/time_to_party_assets/activities/jumping_jacks.png',
+      'push-ups': 'assets/time_to_party_assets/activities/pushups.png',
+      'squats': 'assets/time_to_party_assets/activities/squats.png',
+      'sit-ups': 'assets/time_to_party_assets/activities/situps.png',
+      'jumping_jacks': 'assets/time_to_party_assets/activities/jumping_jacks.png',
       'man': 'assets/time_to_party_assets/activities/man.png',
       'woman': 'assets/time_to_party_assets/activities/woman.png',
     };
@@ -259,7 +260,7 @@ class BuildItem extends StatelessWidget {
     } else {
       // Jeśli obrazek nie istnieje, zwróć Text z kodem
       return Text(
-        code,
+        getTranslatedString(context, code),
         key: Key(code),
         style: TextStyle(fontSize: 50),
       );

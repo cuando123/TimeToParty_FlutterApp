@@ -256,17 +256,17 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             FortuneItem(child:
                             Column(children: [
                               Icon(Icons.movie, color: Palette().bluegrey),
-                              Text('Filmy', textAlign: TextAlign.center,)
+                              translatedText(context, 'movies', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
                               Icon(Icons.man, color: Palette().bluegrey),
-                              Text('Pozycje miłosne', textAlign: TextAlign.center,)
+                              translatedText(context, 'love_positions', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
                               Icon(Icons.message, color: Palette().bluegrey),
-                              Text('Powiedzenia', textAlign: TextAlign.center,)
+                              translatedText(context, 'proverbs', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
                           ]),
                       SizedBox(height: 50),
@@ -316,7 +316,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               SizedBox(height: 20),
                             ],
                           )
-                              : letsText(context, '...losowanie...', 20, Palette().pink)),
+                              : translatedText(context, 'randomizing', 20, Palette().pink)),
                     ],
                   ),
                 ),
@@ -353,7 +353,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                   children: [
                     SizedBox(height: 30),
                     //letsText(context, itemToShow, 20, Colors.white),
-                    letsText(context, 'Odgadnij:', 14, Colors.white, textAlign: TextAlign.center),
+                    translatedText(context, 'guess', 14, Colors.white, textAlign: TextAlign.center),
                     letsText(
                         context,
                         getTranslatedString(
@@ -438,10 +438,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
       // Mapowanie aktywności na obrazki
       Map<String, String> activityToImage = {
-        'pajacyki': 'assets/time_to_party_assets/activities/jumping_jacks.png',
-        'brzuszki': 'assets/time_to_party_assets/activities/situps.png',
-        'pompki': 'assets/time_to_party_assets/activities/pushups.png',
-        'przysiady': 'assets/time_to_party_assets/activities/squats.png',
+        'jumping_jacks': 'assets/time_to_party_assets/activities/jumping_jacks.png',
+        'sit-ups': 'assets/time_to_party_assets/activities/situps.png',
+        'push-ups': 'assets/time_to_party_assets/activities/pushups.png',
+        'squats': 'assets/time_to_party_assets/activities/squats.png',
       };
 
       return [
@@ -454,7 +454,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       ];
     }
 
-    return [_getTextWidget('Niepoprawny format')];
+    return [_getTextWidget('Wrong format!')];
   }
 
   Widget _getTextWidget(String text) {

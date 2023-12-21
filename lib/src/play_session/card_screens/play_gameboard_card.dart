@@ -827,7 +827,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 ],
               ),
               //SizedBox(height: 10),
-              Text('Karta ${currentCardIndex + 1} z $totalCards',
+              Text('${getTranslatedString(context, 'card')} ${currentCardIndex + 1} ${getTranslatedString(context, 'z_of_di_de_von_sur')} $totalCards',
                   style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
               SizedBox(height: 10),
               (widget.currentField[0] != "field_star_yellow")
@@ -890,7 +890,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   : CustomStyledButton(
                       icon: Icons.arrow_forward_outlined,
                       onPressed: () {},
-                      text: "Kontynuuj"), //przejscie do nastepnej karty, button ekran czy cos
+                      text: getTranslatedString(context, 'translationKey'),
+              ),//przejscie do nastepnej karty, button ekran czy cos
             ],
           ),
         ),

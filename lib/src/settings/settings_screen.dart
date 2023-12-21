@@ -149,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   String translatedBody = getTranslatedString(context, 'weekly_notification_down');
                   tz.initializeTimeZones();
                   NotificationsManager notificationsManager =
-                  NotificationsManager();
+                  NotificationsManager(context);
                   WidgetsFlutterBinding.ensureInitialized();
                   await notificationsManager.initializeNotifications();
                   await notificationsManager.showNotificationNow(translatedTitle, translatedBody);

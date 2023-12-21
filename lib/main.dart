@@ -276,7 +276,7 @@ class MyApp extends StatelessWidget {
                     },
                   ),
                   Provider(
-                    create: (_) => NotificationsManager(),
+                    create: (_) => NotificationsManager(context),
                   ),
                   Provider<GamesServicesController?>.value(
                       value: gamesServicesController),

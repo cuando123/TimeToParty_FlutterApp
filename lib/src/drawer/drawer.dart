@@ -416,7 +416,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       await launchUrlString(url,
                           mode: LaunchMode.externalApplication);
                     } else {
-                      throw 'Nie można otworzyć $url';
+                      throw 'Could not launch $url';
                     }
                   },
                   child: Text('OK'),

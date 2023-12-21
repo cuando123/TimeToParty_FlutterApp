@@ -53,7 +53,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
               children: [
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: letsText(context, "Przesuwając lewo - prawo wybierz jedną z poniższych kart:", 18, Palette().darkGrey, textAlign: TextAlign.center)
+                    child: translatedText(context, "moving_left_right_swipe_card", 18, Palette().darkGrey, textAlign: TextAlign.center)
                 ),
                 Wrap(
                   spacing: 15.0, // odstęp między elementami poziomo

@@ -126,7 +126,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
               const SizedBox(height: 10),
               Row(
                 mainAxisSize: MainAxisSize.min,
-                children: createRowItems(),
+                children: createRowItems(context),
               ),
               const SizedBox(height: 10),
           Row(mainAxisSize: MainAxisSize.min,
@@ -199,7 +199,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     onPressed: () {
                       if (!_drawController.undo()) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("No actions to undo"),
+                          content: Text(getTranslatedString(context, 'no_actions_to_undo')),
                         ));
                       }
                     },
@@ -214,7 +214,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     onPressed: () {
                       if (!_drawController.redo()) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("No actions to redo"),
+                          content: Text(getTranslatedString(context, 'no_actions_to_redo')),
                         ));
                       }
                     },
@@ -238,7 +238,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
               const SizedBox(height: 10),
               buildBrushSizeSlider(),
               const SizedBox(height: 10),
-              CustomStyledButton(icon: Icons.play_arrow_rounded, text: 'Zgaduję!', onPressed: _convertAndNavigate),
+              CustomStyledButton(icon: Icons.play_arrow_rounded, text: getTranslatedString(context, 'im_guessing'), onPressed: _convertAndNavigate),
               const SizedBox(height: 40),
             ],
           ),
@@ -247,11 +247,11 @@ class _DrawingScreenState extends State<DrawingScreen> {
     );
   }
 
-  static List<Widget> createRowItems() {
+  static List<Widget> createRowItems(BuildContext context) {
     List<Widget> rowItems = [];
     rowItems.add(
       Text(
-        'Rysowanie',
+        getTranslatedString(context, 'drawing'),
         style: TextStyle(
           fontFamily: 'HindMadurai',
           fontSize: 30.0,
