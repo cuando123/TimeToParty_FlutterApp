@@ -667,7 +667,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                           .map((word) => Text(
                                                 word,
                                                 style: TextStyle(
-                                                    fontFamily: 'HindMadurai', color: Colors.white, fontSize: 24),
+                                                    fontFamily: 'HindMadurai', color: Colors.white, fontSize: word.length > 15 ? 20 : 24),
                                                 softWrap: true,
                                               ))
                                           .toList(),
