@@ -8,11 +8,12 @@ class CustomStyleStrategy extends StyleStrategy {
     final colors = [Colors.purple, Colors.blue, Colors.pink, Colors.yellow];
     final backgroundColor = colors[index % colors.length];
     const textColor = Colors.white;
+    const borderColor = Colors.deepPurpleAccent;
 
     return FortuneItemStyle(
       color: backgroundColor,
-      borderColor: textColor,
-      borderWidth: 3,
+      borderColor: borderColor,
+      borderWidth: 5,
       textStyle: theme.textTheme.titleLarge!.copyWith(
         color: textColor,
         fontWeight: FontWeight.bold,

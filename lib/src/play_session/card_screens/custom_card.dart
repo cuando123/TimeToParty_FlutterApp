@@ -30,6 +30,7 @@ class CustomCard extends StatefulWidget {
   final List<Color> teamColors;
   final void Function(String result) onRollSlotMachineResult;
   final Function onImageSet;
+  final Function onSelectionMade;
 
   const CustomCard({
     super.key,
@@ -46,6 +47,7 @@ class CustomCard extends StatefulWidget {
     required this.teamColors,
     required this.teamNames,
     required this.onImageSet,
+    required this.onSelectionMade,
     this.specificLists = const {},
   });
 
@@ -72,6 +74,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   ui.Image? image;
   String itemToShow = "";
   String category = "";
+  int? selectedValuePerson1;
+  int? selectedValuePerson2;
 
   @override
   void initState() {
@@ -96,6 +100,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     _alphabetController.close();
     _pulseAnimationController.dispose();
     super.dispose();
+  }
+  void handleContinueButtonPressed() {
+    selectedValuePerson1 = selectedValue;
+    AnimatedAlertDialog.passTheDeviceNextPersonDialog(context);
   }
 
   List<String> splitText(String text) {
@@ -244,6 +252,17 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                       ),
                       SizedBox(height: 20),
                       FortuneBar(
+                        height: 70,
+                          indicators:  const <FortuneIndicator>[
+                            FortuneIndicator(
+                              alignment: Alignment.topCenter,
+                              child: RectangleIndicator(
+                                color: Colors.transparent,
+                                borderColor: Colors.yellow,
+                                borderWidth: 3,
+                              ),
+                            ),
+                          ],
                           physics: CircularPanPhysics(
                             duration: Duration(seconds: 1),
                             curve: Curves.decelerate,
@@ -253,18 +272,21 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           styleStrategy: CustomStyleStrategy(),
                           visibleItemCount: 3,
                           items: [
-                            FortuneItem(child:
+                        FortuneItem(child:
                             Column(children: [
+                              SizedBox(height: 5),
                               Icon(Icons.movie, color: Palette().bluegrey),
                               translatedText(context, 'movies', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
+                              SizedBox(height: 5),
                               Icon(Icons.man, color: Palette().bluegrey),
                               translatedText(context, 'love_positions', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
                             FortuneItem(child:
                             Column(children: [
+                              SizedBox(height: 5),
                               Icon(Icons.message, color: Palette().bluegrey),
                               translatedText(context, 'proverbs', 14, Colors.white, textAlign: TextAlign.center,)
                             ],),),
@@ -275,13 +297,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               ? Column(
                             crossAxisAlignment: CrossAxisAlignment.center, // lub inny sposób wyrównania
                             children: [
-                              letsText(context, itemToShow, 20, Palette().pink),
+                              letsText(context, itemToShow, 20, Palette().pink, textAlign: TextAlign.center),
                               SizedBox(height: 50),
                               ScaleTransition(
                                 scale: _pulseAnimation,
                                 child: CustomStyledButton(
                                   icon: Icons.play_arrow_rounded,
-                                  text: 'Zacznij zadanie!', // Or use your translated text function
+                                  text: getTranslatedString(context, 'start_the_task'), // Or use your translated text function
                                   onPressed: () {
                                     if (Navigator.canPop(context)) {
                                       // Sprawdź, czy możesz wyjść z obecnego kontekstu
@@ -422,13 +444,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
 
   List<Widget> createWidgetsFromText(String text) {
-    RegExp regExp = RegExp(r'(\D+)(\d+)(\D+)');
-    RegExpMatch? match = regExp.firstMatch(text);
+    // Podziel tekst przy każdym wystąpieniu średnika
+    List<String> parts = text.split(';');
 
-    if (match != null) {
-      String person = match.group(1) ?? '';
-      String number = match.group(2) ?? '';
-      String activity = match.group(3) ?? '';
+    if (parts.length >= 3) {
+      String person = parts[0].trim();
+      String number = parts[1].trim();
+      String activity = parts[2].trim();
 
       // Mapowanie tekstów na obrazki osób
       Map<String, String> personToImage = {
@@ -446,16 +468,17 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
       return [
         _getImageWidget(personToImage[person] ?? ''),
-        _getTextWidget(person == 'woman' ? 'kobieta' : 'mężczyzna'),
-        _getTextWidget('robi'),
+        _getTextWidget(person == 'woman' ? getTranslatedString(context, 'woman') : getTranslatedString(context, 'man')),
+        _getTextWidget(getTranslatedString(context, 'does')),
         _getTextWidget(number),
         _getImageWidget(activityToImage[activity] ?? ''),
-        _getTextWidget(activity)
+        _getTextWidget(getTranslatedString(context,activity) )
       ];
     }
 
     return [_getTextWidget('Wrong format!')];
   }
+
 
   Widget _getTextWidget(String text) {
     return Text(
@@ -576,21 +599,18 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   // Dla pierwszego elementu wyświetl tylko tekst
                                   return Padding(
                                     padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-                                    child: Text(widget.buildFortuneItemsList[index],
-                                        style: TextStyle(color: Colors.white, fontSize: 14)),
+                                    child: letsText(context, widget.buildFortuneItemsList[index], 14, Colors.white, textAlign: TextAlign.center)
                                   );
                                 } else {
                                   // Dla pozostałych elementów użyj RadioListTile
                                   return RadioListTile<int>(
-                                    title: Text(
-                                      widget.buildFortuneItemsList[index],
-                                      style: TextStyle(color: Colors.white, fontSize: 14),
-                                    ),
+                                    title: letsText(context, widget.buildFortuneItemsList[index], 14, Colors.white),
                                     value: index,
                                     groupValue: selectedValue,
                                     onChanged: (value) {
                                       setState(() {
                                         selectedValue = value!;
+                                        onSelectionMade(selectedValue);
                                       });
                                     },
                                     activeColor: Colors.white,
@@ -803,5 +823,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         );
       },
     );
+  }
+
+  void onSelectionMade(int selectedValue) {
+
+
   }
 }

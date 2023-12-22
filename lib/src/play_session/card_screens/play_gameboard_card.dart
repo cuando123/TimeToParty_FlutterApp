@@ -138,7 +138,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   bool shouldStartTimerInitially() {
     // Zwraca true, jeśli nie jest to ani 'field_star_blue_dark', ani 'field_star_green'
-    return widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green';
+    return widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green' && widget.currentField[0] != 'field_star_yellow';
   }
 
   void _prepareCurrentWordOrKey() {
@@ -429,25 +429,26 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   void handleRollSlotMachineResult(String result) {
     safeSetState(() {
-      var textFromRollSlotMachine = result;
       print('mam cie kolego xd $result');
 
-      // Użyj wyrażenia regularnego do znalezienia wszystkich liczb w tekście
-      RegExp regExp = RegExp(r'\d+');
-      Iterable<RegExpMatch> matches = regExp.allMatches(result);
+      // Podziel tekst przy każdym wystąpieniu średnika
+      List<String> parts = result.split(';');
 
-      if (matches.isNotEmpty) {
-        // Pobierz pierwsze dopasowanie (liczbę) i przekształć je na int
-        String numberString = matches.first.group(0) ?? '';
-        int number = int.tryParse(numberString) ?? 0;
+      if (parts.length >= 2) {
+        // Zakładamy, że liczba znajduje się w drugiej części (po pierwszym średniku)
+        String numberString = parts[1];
+        int number = int.tryParse(numberString.trim()) ?? 0;
 
         print('Znaleziona liczba: $number');
 
         initialTime = remainingTime = number * 2;
         _startTimer();
+      } else {
+        print('Nie znaleziono odpowiedniego formatu danych');
       }
     });
   }
+
 
 // animacja time up
   void _showTimeUpAnimation() {
@@ -757,6 +758,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
               Stack(
                 alignment: Alignment.center,
                 children: [
+                  widget.currentField[0] != 'field_star_yellow' ?
                   SizedBox(
                     height: 60, // Dostosuj wysokość tak, aby pasowała do Twojego projektu
                     child: remainingTime > 0
@@ -778,13 +780,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                 child: FadeTransition(
                                   opacity: _timeUpFadeOutAnimation,
                                   child: Text(
-                                    "Koniec czasu!",
+                                    getTranslatedString(context, 'times_up'),
                                     style: TextStyle(fontSize: 20, color: Colors.white),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                  ) : Container(
+                    child: SizedBox(height: 15.0)
                   ),
                   Positioned(
                     top: 15, // Pozycjonowanie tekstu w centrum SizedBox
@@ -805,6 +809,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   Center(
                       //KARTA
                       child: CustomCard(
+                        onSelectionMade: (selectedValue) {
+    var selectedValuePerson1 = selectedValue;
+    // Wywołanie dialogu lub innej logiki
+    },
                         onImageSet: _startTimer,
                         teamColors: widget.teamColors,
                     teamNames: widget.teamNames,
@@ -889,8 +897,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     )
                   : CustomStyledButton(
                       icon: Icons.arrow_forward_outlined,
-                      onPressed: () {},
-                      text: getTranslatedString(context, 'translationKey'),
+                      onPressed: () {
+                        AnimatedAlertDialog.passTheDeviceNextPersonDialog(context);
+                        },
+                      text: getTranslatedString(context, 'continue'),
               ),//przejscie do nastepnej karty, button ekran czy cos
             ],
           ),
@@ -959,18 +969,21 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     return displayWidgets;
   }
 
-  final Map<String, String> fieldTypeTranslations = {
-    'field_arrows': 'Wybór',
-    'field_sheet': 'Rymowanie',
-    'field_letters': 'Alfabet',
-    'field_pantomime': 'Pantomimy',
-    'field_microphone': 'Sławne osoby',
-    'field_taboo': 'Taboo',
-    'field_star_blue_dark': 'Trochę ruchu',
-    'field_star_pink': 'Antonimy',
-    'field_star_green': 'Rysowanie',
-    'field_star_yellow': 'Pytania',
-  };
+  Map<String, String> getFieldTypeTranslations(BuildContext context) {
+    return {
+      'field_arrows': getTranslatedString(context, 'choose_the_card'),
+      'field_sheet': getTranslatedString(context, 'rymes'),
+      'field_letters': getTranslatedString(context, 'alphabet'),
+      'field_pantomime': getTranslatedString(context, 'pantomime'),
+      'field_microphone': getTranslatedString(context, 'famous_people'),
+      'field_taboo': getTranslatedString(context, 'taboo_words'),
+      'field_star_blue_dark': getTranslatedString(context, 'physical_challenge'),
+      'field_star_pink': getTranslatedString(context, 'antonimes'),
+      'field_star_green': getTranslatedString(context, 'drawing'),
+      'field_star_yellow': getTranslatedString(context, 'compare_questions'),
+    };
+  }
+
 
   final Map<String, String> fieldTypeImagePaths = {
     'field_arrows': 'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',
@@ -989,7 +1002,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     List<Widget> displayWidgets = [];
 
     for (String fieldType in widget.currentField) {
-      String currentTitle = fieldTypeTranslations[fieldType] ?? fieldType;
+      Map<String, String> translations = getFieldTypeTranslations(context);
+      String currentTitle = translations[fieldType] ?? fieldType;
       String? currentImagePath = fieldTypeImagePaths[fieldType];
 
       List<Widget> rowItems = [];

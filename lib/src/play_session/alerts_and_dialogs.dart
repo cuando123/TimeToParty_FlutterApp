@@ -419,5 +419,77 @@ class AnimatedAlertDialog {
       },
     );
   }
+
+  static void passTheDeviceNextPersonDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (buildContext, animation, secondaryAnimation) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: translatedText(context, 'pass_the_device_next_person', 20, Palette().pink, textAlign: TextAlign.center),
+            actions: <Widget>[
+           SizedBox(
+          height: MediaQuery.of(context).size.height * 0.3,
+             child:
+              Center(child:
+              CustomStyledButton(
+                icon: Icons.arrow_forward,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                    var selectedValue = null;
+                },
+                text: getTranslatedString(context, 'done'),
+              ),),),
+            ],
+          ),
+        );
+      },
+      transitionBuilder:
+          (context, animation, secondaryAnimation, child) {
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+
+  void showResultDialog(BuildContext context, bool isMatch) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Wynik"),
+          content: Text(isMatch
+              ? "Brawo, odpowiedzi są takie same, myślicie podobnie - zdobywacie 5 punktów"
+              : "Uppss, niestety nie zdobywacie punktów, myślicie inaczej"),
+          actions: <Widget>[
+            CustomStyledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              }, icon: null, text: 'OK',
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 enum AlertOrigin { cardScreen, otherScreen }

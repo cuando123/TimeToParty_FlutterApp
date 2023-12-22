@@ -174,9 +174,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
   }
 
   String getText() {
-    final String x = emojiList1.elementAt(_rollSlotController.currentIndex) +
-        emojiList2.elementAt(_rollSlotController1.currentIndex) +
-        emojiList3.elementAt(_rollSlotController2.currentIndex);
+    final String x = '${emojiList1.elementAt(_rollSlotController.currentIndex)};${emojiList2.elementAt(_rollSlotController1.currentIndex)};${emojiList3.elementAt(_rollSlotController2.currentIndex)}';
     return x;
   }
 }
@@ -260,7 +258,7 @@ class BuildItem extends StatelessWidget {
     } else {
       // Jeśli obrazek nie istnieje, zwróć Text z kodem
       return Text(
-        getTranslatedString(context, code),
+        code,
         key: Key(code),
         style: TextStyle(fontSize: 50),
       );
