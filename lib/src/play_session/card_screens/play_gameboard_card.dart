@@ -60,6 +60,14 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   late String currentWordOrKey;
   late List<String> _fortuneItemsList;
   bool isAlertOpened = false;
+  int? tempValuePerson1 = 0;
+  int? selectedValuePerson1 = 0;
+  int? selectedValuePerson2 = 0;
+  String? selectedTextPerson1;
+  String? selectedTextPerson2;
+  bool pressedTwice = false;
+  bool isMatch = false;
+  int? resetSelection = -1;
 
   @override
   void initState() {
@@ -129,6 +137,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true);
           _startTimer();
         });
+      }
+      if (widget.currentField[0] == 'field_star_yellow'){
+        AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'man', 'player_one_starts');
       }
     });
 
@@ -809,10 +820,21 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   Center(
                       //KARTA
                       child: CustomCard(
-                        onSelectionMade: (selectedValue) {
-    var selectedValuePerson1 = selectedValue;
-    // Wywołanie dialogu lub innej logiki
-    },
+                        resetSelection: resetSelection,
+                        onSelectionMade: (selectedValue, selectedText) {
+                          setState(() {
+                            resetSelection = selectedValue;
+                            if (pressedTwice == false){
+                              selectedValuePerson1 = selectedValue;
+                              tempValuePerson1 = selectedValue;
+                              selectedTextPerson1 = selectedText;
+                            } else {
+                              selectedValuePerson2 = selectedValue;
+                              selectedTextPerson2 = selectedText;
+                            }
+                          });
+                          // Teraz możesz użyć selectedValuePerson1
+                        },
                         onImageSet: _startTimer,
                         teamColors: widget.teamColors,
                     teamNames: widget.teamNames,
@@ -898,10 +920,39 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   : CustomStyledButton(
                       icon: Icons.arrow_forward_outlined,
                       onPressed: () {
-                        AnimatedAlertDialog.passTheDeviceNextPersonDialog(context);
-                        },
+                        if (tempValuePerson1 == 0 && selectedValuePerson2 == 0)
+                          {
+                            AnimatedAlertDialog.showAnimatedDialog(context, 'first_select_answer', SfxType.buzzer_sound, 1, 20, false);
+                          } else {
+                          if (pressedTwice == false) {
+                            AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'woman', 'pass_the_device_next_person');
+                            pressedTwice = true;
+                            setState(() {
+                              resetSelection = -1;
+                            });
+                            selectedValuePerson1 = tempValuePerson1;
+                            tempValuePerson1 = 0;
+                          }
+                          else {
+                            pressedTwice = false;
+                            if (selectedValuePerson1 == selectedValuePerson2) {
+                              isMatch = true;
+                            } else
+                              isMatch = false;
+                            AnimatedAlertDialog.showResultDialog(
+                                context, isMatch, selectedTextPerson1, selectedTextPerson2);
+                            setState(() {
+                              resetSelection = -1;
+                              selectedValuePerson1 = 0;
+                              selectedValuePerson2 = 0;
+                              selectedTextPerson1 = '';
+                              selectedTextPerson2 = '';
+                              tempValuePerson1 = 0;
+                            });
+                          }
+                        };},
                       text: getTranslatedString(context, 'continue'),
-              ),//przejscie do nastepnej karty, button ekran czy cos
+              ),
             ],
           ),
         ),
@@ -911,7 +962,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _opacityController.dispose();
     _timeUpAnimationController.dispose();
     _animationController.dispose();

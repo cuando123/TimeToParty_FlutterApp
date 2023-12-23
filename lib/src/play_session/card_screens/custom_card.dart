@@ -30,7 +30,8 @@ class CustomCard extends StatefulWidget {
   final List<Color> teamColors;
   final void Function(String result) onRollSlotMachineResult;
   final Function onImageSet;
-  final Function onSelectionMade;
+  final Function(int?, String?) onSelectionMade;
+  final int? resetSelection;
 
   const CustomCard({
     super.key,
@@ -48,6 +49,7 @@ class CustomCard extends StatefulWidget {
     required this.teamNames,
     required this.onImageSet,
     required this.onSelectionMade,
+    required this.resetSelection,
     this.specificLists = const {},
   });
 
@@ -74,8 +76,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   ui.Image? image;
   String itemToShow = "";
   String category = "";
-  int? selectedValuePerson1;
-  int? selectedValuePerson2;
+  String? selectedText;
 
   @override
   void initState() {
@@ -100,10 +101,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     _alphabetController.close();
     _pulseAnimationController.dispose();
     super.dispose();
-  }
-  void handleContinueButtonPressed() {
-    selectedValuePerson1 = selectedValue;
-    AnimatedAlertDialog.passTheDeviceNextPersonDialog(context);
   }
 
   List<String> splitText(String text) {
@@ -606,12 +603,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   return RadioListTile<int>(
                                     title: letsText(context, widget.buildFortuneItemsList[index], 14, Colors.white),
                                     value: index,
-                                    groupValue: selectedValue,
+                                    groupValue: widget.resetSelection,
                                     onChanged: (value) {
                                       setState(() {
                                         selectedValue = value!;
-                                        onSelectionMade(selectedValue);
                                       });
+                                      String selectedText = widget.buildFortuneItemsList[index];
+                                      widget.onSelectionMade(value, selectedText);
                                     },
                                     activeColor: Colors.white,
                                   );
@@ -825,7 +823,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     );
   }
 
-  void onSelectionMade(int selectedValue) {
+  void onSelectionMade(int selectedValue, String selectedText) {
 
 
   }

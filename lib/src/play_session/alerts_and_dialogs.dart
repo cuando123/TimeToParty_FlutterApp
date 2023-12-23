@@ -17,12 +17,7 @@ import 'custom_style_buttons.dart';
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
   static void showAnimatedDialog(
-      BuildContext context,
-      String text,
-      SfxType soundType,
-      int delay,
-      double textHeight,
-      bool showBackground) {
+      BuildContext context, String text, SfxType soundType, int delay, double textHeight, bool showBackground) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -114,15 +109,9 @@ class AnimatedAlertDialog {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize:
-                    Size(MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.5, MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.05),
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
                     textStyle:
-                    TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     final audioController = context.read<AudioController>();
@@ -157,12 +146,8 @@ class AnimatedAlertDialog {
   // punkty
   static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
     // Obliczenie punktów
-    int greenCount = starsColors
-        .where((color) => color == Colors.green)
-        .length;
-    int redCount = starsColors
-        .where((color) => color == Colors.red)
-        .length;
+    int greenCount = starsColors.where((color) => color == Colors.green).length;
+    int redCount = starsColors.where((color) => color == Colors.red).length;
     int points;
     if (greenCount > totalCards / 2) {
       points = 2;
@@ -202,14 +187,12 @@ class AnimatedAlertDialog {
     );
   }
 
-  static void showAnimatedDialogFinishedTask(BuildContext context, VoidCallback onButtonXPressed,
-      VoidCallback onButtonTickPressed) {
+  static void showAnimatedDialogFinishedTask(
+      BuildContext context, VoidCallback onButtonXPressed, VoidCallback onButtonTickPressed) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
@@ -219,7 +202,8 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: translatedText(context, 'has_the_task_been_completed', 20, Palette().pink, textAlign: TextAlign.center),
+            title:
+                translatedText(context, 'has_the_task_been_completed', 20, Palette().pink, textAlign: TextAlign.center),
             actions: <Widget>[
               SvgButton(
                 assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
@@ -243,8 +227,7 @@ class AnimatedAlertDialog {
           ),
         );
       },
-      transitionBuilder:
-          (context, animation, secondaryAnimation, child) {
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -263,26 +246,30 @@ class AnimatedAlertDialog {
     final audioController = context.read<AudioController>();
     audioController.playSfx(SfxType.button_infos);
     final Map<String, Widget> fieldDescriptions = {
-      'field_arrows': translatedText(context, 'instruction_dialog_choice',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_sheet': translatedText(context, 'instruction_dialog_rymes', //TO_DO to jest do pomyslenia jak to przetlumaczyc
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_letters': translatedText(context, 'instruction_dialog_20_words',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_pantomime': translatedText(context, 'instruction_dialog_pantomime',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_microphone': translatedText(context, 'instruction_dialog_famous_people',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_taboo': translatedText(context, 'instruction_dialog_taboo_fields',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_star_blue_dark': translatedText(context, 'instruction_dialog_physical_challenge',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_star_pink': translatedText(context, 'instruction_dialog_synonimes_antonimes',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_star_green': translatedText(context, 'instruction_dialog_drawing',
-          16, Palette().menudark, textAlign: TextAlign.center),
-      'field_star_yellow': translatedText(context, 'instruction_dialog_compare_questions',
-          16, Palette().menudark, textAlign: TextAlign.center),
+      'field_arrows':
+          translatedText(context, 'instruction_dialog_choice', 16, Palette().menudark, textAlign: TextAlign.center),
+      'field_sheet': translatedText(
+          context,
+          'instruction_dialog_rymes', //TO_DO to jest do pomyslenia jak to przetlumaczyc
+          16,
+          Palette().menudark,
+          textAlign: TextAlign.center),
+      'field_letters':
+          translatedText(context, 'instruction_dialog_20_words', 16, Palette().menudark, textAlign: TextAlign.center),
+      'field_pantomime':
+          translatedText(context, 'instruction_dialog_pantomime', 16, Palette().menudark, textAlign: TextAlign.center),
+      'field_microphone': translatedText(context, 'instruction_dialog_famous_people', 16, Palette().menudark,
+          textAlign: TextAlign.center),
+      'field_taboo': translatedText(context, 'instruction_dialog_taboo_fields', 16, Palette().menudark,
+          textAlign: TextAlign.center),
+      'field_star_blue_dark': translatedText(context, 'instruction_dialog_physical_challenge', 16, Palette().menudark,
+          textAlign: TextAlign.center),
+      'field_star_pink': translatedText(context, 'instruction_dialog_synonimes_antonimes', 16, Palette().menudark,
+          textAlign: TextAlign.center),
+      'field_star_green':
+          translatedText(context, 'instruction_dialog_drawing', 16, Palette().menudark, textAlign: TextAlign.center),
+      'field_star_yellow': translatedText(context, 'instruction_dialog_compare_questions', 16, Palette().menudark,
+          textAlign: TextAlign.center),
     };
 
     final Map<String, String> fieldTitlesDb = {
@@ -308,14 +295,15 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            content: SingleChildScrollView( // Add SingleChildScrollView to handle overflow
-               child: Column(
+            content: SingleChildScrollView(
+              // Add SingleChildScrollView to handle overflow
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   translatedText(context, title, 20, Palette().pink, textAlign: TextAlign.center),
                   ResponsiveSizing.responsiveHeightGap(context, 10),
-                  Center (child: description),
+                  Center(child: description),
                   ResponsiveSizing.responsiveHeightGap(context, 10),
                   SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
                   ResponsiveSizing.responsiveHeightGap(context, 10),
@@ -328,12 +316,11 @@ class AnimatedAlertDialog {
                     },
                     text: "OK",
                   ),
-                  if (origin == AlertOrigin.otherScreen) ...[
-                    Container()
-                  ],
+                  if (origin == AlertOrigin.otherScreen) ...[Container()],
                   if (origin == AlertOrigin.cardScreen) ...[
                     ResponsiveSizing.responsiveHeightGap(context, 10),
-                    translatedText(context, 'found_a_mistake_report_it', 12, Palette().darkGrey, textAlign: TextAlign.center),
+                    translatedText(context, 'found_a_mistake_report_it', 12, Palette().darkGrey,
+                        textAlign: TextAlign.center),
                     CustomStyledButton(
                       icon: Icons.edit,
                       onPressed: () {
@@ -347,8 +334,7 @@ class AnimatedAlertDialog {
               ),
             ),
           );
-        }
-    );
+        });
   }
 
   static void showExitDialog(BuildContext context) {
@@ -360,21 +346,16 @@ class AnimatedAlertDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(
-              context, 'would_you_like_exit', 20, Palette().pink,
-              textAlign: TextAlign.center),
+          title: translatedText(context, 'would_you_like_exit', 20, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
-              translatedText(
-                  context, 'redirected_to_the_website', 16, Palette().menudark,
-                  textAlign: TextAlign.center),
+              translatedText(context, 'redirected_to_the_website', 16, Palette().menudark, textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
                 child: ElevatedButton(
@@ -384,18 +365,16 @@ class AnimatedAlertDialog {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize:
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
                     Navigator.pop(context);
                     String url = 'https://frydoapps.com/contact-apps';
                     if (await canLaunchUrlString(url)) {
-                      await launchUrlString(url,
-                          mode: LaunchMode.externalApplication);
+                      await launchUrlString(url, mode: LaunchMode.externalApplication);
                     } else {
                       throw 'Could not launch $url';
                     }
@@ -408,9 +387,7 @@ class AnimatedAlertDialog {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: translatedText(
-                      context, 'cancel', 16, Palette().bluegrey,
-                      textAlign: TextAlign.center),
+                  child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
                 ),
               ),
             ],
@@ -420,13 +397,11 @@ class AnimatedAlertDialog {
     );
   }
 
-  static void passTheDeviceNextPersonDialog(BuildContext context) {
+  static void passTheDeviceNextPersonDialog(BuildContext context, String imageName, String text) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
@@ -436,26 +411,30 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: translatedText(context, 'pass_the_device_next_person', 20, Palette().pink, textAlign: TextAlign.center),
+            title: translatedText(context, text, 20, Palette().pink, textAlign: TextAlign.center),
             actions: <Widget>[
-           SizedBox(
-          height: MediaQuery.of(context).size.height * 0.3,
-             child:
-              Center(child:
-              CustomStyledButton(
-                icon: Icons.arrow_forward,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                    var selectedValue = null;
-                },
-                text: getTranslatedString(context, 'done'),
-              ),),),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Center(
+                    child: Column(
+                  children: [
+                    Image.asset('assets/time_to_party_assets/activities/$imageName.png', height: 120),
+                    SizedBox(height: 20),
+                    CustomStyledButton(
+                      icon: Icons.arrow_forward,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      text: getTranslatedString(context, 'done'),
+                    ),
+                  ],
+                )),
+              ),
             ],
           ),
         );
       },
-      transitionBuilder:
-          (context, animation, secondaryAnimation, child) {
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -470,26 +449,72 @@ class AnimatedAlertDialog {
     );
   }
 
-  void showResultDialog(BuildContext context, bool isMatch) {
-    showDialog(
+  static void showResultDialog(
+      BuildContext context, bool isMatch, String? selectedTextPerson1, String? selectedTextPerson2) {
+    showGeneralDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Wynik"),
-          content: Text(isMatch
-              ? "Brawo, odpowiedzi są takie same, myślicie podobnie - zdobywacie 5 punktów"
-              : "Uppss, niestety nie zdobywacie punktów, myślicie inaczej"),
-          actions: <Widget>[
-            CustomStyledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              }, icon: null, text: 'OK',
+      barrierDismissible: false,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (buildContext, animation, secondaryAnimation) {
+        List<Widget> dialogContent = [];
+        if (isMatch) {
+          dialogContent.add(translatedText(context, 'compare_questions_result_ok', 20, Palette().darkGrey, textAlign: TextAlign.center));
+          dialogContent.add(Text('${getTranslatedString(context, 'answer')} ${selectedTextPerson1}',
+              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
+        } else {
+          dialogContent.add(translatedText(context, 'compare_questions_result_nok', 20, Palette().darkGrey, textAlign: TextAlign.center));
+          dialogContent.add(Text('${getTranslatedString(context, 'answer')} 1: ${selectedTextPerson1}',
+              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
+          dialogContent.add(Text('${getTranslatedString(context, 'answer')} 2: ${selectedTextPerson2}',
+              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
+          dialogContent.add(Image.asset('assets/time_to_party_assets/activities/man.png', height: 120));
+          dialogContent.add(SizedBox(height: 20));
+          dialogContent.add(Image.asset('assets/time_to_party_assets/activities/woman.png', height: 120));
+        }
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
+            title: Text("Wynik"),
+            content: SingleChildScrollView(
+              child: ListBody(children: dialogContent),
+            ),
+            actions: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Center(
+                  child: CustomStyledButton(
+                    icon: Icons.arrow_forward,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop('response');
+                    },
+                    text: getTranslatedString(context, 'done'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        if (animation.status == AnimationStatus.forward) {
+          return ScaleTransition(
+            scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          );
+        }
+        return FadeTransition(
+          opacity: animation,
+          child: child,
         );
       },
     );
   }
-
 }
+
 enum AlertOrigin { cardScreen, otherScreen }
