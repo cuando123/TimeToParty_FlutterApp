@@ -84,7 +84,10 @@ class AnimatedAlertDialog {
       builder: (context) {
         final settings = context.watch<SettingsController>();
         final settingsController = context.watch<SettingsController>();
-        return AlertDialog(
+        return WillPopScope(
+          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          child:
+         AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -138,7 +141,7 @@ class AnimatedAlertDialog {
               ),
             ],
           ),
-        );
+        ),);
       },
     );
   }
@@ -160,7 +163,9 @@ class AnimatedAlertDialog {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child:  AlertDialog(
           backgroundColor: Colors.white,
           title: Text('Zdobywasz $points punktów!'),
           content: Row(
@@ -182,7 +187,7 @@ class AnimatedAlertDialog {
               },
             ),
           ],
-        );
+        ),);
       },
     );
   }
@@ -196,7 +201,9 @@ class AnimatedAlertDialog {
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
-        return Center(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child:  Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
             shape: RoundedRectangleBorder(
@@ -205,27 +212,32 @@ class AnimatedAlertDialog {
             title:
                 translatedText(context, 'has_the_task_been_completed', 20, Palette().pink, textAlign: TextAlign.center),
             actions: <Widget>[
-              SvgButton(
-                assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
-                onPressed: () {
-                  final audioController = context.read<AudioController>();
-                  audioController.playSfx(SfxType.card_x_sound);
-                  Navigator.of(context).pop();
-                  onButtonXPressed();
-                },
-              ),
-              SvgButton(
-                assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
-                onPressed: () {
-                  final audioController = context.read<AudioController>();
-                  audioController.playSfx(SfxType.card_tick_sound);
-                  Navigator.of(context).pop();
-                  onButtonTickPressed();
-                },
-              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                SvgButton(
+                  assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                  onPressed: () {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.card_x_sound);
+                    Navigator.of(context).pop();
+                    onButtonXPressed();
+                  },
+                ),
+                SvgButton(
+                  assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                  onPressed: () {
+                    final audioController = context.read<AudioController>();
+                    audioController.playSfx(SfxType.card_tick_sound);
+                    Navigator.of(context).pop();
+                    onButtonTickPressed();
+                  },
+                ),
+              ],
+
+             ),
             ],
           ),
-        );
+        ),);
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
@@ -290,7 +302,9 @@ class AnimatedAlertDialog {
     return showDialog<void>(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return WillPopScope(
+              onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          child:  AlertDialog(
             backgroundColor: Palette().white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -333,7 +347,7 @@ class AnimatedAlertDialog {
                 ],
               ),
             ),
-          );
+          ),);
         });
   }
 
@@ -341,7 +355,9 @@ class AnimatedAlertDialog {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child: AlertDialog(
           backgroundColor: Palette().white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -392,7 +408,7 @@ class AnimatedAlertDialog {
               ),
             ],
           ),
-        );
+        ),);
       },
     );
   }
@@ -405,7 +421,9 @@ class AnimatedAlertDialog {
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
-        return Center(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child:  Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
             shape: RoundedRectangleBorder(
@@ -432,7 +450,7 @@ class AnimatedAlertDialog {
               ),
             ],
           ),
-        );
+        ),);
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {
@@ -460,33 +478,67 @@ class AnimatedAlertDialog {
       pageBuilder: (buildContext, animation, secondaryAnimation) {
         List<Widget> dialogContent = [];
         if (isMatch) {
-          dialogContent.add(translatedText(context, 'compare_questions_result_ok', 20, Palette().darkGrey, textAlign: TextAlign.center));
-          dialogContent.add(Text('${getTranslatedString(context, 'answer')} ${selectedTextPerson1}',
-              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
-        } else {
-          dialogContent.add(translatedText(context, 'compare_questions_result_nok', 20, Palette().darkGrey, textAlign: TextAlign.center));
-          dialogContent.add(Text('${getTranslatedString(context, 'answer')} 1: ${selectedTextPerson1}',
-              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
-          dialogContent.add(Text('${getTranslatedString(context, 'answer')} 2: ${selectedTextPerson2}',
-              style: TextStyle(color: Palette().darkGrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')));
-          dialogContent.add(Image.asset('assets/time_to_party_assets/activities/man.png', height: 120));
+          dialogContent.add(translatedText(context, 'compare_questions_result_ok', 20, Palette().pink,
+              textAlign: TextAlign.center));
           dialogContent.add(SizedBox(height: 20));
-          dialogContent.add(Image.asset('assets/time_to_party_assets/activities/woman.png', height: 120));
+          dialogContent.add(Center(
+            child: Text('${getTranslatedString(context, 'answer')}: ${selectedTextPerson1}',
+                style: TextStyle(
+                    color: Palette().bluegrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai', fontSize: 16),
+                textAlign: TextAlign.center),
+          ));
+        } else {
+          dialogContent.add(translatedText(context, 'compare_questions_result_nok', 20, Palette().pink,
+              textAlign: TextAlign.center));
+          dialogContent.add(SizedBox(height: 20));
+          dialogContent.add(
+            Column(
+              children: [
+                Image.asset('assets/time_to_party_assets/activities/man.png', height: 120),
+                SizedBox(height: 10),
+                Text(
+                  '${getTranslatedString(context, 'answer')} 1: ${selectedTextPerson1}',
+                  style: TextStyle(
+                    color: Palette().bluegrey,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'HindMadurai',
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          );
+          dialogContent.add(SizedBox(height: 20));
+          dialogContent.add(
+            Column(
+              children: [
+                Image.asset('assets/time_to_party_assets/activities/woman.png', height: 120),
+                SizedBox(height: 10),
+                Text('${getTranslatedString(context, 'answer')} 2: ${selectedTextPerson2}',
+                    style: TextStyle(
+                        color: Palette().bluegrey,
+                        fontWeight: FontWeight.normal,
+                        fontFamily: 'HindMadurai',
+                        fontSize: 16),
+                    textAlign: TextAlign.center)
+              ],
+            ),
+          );
         }
-        return Center(
+        return WillPopScope(
+            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+        child:  Center(
           child: AlertDialog(
             backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text("Wynik"),
             content: SingleChildScrollView(
               child: ListBody(children: dialogContent),
             ),
             actions: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: Center(
+               Center(
                   child: CustomStyledButton(
                     icon: Icons.arrow_forward,
                     onPressed: () {
@@ -496,10 +548,9 @@ class AnimatedAlertDialog {
                     text: getTranslatedString(context, 'done'),
                   ),
                 ),
-              ),
             ],
           ),
-        );
+        ),);
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         if (animation.status == AnimationStatus.forward) {

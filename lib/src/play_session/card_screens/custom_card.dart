@@ -466,7 +466,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       return [
         _getImageWidget(personToImage[person] ?? ''),
         _getTextWidget(person == 'woman' ? getTranslatedString(context, 'woman') : getTranslatedString(context, 'man')),
-        _getTextWidget(getTranslatedString(context, 'does')),
+        //_getTextWidget(getTranslatedString(context, 'does')),
         _getTextWidget(number),
         _getImageWidget(activityToImage[activity] ?? ''),
         _getTextWidget(getTranslatedString(context,activity) )
@@ -498,7 +498,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   Widget _getImageWidget(String imagePath) {
     return Image.asset(imagePath,
-        height: 50, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
+        height: 70, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
   }
 
   Widget buildBlueDarkCard() {

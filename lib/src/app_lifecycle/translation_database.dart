@@ -29,7 +29,6 @@ class TranslationDatabase {
 
   Future<Map<String, String>> fetchWordsByLanguage(String language) async {
     Database database = await initDatabase();
-    print("Lanugage: $language");
 
     final maps = await database.query(
       'Cards',
@@ -43,7 +42,6 @@ class TranslationDatabase {
     for (final row in maps) {
       wordsMap[row['Key'] as String] = row['words'] as String;
     }
-    print('wordsmap: $wordsMap');
 
     return wordsMap;
   }

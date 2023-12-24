@@ -432,7 +432,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           remainingTime--;
         } else {
           _showTimeUpAnimation();
-          _timer.cancel();
+          _timer?.cancel();
         }
       });
     });
@@ -941,6 +941,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                               isMatch = false;
                             AnimatedAlertDialog.showResultDialog(
                                 context, isMatch, selectedTextPerson1, selectedTextPerson2);
+                            _startTimer();
                             setState(() {
                               resetSelection = -1;
                               selectedValuePerson1 = 0;
