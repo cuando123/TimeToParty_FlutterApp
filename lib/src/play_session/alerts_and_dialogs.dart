@@ -147,7 +147,7 @@ class AnimatedAlertDialog {
   }
 
   // punkty
-  static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
+ /* static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
     // Obliczenie punktów
     int greenCount = starsColors.where((color) => color == Colors.green).length;
     int redCount = starsColors.where((color) => color == Colors.red).length;
@@ -188,6 +188,28 @@ class AnimatedAlertDialog {
             ),
           ],
         ),);
+      },
+    );
+  }*/
+  static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
+    int greenCount = starsColors.where((color) => color == Colors.green).length;
+    int redCount = starsColors.where((color) => color == Colors.red).length;
+    int points;
+    if (greenCount > totalCards / 2) {
+      points = 2;
+    } else if (greenCount == totalCards / 2) {
+      points = 1;
+    } else {
+      points = 0;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return PointsAnimationDialog(
+          greenPoints: greenCount,
+          redPoints: redCount,
+        );
       },
     );
   }
@@ -569,3 +591,112 @@ class AnimatedAlertDialog {
 }
 
 enum AlertOrigin { cardScreen, otherScreen }
+
+class PointsAnimationDialog extends StatefulWidget {
+  final int greenPoints;
+  final int redPoints;
+
+  PointsAnimationDialog({required this.greenPoints, required this.redPoints});
+
+  @override
+  _PointsAnimationDialogState createState() => _PointsAnimationDialogState();
+}
+
+class _PointsAnimationDialogState extends State<PointsAnimationDialog> with TickerProviderStateMixin {
+  late AnimationController _greenStarController;
+  late AnimationController _redStarController;
+  late Animation<double> _greenStarOpacity;
+  late Animation<double> _redStarOpacity;
+  int _currentGreenPoints = 0;
+  int _currentRedPoints = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _greenStarController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _redStarController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _greenStarOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(_greenStarController)
+      ..addListener(() {
+        setState(() {});
+      });
+    _redStarOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(_redStarController)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _startAnimations();
+  }
+
+  void _startAnimations() async {
+    await _greenStarController.forward();
+    for (var i = 0; i < widget.greenPoints; i++) {
+      await Future.delayed(Duration(milliseconds: 500));
+      setState(() {
+        _currentGreenPoints++;
+      });
+    }
+
+    await _redStarController.forward();
+    for (var i = 0; i < widget.redPoints; i++) {
+      await Future.delayed(Duration(milliseconds: 500));
+      setState(() {
+        _currentRedPoints++;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(backgroundColor: Colors.transparent,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Opacity(
+            opacity: _greenStarOpacity.value,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star, color: Colors.green, size: 20),
+                SizedBox(width: 8),
+                letsText(context, '$_currentGreenPoints', 20, Colors.black),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+          Opacity(
+            opacity: _redStarOpacity.value,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star, color: Colors.red, size: 20),
+                SizedBox(width: 8),
+            letsText(context, '$_currentRedPoints', 20, Colors.black),
+              ],
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          child: Text('OK'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _greenStarController.dispose();
+    _redStarController.dispose();
+    super.dispose();
+  }
+}

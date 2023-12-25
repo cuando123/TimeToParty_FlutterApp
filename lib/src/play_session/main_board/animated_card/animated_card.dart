@@ -226,7 +226,21 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   child: SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
                       height: 40, color: widget.teamColor)),
             ),
-
+            SlideTransition(
+              position: _textTopPositionAnimation,
+              child: Align(
+                  alignment: Alignment(0.0, -2),
+                  child: Text(
+                    cardDescription,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic, // Ustawienie tekstu na kursywę
+                      height: 40.0, // Ustawienie wysokości tekstu
+                      fontFamily: 'HindMadurai', // Ustawienie czcionki na Hind Madurai
+                      color: Colors.white, // Ustawienie koloru tekstu na biały
+                      fontSize: 15, // Możesz dostosować rozmiar czcionki zgodnie z potrzebami
+                    ),
+                  )),
+            ),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
@@ -252,41 +266,6 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 ),
               ),
             ),
-            SlideTransition(
-              position: _textBottomPositionAnimation,
-              child: GestureDetector(
-                onTap: () {
-                  final audioController = context.read<AudioController>();
-                  audioController.playSfx(SfxType.button_infos);
-                  AnimatedAlertDialog.showCardDescriptionDialog(
-                      context, widget.selectedCardIndex, AlertOrigin.otherScreen);
-                  //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
-                },
-                child: Align(
-                  alignment: Alignment(0.0, 0.45),
-                  child: AnimatedBuilder(
-                    animation: _questionMarkPulseAnimation,
-                    builder: (context, child) => Transform.scale(
-                      scale: _questionMarkPulseAnimation.value,
-                      child: child,
-                    ),
-                    child: Container(
-                      child: CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Color(0xFF2899F3),
-                        child: Text('?',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                fontFamily: 'HindMadurai')),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
             // Napis na dole
             SlideTransition(
               position: _textBottomPositionAnimation,
@@ -333,6 +312,41 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   ),
                 ),
               ],
+            ),
+
+            SlideTransition(
+              position: _textBottomPositionAnimation,
+              child: GestureDetector(
+                onTap: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.button_infos);
+                  AnimatedAlertDialog.showCardDescriptionDialog(
+                      context, widget.selectedCardIndex, AlertOrigin.otherScreen);
+                  //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
+                },
+                child: Align(
+                  alignment: Alignment(0.0, 0.45),
+                  child: AnimatedBuilder(
+                    animation: _questionMarkPulseAnimation,
+                    builder: (context, child) => Transform.scale(
+                      scale: _questionMarkPulseAnimation.value,
+                      child: child,
+                    ),
+                    child: Container(
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Color(0xFF2899F3),
+                        child: Text('?',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontFamily: 'HindMadurai')),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             // Karta
             Center(
