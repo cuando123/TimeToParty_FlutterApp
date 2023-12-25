@@ -464,12 +464,12 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       };
 
       return [
-        _getImageWidget(personToImage[person] ?? ''),
         _getTextWidget(person == 'woman' ? getTranslatedString(context, 'woman') : getTranslatedString(context, 'man')),
+        _getImageWidget(personToImage[person] ?? ''),
         //_getTextWidget(getTranslatedString(context, 'does')),
         _getTextWidget(number),
+        _getTextWidget(getTranslatedString(context,activity) ),
         _getImageWidget(activityToImage[activity] ?? ''),
-        _getTextWidget(getTranslatedString(context,activity) )
       ];
     }
 

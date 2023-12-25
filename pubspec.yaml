@@ -43,6 +43,7 @@ dependencies:
   flutter_slot_machine: ^0.0.1
   fan_carousel_image_slider:
     path: lib/libraries/fan_carousel_image_slider-0.1.2
+  newton_particles: ^0.1.7
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/main_board/animated_card/pulsating_text.dart';
 import 'package:game_template/src/style/palette.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app_lifecycle/translated_text.dart';
@@ -181,176 +182,191 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       return Container();
     } else {
       return WillPopScope(
-          onWillPop: () async {
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
-        return false; // return false to prevent the pop operation
-      },// Zablokowanie możliwości cofnięcia
-    child:  Stack(
-        children: [
-          // Przyciemnienie
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _fadeController,
-              builder: (context, child) {
-                return AnimatedOpacity(
-                  opacity: _fadeController.value * 0.9, // Opacity będzie zmieniać się od 0 do 0.7
-                  duration: const Duration(milliseconds: 500), // Czas trwania animacji
-                  child: Container(
-                    color: Colors.black,
-                  ),
-                );
-              },
-            ),
-          ),
-
-          SlideTransition(
-            position: _textTopPositionAnimation,
-            child: Align(
-                alignment: Alignment(0.0, -0.9),
-                child: Text(
-                  widget.currentTeamName,
-                  style: TextStyle(
-                    fontStyle: FontStyle.normal,
-                    fontFamily: 'HindMadurai',
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                )),
-          ),
-          SlideTransition(
-            position: _textTopPositionAnimation,
-            child: Align(
-                alignment: Alignment(0.0, -0.8),
-                child:
-                    SvgPicture.asset('assets/time_to_party_assets/team_icon.svg', height: 40, color: widget.teamColor)),
-          ),
-          SlideTransition(
-            position: _textTopPositionAnimation,
-            child: Align(
-                alignment: Alignment(0.0, -2),
-                child: Text(
-                  cardDescription,
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic, // Ustawienie tekstu na kursywę
-                    height: 40.0, // Ustawienie wysokości tekstu
-                    fontFamily: 'HindMadurai', // Ustawienie czcionki na Hind Madurai
-                    color: Colors.white, // Ustawienie koloru tekstu na biały
-                    fontSize: 15, // Możesz dostosować rozmiar czcionki zgodnie z potrzebami
-                  ),
-                )),
-          ),
-
-          SlideTransition(
-            position: _textTopPositionAnimation,
-            child: Align(
-              alignment: Alignment(0.0, -0.5),
+        onWillPop: () async {
+          await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+          return false; // return false to prevent the pop operation
+        }, // Zablokowanie możliwości cofnięcia
+        child: Stack(
+          children: [
+            // Przyciemnienie
+            Positioned.fill(
               child: AnimatedBuilder(
-                animation: _pulseAnimation,
-                builder: (context, child) => Transform.scale(
-                  scale: _pulseAnimation.value,
-                  alignment: Alignment.center, // Zapewnia skalowanie wokół środka widgetu
-                  child: child,
-                ),
-                child: translatedText(context, 'click_the_card_to_start', 18, Colors.white),
+                animation: _fadeController,
+                builder: (context, child) {
+                  return AnimatedOpacity(
+                    opacity: _fadeController.value * 0.9, // Opacity będzie zmieniać się od 0 do 0.7
+                    duration: const Duration(milliseconds: 500), // Czas trwania animacji
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-          SlideTransition(
-            position: _textTopPositionAnimation,
-            child: Align(
-              alignment: Alignment(0.0, -0.4),
-              child: SlideTransition(
-                position: _arrowAnimation,
-                child: Icon(Icons.arrow_downward_sharp, color: Colors.white, size: 30),
-              ),
-            ),
-          ),
 
-          SlideTransition(
-            position: _textBottomPositionAnimation,
-            child: GestureDetector(
-              onTap: () {
-                final audioController = context.read<AudioController>();
-                audioController.playSfx(SfxType.button_infos);
-                AnimatedAlertDialog.showCardDescriptionDialog(
-                    context, widget.selectedCardIndex, AlertOrigin.otherScreen);
-                //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
-              },
+            SlideTransition(
+              position: _textTopPositionAnimation,
               child: Align(
-                alignment: Alignment(0.0, 0.45),
+                  alignment: Alignment(0.0, -0.9),
+                  child: Text(
+                    widget.currentTeamName,
+                    style: TextStyle(
+                      fontStyle: FontStyle.normal,
+                      fontFamily: 'HindMadurai',
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  )),
+            ),
+            SlideTransition(
+              position: _textTopPositionAnimation,
+              child: Align(
+                  alignment: Alignment(0.0, -0.8),
+                  child: SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
+                      height: 40, color: widget.teamColor)),
+            ),
+
+            SlideTransition(
+              position: _textTopPositionAnimation,
+              child: Align(
+                alignment: Alignment(0.0, -0.5),
                 child: AnimatedBuilder(
-                  animation: _questionMarkPulseAnimation,
+                  animation: _pulseAnimation,
                   builder: (context, child) => Transform.scale(
-                    scale: _questionMarkPulseAnimation.value,
+                    scale: _pulseAnimation.value,
+                    alignment: Alignment.center, // Zapewnia skalowanie wokół środka widgetu
                     child: child,
                   ),
-                  child: Container(
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Color(0xFF2899F3),
-                      child: Text('?',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              fontFamily: 'HindMadurai')),
+                  child: translatedText(context, 'click_the_card_to_start', 18, Colors.white),
+                ),
+              ),
+            ),
+            SlideTransition(
+              position: _textTopPositionAnimation,
+              child: Align(
+                alignment: Alignment(0.0, -0.4),
+                child: SlideTransition(
+                  position: _arrowAnimation,
+                  child: Icon(Icons.arrow_downward_sharp, color: Colors.white, size: 30),
+                ),
+              ),
+            ),
+            SlideTransition(
+              position: _textBottomPositionAnimation,
+              child: GestureDetector(
+                onTap: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.button_infos);
+                  AnimatedAlertDialog.showCardDescriptionDialog(
+                      context, widget.selectedCardIndex, AlertOrigin.otherScreen);
+                  //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
+                },
+                child: Align(
+                  alignment: Alignment(0.0, 0.45),
+                  child: AnimatedBuilder(
+                    animation: _questionMarkPulseAnimation,
+                    builder: (context, child) => Transform.scale(
+                      scale: _questionMarkPulseAnimation.value,
+                      child: child,
                     ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Napis na dole
-          SlideTransition(
-            position: _textBottomPositionAnimation,
-            child: Align(
-              alignment: Alignment.center, // Wyśrodkuj poziomo
-              child: FractionallySizedBox(
-                widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkuj zawartość kolumny
-                  children: <Widget>[
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.6), // Ustaw wysokość, aby tekst był na poziomie 0.6
-                    translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white, textAlign: TextAlign.center),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Karta
-          Center(
-            child: SlideTransition(
-              position: _positionAnimation,
-              child: Transform.rotate(
-                angle: _rotationAnimation.value,
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: GestureDetector( //gesture detector na karcie ktora sie obroci nastepnie w nią klikamy
-                    onTap: () {
-                      final audioController = context.read<AudioController>();
-                      audioController.playSfx(SfxType.button_accept);
-                      if (widget.selectedCardIndex == 'field_arrows') {
-                        widget.onArrowCardTapped();
-                        _showStackedCardCrousel(context, widget.onCardSelected);
-                      } else {
-                        widget.onCardTapped(); // Dla innych kart
-                      }
-                    },
                     child: Container(
-                      width: 150,
-                      height: 300,
-                      color: Colors.transparent,
-                      child: _getCardContent(widget.selectedCardIndex),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Color(0xFF2899F3),
+                        child: Text('?',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontFamily: 'HindMadurai')),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],),
+
+            // Napis na dole
+            SlideTransition(
+              position: _textBottomPositionAnimation,
+              child: Align(
+                alignment: Alignment.center, // Wyśrodkuj poziomo
+                child: FractionallySizedBox(
+                  widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkuj zawartość kolumny
+                    children: <Widget>[
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height *
+                              0.6), // Ustaw wysokość, aby tekst był na poziomie 0.6
+                      translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
+                          textAlign: TextAlign.center),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Newton(
+              activeEffects: [
+                ExplodeEffect(
+                  particleConfiguration: ParticleConfiguration(
+                    shape: CircleShape(),
+                    size: Size(3,3),
+                    color: SingleParticleColor(color: Colors.white54.withAlpha(50)),
+                  ),
+                  effectConfiguration: EffectConfiguration(
+                    particlesPerEmit: 1,
+                    emitDuration: 200,
+                    minAngle: 0,maxBeginScale: 1,maxEndScale: 2,minBeginScale: 1,minEndScale: 1,
+                    maxAngle: 360, // Pełen zakres kątów dla efektu eksplozji
+                    minDuration: 4000,
+                    maxDuration: 7000,
+                    minDistance: 200,
+                    maxDistance: 200,
+                    minFadeOutThreshold: 0.6,
+                    maxFadeOutThreshold: 0.8,
+                    scaleCurve: Curves.easeInOutCubic,
+                    distanceCurve: Curves.decelerate,
+                    origin: Offset(
+                        MediaQuery.of(context).size.width / 2, MediaQuery.of(context).size.height / 2), // Środek ekranu
+                  ),
+                ),
+              ],
+            ),
+            // Karta
+            Center(
+              child: SlideTransition(
+                position: _positionAnimation,
+                child: Transform.rotate(
+                  angle: _rotationAnimation.value,
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: GestureDetector(
+                      //gesture detector na karcie ktora sie obroci nastepnie w nią klikamy
+                      onTap: () {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_accept);
+                        if (widget.selectedCardIndex == 'field_arrows') {
+                          widget.onArrowCardTapped();
+                          _showStackedCardCrousel(context, widget.onCardSelected);
+                        } else {
+                          widget.onCardTapped(); // Dla innych kart
+                        }
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 300,
+                        color: Colors.transparent,
+                        child: _getCardContent(widget.selectedCardIndex),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
   }
@@ -400,60 +416,64 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       barrierDismissible: false,
       builder: (dialogContext) {
         return WillPopScope(
-            onWillPop: () async => false,
-        child:   Dialog(
-          backgroundColor: Colors.black54,
-         shadowColor: Colors.transparent,
-          insetPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          elevation: 0,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width, // Określ szerokość
-            height: MediaQuery.of(context).size.height,
-            child: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PulsatingText(text: getTranslatedString(context, 'choose_the_card'), textStyle: TextStyle(fontFamily: 'HindMadurai', color: Colors.white), size: 22),
-                SizedBox(height: 30),
-                AnimatedHandArrow(),
-                SizedBox(height: 20),
-                Transform.scale(
-                  scale: 1,
-                  child: FanCarouselImageSlider(
-                  imagesLink: cardTypesToSelect,
-                  slideViewportFraction: 0.4,
-                  isAssets: true,
-                  autoPlay: false,
-                  sliderDuration: Duration(milliseconds: 200),
-                  sliderHeight: 250,
-                  sliderWidth: MediaQuery.of(context).size.width,
-                  imageRadius: 20,
-                  indicatorActiveColor: Palette().pink,
-                  initalPageIndex: 0,
-                  onImageTaps: [
-                        (index) {
-                      onCardSelected(cardFieldNames[index] ?? 'default_field');
-                    },
-                        (index) {
-                      onCardSelected(cardFieldNames[index] ?? 'default_field');
-                    },
-                        (index) {
-                      onCardSelected(cardFieldNames[index] ?? 'default_field');
-                    },
-                        (index) {
-                      onCardSelected(cardFieldNames[index] ?? 'default_field');
-                    },
-                        (index) {
-                      onCardSelected(cardFieldNames[index] ?? 'default_field');
-                    },
+          onWillPop: () async => false,
+          child: Dialog(
+            backgroundColor: Colors.black54,
+            shadowColor: Colors.transparent,
+            insetPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            elevation: 0,
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width, // Określ szerokość
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PulsatingText(
+                        text: getTranslatedString(context, 'choose_the_card'),
+                        textStyle: TextStyle(fontFamily: 'HindMadurai', color: Colors.white),
+                        size: 22),
+                    SizedBox(height: 30),
+                    AnimatedHandArrow(),
+                    SizedBox(height: 20),
+                    Transform.scale(
+                      scale: 1,
+                      child: FanCarouselImageSlider(
+                        imagesLink: cardTypesToSelect,
+                        slideViewportFraction: 0.4,
+                        isAssets: true,
+                        autoPlay: false,
+                        sliderDuration: Duration(milliseconds: 200),
+                        sliderHeight: 250,
+                        sliderWidth: MediaQuery.of(context).size.width,
+                        imageRadius: 20,
+                        indicatorActiveColor: Palette().pink,
+                        initalPageIndex: 0,
+                        onImageTaps: [
+                          (index) {
+                            onCardSelected(cardFieldNames[index] ?? 'default_field');
+                          },
+                          (index) {
+                            onCardSelected(cardFieldNames[index] ?? 'default_field');
+                          },
+                          (index) {
+                            onCardSelected(cardFieldNames[index] ?? 'default_field');
+                          },
+                          (index) {
+                            onCardSelected(cardFieldNames[index] ?? 'default_field');
+                          },
+                          (index) {
+                            onCardSelected(cardFieldNames[index] ?? 'default_field');
+                          },
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    AnimatedQuestionMark(),
+                    SizedBox(height: 90)
                   ],
-                ),
-                ),
-                SizedBox(height: 30),
-                AnimatedQuestionMark(),
-                SizedBox(height: 90)
-              ],
-            )
-          ),),
+                )),
+          ),
         );
       },
     );
