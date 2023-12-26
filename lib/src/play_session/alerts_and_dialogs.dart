@@ -191,24 +191,45 @@ class AnimatedAlertDialog {
       },
     );
   }*/
-  static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
+  static void showPointsDialog(BuildContext context, List<Color> starsColors, String currentField) {
+    print('Pole: $currentField');
+    print('Lista: $starsColors');
     int greenCount = starsColors.where((color) => color == Colors.green).length;
     int redCount = starsColors.where((color) => color == Colors.red).length;
-    int points;
-    if (greenCount > totalCards / 2) {
-      points = 2;
-    } else if (greenCount == totalCards / 2) {
-      points = 1;
-    } else {
-      points = 0;
+    double multiplier;
+    switch (currentField) {
+      case 'field_pantomime':
+        multiplier = 2.5;
+        break;
+      case 'field_star_blue_dark':
+        multiplier = 5;
+        break;
+      case 'field_star_green':
+        multiplier = 5;
+        break;
+      case 'field_star_yellow':
+        multiplier = 5;
+        break;
+      case 'field_letters':
+        multiplier = 5;
+        break;
+      default:
+        multiplier = 1;
     }
 
-    showDialog(
+    print('Pole: $currentField, punktow: ${greenCount*multiplier}');
+    showGeneralDialog(
       context: context,
-      builder: (context) {
-        return PointsAnimationDialog(
-          greenPoints: greenCount,
-          redPoints: redCount,
+      barrierDismissible: false, // Ustawienie na false, jeśli nie chcesz zamykać dialogu przez kliknięcie poza nim
+      barrierColor: Colors.transparent, // Usunięcie przyciemnienia
+      transitionDuration: Duration(milliseconds: 200),
+      pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+        return PointsAnimationDialog(greenPoints: greenCount, redPoints: redCount);
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: child,
         );
       },
     );
@@ -499,7 +520,9 @@ class AnimatedAlertDialog {
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
         List<Widget> dialogContent = [];
+        List<Color> starsColors;
         if (isMatch) {
+          starsColors = List.generate(2, (index) => index == 0 ? Colors.green : Colors.red);
           dialogContent.add(translatedText(context, 'compare_questions_result_ok', 20, Palette().pink,
               textAlign: TextAlign.center));
           dialogContent.add(SizedBox(height: 20));
@@ -510,6 +533,7 @@ class AnimatedAlertDialog {
                 textAlign: TextAlign.center),
           ));
         } else {
+          starsColors = List.generate(2, (index) => index == 0 ? Colors.red : Colors.grey);
           dialogContent.add(translatedText(context, 'compare_questions_result_nok', 20, Palette().pink,
               textAlign: TextAlign.center));
           dialogContent.add(SizedBox(height: 20));
@@ -566,6 +590,7 @@ class AnimatedAlertDialog {
                     onPressed: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop('response');
+                     AnimatedAlertDialog.showPointsDialog(context, starsColors, 'field_star_yellow');
                     },
                     text: getTranslatedString(context, 'done'),
                   ),
@@ -602,11 +627,12 @@ class PointsAnimationDialog extends StatefulWidget {
   _PointsAnimationDialogState createState() => _PointsAnimationDialogState();
 }
 
-class _PointsAnimationDialogState extends State<PointsAnimationDialog> with TickerProviderStateMixin {
+class _PointsAnimationDialogState extends State<PointsAnimationDialog>
+    with TickerProviderStateMixin {
   late AnimationController _greenStarController;
   late AnimationController _redStarController;
-  late Animation<double> _greenStarOpacity;
-  late Animation<double> _redStarOpacity;
+  late Animation<double> _greenStarScale;
+  late Animation<double> _redStarScale;
   int _currentGreenPoints = 0;
   int _currentRedPoints = 0;
 
@@ -615,81 +641,87 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
     super.initState();
 
     _greenStarController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     _redStarController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
-    _greenStarOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(_greenStarController)
-      ..addListener(() {
-        setState(() {});
+    // Scale animation for stars
+    _greenStarScale = Tween<double>(begin: 1.0, end: 1.2)
+        .animate(CurvedAnimation(parent: _greenStarController, curve: Curves.elasticOut))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _greenStarController.reverse();
+        }
       });
-    _redStarOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(_redStarController)
-      ..addListener(() {
-        setState(() {});
+    _redStarScale = Tween<double>(begin: 1.0, end: 1.2)
+        .animate(CurvedAnimation(parent: _redStarController, curve: Curves.elasticOut))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _redStarController.reverse();
+        }
       });
 
     _startAnimations();
   }
 
   void _startAnimations() async {
-    await _greenStarController.forward();
+    // Scale up the stars for both colors at the beginning
+    _greenStarController.forward();
+    _redStarController.forward();
+
     for (var i = 0; i < widget.greenPoints; i++) {
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 200));
       setState(() {
         _currentGreenPoints++;
       });
+      // Trigger scale animation each time the point increases
+      _greenStarController.forward(from: 0);
     }
 
-    await _redStarController.forward();
     for (var i = 0; i < widget.redPoints; i++) {
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 200));
       setState(() {
         _currentRedPoints++;
       });
+      // Trigger scale animation each time the point increases
+      _redStarController.forward(from: 0);
     }
+
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(backgroundColor: Colors.transparent,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Opacity(
-            opacity: _greenStarOpacity.value,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.star, color: Colors.green, size: 20),
-                SizedBox(width: 8),
-                letsText(context, '$_currentGreenPoints', 20, Colors.black),
-              ],
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: FittedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ScaleTransition(
+              scale: _greenStarScale,
+              child: _StarPoints(
+                color: Colors.green,
+                points: _currentGreenPoints,
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          Opacity(
-            opacity: _redStarOpacity.value,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.star, color: Colors.red, size: 20),
-                SizedBox(width: 8),
-            letsText(context, '$_currentRedPoints', 20, Colors.black),
-              ],
+            SizedBox(width: 16), // Space between the stars
+            ScaleTransition(
+              scale: _redStarScale,
+              child: _StarPoints(
+                color: Colors.red,
+                points: _currentRedPoints,
+              ),
             ),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          child: Text('OK'),
-          onPressed: () => Navigator.of(context).pop(),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -700,3 +732,57 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
     super.dispose();
   }
 }
+
+class _StarPoints extends StatelessWidget {
+  final Color color;
+  final int points;
+
+  const _StarPoints({Key? key, required this.color, required this.points}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // Dodaj padding, aby zrobić miejsce na obramówkę
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        // Dodaj obramówkę
+        shape: BoxShape.circle, // Kształt obramówki jako koło
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: IconTheme(
+          data: IconThemeData(
+            size: 24, // Dostosuj rozmiar gwiazdki
+            color: color, // Kolor gwiazdki
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(Icons.star), // Używamy ikony gwiazdki
+              Text(
+                '$points',
+                style: TextStyle(
+                  fontSize: 12, // Dostosuj rozmiar tekstu dla czytelności
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+

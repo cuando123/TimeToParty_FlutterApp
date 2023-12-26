@@ -612,7 +612,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     } else if (currentCardIndex == totalCards - 1) {
       starsColors[currentCardIndex] = Colors.red;
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, totalCards);
+      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0]);
     }
   }
 
@@ -632,7 +632,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli to była ostatnia karta
       starsColors[currentCardIndex] = Colors.green;
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, totalCards);
+      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0]);
     }
   }
 
