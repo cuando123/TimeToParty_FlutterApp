@@ -184,7 +184,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       return WillPopScope(
         onWillPop: () async {
           await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>);
           return false; // return false to prevent the pop operation
         }, // Zablokowanie możliwości cofnięcia
         child: Stack(

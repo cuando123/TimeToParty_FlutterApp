@@ -1,7 +1,7 @@
 // Copyright 2022, the Flutter project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-
+/*
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -133,8 +133,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       final adsController = context.read<AdsController?>();
       adsController?.preloadAd();
     }
-  }
-
+  }*/
+/*
   Future<void> _playerWon() async {
     _log.info('Level ${widget.level.number} won');
 
@@ -178,4 +178,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
     GoRouter.of(context).go('/play/won', extra: {'score': score});
   }
-}
+
+  */
+//}

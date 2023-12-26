@@ -612,7 +612,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     } else if (currentCardIndex == totalCards - 1) {
       starsColors[currentCardIndex] = Colors.red;
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0]);
+      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
     }
   }
 
@@ -632,7 +632,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli to była ostatnia karta
       starsColors[currentCardIndex] = Colors.green;
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0]);
+      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
     }
   }
 
@@ -691,7 +691,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     return WillPopScope(
       onWillPop: () async {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(
@@ -710,7 +710,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     IconButton(
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
-                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors);
                         //Navigator.of(context).pop('response');
                       },
                     ),
@@ -940,7 +940,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                             } else
                               isMatch = false;
                             AnimatedAlertDialog.showResultDialog(
-                                context, isMatch, selectedTextPerson1, selectedTextPerson2);
+                                context, isMatch, selectedTextPerson1, selectedTextPerson2, widget.teamNames, widget.teamColors);
                             _startTimer();
                             setState(() {
                               resetSelection = -1;

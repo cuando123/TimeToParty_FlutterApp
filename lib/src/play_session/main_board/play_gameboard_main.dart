@@ -104,7 +104,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     return WillPopScope(
       onWillPop: () async {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors);
         return false; // return false to prevent the pop operation
       },
       child: CustomBackground(
@@ -258,7 +258,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             TripleButton(
                                                 _controller,
                                                 () => AnimatedAlertDialog.showExitGameDialog(
-                                                    context, hasShownAlertDialog, '')),
+                                                    context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors)),
                                             //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE, KARTA, TEST
                                             ElevatedButton(
                                                 onPressed: () {

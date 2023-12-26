@@ -94,26 +94,4 @@ class GamesServicesController {
     }
   }
 
-  /// Submits [score] to the leaderboard.
-  Future<void> submitLeaderboardScore(Score score) async {
-    if (!await signedIn) {
-      _log.warning('Trying to submit leaderboard when not logged in.');
-      return;
-    }
-
-    _log.info('Submitting $score to leaderboard.');
-
-    try {
-      await gs.GamesServices.submitScore(
-        score: gs.Score(
-          //TO_DO: When ready, change these leaderboard IDs.
-          iOSLeaderboardID: 'some_id_from_app_store',
-          androidLeaderboardID: 'sOmE_iD_fRoM_gPlAy',
-          value: score.score,
-        ),
-      );
-    } catch (e) {
-      _log.severe('Cannot submit leaderboard score: $e');
-    }
-  }
 }

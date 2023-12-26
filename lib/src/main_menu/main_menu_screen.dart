@@ -8,6 +8,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
+import '../games_services/score.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../style/palette.dart';
@@ -87,6 +88,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    TeamScore.resetAllScores();
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,

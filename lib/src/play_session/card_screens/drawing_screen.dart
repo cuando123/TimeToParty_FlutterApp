@@ -50,7 +50,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
     return WillPopScope(
       onWillPop: () async {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(
@@ -70,7 +70,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     IconButton(
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
-                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '');
+                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '' ,widget.teamNames, widget.teamColors);
                         //Navigator.of(context).pop('response');
                       },
                     ),

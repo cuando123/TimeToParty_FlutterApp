@@ -11,8 +11,10 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
+import '../win_game/win_game_screen.dart';
 import 'card_screens/svgbutton_enabled_dis.dart';
 import 'custom_style_buttons.dart';
+import '../games_services/score.dart';
 
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
@@ -78,7 +80,7 @@ class AnimatedAlertDialog {
 
   // czy na pewno chcesz wyjsc
 
-  static void showExitGameDialog(BuildContext context, bool hasShownAlertDialog, String response) {
+  static void showExitGameDialog(BuildContext context, bool hasShownAlertDialog, String response, List<String> teamNames, List<Color> teamColors) {
     showDialog(
       context: context,
       builder: (context) {
@@ -119,14 +121,19 @@ class AnimatedAlertDialog {
                   onPressed: () async {
                     final audioController = context.read<AudioController>();
                     audioController.playSfx(SfxType.button_back_exit);
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-
+                    //Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WinGameScreen(
+                        teamNames: teamNames,
+                        teamColors: teamColors,
+                      ),
+                    ));
                     if (!settings.musicOn.value) {
                       settingsController.toggleMusicOn();
                     }
                     hasShownAlertDialog = false;
                   },
-                  child: Text('OK'),
+                  child: Text('Wyniki'),
                 ),
               ),
               Center(
@@ -191,9 +198,8 @@ class AnimatedAlertDialog {
       },
     );
   }*/
-  static void showPointsDialog(BuildContext context, List<Color> starsColors, String currentField) {
-    print('Pole: $currentField');
-    print('Lista: $starsColors');
+  static void showPointsDialog(BuildContext context, List<Color> starsColors, String currentField, List<String> teamNames, List<Color> teamColors) {
+
     int greenCount = starsColors.where((color) => color == Colors.green).length;
     int redCount = starsColors.where((color) => color == Colors.red).length;
     double multiplier;
@@ -202,22 +208,21 @@ class AnimatedAlertDialog {
         multiplier = 2.5;
         break;
       case 'field_star_blue_dark':
-        multiplier = 5;
-        break;
       case 'field_star_green':
-        multiplier = 5;
-        break;
       case 'field_star_yellow':
-        multiplier = 5;
-        break;
       case 'field_letters':
         multiplier = 5;
         break;
       default:
         multiplier = 1;
     }
+    double points = greenCount * multiplier;
+    TeamScore.updateForNextRound(teamNames[0], teamColors[0], points);
 
-    print('Pole: $currentField, punktow: ${greenCount*multiplier}');
+    int currentRound = TeamScore.getRoundNumber(teamNames[0], teamColors[0]);
+    double totalScore = TeamScore.getTeamScore(teamNames[0], teamColors[0]).getTotalScore();
+    print('Round: ${currentRound-1}, Total Score for ${teamNames[0]}: $totalScore');
+
     showGeneralDialog(
       context: context,
       barrierDismissible: false, // Ustawienie na false, jeśli nie chcesz zamykać dialogu przez kliknięcie poza nim
@@ -511,7 +516,7 @@ class AnimatedAlertDialog {
   }
 
   static void showResultDialog(
-      BuildContext context, bool isMatch, String? selectedTextPerson1, String? selectedTextPerson2) {
+      BuildContext context, bool isMatch, String? selectedTextPerson1, String? selectedTextPerson2, List<String> teamNames, List<Color> teamColors) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -590,7 +595,7 @@ class AnimatedAlertDialog {
                     onPressed: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop('response');
-                     AnimatedAlertDialog.showPointsDialog(context, starsColors, 'field_star_yellow');
+                     AnimatedAlertDialog.showPointsDialog(context, starsColors, 'field_star_yellow', teamNames, teamColors);
                     },
                     text: getTranslatedString(context, 'done'),
                   ),
@@ -785,4 +790,3 @@ class _StarPoints extends StatelessWidget {
     );
   }
 }
-

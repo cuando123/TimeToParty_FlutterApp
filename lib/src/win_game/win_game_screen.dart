@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +10,13 @@ import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
 class WinGameScreen extends StatelessWidget {
-  final Score score;
+  final List<String> teamNames;
+  final List<Color> teamColors;
 
-  const WinGameScreen({
+  WinGameScreen({
     super.key,
-    required this.score,
+    required this.teamNames,
+    required this.teamColors
   });
 
   @override
@@ -28,14 +26,23 @@ class WinGameScreen extends StatelessWidget {
         context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
     final palette = context.watch<Palette>();
 
-    const gap = SizedBox(height: 10);
-
+    // Sortowanie drużyn według wyników
+    final List<Map<String, dynamic>> sortedTeams = List.generate(
+      teamNames.length,
+          (index) => {
+        'name': teamNames[index],
+        'color': teamColors[index],
+       //
+      },
+    );
+  //..sort((a, b) => b['name'].compareTo(a['name']) as int)
     return Scaffold(
       backgroundColor: palette.backgroundPlaySession,
       body: ResponsiveScreen(
         squarishMainArea: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            LogoWidget(),
             if (adsControllerAvailable && !adsRemoved) ...[
               const Expanded(
                 child: Center(
@@ -43,29 +50,29 @@ class WinGameScreen extends StatelessWidget {
                 ),
               ),
             ],
-            gap,
-            const Center(
-              child: Text(
-                'You won!',
-                style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
-              ),
-            ),
-            gap,
-            Center(
-              child: Text(
-                'Score: ${score.score}\n'
-                'Time: ${score.formattedTime}',
-                style: const TextStyle(
-                    fontFamily: 'Permanent Marker', fontSize: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: sortedTeams.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Container(
+                      width: 24,
+                      height: 24,
+                      color: sortedTeams[index]['color'] as Color,
+                    ),
+                    title: Text(sortedTeams[index]['name'] as String),
+                    trailing: Text('${sortedTeams[index]['score']}'),
+                  );
+                },
               ),
             ),
           ],
         ),
         rectangularMenuArea: FilledButton(
           onPressed: () {
-            GoRouter.of(context).go('/play');
+            Navigator.of(context).popUntil((route) => route.isFirst);
           },
-          child: const Text('Continue'),
+          child: const Text('Wyjscie do main menu'),
         ),
       ),
     );

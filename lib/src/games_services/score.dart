@@ -1,48 +1,63 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 
-import 'package:flutter/foundation.dart';
-
-/// Encapsulates a score and the arithmetic to compute it.
 @immutable
-class Score {
-  final int score;
+class TeamScore {
+  final String teamName;
+  final Color teamColor;
+  double score;
+  List<double> scoreHistory;
+  static final Map<String, TeamScore> _teamScores = {};
 
-  final Duration duration;
+  TeamScore({
+    required this.teamName,
+    required this.teamColor,
+    this.score = 0,
+    List<double>? scoreHistory,
+  }) : scoreHistory = scoreHistory ?? [];
 
-  final int level;
-
-  factory Score(int level, int difficulty, Duration duration) {
-    // The higher the difficulty, the higher the score.
-    var score = difficulty;
-    // The lower the time to beat the level, the higher the score.
-    score *= 10000 ~/ (duration.inSeconds.abs() + 1);
-    return Score._(score, duration, level);
+  double getTotalScore() {
+    return scoreHistory.fold(score, (total, roundScore) => total + roundScore);
   }
 
-  const Score._(this.score, this.duration, this.level);
-
-  String get formattedTime {
-    final buf = StringBuffer();
-    if (duration.inHours > 0) {
-      buf.write('${duration.inHours}');
-      buf.write(':');
-    }
-    final minutes = duration.inMinutes % Duration.minutesPerHour;
-    if (minutes > 9) {
-      buf.write('$minutes');
-    } else {
-      buf.write('0');
-      buf.write('$minutes');
-    }
-    buf.write(':');
-    buf.write((duration.inSeconds % Duration.secondsPerMinute)
-        .toString()
-        .padLeft(2, '0'));
-    return buf.toString();
+  static TeamScore getTeamScore(String teamName, Color teamColor) {
+    String identifier = _createTeamIdentifier(teamName, teamColor);
+    return _teamScores.putIfAbsent(identifier, () => TeamScore(
+      teamName: teamName,
+      teamColor: teamColor,
+    ));
   }
 
-  @override
-  String toString() => 'Score<$score,$formattedTime,$level>';
+  static void updateTeamScore(TeamScore teamScore) {
+    String identifier = _createTeamIdentifier(teamScore.teamName, teamScore.teamColor);
+    _teamScores[identifier] = teamScore;
+  }
+
+  static int getRoundNumber(String teamName, Color teamColor) {
+    String identifier = _createTeamIdentifier(teamName, teamColor);
+    return _teamScores.containsKey(identifier) ? _teamScores[identifier]!.scoreHistory.length + 1 : 1;
+  }
+
+  static void updateForNextRound(String teamName, Color teamColor, double newPoints) {
+    String identifier = _createTeamIdentifier(teamName, teamColor);
+    var currentScore = _teamScores.putIfAbsent(identifier, () => TeamScore(teamName: teamName, teamColor: teamColor));
+
+    // Aktualizacja aktualnego wyniku, ale nie dodawanie go jeszcze do historii
+    currentScore.score += newPoints;
+
+    // Dodaj poprzedni wynik do historii i zresetuj bieżący wynik na koniec rundy
+    currentScore.scoreHistory.add(currentScore.score);
+    currentScore.score = 0; // Resetuj wynik dla nowej rundy
+
+    _teamScores[identifier] = currentScore;
+  }
+
+
+  static void resetAllScores() {
+    _teamScores.clear();
+  }
+
+  static String _createTeamIdentifier(String teamName, Color teamColor) {
+    return '$teamName:${teamColor.value}';
+  }
 }
