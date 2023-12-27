@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class InstructionDialog extends StatelessWidget {
   const InstructionDialog({super.key});

@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/translated_text.dart';
 import '../style/palette.dart';
 
 class CustomStyledButton extends StatelessWidget {
+  final String? svgAsset;
+  final String? imageAsset;
   final IconData? icon;
   final String text;
   final VoidCallback onPressed;
 
-  const CustomStyledButton({super.key, required this.icon, required this.text, required this.onPressed});
+  const CustomStyledButton({
+    super.key,
+    this.svgAsset,
+    this.imageAsset,
+    this.icon,
+    required this.text,
+    required this.onPressed, 
+  });
 
   @override
   Widget build(BuildContext context) {
+    Widget leadingWidget;
+
+    if (svgAsset != null) {
+      leadingWidget = SvgPicture.asset(svgAsset!, width: 32, height: 32);
+    } else if (imageAsset != null) {
+      leadingWidget = Image.asset(imageAsset!, width: 32, height: 32);
+    } else if (icon != null) {
+      leadingWidget = Icon(icon, size: 32);
+    } else {
+      leadingWidget = SizedBox.shrink();
+    }
+
     return ElevatedButton.icon(
-        icon: icon != null ? Icon(icon, size: 32) : SizedBox.shrink(),
+      icon: leadingWidget,
       label: Text(
         text,
         style: TextStyle(
           fontFamily: 'HindMadurai',
-          fontSize: ResponsiveSizing.scaleHeight(context, 20),
+          fontSize: 20,
           color: Palette().white,
         ),
         textAlign: TextAlign.center,
@@ -29,10 +51,7 @@ class CustomStyledButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        minimumSize: Size(
-          ResponsiveSizing.scaleWidth(context, 200),
-          ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650),
-        ),
+        minimumSize: Size(200, 51),
       ),
       onPressed: onPressed,
     );

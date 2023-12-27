@@ -204,7 +204,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 }
               });
             }
-            return AlertDialog(
+            return WillPopScope(
+              onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+              child:
+             AlertDialog(
               backgroundColor: Colors.white,
               content: SizedBox(
                 width: 300,
@@ -341,7 +344,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 ),
               ),
               actions: const <Widget>[],
-            );
+             ),);
           },
         );
       },
@@ -400,7 +403,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                     SizedBox(height: 40),
                   ],
                 )
-              : Center(child: Text("No images selected")), // Tu możesz umieścić dowolny widget, gdy obraz jest null
+              : Center(child: Text("No images selected")),
         ),
       ),
     );

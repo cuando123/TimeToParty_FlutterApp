@@ -133,7 +133,7 @@ class AnimatedAlertDialog {
                     }
                     hasShownAlertDialog = false;
                   },
-                  child: Text('Wyniki'),
+                  child: Text('OK'),
                 ),
               ),
               Center(
@@ -618,6 +618,84 @@ class AnimatedAlertDialog {
       },
     );
   }
+
+  static void showRateDialog(BuildContext context) {
+    final audioController = context.read<AudioController>();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: translatedText(
+              context, 'your_opinion_matters', 20, Palette().pink,
+              textAlign: TextAlign.center),
+          // textAlign: TextAlign.center,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SvgPicture.asset(
+                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+              ),
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              translatedText(context, 'rate_this_app', 16, Palette().menudark,
+                  textAlign: TextAlign.center),
+              // textAlign: TextAlign.center,
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              Center(
+                child: SvgPicture.asset(
+                  'assets/time_to_party_assets/5_stars_rate.svg',
+                ),
+              ),
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette().pink, // color
+                    foregroundColor: Palette().white, // textColor
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                  ),
+                  onPressed: () async {
+                    audioController.playSfx(SfxType.button_back_exit);
+                    const String url =
+                        'https://play.google.com/store/apps/details?id=<YOUR_APP_PACKAGE_NAME>';
+                    if (await canLaunchUrlString(url)) {
+                      await launchUrlString(url);
+                    } else {
+                      print('Could not launch $url');
+                    }
+                  },
+                  child: translatedText(
+                      context, 'rate_us_google_play', 16, Palette().white),
+                ),
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
+                    Navigator.of(context).pop();
+                  },
+                  child:
+                  translatedText(context, 'cancel', 16, Palette().bluegrey),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 enum AlertOrigin { cardScreen, otherScreen }
@@ -712,7 +790,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
             ScaleTransition(
               scale: _greenStarScale,
               child: _StarPoints(
-                color: Colors.green,
+                color: Palette().pink,
                 points: _currentGreenPoints,
               ),
             ),
@@ -720,7 +798,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
             ScaleTransition(
               scale: _redStarScale,
               child: _StarPoints(
-                color: Colors.red,
+                color: Palette().bluegrey,
                 points: _currentRedPoints,
               ),
             ),
@@ -774,12 +852,12 @@ class _StarPoints extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.star), // Używamy ikony gwiazdki
+              Icon(Icons.star_rate_rounded), // Używamy ikony gwiazdki
               Text(
                 '$points',
                 style: TextStyle(
-                  fontSize: 12, // Dostosuj rozmiar tekstu dla czytelności
-                  color: Colors.white,
+                  fontSize: 6, // Dostosuj rozmiar tekstu dla czytelności
+                  color: Palette().white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
