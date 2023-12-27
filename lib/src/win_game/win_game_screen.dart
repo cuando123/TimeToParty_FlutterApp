@@ -35,7 +35,7 @@ class WinGameScreen extends StatelessWidget {
         'name': teamNames[index],
         'color': teamColors[index],
             'score' : TeamScore.getTeamScore(teamNames[index], teamColors[index]).getTotalScore(),
-            'round' : TeamScore.getRoundNumber(teamNames[0], teamColors[0])
+            'round' : TeamScore.getRoundNumber(teamNames[index], teamColors[index])
        //
       },
     )..sort((a, b) => b['score'].compareTo(a['score']) as int);
@@ -48,6 +48,7 @@ class WinGameScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             LogoWidget_notitle(),
+
             if (adsControllerAvailable && !adsRemoved) ...[
               const Expanded(
                 child: Center(
