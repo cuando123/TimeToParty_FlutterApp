@@ -21,8 +21,10 @@ class PlayGameboardCard extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
   final List<String> currentField;
+  final List<String> allTeamNames;
+  final List<Color> allTeamColors;
 
-  const PlayGameboardCard({super.key, required this.teamNames, required this.teamColors, required this.currentField});
+  const PlayGameboardCard({super.key, required this.teamNames, required this.teamColors, required this.currentField, required this.allTeamNames, required this.allTeamColors});
 
   @override
   _PlayGameboardCardState createState() => _PlayGameboardCardState();
@@ -691,7 +693,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     return WillPopScope(
       onWillPop: () async {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors);
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(
@@ -710,7 +712,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     IconButton(
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
-                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.teamNames, widget.teamColors);
+                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
                         //Navigator.of(context).pop('response');
                       },
                     ),

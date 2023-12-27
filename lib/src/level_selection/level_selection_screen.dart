@@ -211,7 +211,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                       return Column(
                         children: [
                           SizedBox(
-                            height: ResponsiveSizing.scaleHeight(context, 155),
+                            width: ResponsiveSizing.scaleWidth(context, 290),
                             child: LogoWidget_notitle(),
                           ),
                           Row(

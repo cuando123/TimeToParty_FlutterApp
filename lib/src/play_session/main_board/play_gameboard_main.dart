@@ -622,6 +622,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
           teamNames: [getCurrentTeamName()],
           teamColors: [widget.teamColors[currentTeamIndex]],
           currentField: [selectedCardIndex],
+          allTeamNames: widget.teamNames,
+          allTeamColors: widget.teamColors
         ),
       ),
     ).then((returnedData) {

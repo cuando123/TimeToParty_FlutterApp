@@ -55,15 +55,13 @@ class LogoWidget_notitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height < 650
-              ? 1
-              : ResponsiveSizing.scaleHeight(context, 20)),
+          top: MediaQuery.of(context).size.height < 650 ? 1 : ResponsiveSizing.scaleHeight(context, 20)),
       child: Column(
         children: [
-          SvgPicture.asset(
-            'assets/time_to_party_assets/all_stars_title.svg',
-            width: ResponsiveSizing.scaleWidth(context, 261),
-            height: ResponsiveSizing.scaleHeight(context, 126),
+          Image.asset(
+            'assets/time_to_party_assets/all_stars_title.png',
+            width: ResponsiveSizing.scaleWidth(context, 290),
+            height: ResponsiveSizing.scaleHeight(context, 146),
           ),
         ],
       ),
@@ -78,24 +76,23 @@ class LogoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height < 650
-              ? 1
-              : ResponsiveSizing.scaleHeight(context, 20)),
+          top: MediaQuery.of(context).size.height < 650 ? 1 : ResponsiveSizing.scaleHeight(context, 20)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 30),
-          SvgPicture.asset(
-            'assets/time_to_party_assets/all_stars_title.svg',
-            width: ResponsiveSizing.scaleWidth(context, 300),
+          SizedBox(height: 10),
+          Image.asset(
+            'assets/time_to_party_assets/all_stars_title.png',
+            width: ResponsiveSizing.scaleWidth(context, 290),
             //height: ResponsiveText.scaleHeight(context, 146),
           ),
           SizedBox(height: 10),
-          SvgPicture.asset(
-            'assets/time_to_party_assets/time_to_party_logo.svg',
-            width: ResponsiveSizing.scaleWidth(context, 257),
+          Image.asset(
+            alignment: Alignment.centerLeft,
+            'assets/time_to_party_assets/time_to_party_logo.png',
+            width: ResponsiveSizing.scaleWidth(context, 300),
             //height: ResponsiveSizing.scaleHeight(context, 134),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -122,7 +119,8 @@ class CustomElevatedButton extends StatelessWidget {
     final buttonTheme = ElevatedButtonTheme.of(context);
     final style = this.style ?? buttonTheme.style ?? theme.elevatedButtonTheme.style ?? theme.textButtonTheme.style;
 
-    final effectiveStyle = onPressed != null ? style : style?.copyWith(backgroundColor: MaterialStateProperty.all(disabledColor));
+    final effectiveStyle =
+        onPressed != null ? style : style?.copyWith(backgroundColor: MaterialStateProperty.all(disabledColor));
 
     return ElevatedButton(
       onPressed: onPressed,
@@ -140,14 +138,13 @@ class ImageModel {
   final double heightPercentage;
   final double rotation;
 
-  ImageModel({
-    required this.assetName,
-    required this.topPercentage,
-    required this.leftPercentage,
-    required this.widthPercentage,
-    required this.heightPercentage,
-    required this.rotation
-  });
+  ImageModel(
+      {required this.assetName,
+      required this.topPercentage,
+      required this.leftPercentage,
+      required this.widthPercentage,
+      required this.heightPercentage,
+      required this.rotation});
 }
 
 class CustomBackground extends StatefulWidget {
@@ -170,48 +167,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/masks_vector.svg',
         topPercentage: 55, // 5% wysokości ekranu
         leftPercentage: 7, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 25, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/microphone_vector.svg',
         topPercentage: 70, // 5% wysokości ekranu
         leftPercentage: 5, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/letters_vector.svg',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 65, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
   ];
 
   final List<ImageModel> layout2 = [
@@ -221,48 +212,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
         leftPercentage: 8, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/masks_vector.svg',
         topPercentage: 58, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 58, // 5% wysokości ekranu
         leftPercentage: 15, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/microphone_vector.svg',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 65, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/letters_vector.svg',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 20, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
   ];
 
   final List<ImageModel> layout3 = [
@@ -272,48 +257,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
         leftPercentage: 70, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/masks_vector.svg',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 20, // 10% szerokości ekranu
         widthPercentage: 12,
         heightPercentage: 12,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 15, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/grey_star.svg',
         topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 12,
         heightPercentage: 12,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/microphone_vector.svg',
         topPercentage: 90, // 5% wysokości ekranu
         leftPercentage: 85, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
-        rotation: pi
-    ),
+        rotation: pi),
     ImageModel(
         assetName: 'assets/time_to_party_assets/letters_vector.svg',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 10, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
-        rotation: pi
-    ),
+        rotation: pi),
   ];
 
   @override
@@ -334,7 +313,7 @@ class _CustomBackgroundState extends State<CustomBackground> {
         chosenLayout = layout3;
         break;
       default:
-        chosenLayout = layout1;  // Domyślna wartość, na wszelki wypadek.
+        chosenLayout = layout1; // Domyślna wartość, na wszelki wypadek.
         break;
     }
     chosenRotations = chosenLayout!.map((imageModel) {
