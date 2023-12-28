@@ -19,7 +19,7 @@ import '../games_services/score.dart';
 class AnimatedAlertDialog {
   //tapnij w kolo by zakrecic
   static void showAnimatedDialog(
-      BuildContext context, String text, SfxType soundType, int delay, double textHeight, bool showBackground) {
+      BuildContext context, String text, SfxType soundType, int delay, double textHeight, bool showBackground, bool useShadows) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -34,7 +34,7 @@ class AnimatedAlertDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, text, textHeight, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(context, text, textHeight, Palette().pink, textAlign: TextAlign.center, useShadows: useShadows),
         );
 
         if (showBackground) {
@@ -217,6 +217,9 @@ class AnimatedAlertDialog {
         multiplier = 1;
     }
     double points = greenCount * multiplier;
+    double redPoints = redCount * multiplier;
+    int greenPointsRounded = points.floor().toInt();
+    int redPointsRounded = redPoints.floor().toInt();
     TeamScore.updateForNextRound(teamNames[0], teamColors[0], points);
 
     int currentRound = TeamScore.getRoundNumber(teamNames[0], teamColors[0]);
@@ -229,7 +232,7 @@ class AnimatedAlertDialog {
       barrierColor: Colors.transparent, // Usunięcie przyciemnienia
       transitionDuration: Duration(milliseconds: 200),
       pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
-        return PointsAnimationDialog(greenPoints: greenCount, redPoints: redCount);
+        return PointsAnimationDialog(greenPoints: greenPointsRounded, redPoints: redPointsRounded);
       },
       transitionBuilder: (context, anim1, anim2, child) {
         return FadeTransition(
@@ -527,7 +530,7 @@ class AnimatedAlertDialog {
         List<Widget> dialogContent = [];
         List<Color> starsColors;
         if (isMatch) {
-          starsColors = List.generate(2, (index) => index == 0 ? Colors.green : Colors.red);
+          starsColors = List.generate(2, (index) => index == 0 ? Colors.green : Colors.grey);
           dialogContent.add(translatedText(context, 'compare_questions_result_ok', 20, Palette().pink,
               textAlign: TextAlign.center));
           dialogContent.add(SizedBox(height: 20));
@@ -696,6 +699,76 @@ class AnimatedAlertDialog {
       },
     );
   }
+  //END GAME DIALOG START
+  static void showEndGameDialog(BuildContext context, List<String> teamNames, List<Color> teamColors, Function callback) {
+    final audioController = context.read<AudioController>();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Palette().white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: letsText(
+              context, 'game_over', 20, Palette().pink,
+              textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ResponsiveSizing.responsiveHeightGap(context, 10),
+              letsText(
+                  context, 'end_game_message', 16, Palette().menudark,
+                  textAlign: TextAlign.center),
+              ResponsiveSizing.responsiveHeightGap(context, 20),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize: Size(
+                        MediaQuery.of(context).size.width * 0.5,
+                        MediaQuery.of(context).size.height * 0.05),
+                    textStyle: TextStyle(
+                        fontFamily: 'HindMadurai',
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                  ),
+                  onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WinGameScreen(
+                        teamNames: teamNames,
+                        teamColors: teamColors,
+                      ),
+                    ));
+                  },
+                  child: letsText(context, 'OK', 16, Palette().white),
+                ),
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    audioController.playSfx(SfxType.button_back_exit);
+                    callback();
+                    Navigator.of(context).pop();
+                  },
+                  child:
+                  translatedText(context, 'cancel', 16, Palette().bluegrey),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
 }
 
 enum AlertOrigin { cardScreen, otherScreen }
@@ -790,7 +863,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
             ScaleTransition(
               scale: _greenStarScale,
               child: _StarPoints(
-                color: Palette().pink,
+                color: Colors.lightGreen,
                 points: _currentGreenPoints,
               ),
             ),
@@ -798,7 +871,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
             ScaleTransition(
               scale: _redStarScale,
               child: _StarPoints(
-                color: Palette().bluegrey,
+                color: Colors.redAccent,
                 points: _currentRedPoints,
               ),
             ),
@@ -846,7 +919,7 @@ class _StarPoints extends StatelessWidget {
         ),
         child: IconTheme(
           data: IconThemeData(
-            size: 24, // Dostosuj rozmiar gwiazdki
+            size: 20, // Dostosuj rozmiar gwiazdki
             color: color, // Kolor gwiazdki
           ),
           child: Stack(
@@ -856,7 +929,7 @@ class _StarPoints extends StatelessWidget {
               Text(
                 '$points',
                 style: TextStyle(
-                  fontSize: 6, // Dostosuj rozmiar tekstu dla czytelności
+                  fontSize: 8, // Dostosuj rozmiar tekstu dla czytelności
                   color: Palette().white,
                   fontWeight: FontWeight.bold,
                 ),

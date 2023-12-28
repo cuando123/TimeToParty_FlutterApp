@@ -134,9 +134,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (shouldStartTimerInitially()) {
-        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26, false);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26, false, true);
         Future.delayed(Duration(milliseconds: 2000), () {
-          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true);
+          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true, true);
           _startTimer();
         });
       }
@@ -144,7 +144,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'man', 'player_one_starts');
       }
     });
-
     determineTotalCards();
     _initializeCards();
   }
@@ -268,7 +267,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         _prepareCurrentWordOrKey();
       });
     } else {
-      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false);
+      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false);
     }
 
     // Odblokuj przycisk po 300 milisekundach
@@ -465,6 +464,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 // animacja time up
   void _showTimeUpAnimation() {
+    for (int i = 0; i < starsColors.length; i++) {
+      if (starsColors[i] == Colors.yellow || starsColors[i] == Colors.grey) {
+        starsColors[i] = Colors.red;
+      }
+    }
+    // Powyższe spowoduje że animacja punktów będzie dobrze wyglądała gdy czas się skończy
     _timeUpAnimationController.forward().then((value) => {
           if (widget.currentField[0] == 'field_star_blue_dark')
             {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
@@ -474,9 +479,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 {
                   Navigator.of(context).pop(),
                   Navigator.of(context).pop('response'),
+                  AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
                 }
               else
                 Navigator.of(context).pop('response'),
+                AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
             }
         });
   }
@@ -924,7 +931,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       onPressed: () {
                         if (tempValuePerson1 == 0 && selectedValuePerson2 == 0)
                           {
-                            AnimatedAlertDialog.showAnimatedDialog(context, 'first_select_answer', SfxType.buzzer_sound, 1, 20, false);
+                            AnimatedAlertDialog.showAnimatedDialog(context, 'first_select_answer', SfxType.buzzer_sound, 1, 20, false, false);
                           } else {
                           if (pressedTwice == false) {
                             AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'woman', 'pass_the_device_next_person');

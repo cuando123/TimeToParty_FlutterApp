@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../app_lifecycle/TranslationProvider.dart';
 
-Widget translatedText(BuildContext context, String translationKey, double fontSize, Color textColor, {TextAlign? textAlign}) {
+Widget translatedText(BuildContext context, String translationKey, double fontSize, Color textColor, {TextAlign? textAlign, bool useShadows = false}) {
   return Consumer<TranslationProvider>(
     builder: (context, translationProvider, child) {
       String translated = translationProvider.getTranslationText(translationKey);
-      return letsText(context, translated, fontSize, textColor, textAlign: textAlign);
+      return letsText(context, translated, fontSize, textColor, textAlign: textAlign, useShadows: useShadows);
     },
   );
 }
@@ -54,13 +54,20 @@ TextSpan translatedTextSpan(BuildContext context, String translationKey, double 
   );
 }
 
-Text letsText(BuildContext context, String text, double fontSize, Color textColor, {TextAlign? textAlign}) {
+Text letsText(BuildContext context, String text, double fontSize, Color textColor, {TextAlign? textAlign, bool useShadows = false}) {
   return Text(
     text,
     style: TextStyle(
       fontFamily: 'HindMadurai',
       fontSize: ResponsiveSizing.scaleHeight(context, fontSize),
       color: textColor,
+      shadows: useShadows ? [
+        Shadow(
+          offset: Offset(1.0, 1.0),
+          blurRadius: 3.0,
+          color: Colors.black.withOpacity(0.5),
+        ),
+      ] : [],
     ),
     textAlign: textAlign,
   );
