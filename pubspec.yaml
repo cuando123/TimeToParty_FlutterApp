@@ -48,11 +48,14 @@ dependencies:
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code
   # that references the dependency.
+  cloud_firestore: ^4.0.3
+  firebase_auth: ^4.2.2
   firebase_core: ^2.1.1  # Needed for Crashlytics below
   firebase_crashlytics: ^3.0.3  # Error reporting
   games_services: ^3.0.0  # Achievements and leaderboards
   google_mobile_ads: ^2.0.1  # Ads
   in_app_purchase: ^3.0.1  # In-app purchases
+  google_sign_in: ^6.0.1
 
 dev_dependencies:
   analysis_defaults:

@@ -854,30 +854,30 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white.withOpacity(0.3),
       elevation: 0,
-      child: FittedBox(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScaleTransition(
-              scale: _greenStarScale,
-              child: _StarPoints(
-                color: Colors.lightGreen,
-                points: _currentGreenPoints,
-              ),
+          child: FittedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ScaleTransition(
+                  scale: _greenStarScale,
+                  child: _StarPoints(
+                    color: Colors.lightGreen,
+                    points: _currentGreenPoints,
+                  ),
+                ),
+                SizedBox(width: 16), // Space between the stars
+                ScaleTransition(
+                  scale: _redStarScale,
+                  child: _StarPoints(
+                    color: Colors.redAccent,
+                    points: _currentRedPoints,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 16), // Space between the stars
-            ScaleTransition(
-              scale: _redStarScale,
-              child: _StarPoints(
-                color: Colors.redAccent,
-                points: _currentRedPoints,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -905,10 +905,9 @@ class _StarPoints extends StatelessWidget {
         shape: BoxShape.circle, // Kształt obramówki jako koło
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.5),
-            spreadRadius: 2,
+            color: color.withOpacity(0.3),
+            spreadRadius: 1,
             blurRadius: 3,
-            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -919,13 +918,14 @@ class _StarPoints extends StatelessWidget {
         ),
         child: IconTheme(
           data: IconThemeData(
-            size: 20, // Dostosuj rozmiar gwiazdki
+            size: 22, // Dostosuj rozmiar gwiazdki
             color: color, // Kolor gwiazdki
           ),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.star_rate_rounded), // Używamy ikony gwiazdki
+              Icon(Icons.star_rounded), // Używamy ikony gwiazdki
+              Transform.translate(offset: Offset(0, 1), child:
               Text(
                 '$points',
                 style: TextStyle(
@@ -933,6 +933,7 @@ class _StarPoints extends StatelessWidget {
                   color: Palette().white,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
               ),
             ],
           ),
