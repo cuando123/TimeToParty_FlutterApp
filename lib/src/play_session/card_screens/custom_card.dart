@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/styles/custom_style_strategy_bar.dart';
 import 'package:game_template/src/play_session/card_screens/styles/image_painter.dart';
@@ -32,6 +33,7 @@ class CustomCard extends StatefulWidget {
   final Function onImageSet;
   final Function(int?, String?) onSelectionMade;
   final int? resetSelection;
+  final ImageType imageType;
 
   const CustomCard({
     super.key,
@@ -50,6 +52,7 @@ class CustomCard extends StatefulWidget {
     required this.onImageSet,
     required this.onSelectionMade,
     required this.resetSelection,
+    required this.imageType,
     this.specificLists = const {},
   });
 
@@ -152,7 +155,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     return buildCustomCard(cardData);
   }
 
-
   //green card start
   void _showCustomDialogGreen(BuildContext context) {
     List<String> cardTypes = ['draw_movie', 'draw_love_pos', 'draw_proverb'];
@@ -206,145 +208,175 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
             }
             return WillPopScope(
               onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
-              child:
-             AlertDialog(
-              backgroundColor: Colors.white,
-              content: SizedBox(
-                width: 300,
-                height: 400,
-                child: GestureDetector(
-                  onTap: () {
-                    if (Navigator.canPop(context)) {
-                      // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                      Navigator.of(context).pop(); // Zamknij dialog
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DrawingScreen(
-                                  itemToShow: itemToShow, category: cardType, teamColors: widget.teamColors, teamNames: widget.teamNames))); // Następnie przejdź do nowego ekranu
-                    }
-                  },
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      InkWell(
-                        onTap: () {
-                          AnimatedAlertDialog.showCardDescriptionDialog(
-                              context, 'field_star_green', AlertOrigin.cardScreen)
-                              .then((_) {
-
-                          });
-                        },
-                        child: Container(
-                          child: CircleAvatar(
-                            radius: 18, // Dostosuj rozmiar w zależności od potrzeb
-                            backgroundColor: Color(0xFF2899F3),
-                            child: Text(
-                              '?',
-                              style: TextStyle(
-                                  color: Palette().white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  fontFamily: 'HindMadurai'),
+              child: AlertDialog(
+                backgroundColor: Colors.white,
+                content: SizedBox(
+                  width: 300,
+                  height: 400,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (Navigator.canPop(context)) {
+                        // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                        Navigator.of(context).pop(); // Zamknij dialog
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DrawingScreen(
+                                    itemToShow: itemToShow,
+                                    category: cardType,
+                                    teamColors: widget.teamColors,
+                                    teamNames: widget.teamNames))); // Następnie przejdź do nowego ekranu
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        InkWell(
+                          onTap: () {
+                            AnimatedAlertDialog.showCardDescriptionDialog(
+                                    context, 'field_star_green', AlertOrigin.cardScreen)
+                                .then((_) {});
+                          },
+                          child: Container(
+                            child: CircleAvatar(
+                              radius: 18, // Dostosuj rozmiar w zależności od potrzeb
+                              backgroundColor: Color(0xFF2899F3),
+                              child: Text(
+                                '?',
+                                style: TextStyle(
+                                    color: Palette().white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    fontFamily: 'HindMadurai'),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      FortuneBar(
-                        height: 70,
-                          indicators:  const <FortuneIndicator>[
-                            FortuneIndicator(
-                              alignment: Alignment.topCenter,
-                              child: RectangleIndicator(
-                                color: Colors.transparent,
-                                borderColor: Colors.yellow,
-                                borderWidth: 3,
-                              ),
-                            ),
-                          ],
-                          physics: CircularPanPhysics(
-                            duration: Duration(seconds: 1),
-                            curve: Curves.decelerate,
-                          ),
-                          selected: Stream.value(
-                              selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
-                          styleStrategy: CustomStyleStrategy(),
-                          visibleItemCount: 3,
-                          items: [
-                        FortuneItem(child:
-                            Column(children: [
-                              SizedBox(height: 5),
-                              Icon(Icons.movie, color: Palette().bluegrey),
-                              translatedText(context, 'movies', 14, Colors.white, textAlign: TextAlign.center,)
-                            ],),),
-                            FortuneItem(child:
-                            Column(children: [
-                              SizedBox(height: 5),
-                              Icon(Icons.man, color: Palette().bluegrey),
-                              translatedText(context, 'love_positions', 14, Colors.white, textAlign: TextAlign.center,)
-                            ],),),
-                            FortuneItem(child:
-                            Column(children: [
-                              SizedBox(height: 5),
-                              Icon(Icons.message, color: Palette().bluegrey),
-                              translatedText(context, 'proverbs', 14, Colors.white, textAlign: TextAlign.center,)
-                            ],),),
-                          ]),
-                      SizedBox(height: 50),
-                      Expanded(
-                          child: showDelayedText
-                              ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center, // lub inny sposób wyrównania
-                            children: [
-                              letsText(context, itemToShow, 20, Palette().pink, textAlign: TextAlign.center),
-                              SizedBox(height: 50),
-                              ScaleTransition(
-                                scale: _pulseAnimation,
-                                child: CustomStyledButton(
-                                  icon: Icons.play_arrow_rounded,
-                                  text: getTranslatedString(context, 'start_the_task'), // Or use your translated text function
-                                  onPressed: () {
-                                    if (Navigator.canPop(context)) {
-                                      // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                                      Navigator.of(context).pop(); // Zamknij dialog
-                                      // Następnie przejdź do nowego ekranu i oczekuj na wynik
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) => DrawingScreen(
-                                          itemToShow: itemToShow,
-                                          category: cardType,teamColors: widget.teamColors, teamNames: widget.teamNames
-                                        ),
-                                      ))
-                                          .then((result) {
-                                        if (result is DrawingResult) {
-                                          print('zwracam obraz');
-                                          safeSetState(() {
-                                            // Przechowywanie obrazu w stanie, aby można było go wyświetlić
-                                            image = result.image;
-                                            widget.onImageSet(); // Wywołanie callbacku
-                                            // Wypisanie itemToShow i category w konsoli
-                                            print("Category: ${result.category}");
-
-                                            // Możesz też przechować te wartości w stanie, jeśli będą używane w widgetach
-                                            category = result.category;
-                                          });
-                                        }
-                                      });
-                                    }
-                                  },
+                        SizedBox(height: 20),
+                        FortuneBar(
+                            height: 70,
+                            indicators: const <FortuneIndicator>[
+                              FortuneIndicator(
+                                alignment: Alignment.topCenter,
+                                child: RectangleIndicator(
+                                  color: Colors.transparent,
+                                  borderColor: Colors.yellow,
+                                  borderWidth: 3,
                                 ),
                               ),
-                              SizedBox(height: 20),
                             ],
-                          )
-                              : translatedText(context, 'randomizing', 20, Palette().pink)),
-                    ],
+                            physics: CircularPanPhysics(
+                              duration: Duration(seconds: 1),
+                              curve: Curves.decelerate,
+                            ),
+                            selected: Stream.value(
+                                selectedFortuneItem), // 0-filmy, 1 -poz mil, 2 - powiedzenia - z wylosowanej tam wczesniej liczby
+                            styleStrategy: CustomStyleStrategy(),
+                            visibleItemCount: 3,
+                            items: [
+                              FortuneItem(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(Icons.movie, color: Palette().bluegrey),
+                                    translatedText(
+                                      context,
+                                      'movies',
+                                      14,
+                                      Colors.white,
+                                      textAlign: TextAlign.center,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              FortuneItem(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(Icons.man, color: Palette().bluegrey),
+                                    translatedText(
+                                      context,
+                                      'love_positions',
+                                      14,
+                                      Colors.white,
+                                      textAlign: TextAlign.center,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              FortuneItem(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(Icons.message, color: Palette().bluegrey),
+                                    translatedText(
+                                      context,
+                                      'proverbs',
+                                      14,
+                                      Colors.white,
+                                      textAlign: TextAlign.center,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ]),
+                        SizedBox(height: 50),
+                        Expanded(
+                            child: showDelayedText
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center, // lub inny sposób wyrównania
+                                    children: [
+                                      letsText(context, itemToShow, 20, Palette().pink, textAlign: TextAlign.center),
+                                      SizedBox(height: 50),
+                                      ScaleTransition(
+                                        scale: _pulseAnimation,
+                                        child: CustomStyledButton(
+                                          icon: Icons.play_arrow_rounded,
+                                          text: getTranslatedString(
+                                              context, 'start_the_task'), // Or use your translated text function
+                                          onPressed: () {
+                                            if (Navigator.canPop(context)) {
+                                              // Sprawdź, czy możesz wyjść z obecnego kontekstu
+                                              Navigator.of(context).pop(); // Zamknij dialog
+                                              // Następnie przejdź do nowego ekranu i oczekuj na wynik
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (context) => DrawingScreen(
+                                                    itemToShow: itemToShow,
+                                                    category: cardType,
+                                                    teamColors: widget.teamColors,
+                                                    teamNames: widget.teamNames),
+                                              ))
+                                                  .then((result) {
+                                                if (result is DrawingResult) {
+                                                  print('zwracam obraz');
+                                                  safeSetState(() {
+                                                    // Przechowywanie obrazu w stanie, aby można było go wyświetlić
+                                                    image = result.image;
+                                                    widget.onImageSet(); // Wywołanie callbacku
+                                                    // Wypisanie itemToShow i category w konsoli
+                                                    print("Category: ${result.category}");
+
+                                                    // Możesz też przechować te wartości w stanie, jeśli będą używane w widgetach
+                                                    category = result.category;
+                                                  });
+                                                }
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                    ],
+                                  )
+                                : translatedText(context, 'randomizing', 20, Palette().pink)),
+                      ],
+                    ),
                   ),
                 ),
+                actions: const <Widget>[],
               ),
-              actions: const <Widget>[],
-             ),);
+            );
           },
         );
       },
@@ -360,51 +392,65 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   Widget buildGreenCard() {
     return FractionallySizedBox(
       widthFactor: 0.7,
-      child: Container(
-        height: 400.0,
-        padding: EdgeInsets.all(13.0),
-        child: Card(
-          color: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(color: Palette().white, width: 13.0),
-          ),
-          elevation: 0.0,
-          child: image != null //TO_DO tu musze wiedziec ze trzeba uruchomic timer
-              ? Column(
-                  children: [
-                    SizedBox(height: 30),
-                    //letsText(context, itemToShow, 20, Colors.white),
-                    translatedText(context, 'guess', 14, Colors.white, textAlign: TextAlign.center),
-                    letsText(
-                        context,
-                        getTranslatedString(
+      child: Stack(
+        children: [
+          Container(
+            height: 400.0,
+            padding: EdgeInsets.all(13.0),
+            child: Card(
+              color: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: BorderSide(color: Palette().white, width: 13.0),
+              ),
+              elevation: 0.0,
+              child: image != null //TO_DO tu musze wiedziec ze trzeba uruchomic timer
+                  ? Column(
+                      children: [
+                        SizedBox(height: 30),
+                        //letsText(context, itemToShow, 20, Colors.white),
+                        translatedText(context, 'guess', 14, Colors.white, textAlign: TextAlign.center),
+                        letsText(
                             context,
-                            category == 'draw_movie'
-                                ? 'category_draw_movie'
-                                : category == 'draw_proverb'
-                                ? 'category_draw_proverbs'
-                                : category == 'draw_love_pos'
-                                ? 'category_love_positions'
-                                : 'default_category'),
-                        14,
-                        Palette().white),
-                    Expanded( child:
-                    Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: CustomPaint(
-                        painter: ImagePainter(image: image!),
-                        child: SizedBox(
-                          width: image!.width.toDouble(),
-                          height: image!.height.toDouble(),
+                            getTranslatedString(
+                                context,
+                                category == 'draw_movie'
+                                    ? 'category_draw_movie'
+                                    : category == 'draw_proverb'
+                                        ? 'category_draw_proverbs'
+                                        : category == 'draw_love_pos'
+                                            ? 'category_love_positions'
+                                            : 'default_category'),
+                            14,
+                            Palette().white),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: CustomPaint(
+                              painter: ImagePainter(image: image!),
+                              child: SizedBox(
+                                width: image!.width.toDouble(),
+                                height: image!.height.toDouble(),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),),
-                    SizedBox(height: 40),
-                  ],
-                )
-              : Center(child: Text("No images selected")),
-        ),
+                        SizedBox(height: 40),
+                      ],
+                    )
+                  : Center(child: Text("No images selected")),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 200),
+              transitionBuilder: _transitionBuilder,
+              child: widget.imageType != null ? buildImageWidget(widget.imageType) : SizedBox(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -442,7 +488,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     });
   }
 
-
   List<Widget> createWidgetsFromText(String text) {
     // Podziel tekst przy każdym wystąpieniu średnika
     List<String> parts = text.split(';');
@@ -471,14 +516,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
         _getImageWidget(personToImage[person] ?? ''),
         //_getTextWidget(getTranslatedString(context, 'does')),
         _getTextWidget(number),
-        _getTextWidget(getTranslatedString(context,activity) ),
+        _getTextWidget(getTranslatedString(context, activity)),
         _getImageWidget(activityToImage[activity] ?? ''),
       ];
     }
 
     return [_getTextWidget('Wrong format!')];
   }
-
 
   Widget _getTextWidget(String text) {
     return Text(
@@ -520,32 +564,45 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 duration: Duration(milliseconds: 250),
                 child: ScaleTransition(
                   scale: widget.slideAnimationController,
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.all(13.0),
-                    child: Card(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: BorderSide(color: Palette().white, width: 13.0),
-                      ),
-                      elevation: 0.0,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20),
-                          buildStarsRow(widget.totalCards, widget.starsColors),
-                          SizedBox(height: 5),
-                          Expanded(
-                            child: Column(
-                              children: createWidgetsFromText(textFromRollSlotMachine),
-                            ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 400.0,
+                        padding: EdgeInsets.all(13.0),
+                        child: Card(
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            side: BorderSide(color: Palette().white, width: 13.0),
                           ),
-                          SizedBox(height: 5),
-                          buildStarsRow(widget.totalCards, widget.starsColors),
-                          SizedBox(height: 20),
-                        ],
+                          elevation: 0.0,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              buildStarsRow(widget.totalCards, widget.starsColors),
+                              SizedBox(height: 5),
+                              Expanded(
+                                child: Column(
+                                  children: createWidgetsFromText(textFromRollSlotMachine),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              buildStarsRow(widget.totalCards, widget.starsColors),
+                              SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 200),
+                          transitionBuilder: _transitionBuilder,
+                          child: widget.imageType != null ? buildImageWidget(widget.imageType) : SizedBox(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -598,9 +655,9 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 if (index == 0) {
                                   // Dla pierwszego elementu wyświetl tylko tekst
                                   return Padding(
-                                    padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-                                    child: letsText(context, widget.buildFortuneItemsList[index], 14, Colors.white, textAlign: TextAlign.center)
-                                  );
+                                      padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+                                      child: letsText(context, widget.buildFortuneItemsList[index], 14, Colors.white,
+                                          textAlign: TextAlign.center));
                                 } else {
                                   // Dla pozostałych elementów użyj RadioListTile
                                   return RadioListTile<int>(
@@ -655,55 +712,70 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 duration: Duration(milliseconds: 250),
                 child: ScaleTransition(
                   scale: widget.slideAnimationController,
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.all(13.0),
-                    child: Card(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: BorderSide(color: Palette().white, width: 13.0),
-                      ),
-                      elevation: 0.0,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20),
-                          buildStarsRow(cardData.totalCards, cardData.starsColors),
-                          SizedBox(height: 100),
-                          Expanded(
-                            child: Container(
-                              padding: padding,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: splitWords
-                                          .map((word) => Text(
-                                                word,
-                                                style: TextStyle(
-                                                    fontFamily: 'HindMadurai', color: Colors.white, fontSize: word.length > 15 ? 20 : 24),
-                                                softWrap: true,
-                                              ))
-                                          .toList(),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 400.0,
+                        padding: EdgeInsets.all(13.0),
+                        child: Card(
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            side: BorderSide(color: Palette().white, width: 13.0),
+                          ),
+                          elevation: 0.0,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              buildStarsRow(cardData.totalCards, cardData.starsColors),
+                              SizedBox(height: 100),
+                              Expanded(
+                                child: Container(
+                                  padding: padding,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
                                     ),
                                   ),
-                                ],
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          children: splitWords
+                                              .map((word) => Text(
+                                                    word,
+                                                    style: TextStyle(
+                                                        fontFamily: 'HindMadurai',
+                                                        color: Colors.white,
+                                                        fontSize: word.length > 15 ? 20 : 24),
+                                                    softWrap: true,
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 100),
+                              buildStarsRow(cardData.totalCards, cardData.starsColors),
+                              SizedBox(height: 20),
+                            ],
                           ),
-                          SizedBox(height: 100),
-                          buildStarsRow(cardData.totalCards, cardData.starsColors),
-                          SizedBox(height: 20),
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 200),
+                          transitionBuilder: _transitionBuilder,
+                          child: widget.imageType != null ? buildImageWidget(widget.imageType) : SizedBox(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -751,71 +823,84 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 duration: Duration(milliseconds: 250),
                 child: ScaleTransition(
                   scale: slideAnimationController, // Kontroler animacji skali
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.all(13.0),
-                    child: Card(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: BorderSide(color: Palette().white, width: 13.0),
-                      ),
-                      elevation: 0.0,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
-                                ),
-                              );
-                            }),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 400.0,
+                        padding: EdgeInsets.all(13.0),
+                        child: Card(
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            side: BorderSide(color: Palette().white, width: 13.0),
                           ),
-                          SizedBox(height: 15),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                          elevation: 0.0,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(totalCards, (index) {
+                                  // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    child: Icon(
+                                      Icons.star,
+                                      color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [wordText(context, word, 24, Colors.white, index: 0)],
-                            ),
-                          ),
-                          wordText(context, word, 20, Colors.white, index: 1),
-                          wordText(context, word, 20, Colors.white, index: 2),
-                          wordText(context, word, 20, Colors.white, index: 3),
-                          wordText(context, word, 20, Colors.white, index: 4),
-                          wordText(context, word, 20, Colors.white, index: 5),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(totalCards, (index) {
-                              // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: Icon(
-                                  Icons.star,
-                                  color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
-                                  size: 20,
+                              SizedBox(height: 15),
+                              Container(
+                                padding: const EdgeInsets.all(20.0),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: const [Color(0xffB46BDF), Color(0xff6625FF), Color(0xff211753)],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
                                 ),
-                              );
-                            }),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [wordText(context, word, 24, Colors.white, index: 0)],
+                                ),
+                              ),
+                              wordText(context, word, 20, Colors.white, index: 1),
+                              wordText(context, word, 20, Colors.white, index: 2),
+                              wordText(context, word, 20, Colors.white, index: 3),
+                              wordText(context, word, 20, Colors.white, index: 4),
+                              wordText(context, word, 20, Colors.white, index: 5),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(totalCards, (index) {
+                                  // Bezpośrednio używaj starsColors[index] dla każdej gwiazdki
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    child: Icon(
+                                      Icons.star,
+                                      color: starsColors[index], // Bezpośrednio ustaw kolor z listy starsColors
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 200),
+                          transitionBuilder: _transitionBuilder,
+                          child: widget.imageType != null ? buildImageWidget(widget.imageType) : SizedBox(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -826,8 +911,102 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
     );
   }
 
-  void onSelectionMade(int selectedValue, String selectedText) {
+  void onSelectionMade(int selectedValue, String selectedText) {}
 
+  Widget _transitionBuilder(Widget child, Animation<double> animation) {
+    Animation<Offset> shakeAnimation = _shakeAnimation(animation);
+    Animation<double> rotateAnimation = _rotateAnimation(animation);
 
+    return ScaleTransition(
+      scale: animation,
+      child: FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: shakeAnimation,
+          child: RotationTransition(
+            turns: rotateAnimation,
+            child: child,
+          ),
+        ),
+      ),
+    );
   }
+
+  Widget buildImageWidget(ImageType? imageType) {
+    switch (imageType) {
+      case ImageType.declined:
+        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_declined.svg');
+      case ImageType.approved:
+        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_approved.svg');
+      case ImageType.skipped:
+        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_drop.svg');
+      case ImageType.empty:
+      default:
+        return SizedBox(); // Pusty widget dla 'empty' lub 'null'
+    }
+  }
+
+  Animation<Offset> _shakeAnimation(Animation<double> animation) {
+    // Zakładamy, że "shake" zaczyna się w połowie naszej głównej animacji
+    final shakeStart = 0.9;
+    final shakeDuration = 0.1;
+
+    return TweenSequence<Offset>([
+      TweenSequenceItem(
+        tween: Tween(begin: Offset.zero, end: Offset(0.02, 0.0))
+            .chain(CurveTween(curve: Interval(shakeStart, shakeStart + shakeDuration / 4))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: Offset(0.02, 0.0), end: Offset(-0.02, 0.0))
+            .chain(CurveTween(curve: Interval(shakeStart + shakeDuration / 4, shakeStart + shakeDuration / 2))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: Offset(-0.02, 0.0), end: Offset(0.02, 0.0))
+            .chain(CurveTween(curve: Interval(shakeStart + shakeDuration / 2, shakeStart + 3 * shakeDuration / 4))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: Offset(0.02, 0.0), end: Offset.zero)
+            .chain(CurveTween(curve: Interval(shakeStart + 3 * shakeDuration / 4, shakeStart + shakeDuration))),
+        weight: 1.0,
+      ),
+    ]).animate(animation);
+  }
+
+  Animation<double> _rotateAnimation(Animation<double> animation) {
+    final rotateStart = 0.9; // Rozpoczęcie obracania później
+    final rotateDuration = 0.1; // Krótsza czas trwania obracania
+
+    return TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: -0.02) // Mniejszy zakres obrotu
+            .chain(CurveTween(curve: Interval(rotateStart, rotateStart + rotateDuration / 4))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: -0.02, end: 0.02)
+            .chain(CurveTween(curve: Interval(rotateStart + rotateDuration / 4, rotateStart + rotateDuration / 2))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 0.02, end: -0.02)
+            .chain(CurveTween(curve: Interval(rotateStart + rotateDuration / 2, rotateStart + 3 * rotateDuration / 4))),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: -0.02, end: 0.0)
+            .chain(CurveTween(curve: Interval(rotateStart + 3 * rotateDuration / 4, rotateStart + rotateDuration))),
+        weight: 1.0,
+      ),
+    ]).animate(animation);
+  }
+}
+
+enum ImageType {
+  declined,
+  approved,
+  skipped,
+  empty,
 }

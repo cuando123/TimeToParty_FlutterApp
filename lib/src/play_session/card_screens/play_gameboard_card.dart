@@ -70,6 +70,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   bool pressedTwice = false;
   bool isMatch = false;
   int? resetSelection = -1;
+  ImageType? selectedImageType;
 
   @override
   void initState() {
@@ -174,9 +175,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       _isButtonXDisabled = true;
       _isButtonTickDisabled = true;
       _isButtonSkipDisabled = true;
+      selectedImageType = ImageType.declined;
     });
     // Opóźnij działanie przycisku
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(Duration(milliseconds: 300), () {
       _dismissCardToLeft();
       _nextStarRed();
     });
@@ -186,6 +188,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       } else {
         _nextWord(); // Przesuń do następnego słowa dla pozostałych kart
       }
+      safeSetState(() {
+        selectedImageType = ImageType.empty;
+      });
       _prepareCurrentWordOrKey();
     });
 
@@ -212,10 +217,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       _isButtonXDisabled = true;
       _isButtonTickDisabled = true;
       _isButtonSkipDisabled = true;
+      selectedImageType = ImageType.approved;
     });
 
     // Opóźnij działanie przycisku
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(Duration(milliseconds: 300), () {
       _dismissCardToRight();
       _nextStarGreen();
     });
@@ -225,6 +231,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       } else {
         _nextWord(); // Przesuń do następnego słowa dla pozostałych kart
       }
+      safeSetState(() {
+        selectedImageType = ImageType.empty;
+      });
       _prepareCurrentWordOrKey();
     });
     // Odblokuj przycisk po 300 milisekundach
@@ -244,6 +253,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     final audioController = context.read<AudioController>();
     audioController.playSfx(SfxType.card_skip_sound);
+
     // Zablokuj przycisk
     safeSetState(() {
       _isButtonXDisabled = true;
@@ -252,8 +262,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
 
     if (skipCount > 0) {
+      // Ustaw selectedImageType tylko gdy skipCount jest większe od 0
+      safeSetState(() {
+        selectedImageType = ImageType.skipped;
+      });
+
       // Wykonanie opóźnienia
-      Future.delayed(Duration(milliseconds: 200), () {
+      Future.delayed(Duration(milliseconds: 300), () {
         _dismissCardToLeft();
         _skipCard(); // Ta funkcja zmniejszy skipCount
       });
@@ -264,13 +279,17 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         } else {
           _initializeCards(); // Przesuń do następnego słowa dla pozostałych kart
         }
+        safeSetState(() {
+          selectedImageType = ImageType.empty;
+        });
         _prepareCurrentWordOrKey();
       });
     } else {
+      // Wyświetlenie alert dialog, nie zmieniaj selectedImageType
       AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false);
     }
 
-    // Odblokuj przycisk po 300 milisekundach
+    // Odblokuj przycisk po 800 milisekundach
     Future.delayed(Duration(milliseconds: 800), () {
       safeSetState(() {
         _isButtonXDisabled = false;
@@ -279,6 +298,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     });
   }
+
 
 // ustal liczbe kart i pominiec dla danego rodzaju pola
   void determineTotalCards() {
@@ -862,6 +882,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                         _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
                     // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
                     specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
+                        imageType: selectedImageType ?? ImageType.empty,
                   )),
                 ],
               ),
