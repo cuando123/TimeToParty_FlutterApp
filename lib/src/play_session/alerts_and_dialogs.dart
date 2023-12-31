@@ -725,6 +725,7 @@ class AnimatedAlertDialog {
               letsText(
               context, 'drużyna: \'${teamNames[currentTeamIndex]}\' jest już na mecie!', 20, Palette().pink,
               textAlign: TextAlign.center),
+              SvgPicture.asset('assets/time_to_party_assets/finish_flag.svg'),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               letsText(
                   context, 'Czy chcecie już zakończyć grę?', 16, Palette().menudark,
