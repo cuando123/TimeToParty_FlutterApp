@@ -48,7 +48,7 @@ dependencies:
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code
   # that references the dependency.
-  cloud_firestore: ^4.0.3
+  cloud_firestore: ^4.13.6
   firebase_auth: ^4.2.2
   firebase_core: ^2.1.1  # Needed for Crashlytics below
   firebase_crashlytics: ^3.0.3  # Error reporting

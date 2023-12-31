@@ -700,7 +700,7 @@ class AnimatedAlertDialog {
     );
   }
   //END GAME DIALOG START
-  static void showEndGameDialog(BuildContext context, List<String> teamNames, List<Color> teamColors, Function callback) {
+  static void showEndGameDialog(BuildContext context, int currentTeamIndex, List<String> teamNames, List<Color> teamColors, Function callback) {
     final audioController = context.read<AudioController>();
     showDialog(
       context: context,
@@ -710,65 +710,82 @@ class AnimatedAlertDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: letsText(
-              context, 'game_over', 20, Palette().pink,
-              textAlign: TextAlign.center),
+          title: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            SvgPicture.asset('assets/time_to_party_assets/trophy_cup.svg'),
+            letsText(
+                context, 'Gratulacje!', 20, Palette().pink,
+                textAlign: TextAlign.center),
+            SvgPicture.asset('assets/time_to_party_assets/trophy_cup.svg'),
+          ],),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              letsText(
+              context, 'drużyna: \'${teamNames[currentTeamIndex]}\' jest już na mecie!', 20, Palette().pink,
+              textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               letsText(
-                  context, 'end_game_message', 16, Palette().menudark,
+                  context, 'Czy chcecie już zakończyć grę?', 16, Palette().menudark,
                   textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGap(context, 20),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink,
-                    foregroundColor: Palette().white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize: Size(
-                        MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => WinGameScreen(
-                        teamNames: teamNames,
-                        teamColors: teamColors,
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette().pink,
+                        foregroundColor: Palette().white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        minimumSize: Size(
+                            MediaQuery.of(context).size.width * 0.25,
+                            MediaQuery.of(context).size.height * 0.05),
+                        textStyle: TextStyle(
+                            fontFamily: 'HindMadurai',
+                            fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                       ),
-                    ));
-                  },
-                  child: letsText(context, 'OK', 16, Palette().white),
-                ),
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
-                    callback();
-                    Navigator.of(context).pop();
-                  },
-                  child:
-                  translatedText(context, 'cancel', 16, Palette().bluegrey),
-                ),
-              ),
+                      onPressed: () {
+                        audioController.playSfx(SfxType.button_back_exit);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => WinGameScreen(
+                            teamNames: teamNames,
+                            teamColors: teamColors,
+                          ),
+                        ));
+                      },
+                      child: letsText(context, 'TAK', 16, Palette().white),
+                    ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette().pink,
+                        foregroundColor: Palette().white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        minimumSize: Size(
+                            MediaQuery.of(context).size.width * 0.25,
+                            MediaQuery.of(context).size.height * 0.05),
+                        textStyle: TextStyle(
+                            fontFamily: 'HindMadurai',
+                            fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                      ),
+                      onPressed: () {
+                        audioController.playSfx(SfxType.button_back_exit);
+                        callback();
+                        Navigator.of(context).pop();
+                      },
+                      child: letsText(context, 'NIE', 16, Palette().white),
+                    ),
+                ],
+              )
             ],
           ),
         );
       },
     );
   }
-
-
-
 }
 
 enum AlertOrigin { cardScreen, otherScreen }

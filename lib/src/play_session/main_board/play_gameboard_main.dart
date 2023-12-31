@@ -274,7 +274,13 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                     //showCardAnimation = true;
                                                     //selectedCardIndex = 'field_star_blue_dark';
                                                     moveFlag(context,
-                                                        17,
+                                                        19,
+                                                        0,
+                                                        screenWidth * scale * 0.02768 -
+                                                            4 +
+                                                            screenWidth * scale * 0.1436);
+                                                    moveFlag(context,
+                                                        19,
                                                         1,
                                                         screenWidth * scale * 0.02768 -
                                                             4 +
@@ -587,7 +593,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   //funkcja przesuniecia pionka, kroki
   Future<void> moveFlag(BuildContext context, int steps, int flagIndex, double stepSize) async {
     print('Steps: $steps, flagIndex: $flagIndex, flagSteps[]: $flagSteps');
-
+    bool hasReachedEnd = false;
     for (int i = 0; i < steps; i++) {
 
       flagSteps[flagIndex]++;
@@ -604,7 +610,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         newPosition = Offset((20 - totalSteps) * stepSize, 0);
       } else {
         newPosition = Offset(0, 0);
-        //flagSteps[flagIndex] = 0;
+      }
+      if (newPosition == Offset(0, 0)) {
+        hasReachedEnd = true; // Pionek dotarł na metę
       }
       safeSetState(() {
         flagPositions[flagIndex] = newPosition;
@@ -612,7 +620,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         audioController.playSfx(SfxType.ripple_sound);
       });
 
-      await Future.delayed(Duration(milliseconds: 800));
+      if (!hasReachedEnd) {
+        await Future.delayed(Duration(milliseconds: 800)); // Opóźnienie tylko gdy pionek nie dotarł na metę
+      }
     }
     await Future.delayed(Duration(milliseconds: 500));
 
@@ -626,19 +636,21 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
               teamColors: widget.teamColors,
             ),
         ));
-        print("Wszystkie pionki za burtą!");
+        print("Wszystkie pionki na meciee!");
       } else {
       AnimatedAlertDialog.showEndGameDialog(
           context,
+          currentTeamIndex,
           mutableTeamNames,
           mutableTeamColors,
               () {
                 safeSetState(() {
-                  currentFlagIndex = (currentFlagIndex + 1) % mutableTeamColors.length;
+                  currentFlagIndex = findNextActiveFlagIndex(currentFlagIndex, pionekZaBurta, mutableTeamColors.length);
                   currentTeamIndex = currentFlagIndex;
                   print('BURTA: $pionekZaBurta');
                 });
-          }
+
+              }
       );};
       isAnimating = false;
       return;
@@ -673,18 +685,32 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       if (mounted && returnedData != null) {
         safeSetState(() {
           // Aktualizuj stan na podstawie zwróconych danych
-          if(pionekZaBurta[currentTeamIndex]){
-            currentTeamIndex = currentFlagIndex;
-          } else{
-            currentFlagIndex = (currentFlagIndex + 1) % mutableTeamColors.length;
-            currentTeamIndex = currentFlagIndex;
-          }
+          currentFlagIndex = findNextActiveFlagIndex(currentFlagIndex, pionekZaBurta, mutableTeamColors.length);
+          currentTeamIndex = currentFlagIndex;
           print('currentFlagIndex po powrocie: $currentTeamIndex');
           // Teraz zresetuj wartość zwróconą do null
           returnedData = null;
         });
       }
     });
+  }
+
+  int findNextActiveFlagIndex(int currentFlagIndex, List<bool> pionekZaBurta, int totalTeams) {
+    int nextFlagIndex = (currentFlagIndex + 1) % totalTeams;
+
+    // Przeszukaj pionki, zaczynając od następnego po obecnym
+    for (int i = 0; i < totalTeams; i++) {
+      // Jeśli pionek nie jest jeszcze na mecie, zwróć jego indeks
+      if (!pionekZaBurta[nextFlagIndex]) {
+        return nextFlagIndex;
+      }
+
+      // Przejdź do następnego pionka
+      nextFlagIndex = (nextFlagIndex + 1) % totalTeams;
+    }
+
+    // Jeśli wszystkie pionki są na mecie, zwróć obecny indeks lub inny odpowiedni indeks
+    return currentFlagIndex;
   }
 
   String getCurrentTeamName() {
