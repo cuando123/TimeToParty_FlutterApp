@@ -69,7 +69,8 @@ Future<void> main() async {
 Future<void> guardedMain() async {
 
   if (kReleaseMode) {
-    // Don't log anything below warnings in production.
+    // Don't log anything below warnings
+    // in production.
     Logger.root.level = Level.WARNING;
   }
   Logger.root.onRecord.listen((record) {
@@ -82,7 +83,10 @@ Future<void> guardedMain() async {
 
   _log.info('Going full screen');
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top],
+    );
   });
 
   //TO_DO: When ready, uncomment the following lines to enable integrations.

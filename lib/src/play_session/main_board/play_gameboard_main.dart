@@ -270,21 +270,15 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             ElevatedButton(
                                                 onPressed: () {
                                                   safeSetState(() {
-                                                    //showAnimatedCard = true;
-                                                    //showCardAnimation = true;
-                                                    //selectedCardIndex = 'field_star_blue_dark';
-                                                    moveFlag(context,
+                                                    showAnimatedCard = true;
+                                                    showCardAnimation = true;
+                                                    currentFieldName = 'field_star_pink';
+                                                    /*moveFlag(context,
                                                         19,
                                                         0,
                                                         screenWidth * scale * 0.02768 -
                                                             4 +
-                                                            screenWidth * scale * 0.1436);
-                                                    moveFlag(context,
-                                                        19,
-                                                        1,
-                                                        screenWidth * scale * 0.02768 -
-                                                            4 +
-                                                            screenWidth * scale * 0.1436);
+                                                            screenWidth * scale * 0.1436);*/
                                                   });
                                                 },
                                                 child: Text('Kliknij')),
@@ -630,7 +624,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       pionekZaBurta[currentTeamIndex] = true;
       currentFieldName = 'field_start';
       if (pionekZaBurta.every((index) => index == true)) {
-        Navigator.of(context).push(MaterialPageRoute(
+        await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => WinGameScreen(
               teamNames: widget.teamNames,
               teamColors: widget.teamColors,
