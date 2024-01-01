@@ -51,10 +51,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
           10.0, 10.0, 10.0, 2.0),
     child: Column(
           children: [
-            SizedBox(
-              height: ResponsiveSizing.scaleHeight(context, 155),
-              child: LogoWidget_notitle(),
-            ),
+            LogoWidget_notitle(),
             translatedText(context, 'language_change_notification', 14, Palette().white, textAlign: TextAlign.center),
             ResponsiveSizing.responsiveHeightGap(context, 10),
             Expanded(

@@ -105,7 +105,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                 ],
               ),
             ),
-            if (isDrawButtonVisible)
+            if (isDrawButtonVisible || isConfirmButtonVisible)
               Positioned.fill(
                 child: AnimatedOpacity(
                   opacity: _shadowOpacity,
@@ -151,7 +151,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
             Visibility(
               visible: isConfirmButtonVisible,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 20.0), // Dodaje padding na dole
+                padding: const EdgeInsets.only(bottom: 40.0), // Dodaje padding na dole
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: ScaleTransition(
@@ -269,16 +269,36 @@ class BuildItem extends StatelessWidget {
 class ShadowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Rysowanie przyciemnionego tła
+    // Tło z cieniem
     var rect = Offset.zero & size;
-    var paint = Paint()..color = Colors.black.withOpacity(0.7);
-    canvas.drawRect(rect, paint);
+    var shadowPaint = Paint()..color = Colors.black.withOpacity(0.7);
+    canvas.drawRect(rect, shadowPaint);
 
-    // Rysowanie białego paska
-    var barPaint = Paint()..color = Colors.white;
-    var barHeight = 50.0; // Wysokość białego paska
+    // Stworzenie przezroczystego paska
+    var barHeight = 150.0;
     var barRect = Rect.fromLTWH(0, (size.height - barHeight) / 2, size.width, barHeight);
-    canvas.drawRect(barRect, barPaint);
+
+    var path = Path()..addRect(rect);
+    var barPath = Path()..addRect(barRect);
+    var difference = Path.combine(PathOperation.difference, path, barPath);
+
+    canvas.drawPath(difference, shadowPaint);
+
+    // Dodanie gradientu
+    var gradient = LinearGradient(
+      colors: [
+        Colors.white.withOpacity(0.8), // Jasny kolor na końcach
+        Colors.white.withOpacity(0.4),           // Przezroczystość w środku
+        Colors.white.withOpacity(0.8), // Jasny kolor na końcach
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+
+    var gradientPaint = Paint()
+      ..shader = gradient.createShader(barRect);
+
+    canvas.drawRect(barRect, gradientPaint);
   }
 
   @override
@@ -286,3 +306,10 @@ class ShadowPainter extends CustomPainter {
     return false;
   }
 }
+
+
+
+
+
+
+

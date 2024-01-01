@@ -39,7 +39,11 @@ class InstructionDialog extends StatelessWidget {
                   SizedBox(
                       height: ResponsiveSizing.scaleHeight(context, 16)), // gap
                   Expanded(
-                    child: ListView(
+                    child: Scrollbar(
+                        thumbVisibility: true,trackVisibility: true,
+                        thickness: -6.0,
+                        radius: Radius.circular(10),
+                        child: ListView(
                       children: [
                         translatedText(
                             context, 'game_introduction', 24, Palette().pink),
@@ -171,7 +175,7 @@ class InstructionDialog extends StatelessWidget {
                         translatedText(context, 'instruction_dialog_have_fun',
                             16, Palette().menudark),
                       ],
-                    ),
+                    ),),
                   ), // Dodaj swoją linię SVG tutaj
                 ],
               ),

@@ -272,7 +272,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    currentFieldName = 'field_star_pink';
+                                                    currentFieldName = 'field_star_blue_dark';
                                                     /*moveFlag(context,
                                                         19,
                                                         0,

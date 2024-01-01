@@ -723,12 +723,12 @@ class AnimatedAlertDialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               letsText(
-              context, 'drużyna: \'${teamNames[currentTeamIndex]}\' jest już na mecie!', 20, Palette().pink,
+              context, 'drużyna: \'${teamNames[currentTeamIndex]}\'  dotarła już do mety!', 20, Palette().pink,
               textAlign: TextAlign.center),
-              SvgPicture.asset('assets/time_to_party_assets/finish_flag.svg'),
+              SvgPicture.asset('assets/time_to_party_assets/finish_flag.svg', width: 50),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               letsText(
-                  context, 'Czy chcecie już zakończyć grę?', 16, Palette().menudark,
+                  context, 'Czy chcielibyście teraz zakończyć grę?', 16, Palette().menudark,
                   textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGap(context, 20),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -20,7 +20,7 @@ class TripleButtonWin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 80,
+      width: 90,
       height: 60,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -28,7 +28,7 @@ class TripleButtonWin extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [
             Palette().pink,
-            Color(0xFF5E0EAD),
+            Palette().pink,
           ],
         ),
         borderRadius: BorderRadius.circular(20),

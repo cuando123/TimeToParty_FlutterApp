@@ -62,14 +62,14 @@ class WinGameScreen extends StatelessWidget {
               audioController.playSfx(SfxType.button_back_exit);
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
-            title: letsText(context, 'Gratulacje!', 14, Palette().white),
+            title: translatedText(context, 'congratulations', 14, Palette().white),
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset('assets/time_to_party_assets/win_screen/team_ranking_win.png',
                   height: ResponsiveSizing.scaleHeight(context, 150)),
-              Padding(padding: EdgeInsets.all(5.0), child: letsText(context, 'RANKING DRUŻYN', 28, Palette().white)),
+              Padding(padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
               if (adsControllerAvailable && !adsRemoved) ...[
                 const Expanded(
                   child: Center(
@@ -119,95 +119,106 @@ class WinGameScreen extends StatelessWidget {
                           children: [
                             SizedBox(width: 10),
                             Expanded(
-                              child: Text('KOLOR', style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'color').toUpperCase(), style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text('DRUŻYNA', style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'x_teams').toUpperCase(), style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text('RUNDY', textAlign: TextAlign.center, style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'round').toUpperCase(), textAlign: TextAlign.center, style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text('PUNKTY', textAlign: TextAlign.center, style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'points').toUpperCase(), textAlign: TextAlign.center, style: columnTitleStyle),
                             ),
                           ],
                         ),
                       ),
                       Flexible(
                         flex: 4,
-                        child: ListView.builder(
-                          itemCount: sortedTeams.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 50,
-                              margin: EdgeInsets.symmetric(vertical: 3, horizontal: 21),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Palette().pink, width: 1),
-                              ),
-                              child: Row(
-                                children: [
-                                  Spacer(), // Zastępuje SizedBox(width: 10)
-                                  Expanded(
-                                    flex: 1, // Ustal proporcje dla koloru
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: sortedTeams[index]['color'] as Color,
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          trackVisibility: true,
+                          thickness: -6.0,
+                          radius: Radius.circular(10),
+                          child: ListView.builder(
+                            itemCount: sortedTeams.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 50,
+                                margin: EdgeInsets.symmetric(vertical: 3, horizontal: 21),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: Palette().pink, width: 1),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Spacer(), // Zastępuje SizedBox(width: 10)
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: sortedTeams[index]['color'] as Color,
+                                        ),
+                                        width: 24,
+                                        height: 24,
                                       ),
-                                      width: 24,
-                                      height: 24,
                                     ),
-                                  ),
-                                  Spacer(),
-                                  Expanded(
-                                    flex: 4, // Ustal proporcje dla nazwy drużyny
-                                    child: letsText(context, sortedTeams[index]['name'] as String, 14, Palette().white),
-                                  ),
-                                  Spacer(),
-                                  Expanded(
-                                    flex: 2, // Ustal proporcje dla pola 'ROULETTE'
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        SvgPicture.asset('assets/time_to_party_assets/win_screen/field_dark_empty.svg',
-                                            height: 35, width: 35),
-                                        Text('${sortedTeams[index]['round'] - 1}',
-                                            textAlign: TextAlign.center, style: columnTitleStyle),
-                                      ],
+                                    Spacer(),
+                                    Expanded(
+                                      flex: 4,
+                                      child:
+                                          letsText(context, sortedTeams[index]['name'] as String, 14, Palette().white),
                                     ),
-                                  ),
-                                  Spacer(),
-                                  Expanded(
-                                    flex: 3, // Ustal proporcje dla punktów
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        SvgPicture.asset('assets/time_to_party_assets/win_screen/field_blue_empty.svg',
-                                            height: 35, width: 35),
-                                        Text('${sortedTeams[index]['score']}',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Palette().yellowIndBorder,
-                                              fontSize: 14,
-                                              shadows: [
-                                                Shadow(
-                                                  offset: Offset(1.0, 1.0),
-                                                  blurRadius: 3.0,
-                                                  color: Colors.black.withOpacity(0.5),
-                                                ),
-                                              ],
-                                            )),
-                                      ],
+                                    Spacer(),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                              'assets/time_to_party_assets/win_screen/field_dark_empty.svg',
+                                              height: 35,
+                                              width: 35),
+                                          Text('${sortedTeams[index]['round'] - 1}',
+                                              textAlign: TextAlign.center, style: columnTitleStyle),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  // Zastępuje ostatni SizedBox
-                                ],
-                              ),
-                            );
-                          },
+                                    Spacer(),
+                                    Expanded(
+                                      flex: 3, // Ustal proporcje dla punktów
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                              'assets/time_to_party_assets/win_screen/field_blue_empty.svg',
+                                              height: 35,
+                                              width: 35),
+                                          Text('${sortedTeams[index]['score']}',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Palette().yellowIndBorder,
+                                                fontSize: 14,
+                                                shadows: [
+                                                  Shadow(
+                                                    offset: Offset(1.0, 1.0),
+                                                    blurRadius: 3.0,
+                                                    color: Colors.black.withOpacity(0.5),
+                                                  ),
+                                                ],
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                    // Zastępuje ostatni SizedBox
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],

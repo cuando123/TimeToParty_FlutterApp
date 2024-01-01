@@ -107,7 +107,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   }
 
   List<String> splitText(String text) {
-    if (text.length > 15) {
+    if (text.length >= 15) {
       int spaceIndex = text.indexOf(' ', 1);
       if (spaceIndex != -1) {
         return [text.substring(0, spaceIndex), text.substring(spaceIndex + 1)];
@@ -213,21 +213,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 content: SizedBox(
                   width: 300,
                   height: 400,
-                  child: GestureDetector(
-                    onTap: () {
-                      if (Navigator.canPop(context)) {
-                        // Sprawdź, czy możesz wyjść z obecnego kontekstu
-                        Navigator.of(context).pop(); // Zamknij dialog
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DrawingScreen(
-                                    itemToShow: itemToShow,
-                                    category: cardType,
-                                    teamColors: widget.teamColors,
-                                    teamNames: widget.teamNames))); // Następnie przejdź do nowego ekranu
-                      }
-                    },
                     child: Column(
                       children: [
                         SizedBox(height: 20),
@@ -371,7 +356,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   )
                                 : translatedText(context, 'randomizing', 20, Palette().pink)),
                       ],
-                    ),
                   ),
                 ),
                 actions: const <Widget>[],
@@ -744,12 +728,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                       Expanded(
                                         child: Column(
                                           children: splitWords
-                                              .map((word) => Text(
+                                              .map((word) => Text(textAlign: TextAlign.center,
                                                     word,
                                                     style: TextStyle(
                                                         fontFamily: 'HindMadurai',
                                                         color: Colors.white,
-                                                        fontSize: word.length > 15 ? 20 : 24),
+                                                        fontSize: word.length > 15 ? 20 : 24
+                                                    ),
                                                     softWrap: true,
                                                   ))
                                               .toList(),
@@ -867,12 +852,18 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   children: [wordText(context, word, 24, Colors.white, index: 0)],
                                 ),
                               ),
+                              SizedBox(height: 5),
                               wordText(context, word, 20, Colors.white, index: 1),
+                              SizedBox(height: 5),
                               wordText(context, word, 20, Colors.white, index: 2),
+                              SizedBox(height: 5),
                               wordText(context, word, 20, Colors.white, index: 3),
+                              SizedBox(height: 5),
                               wordText(context, word, 20, Colors.white, index: 4),
+                              SizedBox(height: 5),
                               wordText(context, word, 20, Colors.white, index: 5),
-                              SizedBox(height: 10),
+                              Expanded(child:SizedBox(height: 10),
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: List.generate(totalCards, (index) {
@@ -887,6 +878,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   );
                                 }),
                               ),
+                              SizedBox(height: 20),
                             ],
                           ),
                         ),
