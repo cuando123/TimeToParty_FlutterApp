@@ -12,19 +12,100 @@ import '../ads/banner_ad_widget.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
-import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/in_app_purchase.dart';
 import '../style/palette.dart';
-import '../style/responsive_screen.dart';
 
-class WinGameScreen extends StatelessWidget {
+class WinGameScreen extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  WinGameScreen({super.key, required this.teamNames, required this.teamColors});
+  const WinGameScreen({super.key, required this.teamNames, required this.teamColors});
 
+  @override
+  _WinGameScreenState createState() => _WinGameScreenState();
+}
+
+class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProviderStateMixin{
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimationLeftButton;
+  late Animation<double> _scaleAnimationCenterButton;
+  late Animation<double> _scaleAnimationRightButton;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat();  // Powtarza animację w nieskończoność
+
+    _scaleAnimationLeftButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.85
+      ),
+    ]).animate(_animationController);
+
+    _scaleAnimationCenterButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.4
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.45
+      ),
+    ]).animate(_animationController);
+
+    _scaleAnimationRightButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.6
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.25
+      ),
+    ]).animate(_animationController);
+  }
   @override
   Widget build(BuildContext context) {
     final adsControllerAvailable = context.watch<AdsController?>() != null;
@@ -34,12 +115,12 @@ class WinGameScreen extends StatelessWidget {
     final audioController = context.watch<AudioController>();
     // Sortowanie drużyn według wyników
     final List<Map<String, dynamic>> sortedTeams = List.generate(
-      teamNames.length,
+      widget.teamNames.length,
       (index) => {
-        'name': teamNames[index],
-        'color': teamColors[index],
-        'score': TeamScore.getTeamScore(teamNames[index], teamColors[index]).getTotalScore(),
-        'round': TeamScore.getRoundNumber(teamNames[index], teamColors[index])
+        'name': widget.teamNames[index],
+        'color': widget.teamColors[index],
+        'score': TeamScore.getTeamScore(widget.teamNames[index], widget.teamColors[index]).getTotalScore(),
+        'round': TeamScore.getRoundNumber(widget.teamNames[index], widget.teamColors[index])
         //
       },
     )..sort((a, b) => b['score'].compareTo(a['score']) as int);
@@ -236,27 +317,45 @@ class WinGameScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TripleButtonWin(
+                          AnimatedBuilder(
+                            animation: _scaleAnimationLeftButton,
+                            builder: (context, child) => Transform.scale(
+                              scale: _scaleAnimationLeftButton.value,
+                              child: child,
+                            ), child:
+                            TripleButtonWin(
                             svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
                             onPressed: () {
                               GoRouter.of(context).push('/card_advertisement');
                             },
-                          ),
+                          ),),
                           Spacer(),
-                          TripleButtonWin(
+                      AnimatedBuilder(
+                        animation: _scaleAnimationCenterButton,
+                        builder: (context, child) => Transform.scale(
+                          scale: _scaleAnimationCenterButton.value,
+                          child: child,
+                        ), child:
+                      TripleButtonWin(
                             // imageAsset: 'path/to/your/image.png',
                             iconData: Icons.play_arrow_rounded,
                             onPressed: () {
                               Navigator.of(context).popUntil((route) => route.isFirst);
                             },
-                          ),
+                          ),),
                           Spacer(),
+                      AnimatedBuilder(
+                        animation: _scaleAnimationRightButton,
+                        builder: (context, child) => Transform.scale(
+                          scale: _scaleAnimationRightButton.value,
+                          child: child,
+                        ), child:
                           TripleButtonWin(
                             iconData: Icons.star,
                             onPressed: () {
                               AnimatedAlertDialog.showRateDialog(context);
                             },
-                          ),
+                          ),),
                         ],
                       ),
                     )),
@@ -280,4 +379,10 @@ class WinGameScreen extends StatelessWidget {
       ),
     ],
   );
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 }

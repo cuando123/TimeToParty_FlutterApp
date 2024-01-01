@@ -3,12 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../drawer/global_loading_indicator.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class CardAdvertisementScreen extends StatefulWidget {
   const CardAdvertisementScreen({

@@ -3,8 +3,6 @@ List<String> soundTypeToFilename(SfxType type) {
     case SfxType.animation_card_sound:
       return const [
         'animation_card_sound.mp3',
-        //'hash2.mp3',
-        //'hash3.mp3', TO_DO mozna uzywac wiecej soundow jednoczesnie
       ];
     case SfxType.aplauz:
       return const [
@@ -66,6 +64,10 @@ List<String> soundTypeToFilename(SfxType type) {
       return const [
         'win_game.mp3',
       ];
+    case SfxType.score_sound_effect:
+      return const [
+        'score_sound_effect.mp3',
+      ];
   }
 
 }
@@ -102,5 +104,6 @@ enum SfxType {
   pop_card_sound,
   ripple_sound,
   roulette_wheel,
-  win_game
+  win_game,
+  score_sound_effect
 }

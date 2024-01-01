@@ -11,6 +11,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../notifications/notifications_manager.dart';
+import '../play_session/alerts_and_dialogs.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'settings.dart';
@@ -129,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TextButton(onPressed: () async {
               audioController.playSfx(SfxType.button_back_exit);
             await Future.delayed(Duration(milliseconds: 150));
-            CustomAppDrawerState.showExitDialog(context);
+            AnimatedAlertDialog.showExitDialog(context);
             },
               child: Text(
                 'https://frydoapps.com/contact-apps',

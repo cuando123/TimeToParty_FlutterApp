@@ -153,51 +153,6 @@ class AnimatedAlertDialog {
     );
   }
 
-  // punkty
- /* static void showPointsDialog(BuildContext context, List<Color> starsColors, int totalCards) {
-    // Obliczenie punktów
-    int greenCount = starsColors.where((color) => color == Colors.green).length;
-    int redCount = starsColors.where((color) => color == Colors.red).length;
-    int points;
-    if (greenCount > totalCards / 2) {
-      points = 2;
-    } else if (greenCount == totalCards / 2) {
-      points = 1;
-    } else {
-      points = 0;
-    }
-    // Wyświetlenie alert dialog
-    showDialog(
-      context: context,
-      builder: (context) {
-        return WillPopScope(
-            onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
-        child:  AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text('Zdobywasz $points punktów!'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.star, color: Colors.red),
-              Text('$redCount '),
-              Icon(Icons.star, color: Colors.green),
-              Text('$greenCount'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                final audioController = context.read<AudioController>();
-                audioController.playSfx(SfxType.button_back_exit);
-                Navigator.of(context).pop(); // Zamknięcie dialogu
-              },
-            ),
-          ],
-        ),);
-      },
-    );
-  }*/
   static void showPointsDialog(BuildContext context, List<Color> starsColors, String currentField, List<String> teamNames, List<Color> teamColors) {
 
     int greenCount = starsColors.where((color) => color == Colors.green).length;
@@ -406,6 +361,7 @@ class AnimatedAlertDialog {
     showDialog(
       context: context,
       builder: (context) {
+        final audioController = context.watch<AudioController>();
         return WillPopScope(
             onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
         child: AlertDialog(
@@ -438,6 +394,7 @@ class AnimatedAlertDialog {
                         TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () async {
+                    audioController.playSfx(SfxType.button_back_exit);
                     Navigator.pop(context);
                     String url = 'https://frydoapps.com/contact-apps';
                     if (await canLaunchUrlString(url)) {
@@ -850,6 +807,8 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog>
     for (var i = 0; i < widget.greenPoints; i++) {
       await Future.delayed(Duration(milliseconds: 200));
       setState(() {
+        final audioController = context.read<AudioController>();
+        audioController.playSfx(SfxType.score_sound_effect);
         _currentGreenPoints++;
       });
       // Trigger scale animation each time the point increases

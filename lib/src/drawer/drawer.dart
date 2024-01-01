@@ -1,14 +1,10 @@
-import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../main.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -17,6 +13,7 @@ import '../audio/sounds.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../style/palette.dart';
+import 'global_loading_indicator.dart';
 
 class CustomAppDrawer extends StatefulWidget {
   const CustomAppDrawer({super.key});
@@ -212,7 +209,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       onTap: () async {
                         audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
-                        showExitDialog(context);
+                        AnimatedAlertDialog.showExitDialog(context);
                       },
                       child: ListTile(
                         leading: Icon(
@@ -291,223 +288,6 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
         subject: subject);
   }
 
-  static void showExitDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        final audioController = context.watch<AudioController>();
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(
-              context, 'would_you_like_exit', 20, Palette().pink,
-              textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              translatedText(
-                  context, 'redirected_to_the_website', 16, Palette().menudark,
-                  textAlign: TextAlign.center),
-              ResponsiveSizing.responsiveHeightGap(context, 10),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink, // color
-                    foregroundColor: Palette().white, // textColor
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () async {
-                    audioController.playSfx(SfxType.button_back_exit);
-                    Navigator.pop(context);
-                    String url = 'https://frydoapps.com/contact-apps';
-                    if (await canLaunchUrlString(url)) {
-                      await launchUrlString(url,
-                          mode: LaunchMode.externalApplication);
-                    } else {
-                      throw 'Could not launch $url';
-                    }
-                  },
-                  child: Text('OK'),
-                ),
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
-                    Navigator.of(context).pop();
-                  },
-                  child: translatedText(
-                      context, 'cancel', 16, Palette().bluegrey,
-                      textAlign: TextAlign.center),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
-class GlobalLoading {
-  Future<void> privacy_policy_function(BuildContext context) async {
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
-    const url =
-        'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
-    const fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
 
-    try {
-      final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Polityka prywatności");
-    } catch (e) {
-      print('Błąd: $e');
-      _connectionProblemDialog(context);
-    }
-
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = false;
-  }
-
-  Future<void> eula_function(BuildContext context) async {
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
-
-    const url =
-        'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
-    const fileName = 'EndUserLicenseAgreement_EULA.pdf';
-    try {
-      final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Umowa licencyjna EULA");
-    } catch (e) {
-      _connectionProblemDialog(context);
-    }
-
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = false;
-  }
-
-  Future<io.File> downloadAndCachePdf(String url, String fileName) async {
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final directory = await getTemporaryDirectory();
-      final file = io.File('${directory.path}/$fileName');
-      await file.writeAsBytes(response.bodyBytes);
-      return file;
-    } else {
-      throw Exception('Błąd pobierania pliku PDF.');
-    }
-  }
-
-  void _connectionProblemDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Palette().white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: translatedText(
-              context, 'download_error_network', 16, Palette().menudark,
-              textAlign: TextAlign.center),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
-              ),
-              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Palette().pink, // color
-                    foregroundColor: Palette().white, // textColor
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                  ),
-                  onPressed: () {
-                    final audioController = context.watch<AudioController>();
-                    audioController.playSfx(SfxType.button_back_exit);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _openPdfViewer(BuildContext context, io.File file, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: PDFView(
-            filePath: file.path,
-            enableSwipe: true,
-            swipeHorizontal: true,
-            autoSpacing: true,
-            pageFling: true,
-            onError: (error) {
-              print(error.toString());
-            },
-            onPageError: (page, error) {
-              print('$page: ${error.toString()}');
-            },
-            onViewCreated: (controller) {},
-            onPageChanged: (page, total) {},
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class GlobalLoadingIndicator extends StatelessWidget {
-  const GlobalLoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<LoadingStatus>(
-      builder: (context, loadingStatus, child) {
-        if (loadingStatus.isLoading) {
-          return Container(
-            color: Colors.black.withOpacity(0.5),
-            child: Center(
-              child: CircularProgressIndicator(color: Palette().pink),
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
-      },
-    );
-  }
-}

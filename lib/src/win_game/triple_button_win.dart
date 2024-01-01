@@ -31,7 +31,7 @@ class TripleButtonWin extends StatelessWidget {
             Palette().pink,
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Color(0xFF5E0EAD),
           width: 2.0,

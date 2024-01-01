@@ -43,7 +43,6 @@ class NotificationsManager {
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        //TO_DO do rozkminy aby działało bez build contextu, lub trzeba dodać tu context
         getTranslatedString(context, 'weekly_notification_up'),
         getTranslatedString(context, 'weekly_notification_down'),
         _nextInstanceOfMonday1900(),

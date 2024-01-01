@@ -7,7 +7,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_template/src/drawer/drawer.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:game_template/src/drawer/global_loading.dart';
+import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -16,8 +18,8 @@ import 'src/Language_selector_screen/language_selector.dart';
 import 'src/Loading_screen/loading_screen.dart';
 import 'src/Loading_screen/loading_screen_second.dart';
 import 'src/ads/ads_controller.dart';
-import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
+import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
@@ -36,7 +38,6 @@ import 'src/settings/settings_screen.dart';
 import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 final globalLoading = GlobalLoading();
 

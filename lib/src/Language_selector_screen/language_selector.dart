@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import '../app_lifecycle/TranslationProvider.dart';
+import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../style/palette.dart';
-import '../app_lifecycle/translated_text.dart';
-import '../app_lifecycle/TranslationProvider.dart';
 
 class LanguageSelector extends StatefulWidget {
   const LanguageSelector({super.key, required this.scaffoldKey});

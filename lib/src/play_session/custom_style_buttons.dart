@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../app_lifecycle/translated_text.dart';
 import '../style/palette.dart';
 
 class CustomStyledButton extends StatelessWidget {

@@ -940,8 +940,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   Animation<Offset> _shakeAnimation(Animation<double> animation) {
     // Zakładamy, że "shake" zaczyna się w połowie naszej głównej animacji
-    final shakeStart = 0.9;
-    final shakeDuration = 0.1;
+    const shakeStart = 0.9;
+    const shakeDuration = 0.1;
 
     return TweenSequence<Offset>([
       TweenSequenceItem(
