@@ -49,131 +49,135 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               widget.scaffoldKey.currentState?.openDrawer();
             },
           ),
-          body: Padding(
-            padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
-            child: Stack(children: [
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-                    translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
-                    SvgPicture.asset(
-                      'assets/time_to_party_assets/banner_cards_advert.svg',
-                      //width: ResponsiveSizing.responsiveWidthWithCondition(context, 160, 260, 400),
-                      height: ResponsiveSizing.responsiveHeightWithCondition(context, 125, 210, 650),
-                    ),
-                    translatedText(context, 'buy_unlimited_version', 20, Palette().white, textAlign: TextAlign.center),
-                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-                    SvgPicture.asset('assets/time_to_party_assets/banner_cards_advert_linear.svg',
-                        width: ResponsiveSizing.scaleWidth(context, 77),
-                        height: ResponsiveSizing.scaleHeight(context, 40)),
-                    translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
-                        textAlign: TextAlign.center),
-                    Center(
-                      child: Column(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              audioController.playSfx(SfxType.button_back_exit);
-                              showDialogMoreFun(context);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Image.asset(
-                                  'assets/time_to_party_assets/banner_baloon_icon_advert.png',
-                                  height: ResponsiveSizing.scaleHeight(context, 29),
-                                  width: ResponsiveSizing.scaleHeight(context, 24),
-                                ),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                Icon(Icons.arrow_back, color: Colors.white),
-                              ],
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              audioController.playSfx(SfxType.button_back_exit);
-                              showDialogMoreRandomEvents(context);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/time_to_party_assets/banner_random_icon_advert.svg',
-                                  height: ResponsiveSizing.scaleHeight(context, 24),
-                                  width: ResponsiveSizing.scaleWidth(context, 24),
-                                ),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                translatedText(context, 'more_random_events', 14, Palette().white,
-                                    textAlign: TextAlign.center),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                Icon(Icons.arrow_back, color: Colors.white),
-                              ],
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              audioController.playSfx(SfxType.button_back_exit);
-                              showDialogLongerGameplay(context);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/time_to_party_assets/banner_timer_icon_advert.svg',
-                                  height: ResponsiveSizing.scaleHeight(context, 24),
-                                  width: ResponsiveSizing.scaleWidth(context, 24),
-                                ),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white,
-                                    textAlign: TextAlign.center),
-                                ResponsiveSizing.responsiveWidthGap(context, 10),
-                                Icon(Icons.arrow_back, color: Colors.white),
-                              ],
-                            ),
-                          ),
-                        ],
+          body:
+          ListView(
+            children: [Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
+              child: Stack(children: [
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+                      translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
+                      SvgPicture.asset(
+                        'assets/time_to_party_assets/banner_cards_advert.svg',
+                        //width: ResponsiveSizing.responsiveWidthWithCondition(context, 160, 260, 400),
+                        height: ResponsiveSizing.responsiveHeightWithCondition(context, 125, 210, 650),
                       ),
-                    ),
-                    CustomStyledButton(
-                      icon: null,
-                      text: getTranslatedString(context, 'pay_once'),
-                      onPressed: () {
-                        audioController.playSfx(SfxType.button_back_exit);
-                      },
-                      backgroundColor: Palette().pink,
-                      foregroundColor: Palette().white,
-                      width: 200,
-                      height: 45,
-                      fontSize: ResponsiveSizing.scaleHeight(context, 20),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await globalLoading.privacy_policy_function(context);
-                      },
-                      child: translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white,
+                      translatedText(context, 'buy_unlimited_version', 20, Palette().white, textAlign: TextAlign.center),
+                      ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+                      SvgPicture.asset('assets/time_to_party_assets/banner_cards_advert_linear.svg',
+                          width: ResponsiveSizing.scaleWidth(context, 77),
+                          height: ResponsiveSizing.scaleHeight(context, 40)),
+                      translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
                           textAlign: TextAlign.center),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        audioController.playSfx(SfxType.button_back_exit);
-                      },
-                      child: translatedText(context, 'restore_purchases', 14, Palette().white,
-                          textAlign: TextAlign.center),
-                    ),
-                  ],
+                      Center(
+                        child: Column(
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                audioController.playSfx(SfxType.button_back_exit);
+                                showDialogMoreFun(context);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Image.asset(
+                                    'assets/time_to_party_assets/banner_baloon_icon_advert.png',
+                                    height: ResponsiveSizing.scaleHeight(context, 29),
+                                    width: ResponsiveSizing.scaleHeight(context, 24),
+                                  ),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  Icon(Icons.arrow_back, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                audioController.playSfx(SfxType.button_back_exit);
+                                showDialogMoreRandomEvents(context);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/time_to_party_assets/banner_random_icon_advert.svg',
+                                    height: ResponsiveSizing.scaleHeight(context, 24),
+                                    width: ResponsiveSizing.scaleWidth(context, 24),
+                                  ),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  translatedText(context, 'more_random_events', 14, Palette().white,
+                                      textAlign: TextAlign.center),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  Icon(Icons.arrow_back, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                audioController.playSfx(SfxType.button_back_exit);
+                                showDialogLongerGameplay(context);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                                    height: ResponsiveSizing.scaleHeight(context, 24),
+                                    width: ResponsiveSizing.scaleWidth(context, 24),
+                                  ),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white,
+                                      textAlign: TextAlign.center),
+                                  ResponsiveSizing.responsiveWidthGap(context, 10),
+                                  Icon(Icons.arrow_back, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CustomStyledButton(
+                        icon: null,
+                        text: getTranslatedString(context, 'pay_once'),
+                        onPressed: () {
+                          audioController.playSfx(SfxType.button_back_exit);
+                        },
+                        backgroundColor: Palette().pink,
+                        foregroundColor: Palette().white,
+                        width: 200,
+                        height: 45,
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          audioController.playSfx(SfxType.button_back_exit);
+                          await globalLoading.privacy_policy_function(context);
+                        },
+                        child: translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white,
+                            textAlign: TextAlign.center),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          audioController.playSfx(SfxType.button_back_exit);
+                        },
+                        child: translatedText(context, 'restore_purchases', 14, Palette().white,
+                            textAlign: TextAlign.center),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ]),
-          ),
+              ]),
+            ),],
+          )
+
         ),
       ),
     );

@@ -368,7 +368,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                       },
                       child: Container(
                         width: ResponsiveSizing.scaleWidth(context, 135),
-                        height: ResponsiveSizing.scaleHeight(context, 290),
+                        height: ResponsiveSizing.scaleHeight(context, 250),//250 tablet, 290samsung?
                         color: Colors.transparent,
                         child: _getCardContent(widget.selectedCardIndex),
                       ),
@@ -423,6 +423,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   };
 
   Future<void> _showStackedCardCrousel(BuildContext context, Function(String) onCardSelected) async {
+    print('Szerokosc ekranu: ${MediaQuery.of(context).size.width}');
+    print('Wysokosc ekranu: ${ MediaQuery.of(context).size.height}');
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -448,16 +450,14 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                     SizedBox(height: 30),
                     AnimatedHandArrow(),
                     SizedBox(height: 20),
-                    Transform.scale(
-                      scale: 1,
-                      child: FanCarouselImageSlider(
+                     FanCarouselImageSlider(
                         imagesLink: cardTypesToSelect,
-                        slideViewportFraction: 0.4,
+                        slideViewportFraction: MediaQuery.of(context).size.width >= 600 ? 0.38 : 0.42,
                         isAssets: true,
                         autoPlay: false,
                         sliderDuration: Duration(milliseconds: 200),
-                        sliderHeight: 250,
-                        sliderWidth: MediaQuery.of(context).size.width,
+                       sliderHeight: MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.height >= 800 ? MediaQuery.of(context).size.height * 0.4 : MediaQuery.of(context).size.height >= 780 ? 260 : MediaQuery.of(context).size.height * 0.4,
+                       sliderWidth: MediaQuery.of(context).size.width,
                         imageRadius: 20,
                         indicatorActiveColor: Palette().pink,
                         initalPageIndex: 0,
@@ -479,7 +479,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                           },
                         ],
                       ),
-                    ),
+
                     SizedBox(height: 30),
                     AnimatedQuestionMark(),
                     SizedBox(height: 90)

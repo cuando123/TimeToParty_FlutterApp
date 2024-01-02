@@ -279,7 +279,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 child: Column(
                                   children: [
                                     SizedBox(height: 5),
-                                    Icon(Icons.man, color: Palette().bluegrey),
+                                    Icon(Icons.favorite, color: Palette().bluegrey),
                                     translatedText(
                                       context,
                                       'love_positions',
@@ -294,7 +294,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 child: Column(
                                   children: [
                                     SizedBox(height: 5),
-                                    Icon(Icons.message, color: Palette().bluegrey),
+                                    Icon(Icons.chat, color: Palette().bluegrey),
                                     translatedText(
                                       context,
                                       'proverbs',
@@ -377,7 +377,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   Widget buildGreenCard() {
     return FractionallySizedBox(
-      widthFactor: 0.7,
+      widthFactor: ResponsiveSizing.getWidthFactor(context),
       child: Stack(
         children: [
           Container(
@@ -531,7 +531,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   Widget _getImageWidget(String imagePath) {
     return Image.asset(imagePath,
-        height: ResponsiveSizing.responsiveHeightWithCondition(context, 75, 100, 650), errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
+        height: ResponsiveSizing.responsiveHeightWithCondition(context, 75, 120, 650), errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
   }
 
   Widget buildBlueDarkCard() {
@@ -544,7 +544,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           child: Transform.rotate(
             angle: widget.rotationAnimation.value,
             child: FractionallySizedBox(
-              widthFactor: 0.7,
+              widthFactor: ResponsiveSizing.getWidthFactor(context),
               child: AnimatedOpacity(
                 opacity: widget.opacity,
                 duration: Duration(milliseconds: 250),
@@ -569,7 +569,11 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5),),
                               Expanded(
                                 child: Column(
-                                  children: createWidgetsFromText(textFromRollSlotMachine),
+                                  children: createWidgetsFromText(textFromRollSlotMachine)
+                                      .map((widget) => Flexible(
+                                    child: widget,
+                                  ))
+                                      .toList(),
                                 ),
                               ),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5),),
@@ -605,6 +609,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   int selectedValue = -1; // Początkowa wartość, wskazująca, że nic nie jest wybrane
 
   Widget buildYellowCard() {
+    print('szerokosc: ${MediaQuery.of(context).size.width}');
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
@@ -614,7 +619,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           child: Transform.rotate(
             angle: widget.rotationAnimation.value,
             child: FractionallySizedBox(
-              widthFactor: 0.7,
+              widthFactor: ResponsiveSizing.getWidthFactor(context),
               child: AnimatedOpacity(
                 opacity: widget.opacity,
                 duration: Duration(milliseconds: 250),
@@ -692,7 +697,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           child: Transform.rotate(
             angle: widget.rotationAnimation.value,
             child: FractionallySizedBox(
-              widthFactor: 0.7,
+              widthFactor: ResponsiveSizing.getWidthFactor(context),
               child: AnimatedOpacity(
                 opacity: widget.opacity,
                 duration: Duration(milliseconds: 250),
@@ -714,7 +719,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             children: [
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
-                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 85, 105, 650)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 85, 100, 650)),
                               Expanded(
                                 child: Container(
                                   padding: padding,
@@ -735,7 +740,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                                     style: TextStyle(
                                                         fontFamily: 'HindMadurai',
                                                         color: Colors.white,
-                                                        fontSize: word.length > 15 ? 20 : 24
+                                                        fontSize: word.length > 15 ? 20 : 22
                                                     ),
                                                     softWrap: true,
                                                   ))
@@ -746,7 +751,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   ),
                                 ),
                               ),
-                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 90, 105, 650)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 90, 100, 650)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                             ],
@@ -804,7 +809,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           child: Transform.rotate(
             angle: rotationAnimation.value, // Używanie wartości animacji obrotu tutaj
             child: FractionallySizedBox(
-              widthFactor: 0.7, //szerokosc karty
+              widthFactor: ResponsiveSizing.getWidthFactor(context), //szerokosc karty
               child: AnimatedOpacity(
                 opacity: opacity,
                 duration: Duration(milliseconds: 250),

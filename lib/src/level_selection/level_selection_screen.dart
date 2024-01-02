@@ -179,7 +179,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                     ),
                                     onPressed: numberOfTeams >= availableColors.length
                                         ? null
-                                        : () {
+                                        : () async {
+                                      await Future.delayed(Duration(milliseconds: 100));
                                             setState(() {
                                               numberOfTeams++;
                                               teamColors = _initializeColors(numberOfTeams);

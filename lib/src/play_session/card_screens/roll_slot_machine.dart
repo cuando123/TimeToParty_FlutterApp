@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
 import '../../app_lifecycle/translated_text.dart';
+import '../../audio/audio_controller.dart';
+import '../../audio/sounds.dart';
 import '../../style/palette.dart';
 import '../custom_style_buttons.dart';
 
@@ -134,6 +137,8 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                         isDrawButtonVisible = false;
                       });
                       Future.delayed(Duration(milliseconds: 100), () {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.physical_challenge_lottery);
                         _rollSlotController.animateRandomly();
                         if (size.width > 100) _rollSlotController1.animateRandomly();
                         if (size.width > 150) _rollSlotController2.animateRandomly();

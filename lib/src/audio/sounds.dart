@@ -68,7 +68,12 @@ List<String> soundTypeToFilename(SfxType type) {
       return const [
         'score_sound_effect.mp3',
       ];
+    case SfxType.physical_challenge_lottery:
+      return const [
+        'physical_challenge_lottery.mp3',
+      ];
   }
+
 
 }
 
@@ -105,5 +110,6 @@ enum SfxType {
   ripple_sound,
   roulette_wheel,
   win_game,
-  score_sound_effect
+  score_sound_effect,
+  physical_challenge_lottery
 }

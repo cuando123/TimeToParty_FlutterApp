@@ -4,6 +4,16 @@ class ResponsiveSizing {
 
   static double referenceWidth = 360;
   static double referenceHeight = 800;
+  static double tabletBreakpoint = 600;
+
+  static double getWidthFactor(BuildContext context) {
+    bool isTablet = MediaQuery.of(context).size.width >= tabletBreakpoint;
+    return isTablet ? 0.5 : 0.7;
+  }
+
+  static bool isTablet(BuildContext context) {
+    return MediaQuery.of(context).size.width >= tabletBreakpoint;
+  }
 
   static double scaleWidth(BuildContext context, double width) {
     final screenWidth = MediaQuery
