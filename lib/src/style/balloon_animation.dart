@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
 
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 
 class BalloonAnimation extends StatefulWidget {

@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/styles/custom_style_strategy_bar.dart';
 import 'package:game_template/src/play_session/card_screens/styles/image_painter.dart';
@@ -349,6 +350,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                               });
                                             }
                                           },
+                                          backgroundColor: Palette().pink, foregroundColor: Palette().white,
                                         ),
                                       ),
                                       SizedBox(height: 20),
@@ -379,7 +381,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       child: Stack(
         children: [
           Container(
-            height: 400.0,
+            height: ResponsiveSizing.scaleHeight(context, 400),
             padding: EdgeInsets.all(13.0),
             child: Card(
               color: Colors.transparent,
@@ -551,7 +553,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                   child: Stack(
                     children: [
                       Container(
-                        height: 400.0,
+                        height: ResponsiveSizing.scaleHeight(context, 400),
                         padding: EdgeInsets.all(13.0),
                         child: Card(
                           color: Colors.transparent,
@@ -619,7 +621,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 child: ScaleTransition(
                   scale: widget.slideAnimationController,
                   child: Container(
-                    height: 400.0,
+                    height: ResponsiveSizing.scaleHeight(context, 400),
                     padding: EdgeInsets.all(13.0),
                     child: Card(
                       color: Colors.transparent,
@@ -699,7 +701,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                   child: Stack(
                     children: [
                       Container(
-                        height: 400.0,
+                        height: ResponsiveSizing.scaleHeight(context, 400),
                         padding: EdgeInsets.all(13.0),
                         child: Card(
                           color: Colors.transparent,
@@ -710,9 +712,9 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           elevation: 0.0,
                           child: Column(
                             children: [
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
-                              SizedBox(height: 100),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 100)),
                               Expanded(
                                 child: Container(
                                   padding: padding,
@@ -723,10 +725,10 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                       end: Alignment.bottomCenter,
                                     ),
                                   ),
-                                  child: Row(
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Expanded(
-                                        child: Column(
+                                        child: Column( mainAxisAlignment: MainAxisAlignment.center,
                                           children: splitWords
                                               .map((word) => Text(textAlign: TextAlign.center,
                                                     word,
@@ -744,9 +746,9 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 100),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 105)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                             ],
                           ),
                         ),
@@ -811,7 +813,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                   child: Stack(
                     children: [
                       Container(
-                        height: 400.0,
+                        height: ResponsiveSizing.scaleHeight(context, 400),
                         padding: EdgeInsets.all(13.0),
                         child: Card(
                           color: Colors.transparent,
@@ -822,7 +824,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           elevation: 0.0,
                           child: Column(
                             children: <Widget>[
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: List.generate(totalCards, (index) {
@@ -837,7 +839,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   );
                                 }),
                               ),
-                              SizedBox(height: 15),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 15)),
                               Container(
                                 padding: const EdgeInsets.all(20.0),
                                 decoration: BoxDecoration(
@@ -878,7 +880,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   );
                                 }),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                             ],
                           ),
                         ),

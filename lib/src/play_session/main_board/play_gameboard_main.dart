@@ -14,6 +14,7 @@ import 'package:game_template/src/play_session/main_board/ripple_effect_pionka.d
 import 'package:game_template/src/play_session/main_board/triple_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
@@ -88,7 +89,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     _controller.value = 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasShownAlertDialog) {
-        AnimatedAlertDialog.showAnimatedDialog(context, 'tap_the_wheel_to_spin', SfxType.correct_answer, 2, 20, false, false);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'tap_the_wheel_to_spin', SfxType.correct_answer, 2, 20, false, false, true);
         safeSetState(() {
           _controller.forward(from: 0);
         });
@@ -267,12 +268,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                 () => AnimatedAlertDialog.showExitGameDialog(
                                                     context, hasShownAlertDialog, '',mutableTeamNames, mutableTeamColors)),
                                             //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE, KARTA, TEST
-                                            ElevatedButton(
+                                            TextButton(
                                                 onPressed: () {
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
                                                     showCardAnimation = true;
-                                                    currentFieldName = 'field_star_blue_dark';
+                                                    currentFieldName = 'field_star_pink';
                                                     /*moveFlag(context,
                                                         19,
                                                         0,
@@ -281,7 +282,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                             screenWidth * scale * 0.1436);*/
                                                   });
                                                 },
-                                                child: Text('Kliknij')),
+                                                child: Text('TEST')),
                                           ],
                                         ),
                                       ],

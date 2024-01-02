@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 
 import '../../../app_lifecycle/translated_text.dart';
 import '../../../style/palette.dart';
@@ -50,11 +51,12 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
           ),
           content: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: translatedText(context, "moving_left_right_swipe_card", 18, Palette().darkGrey, textAlign: TextAlign.center)
-                ),
+                    child: translatedText(context, "moving_left_right_swipe_card", 18, Palette().darkGrey,
+                        textAlign: TextAlign.center)),
                 Wrap(
                   spacing: 15.0, // odstęp między elementami poziomo
                   runSpacing: 5.0, // odstęp między liniami pionowo
@@ -70,13 +72,17 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
             ),
           ),
           actions: <Widget>[
-            CustomStyledButton(
-              icon: null,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              text: "OK",
-            )
+            Center(
+              child: CustomStyledButton(
+                icon: null,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                text: "OK",
+                backgroundColor: Palette().pink,
+                foregroundColor: Palette().white,
+              ),
+            ),
           ],
         );
       },
@@ -88,13 +94,12 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
       children: [
         SvgPicture.asset(assetPath),
         SizedBox(
-          width: 110, // Ustaw stałą wysokość
-          child: translatedText(context, textKey, 15, Colors.white),
+          width: ResponsiveSizing.scaleWidth(context, 110), // Ustaw stałą wysokość
+          child: translatedText(context, textKey, 15, Colors.white, textAlign: TextAlign.center),
         ),
       ],
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

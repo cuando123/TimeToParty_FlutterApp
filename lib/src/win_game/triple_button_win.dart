@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 
 import '../style/palette.dart';
 
@@ -20,8 +21,8 @@ class TripleButtonWin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90,
-      height: 60,
+      width: ResponsiveSizing.scaleWidth(context, 85),
+      height: ResponsiveSizing.scaleHeight(context, 60),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -51,23 +52,17 @@ class TripleButtonWin extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildButton(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButton(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 70,
-        height: 60,
-        alignment: Alignment.center,
-        child: _buildButtonContent(),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(10),
+          splashColor: Colors.white.withOpacity(0.5), // Kolor falowania
+          highlightColor: Colors.pinkAccent.withOpacity(0.5), // Kolor podczas wciśnięcia
+          child: Center(
+            child: _buildButtonContent(),
+          ),
+        ),
       ),
     );
   }

@@ -24,7 +24,13 @@ class PlayGameboardCard extends StatefulWidget {
   final List<String> allTeamNames;
   final List<Color> allTeamColors;
 
-  const PlayGameboardCard({super.key, required this.teamNames, required this.teamColors, required this.currentField, required this.allTeamNames, required this.allTeamColors});
+  const PlayGameboardCard(
+      {super.key,
+      required this.teamNames,
+      required this.teamColors,
+      required this.currentField,
+      required this.allTeamNames,
+      required this.allTeamColors});
 
   @override
   _PlayGameboardCardState createState() => _PlayGameboardCardState();
@@ -135,13 +141,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (shouldStartTimerInitially()) {
-        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26, false, true);
+        AnimatedAlertDialog.showAnimatedDialog(context, 'get_ready', SfxType.button_infos, 2, 26, false, true, false);
         Future.delayed(Duration(milliseconds: 2000), () {
-          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true, true);
+          AnimatedAlertDialog.showAnimatedDialog(context, 'go_start', SfxType.correct_answer, 1, 48, true, true, true);
           _startTimer();
         });
       }
-      if (widget.currentField[0] == 'field_star_yellow'){
+      if (widget.currentField[0] == 'field_star_yellow') {
         AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'man', 'player_one_starts');
       }
     });
@@ -150,8 +156,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   }
 
   bool shouldStartTimerInitially() {
-    // Zwraca true, jeśli nie jest to ani 'field_star_blue_dark', ani 'field_star_green'
-    return widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green' && widget.currentField[0] != 'field_star_yellow';
+    return widget.currentField[0] != 'field_star_blue_dark' &&
+        widget.currentField[0] != 'field_star_green' &&
+        widget.currentField[0] != 'field_star_yellow';
   }
 
   void _prepareCurrentWordOrKey() {
@@ -286,7 +293,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     } else {
       // Wyświetlenie alert dialog, nie zmieniaj selectedImageType
-      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false);
+      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false, true);
     }
 
     // Odblokuj przycisk po 800 milisekundach
@@ -298,7 +305,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     });
   }
-
 
 // ustal liczbe kart i pominiec dla danego rodzaju pola
   void determineTotalCards() {
@@ -481,7 +487,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
   }
 
-
 // animacja time up
   void _showTimeUpAnimation() {
     for (int i = 0; i < starsColors.length; i++) {
@@ -499,11 +504,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                 {
                   Navigator.of(context).pop(),
                   Navigator.of(context).pop('response'),
-                  AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+                  AnimatedAlertDialog.showPointsDialog(
+                      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
                 }
               else
                 Navigator.of(context).pop('response'),
-                AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+              AnimatedAlertDialog.showPointsDialog(
+                  context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
             }
         });
   }
@@ -619,7 +626,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         maxNumber = 250;
         break;
       default:
-        cardType = 'default'; // Domyślna wartość cardType, jeśli currentField nie pasuje do żadnego przypadku
+        cardType = 'default';
     }
     int randomNumber = random.nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber
 
@@ -627,7 +634,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   }
 
 // ustaw nastepna gwiazdke czerwona
-  void _nextStarRed() {
+  Future<void> _nextStarRed() async {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
       safeSetState(() {
@@ -640,13 +647,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     } else if (currentCardIndex == totalCards - 1) {
       starsColors[currentCardIndex] = Colors.red;
+      await Future.delayed(Duration(milliseconds: 200));
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      AnimatedAlertDialog.showPointsDialog(
+          context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
     }
   }
 
 // ustaw nastepan gwiazdke zielona
-  void _nextStarGreen() {
+  Future<void> _nextStarGreen() async {
     if (currentCardIndex < totalCards - 1) {
       // Jest więcej kart do wyświetlenia
       safeSetState(() {
@@ -660,8 +669,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     } else if (currentCardIndex == totalCards - 1) {
       // Jeśli to była ostatnia karta
       starsColors[currentCardIndex] = Colors.green;
+      await Future.delayed(Duration(milliseconds: 200));
       Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      AnimatedAlertDialog.showPointsDialog(
+          context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
     }
   }
 
@@ -720,9 +731,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     return WillPopScope(
       onWillPop: () async {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
-        return false; // return false to prevent the pop operation
-      }, // Zablokowanie możliwości cofnięcia
+        AnimatedAlertDialog.showExitGameDialog(
+            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
+        return false;
+      },
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -739,7 +751,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     IconButton(
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
-                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
+                        AnimatedAlertDialog.showExitGameDialog(
+                            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
                         //Navigator.of(context).pop('response');
                       },
                     ),
@@ -798,38 +811,37 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  widget.currentField[0] != 'field_star_yellow' ?
-                  SizedBox(
-                    height: 60, // Dostosuj wysokość tak, aby pasowała do Twojego projektu
-                    child: remainingTime > 0
-                        ? CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.transparent,
-                            child: SizedBox.expand(
-                              child: CustomPaint(
-                                painter: CircleProgressPainter(
-                                    segments: initialTime, progress: 1 / initialTime * remainingTime),
-                              ),
-                            ),
-                          )
-                        : Center(
-                            child: FadeTransition(
-                              opacity: _timeUpFadeAnimation,
-                              child: ScaleTransition(
-                                scale: _timeUpScaleAnimation,
-                                child: FadeTransition(
-                                  opacity: _timeUpFadeOutAnimation,
-                                  child: Text(
-                                    getTranslatedString(context, 'times_up'),
-                                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  widget.currentField[0] != 'field_star_yellow'
+                      ? SizedBox(
+                          height: 60,
+                          child: remainingTime > 0
+                              ? CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.transparent,
+                                  child: SizedBox.expand(
+                                    child: CustomPaint(
+                                      painter: CircleProgressPainter(
+                                          segments: initialTime, progress: 1 / initialTime * remainingTime),
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                  child: FadeTransition(
+                                    opacity: _timeUpFadeAnimation,
+                                    child: ScaleTransition(
+                                      scale: _timeUpScaleAnimation,
+                                      child: FadeTransition(
+                                        opacity: _timeUpFadeOutAnimation,
+                                        child: Text(
+                                          getTranslatedString(context, 'times_up'),
+                                          style: TextStyle(fontSize: 20, color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
-                  ) : Container(
-                    child: SizedBox(height: 15.0)
-                  ),
+                        )
+                      : Container(child: SizedBox(height: 15.0)),
                   Positioned(
                     top: 15, // Pozycjonowanie tekstu w centrum SizedBox
                     child: remainingTime > 0
@@ -849,23 +861,22 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   Center(
                       //KARTA
                       child: CustomCard(
-                        resetSelection: resetSelection,
-                        onSelectionMade: (selectedValue, selectedText) {
-                          setState(() {
-                            resetSelection = selectedValue;
-                            if (pressedTwice == false){
-                              selectedValuePerson1 = selectedValue;
-                              tempValuePerson1 = selectedValue;
-                              selectedTextPerson1 = selectedText;
-                            } else {
-                              selectedValuePerson2 = selectedValue;
-                              selectedTextPerson2 = selectedText;
-                            }
-                          });
-                          // Teraz możesz użyć selectedValuePerson1
-                        },
-                        onImageSet: _startTimer,
-                        teamColors: widget.teamColors,
+                    resetSelection: resetSelection,
+                    onSelectionMade: (selectedValue, selectedText) {
+                      setState(() {
+                        resetSelection = selectedValue;
+                        if (pressedTwice == false) {
+                          selectedValuePerson1 = selectedValue;
+                          tempValuePerson1 = selectedValue;
+                          selectedTextPerson1 = selectedText;
+                        } else {
+                          selectedValuePerson2 = selectedValue;
+                          selectedTextPerson2 = selectedText;
+                        }
+                      });
+                    },
+                    onImageSet: _startTimer,
+                    teamColors: widget.teamColors,
                     teamNames: widget.teamNames,
                     totalCards: totalCards,
                     starsColors: starsColors,
@@ -882,12 +893,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                         _fortuneItemsList, //to glupio nazwalem ale to jest lista w przypadku card letters wszystkich indeksow rozdzielonych po srednikach
                     // tak samo to będzie dla compare_questions uzywane, skojarzenie z fortune items list po prostu
                     specificLists: buildSpecificListsForStarGreen(context, widget.currentField[0]),
-                        imageType: selectedImageType ?? ImageType.empty,
+                    imageType: selectedImageType ?? ImageType.empty,
                   )),
                 ],
               ),
               //SizedBox(height: 10),
-              Text('${getTranslatedString(context, 'card')} ${currentCardIndex + 1} ${getTranslatedString(context, 'z_of_di_de_von_sur')} $totalCards',
+              Text(
+                  '${getTranslatedString(context, 'card')} ${currentCardIndex + 1} ${getTranslatedString(context, 'z_of_di_de_von_sur')} $totalCards',
                   style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
               SizedBox(height: 10),
               (widget.currentField[0] != "field_star_yellow")
@@ -895,7 +907,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Spacer(),
-                        (widget.currentField[0] != 'field_letters' && widget.currentField[0] != 'field_star_blue_dark' && widget.currentField[0] != 'field_star_green')
+                        (widget.currentField[0] != 'field_letters' &&
+                                widget.currentField[0] != 'field_star_blue_dark' &&
+                                widget.currentField[0] != 'field_star_green')
                             ? Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -949,28 +963,30 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                     )
                   : CustomStyledButton(
                       icon: Icons.arrow_forward_outlined,
+                      backgroundColor: Palette().pink,
+                      foregroundColor: Palette().white,
                       onPressed: () {
-                        if (tempValuePerson1 == 0 && selectedValuePerson2 == 0)
-                          {
-                            AnimatedAlertDialog.showAnimatedDialog(context, 'first_select_answer', SfxType.buzzer_sound, 1, 20, false, false);
-                          } else {
+                        if (tempValuePerson1 == 0 && selectedValuePerson2 == 0) {
+                          AnimatedAlertDialog.showAnimatedDialog(
+                              context, 'first_select_answer', SfxType.buzzer_sound, 1, 20, false, false, true);
+                        } else {
                           if (pressedTwice == false) {
-                            AnimatedAlertDialog.passTheDeviceNextPersonDialog(context, 'woman', 'pass_the_device_next_person');
+                            AnimatedAlertDialog.passTheDeviceNextPersonDialog(
+                                context, 'woman', 'pass_the_device_next_person');
                             pressedTwice = true;
                             setState(() {
                               resetSelection = -1;
                             });
                             selectedValuePerson1 = tempValuePerson1;
                             tempValuePerson1 = 0;
-                          }
-                          else {
+                          } else {
                             pressedTwice = false;
                             if (selectedValuePerson1 == selectedValuePerson2) {
                               isMatch = true;
                             } else
                               isMatch = false;
-                            AnimatedAlertDialog.showResultDialog(
-                                context, isMatch, selectedTextPerson1, selectedTextPerson2, widget.teamNames, widget.teamColors);
+                            AnimatedAlertDialog.showResultDialog(context, isMatch, selectedTextPerson1,
+                                selectedTextPerson2, widget.teamNames, widget.teamColors);
                             _startTimer();
                             setState(() {
                               resetSelection = -1;
@@ -981,9 +997,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                               tempValuePerson1 = 0;
                             });
                           }
-                        };},
+                        }
+                        ;
+                      },
                       text: getTranslatedString(context, 'continue'),
-              ),
+                    ),
             ],
           ),
         ),
@@ -1065,7 +1083,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       'field_star_yellow': getTranslatedString(context, 'compare_questions'),
     };
   }
-
 
   final Map<String, String> fieldTypeImagePaths = {
     'field_arrows': 'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',

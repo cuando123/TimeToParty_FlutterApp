@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/TranslationProvider.dart';
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
 class LanguageSelector extends StatefulWidget {
@@ -82,11 +83,14 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   }
 
   Widget languageButton(BuildContext context, String language, String path, String langPrefix) {
+    final audioController = context.read<AudioController>();
+
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: TextButton.icon(
+      child: CustomStyledButton(
+        svgAsset: path, // Ścieżka do pliku SVG
+        text: language,
         onPressed: () async {
-          final audioController = context.read<AudioController>();
           audioController.playSfx(SfxType.button_back_exit);
           await Provider.of<TranslationProvider>(context, listen: false)
               .changeLanguage(langPrefix);
@@ -94,22 +98,15 @@ class _LanguageSelectorState extends State<LanguageSelector> {
           scaffoldKey.currentState?.openEndDrawer();
           showLanguageChangedSnackbar(context);
         },
-        icon: SvgPicture.asset(path),
-        label: Text(language,
-            style: TextStyle(
-              color: Palette().bluegrey,
-              fontFamily: 'HindMadurai',
-              fontSize: ResponsiveSizing.scaleHeight(context, 16),
-            )),
-        style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF434347),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(2.0),
-          ),
-        ),
+        backgroundColor: Color(0xFF434347), // Dostosuj kolor tła
+        foregroundColor: Palette().bluegrey, // Dostosuj kolor tekstu
+        width: 200, // Dostosuj szerokość
+        height: 45, // Dostosuj wysokość
+        fontSize: ResponsiveSizing.scaleHeight(context, 16), // Dostosuj rozmiar czcionki
       ),
     );
   }
+
 
   void showLanguageChangedSnackbar(BuildContext context) {
     final snackBar = SnackBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:provider/provider.dart';
 
 import '../../audio/audio_controller.dart';
@@ -15,8 +16,8 @@ class TripleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280,
-      height: 60,
+      width: ResponsiveSizing.scaleWidth(context, 260),
+      height: ResponsiveSizing.scaleHeight(context, 50),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -80,10 +81,10 @@ class TripleButton extends StatelessWidget {
         originalOnTap();
       },
       child: Container(
-        width: 70,
-        height: 100,
+        width: ResponsiveSizing.scaleWidth(context, 70),
+        height: ResponsiveSizing.scaleHeight(context, 100),
         alignment: Alignment.center,
-        child: Icon(icon, color: Colors.white, size: 32),
+        child: Icon(icon, color: Colors.white, size: ResponsiveSizing.scaleWidth(context, 28)),
       ),
     );
   }

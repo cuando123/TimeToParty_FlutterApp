@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/app_lifecycle/translated_text.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
-import 'package:game_template/src/play_session/custom_style_buttons.dart';
 import 'package:game_template/src/win_game/triple_button_win.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../ads/ads_controller.dart';
 import '../ads/banner_ad_widget.dart';
+import '../app_lifecycle/responsive_sizing.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
@@ -325,7 +325,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                             ), child:
                             TripleButtonWin(
                             svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-                            onPressed: () {
+                            onPressed: () async {
+                              await Future.delayed(Duration(milliseconds: 150));
                               GoRouter.of(context).push('/card_advertisement');
                             },
                           ),),
@@ -339,7 +340,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                       TripleButtonWin(
                             // imageAsset: 'path/to/your/image.png',
                             iconData: Icons.play_arrow_rounded,
-                            onPressed: () {
+                            onPressed: () async {
+                              await Future.delayed(Duration(milliseconds: 150));
                               Navigator.of(context).popUntil((route) => route.isFirst);
                             },
                           ),),
@@ -352,7 +354,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                         ), child:
                           TripleButtonWin(
                             iconData: Icons.star,
-                            onPressed: () {
+                            onPressed: () async {
+                              await Future.delayed(Duration(milliseconds: 150));
                               AnimatedAlertDialog.showRateDialog(context);
                             },
                           ),),

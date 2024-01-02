@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../notifications/notifications_manager.dart';
 import '../play_session/alerts_and_dialogs.dart';
+import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'settings.dart';
@@ -77,9 +79,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ResponsiveScreen(
         squarishMainArea:
         Scrollbar(
+        thumbVisibility: true,trackVisibility: true,
+        thickness: -6.0,
+        radius: Radius.circular(10),
         child:
         ListView(
           children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomStyledButton(
+                  icon: Icons.language,
+                  text: getTranslatedString(context, 'select_language'),
+                  onPressed: () async {
+                    audioController.playSfx(SfxType.button_back_exit);
+                    await Future.delayed(Duration(milliseconds: 150));
+                    GoRouter.of(context).go('/language_selector');
+                  },
+                  backgroundColor: Colors.white,
+                  foregroundColor: Palette().pink,
+                  width: 200,
+                  height: 45,
+                  fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                ),
+              ],
+            ),
+
+            ResponsiveSizing.responsiveHeightGap(context, 10),
             TogglesControl(
               valueNotifier: settingsController.notificationsEnabled,
               onToggle: () {

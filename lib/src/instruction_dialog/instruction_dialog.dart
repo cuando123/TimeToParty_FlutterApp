@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
 class InstructionDialog extends StatelessWidget {
@@ -186,25 +188,20 @@ class InstructionDialog extends StatelessWidget {
               Expanded(
                 child: Center(
                   heightFactor: 1.5,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Palette().pink, // color
-                      foregroundColor: Palette().white, // textColor
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                          MediaQuery.of(context).size.height * 0.05),
-                      textStyle: TextStyle(
-                          fontFamily: 'HindMadurai',
-                          fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                    ),
+                  child:
+                  CustomStyledButton(
+                    icon: null,
+                    text: 'OK',
                     onPressed: () {
                       final audioController = context.read<AudioController>();
                       audioController.playSfx(SfxType.button_back_exit);
                       Navigator.pop(context);
                     },
-                    child: Text('OK'),
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
+                    width: 200,
+                    height: 45,
+                    fontSize: ResponsiveSizing.scaleHeight(context, 20),
                   ),
                 ),
               )

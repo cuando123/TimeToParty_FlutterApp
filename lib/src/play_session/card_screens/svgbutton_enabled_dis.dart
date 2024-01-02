@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 
 class SvgButton extends StatefulWidget {

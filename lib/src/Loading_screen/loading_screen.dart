@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../play_session/main_board/play_gameboard_main.dart';
 import '../style/palette.dart';

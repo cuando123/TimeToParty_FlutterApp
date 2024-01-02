@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
@@ -11,6 +12,7 @@ import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
+import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
 class MainMenuScreen extends StatefulWidget {
@@ -29,27 +31,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
-    )..repeat();  // Powtarza animację w nieskończoność
+    )..repeat(); // Powtarza animację w nieskończoność
 
     _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.1, end: 1.0),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.85
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
   }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -107,107 +98,93 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Center(
-                child: LogoWidget(),
-          ),
-          ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Palette().menudark, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
-                    ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
-                  //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
+                  child: LogoWidget(),
                 ),
-                icon: Icon(Icons.question_mark, size: ResponsiveSizing.scaleHeight(context, 32)),
-                onPressed: () {
-                  audioController.playSfx(SfxType.button_infos);
-                  Future.delayed(Duration(milliseconds: 150), () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (context) {
-                        return InstructionDialog();
+                ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomStyledButton(
+                      icon: Icons.question_mark,
+                      text: getTranslatedString(context, 'game_rules'),
+                      onPressed: () {
+                        audioController.playSfx(SfxType.button_infos);
+                        Future.delayed(Duration(milliseconds: 150), () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (context) {
+                              return InstructionDialog();
+                            },
+                          );
+                        });
                       },
-                    );
-                  });
-                },
-                label: translatedText(context,'game_rules', 20, Palette().menudark),
-              ),
-              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
-              AnimatedBuilder(
-                animation: _scaleAnimation,
-                builder: (context, child) => Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: child,
-                ), child:
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().pink, // color
-                  foregroundColor: Palette().white, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
-                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                      backgroundColor: Palette().bluegrey,
+                      foregroundColor: Palette().menudark,
+                      width: 200,
+                      height: 45,
+                      fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                    ),
+                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
+                    AnimatedBuilder(
+                      animation: _scaleAnimation,
+                      builder: (context, child) => Transform.scale(
+                        scale: _scaleAnimation.value,
+                        child: child,
+                      ),
+                      child:
+                      CustomStyledButton(
+                        icon: Icons.play_arrow_rounded,
+                        text: getTranslatedString(context, 'play_now'),
+                        onPressed: () {
+                          audioController.playSfx(SfxType.button_accept);
+                          Navigator.of(context).push(_createRoute());
+                        },
+                        backgroundColor: Palette().pink,
+                        foregroundColor: Palette().white,
+                        width: 200,
+                        height: 45,
+                        fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                      ),
+                    ),
+                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
+                    CustomStyledButton(
+                      icon: Icons.settings,
+                      text: getTranslatedString(context, 'settings'),
+                      onPressed: () {
+                        audioController.playSfx(SfxType.button_back_exit);
+                        GoRouter.of(context).go('/settings');
+                      },
+                      backgroundColor: Palette().bluegrey,
+                      foregroundColor: Palette().menudark,
+                      width: 200,
+                      height: 45,
+                      fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                    ),
+                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
+                    CustomStyledButton(
+                      icon: null,
+                      text: getTranslatedString(context, 'exit'),
+                      onPressed: () {
+                        audioController.playSfx(SfxType.button_back_exit);
+                        SystemNavigator.pop();
+                      },
+                      backgroundColor: Palette().bluegrey,
+                      foregroundColor: Palette().menudark,
+                      width: 200,
+                      height: 45,
+                      fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                    ),
+                    SizedBox(height: ResponsiveSizing.scaleHeight(context, 80))
+                  ],
                 ),
-                icon: Icon(Icons.play_arrow_rounded, size: 32),
-                onPressed: () {
-                  audioController.playSfx(SfxType.button_accept);
-                  Navigator.of(context).push(_createRoute());
-                },
-                label: translatedText(context,'play_now', 20, Palette().white),
-              ),),
-              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Palette().menudark, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
-                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                ),
-                icon: Icon(Icons.settings, size: ResponsiveSizing.scaleHeight(context, 32)),
-                onPressed: () {
-                  audioController.playSfx(SfxType.button_back_exit);
-                  GoRouter.of(context).go('/settings');
-                },
-                label: translatedText(context,'settings', 20, Palette().menudark),
-              ),
-              ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette().bluegrey, // color
-                  foregroundColor: Palette().menudark, // textColor
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 200),
-                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 41, 650)),
-                  textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
-                ),
-                onPressed: () {
-                  audioController.playSfx(SfxType.button_back_exit);
-                  SystemNavigator.pop(); //GoRouter.of(context).go('/loading'),
-                },
-                child: translatedText(context,'exit', 20, Palette().menudark),
-              ),
-              SizedBox(height:ResponsiveSizing.scaleHeight(context, 80))
-            ],
+              ],
+            ),
           ),
-                ],),),),),
+        ),
+      ),
     );
   }
 }

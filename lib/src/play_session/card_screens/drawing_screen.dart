@@ -16,7 +16,8 @@ class DrawingScreen extends StatefulWidget {
   final List<String> teamNames;
   final List<Color> teamColors;
 
-  const DrawingScreen({super.key, required this.itemToShow, required this.category, required this.teamColors, required this.teamNames});
+  const DrawingScreen(
+      {super.key, required this.itemToShow, required this.category, required this.teamColors, required this.teamNames});
 
   @override
   _DrawingScreenState createState() => _DrawingScreenState();
@@ -70,7 +71,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     IconButton(
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
-                        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '' ,widget.teamNames, widget.teamColors);
+                        AnimatedAlertDialog.showExitGameDialog(
+                            context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors);
                         //Navigator.of(context).pop('response');
                       },
                     ),
@@ -85,9 +87,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       ),
                       child: Row(
                         children: [
-                          //..._displayTeamNames(),
-                        ..._createTeamWidgets(),
-                          // ..._displayTeamColors(),
+                          ..._createTeamWidgets(),
                         ],
                       ),
                     ),
@@ -129,33 +129,37 @@ class _DrawingScreenState extends State<DrawingScreen> {
                 children: createRowItems(context),
               ),
               const SizedBox(height: 10),
-          Row(mainAxisSize: MainAxisSize.min,
-            children: [
-            letsText(
-                context,
-                getTranslatedString(
-                    context,
-                    widget.category == 'draw_movie'
-                        ? 'category_draw_movie'
-                        : widget.category == 'draw_proverb'
-                        ? 'category_draw_proverbs'
-                        : widget.category == 'draw_love_pos'
-                        ? 'category_love_positions'
-                        : 'default_category'),
-                14,
-                Palette().white),
-              const SizedBox(width: 5),
-            Icon(widget.category == 'draw_movie'
-                ? Icons.movie
-                : widget.category == 'draw_proverb'
-                ? Icons.message
-                : widget.category == 'draw_love_pos'
-                ? Icons.man
-                : Icons.hourglass_empty, color: Palette().bluegrey),
-          ],),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  letsText(
+                      context,
+                      getTranslatedString(
+                          context,
+                          widget.category == 'draw_movie'
+                              ? 'category_draw_movie'
+                              : widget.category == 'draw_proverb'
+                                  ? 'category_draw_proverbs'
+                                  : widget.category == 'draw_love_pos'
+                                      ? 'category_love_positions'
+                                      : 'default_category'),
+                      14,
+                      Palette().white),
+                  const SizedBox(width: 5),
+                  Icon(
+                      widget.category == 'draw_movie'
+                          ? Icons.movie
+                          : widget.category == 'draw_proverb'
+                              ? Icons.message
+                              : widget.category == 'draw_love_pos'
+                                  ? Icons.man
+                                  : Icons.hourglass_empty,
+                      color: Palette().bluegrey),
+                ],
+              ),
               const SizedBox(height: 10),
               Text(
-                  widget.itemToShow,
+                widget.itemToShow,
                 style: TextStyle(
                   fontFamily: 'HindMadurai',
                   fontSize: 20.0,
@@ -238,7 +242,13 @@ class _DrawingScreenState extends State<DrawingScreen> {
               const SizedBox(height: 10),
               buildBrushSizeSlider(),
               const SizedBox(height: 10),
-              CustomStyledButton(icon: Icons.play_arrow_rounded, text: getTranslatedString(context, 'im_guessing'), onPressed: _convertAndNavigate),
+              CustomStyledButton(
+                icon: Icons.play_arrow_rounded,
+                text: getTranslatedString(context, 'im_guessing'),
+                onPressed: _convertAndNavigate,
+                backgroundColor: Palette().pink,
+                foregroundColor: Palette().white,
+              ),
               const SizedBox(height: 40),
             ],
           ),
@@ -356,6 +366,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
 
     return teamWidgets;
   }
+
   String getFlagAssetFromColor(Color color) {
     List<String> flagAssets = [
       'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
@@ -463,5 +474,3 @@ class _AnimatedIconButtonState extends State<AnimatedIconButton> with SingleTick
     );
   }
 }
-
-

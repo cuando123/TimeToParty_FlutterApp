@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
 
 import '../../app_lifecycle/translated_text.dart';
+import '../../style/palette.dart';
 import '../custom_style_buttons.dart';
 
 class RollSlotMachine extends StatefulWidget {
@@ -144,7 +145,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                           _shadowOpacity = 0.7;
                         });
                       });
-                    },
+                    },backgroundColor: Palette().pink, foregroundColor: Palette().white,
                   ),
                 ),
               ),
@@ -161,7 +162,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                       text: getTranslatedString(context, 'start_the_task'),
                       onPressed: () {
                         Navigator.of(context).pop(getText());
-                      },
+                      },backgroundColor: Palette().pink, foregroundColor: Palette().white,
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 
 import '../../style/palette.dart';
 
@@ -46,7 +47,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
   void _startNextPhase() {
     _phaseTimer?.cancel();
     var phaseDuration = Duration(seconds: 5); // Czas trwania dla ruchu do przodu i do tyłu
-    if(mounted) {
+    if (mounted) {
       _controller.forward(from: 0);
     }
     _phaseTimer = Timer.periodic(Duration(milliseconds: 250), (t) {
@@ -59,7 +60,8 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
   }
 
   void _nextPhase() {
-    _currentPhase = (_currentPhase == AnimationPhase.movingForward) ? AnimationPhase.movingBackward : AnimationPhase.movingForward;
+    _currentPhase =
+        (_currentPhase == AnimationPhase.movingForward) ? AnimationPhase.movingBackward : AnimationPhase.movingForward;
     _startNextPhase(); // Rozpocznij następną fazę
   }
 
@@ -86,153 +88,160 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
     // Twoje istniejące ustawienia UI i layout...
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2.0,
-                  color: Color(0xFF5E0EAD),
-                ),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: [
-                    Color(0xFF5E0EAD),
-                    Palette().pink,
-                  ], // Przykładowe kolory gradientu
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(-4, -4),
-                    blurRadius: 10,
-                    color: Colors.white.withOpacity(0.25),
+        return AspectRatio(
+          aspectRatio: 1, // Zapewnia kwadratowy kontener
+          child: FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 2.0,
+                      color: Color(0xFF5E0EAD),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomRight,
+                      end: Alignment.topLeft,
+                      colors: [
+                        Color(0xFF5E0EAD),
+                        Palette().pink,
+                      ], // Przykładowe kolory gradientu
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(-4, -4),
+                        blurRadius: 10,
+                        color: Colors.white.withOpacity(0.25),
+                      ),
+                      BoxShadow(
+                        offset: Offset(4, 4),
+                        blurRadius: 10,
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ],
                   ),
-                  BoxShadow(
-                    offset: Offset(4, 4),
-                    blurRadius: 10,
-                    color: Colors.black.withOpacity(0.7),
-                  ),
-                ],
-              ),
-              child: ClipPath(
-                clipper: CircleClipper(),
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  child: Transform.rotate(
-        angle: -90 * 3.14 / 180,
-        child:
-        CustomPaint(
-                    painter: StripePainter(
-                        numberOfDots: 10,
-                  dotRadius: 3,
-                        color: Colors.white70,
-                         highlightDotRadius: 4,
-                         highlightColor: Colors.yellow,
-                         highlightedDot: _highlightedStripe,
-                         padding: constraints.maxWidth * 0.138,
+                  child: ClipPath(
+                    clipper: CircleClipper(),
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: Transform.rotate(
+                        angle: -90 * 3.14 / 180,
+                        child: CustomPaint(
+                          painter: StripePainter(
+                            numberOfDots: 10,
+                            dotRadius: 3,
+                            color: Colors.white70,
+                            highlightDotRadius: 4,
+                            highlightColor: Colors.yellow,
+                            highlightedDot: _highlightedStripe,
+                            padding: 6, //61.5
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),),
-              ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: FortuneWheel(
+                    selected: widget.selected.stream,
+                    animateFirst: false,
+                    duration: Duration(seconds: 3),
+                    indicators: <FortuneIndicator>[
+                      FortuneIndicator(
+                        alignment: Alignment.topCenter,
+                        child: Stack(
+                          children: [
+                            Transform.translate(
+                              offset: Offset(0, -10),
+                              child: Transform.scale(
+                                scaleX: 0.75,
+                                scaleY: 0.65, // zmniejsza wielkość o połowę
+                                child: TriangleIndicator(
+                                  color: Palette().borderSpinningWheel,
+                                ),
+                              ),
+                            ),
+                            Transform.translate(
+                              offset: Offset(0, -10),
+                              child: Transform.scale(
+                                scaleX: 0.6,
+                                scaleY: 0.5, // zmniejsza wielkość o połowę
+                                child: TriangleIndicator(
+                                  color: Color(0xFFFFC344),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    items: [
+                      buildFortuneItem(context, '1', Palette().bluegrey),
+                      buildFortuneItem(context, '2', Palette().pink),
+                      buildFortuneItem(context, '3', Palette().backgroundPlaySession),
+                      buildFortuneItem(context, '1', Palette().bluegrey),
+                      buildFortuneItem(context, '2', Palette().pink),
+                      buildFortuneItem(context, '3', Palette().backgroundPlaySession),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Container(
-              padding: EdgeInsets.all(15.0),
-              child:
-              FortuneWheel(
-                selected: widget.selected.stream,
-                animateFirst: false,
-                duration: Duration(seconds: 3),
-                indicators: <FortuneIndicator>[
-                  FortuneIndicator(
-                    alignment: Alignment.topCenter,
-                    child: Stack(
-                      children: [
-                        Transform.translate(
-                          offset: Offset(0, -10),
-                          child: Transform.scale(
-                            scaleX: 0.75,
-                            scaleY: 0.65, // zmniejsza wielkość o połowę
-                            child: TriangleIndicator(
-                              color: Palette().borderSpinningWheel,
-                            ),
-                          ),
-                        ),
-                        Transform.translate(
-                          offset: Offset(0, -10),
-                          child: Transform.scale(
-                            scaleX: 0.6,
-                            scaleY: 0.5, // zmniejsza wielkość o połowę
-                            child: TriangleIndicator(
-                              color: Color(0xFFFFC344),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                items: [
-                  buildFortuneItem('1', Palette().bluegrey),
-                  buildFortuneItem('2', Palette().pink),
-                  buildFortuneItem('3', Palette().backgroundPlaySession),
-                  buildFortuneItem('1', Palette().bluegrey),
-                  buildFortuneItem('2', Palette().pink),
-                  buildFortuneItem('3', Palette().backgroundPlaySession),
-                ],
-              ),),
-          ],
+          ),
         );
       },
     );
   }
 }
 
+//kolo fortuny
+FortuneItem buildFortuneItem(BuildContext context, String text, Color color) {
+  return FortuneItem(
+    style: FortuneItemStyle(
+      color: color,
+      borderColor: Palette().borderSpinningWheel,
+      borderWidth: 3,
+    ),
+    child: strokedText(context, text),
+  );
+}
 
-  //kolo fortuny
-  FortuneItem buildFortuneItem(String text, Color color) {
-    return FortuneItem(
-      style: FortuneItemStyle(
-        color: color,
-        borderColor: Palette().borderSpinningWheel,
-        borderWidth: 3,
-      ), child: strokedText(text),
-    );
-  }
+//cieniowany tekst, obramowka kolo fortuny
+Widget strokedText(BuildContext context, String text) {
+  return Transform.rotate(
+    angle: 90 * 3.14 / 180,
+    child: Stack(
+      children: <Widget>[
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: ResponsiveSizing.scaleHeight(context, 40),
+            fontFamily: 'HindMadurai',
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1
+              ..color = Palette().borderSpinningWheel,
+          ),
+        ),
+        // Tekst
+        Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'HindMadurai',
+            fontSize: ResponsiveSizing.scaleHeight(context, 40),
+            color: Colors.white70,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
-  //cieniowany tekst, obramowka kolo fortuny
-  Widget strokedText(String text) {
-    return Transform.rotate(
-      angle: 90 * 3.14 / 180,
-      child: Stack(
-        children: <Widget>[
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'HindMadurai',
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
-                ..color = Palette().borderSpinningWheel,
-            ),
-          ),
-          // Tekst
-          Text(
-            text,
-            style: TextStyle(
-              fontFamily: 'HindMadurai',
-              fontSize: 40,
-              color: Colors.white70,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 class StripePainter extends CustomPainter {
   final int numberOfDots;
   final double dotRadius;

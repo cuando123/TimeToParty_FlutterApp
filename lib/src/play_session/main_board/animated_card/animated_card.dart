@@ -4,6 +4,7 @@ import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/main_board/animated_card/pulsating_text.dart';
 import 'package:game_template/src/style/palette.dart';
@@ -208,7 +209,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
-                  alignment: Alignment(0.0, -0.9),
+                  alignment: Alignment(0.0, -0.8),
                   child: Text(
                     widget.currentTeamName,
                     style: TextStyle(
@@ -222,19 +223,18 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
-                  alignment: Alignment(0.0, -0.8),
+                  alignment: Alignment(0.0, -0.7),
                   child: SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
                       height: 40, color: widget.teamColor)),
             ),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
-                  alignment: Alignment(0.0, -2),
+                  alignment: Alignment(0.0, -0.55),
                   child: Text(
                     cardDescription,
                     style: TextStyle(
                       fontStyle: FontStyle.italic, // Ustawienie tekstu na kursywę
-                      height: 40.0, // Ustawienie wysokości tekstu
                       fontFamily: 'HindMadurai', // Ustawienie czcionki na Hind Madurai
                       color: Colors.white, // Ustawienie koloru tekstu na biały
                       fontSize: 15, // Możesz dostosować rozmiar czcionki zgodnie z potrzebami
@@ -244,7 +244,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
-                alignment: Alignment(0.0, -0.5),
+                alignment: Alignment(0.0, -0.4),
                 child: AnimatedBuilder(
                   animation: _pulseAnimation,
                   builder: (context, child) => Transform.scale(
@@ -259,7 +259,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
-                alignment: Alignment(0.0, -0.4),
+                alignment: Alignment(0.0, -0.28),
                 child: SlideTransition(
                   position: _arrowAnimation,
                   child: Icon(Icons.arrow_downward_sharp, color: Colors.white, size: 30),
@@ -270,19 +270,11 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textBottomPositionAnimation,
               child: Align(
-                alignment: Alignment.center, // Wyśrodkuj poziomo
+                alignment: Alignment(0.0, 0.7), // Wyśrodkuj poziomo
                 child: FractionallySizedBox(
                   widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkuj zawartość kolumny
-                    children: <Widget>[
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height *
-                              0.6), // Ustaw wysokość, aby tekst był na poziomie 0.6
-                      translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
-                          textAlign: TextAlign.center),
-                    ],
-                  ),
+                  child:  translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
+                      textAlign: TextAlign.center),
                 ),
               ),
             ),
@@ -325,7 +317,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
                 },
                 child: Align(
-                  alignment: Alignment(0.0, 0.45),
+                  alignment: Alignment(0.0, 0.55),
                   child: AnimatedBuilder(
                     animation: _questionMarkPulseAnimation,
                     builder: (context, child) => Transform.scale(
@@ -349,7 +341,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               ),
             ),
             // Karta
-            Center(
+    Align(
+    alignment: Alignment(0.0, 0.15),
               child: SlideTransition(
                 position: _positionAnimation,
                 child: Transform.rotate(
@@ -369,8 +362,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                         }
                       },
                       child: Container(
-                        width: 150,
-                        height: 300,
+                        width: ResponsiveSizing.scaleWidth(context, 135),
+                        height: ResponsiveSizing.scaleHeight(context, 290),
                         color: Colors.transparent,
                         child: _getCardContent(widget.selectedCardIndex),
                       ),
