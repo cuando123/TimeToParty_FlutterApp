@@ -65,7 +65,7 @@ class CustomStyledButton extends StatelessWidget {
         ),
         minimumSize: Size(
             ResponsiveSizing.scaleWidth(context, width),
-            ResponsiveSizing.responsiveHeightWithCondition(context, 41, height, 650)
+            ResponsiveSizing.responsiveHeightWithCondition(context, 50, height, 650)
         ),
       ),
       onPressed: onPressed,

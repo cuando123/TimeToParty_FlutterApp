@@ -216,12 +216,18 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                       ),
                       Flexible(
                         flex: 4,
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          thickness: -6.0,
-                          radius: Radius.circular(10),
-                          child: ListView.builder(
+                        child: Theme(
+                        data: Theme.of(context).copyWith(
+    scrollbarTheme: ScrollbarThemeData(
+    thumbColor: MaterialStateProperty.all(Palette().white),
+    ),
+    ),
+    child: Scrollbar(
+    thumbVisibility: true,
+    trackVisibility: true,
+    thickness: 6.0,
+    radius: Radius.circular(10),
+    child:  ListView.builder(
                             itemCount: sortedTeams.length,
                             itemBuilder: (context, index) {
                               return Container(
@@ -299,7 +305,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                 ),
                               );
                             },
-                          ),
+                          ),),
                         ),
                       ),
                     ],

@@ -240,7 +240,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                         ),
                         SizedBox(height: 20),
                         FortuneBar(
-                            height: 70,
+                            height: ResponsiveSizing.scaleHeight(context, 70),
                             indicators: const <FortuneIndicator>[
                               FortuneIndicator(
                                 alignment: Alignment.topCenter,
@@ -515,7 +515,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       text,
       style: TextStyle(
         fontFamily: 'HindMadurai',
-        fontSize: 30.0,
+        fontSize: ResponsiveSizing.responsiveHeightWithCondition(context, 22, 30, 650),
         fontWeight: FontWeight.bold,
         color: Colors.white,
         shadows: const [
@@ -531,7 +531,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
 
   Widget _getImageWidget(String imagePath) {
     return Image.asset(imagePath,
-        height: 70, errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
+        height: ResponsiveSizing.responsiveHeightWithCondition(context, 75, 100, 650), errorBuilder: (context, error, stackTrace) => _getTextWidget('Brak obrazu'));
   }
 
   Widget buildBlueDarkCard() {
@@ -564,17 +564,17 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           elevation: 0.0,
                           child: Column(
                             children: [
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20),),
                               buildStarsRow(widget.totalCards, widget.starsColors),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5),),
                               Expanded(
                                 child: Column(
                                   children: createWidgetsFromText(textFromRollSlotMachine),
                                 ),
                               ),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5),),
                               buildStarsRow(widget.totalCards, widget.starsColors),
-                              SizedBox(height: 20),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 20),),
                             ],
                           ),
                         ),
@@ -714,7 +714,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             children: [
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
-                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 100)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 85, 105, 650)),
                               Expanded(
                                 child: Container(
                                   padding: padding,
@@ -746,7 +746,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   ),
                                 ),
                               ),
-                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 105)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 90, 105, 650)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                             ],
@@ -854,17 +854,17 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   children: [wordText(context, word, 24, Colors.white, index: 0)],
                                 ),
                               ),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
                               wordText(context, word, 20, Colors.white, index: 1),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
                               wordText(context, word, 20, Colors.white, index: 2),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
                               wordText(context, word, 20, Colors.white, index: 3),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
                               wordText(context, word, 20, Colors.white, index: 4),
-                              SizedBox(height: 5),
+                              SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
                               wordText(context, word, 20, Colors.white, index: 5),
-                              Expanded(child:SizedBox(height: 10),
+                              Expanded(child:SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 1, 10, 650)),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

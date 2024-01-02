@@ -76,14 +76,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
       ),
 
-      body: ResponsiveScreen(
-        squarishMainArea:
-        Scrollbar(
-        thumbVisibility: true,trackVisibility: true,
-        thickness: -6.0,
-        radius: Radius.circular(10),
-        child:
-        ListView(
+    body: ResponsiveScreen(
+    squarishMainArea: Theme(
+    data: Theme.of(context).copyWith(
+    scrollbarTheme: ScrollbarThemeData(
+    thumbColor: MaterialStateProperty.all(Palette().white),
+    ),
+    ),
+    child: Scrollbar(
+    thumbVisibility: true,
+    trackVisibility: true,
+    thickness: -6.0,
+    radius: Radius.circular(10),
+    child: Padding(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      child:
+      ListView(
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -185,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Text("Testuj notyfikacje"),
             ),
           ],
-        ),),
+        ),),),),
         rectangularMenuArea: Text(
             textAlign: TextAlign.center,
             'Time To Party® ©${DateTime.now().year} Frydo Poland. $allRightsReserved',

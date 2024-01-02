@@ -4,6 +4,7 @@ import 'package:draw_your_image/draw_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/app_lifecycle/translated_text.dart';
 
 import '../../style/palette.dart';
@@ -193,7 +194,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -208,8 +209,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       }
                     },
                     backgroundColor: Colors.white,
-                    width: 50,
-                    height: 50,
+                    width: ResponsiveSizing.scaleWidth(context, 50),
+                    height: ResponsiveSizing.scaleHeight(context, 50),
                   ),
                   SizedBox(width: 5),
                   AnimatedIconButton(
@@ -223,8 +224,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       }
                     },
                     backgroundColor: Colors.white,
-                    width: 50,
-                    height: 50,
+                    width: ResponsiveSizing.scaleWidth(context, 50),
+                    height: ResponsiveSizing.scaleHeight(context, 50),
                   ),
                   SizedBox(width: 5),
                   AnimatedIconButton(
@@ -232,16 +233,16 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     iconColor: Color(0xFFCB48EF),
                     onPressed: () => _drawController.clear(),
                     backgroundColor: Colors.white,
-                    width: 50,
-                    height: 50,
+                    width: ResponsiveSizing.scaleWidth(context, 50),
+                    height: ResponsiveSizing.scaleHeight(context, 50),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               buildColorPicker(),
-              const SizedBox(height: 10),
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               buildBrushSizeSlider(),
-              const SizedBox(height: 10),
+              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 0, 10, 650)),
               CustomStyledButton(
                 icon: Icons.play_arrow_rounded,
                 text: getTranslatedString(context, 'im_guessing'),
@@ -249,7 +250,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                 backgroundColor: Palette().pink,
                 foregroundColor: Palette().white,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 15, 40, 650)),
             ],
           ),
         ),

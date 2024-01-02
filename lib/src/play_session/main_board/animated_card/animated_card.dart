@@ -220,6 +220,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                     ),
                   )),
             ),
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
@@ -227,6 +228,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   child: SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
                       height: 40, color: widget.teamColor)),
             ),
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
@@ -241,6 +243,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                     ),
                   )),
             ),
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
@@ -256,6 +259,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 ),
               ),
             ),
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
               child: Align(
@@ -267,6 +271,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               ),
             ),
             // Napis na dole
+            ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textBottomPositionAnimation,
               child: Align(

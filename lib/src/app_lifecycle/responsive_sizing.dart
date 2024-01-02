@@ -30,7 +30,6 @@ class ResponsiveSizing {
   }
 
   static SizedBox responsiveHeightGapWithCondition(BuildContext context, double smallHeight, double bigHeight, double condition) {
-    print('wysokosc ekranu: ${MediaQuery.of(context).size.height}');
     double finalHeight = MediaQuery.of(context).size.height < condition ? smallHeight : bigHeight;
     return SizedBox(height: scaleHeight(context, finalHeight));
   }

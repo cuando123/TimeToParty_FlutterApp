@@ -134,12 +134,18 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                 },
               ),
               body: SafeArea(
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  trackVisibility: true,
-                  thickness: -6.0,
-                  radius: Radius.circular(10),
-                  child: SingleChildScrollView(
+                child:  Theme(
+        data: Theme.of(context).copyWith(
+        scrollbarTheme: ScrollbarThemeData(
+        thumbColor: MaterialStateProperty.all(Palette().white),
+        ),
+        ),
+        child: Scrollbar(
+        thumbVisibility: true,
+        trackVisibility: true,
+        thickness: 6.0,
+        radius: Radius.circular(10),
+        child:  SingleChildScrollView(
                     padding: const EdgeInsets.all(20.0),
                     child: Consumer<TeamProvider>(
                       builder: (context, teamProvider, child) {
@@ -342,7 +348,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                   ),
                 ),
               ),
-            ),
+            ),),
           ),
         );
       },
