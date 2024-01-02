@@ -776,11 +776,11 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
     super.initState();
 
     _greenStarController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
     _redStarController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
@@ -809,7 +809,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
     _redStarController.forward();
 
     for (var i = 0; i < widget.greenPoints; i++) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 100));
       setState(() {
         final audioController = context.read<AudioController>();
         audioController.playSfx(SfxType.score_sound_effect);
@@ -820,7 +820,7 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
     }
 
     for (var i = 0; i < widget.redPoints; i++) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 100));
       setState(() {
         _currentRedPoints++;
       });

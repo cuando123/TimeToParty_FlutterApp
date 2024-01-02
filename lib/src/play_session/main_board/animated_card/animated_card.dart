@@ -184,7 +184,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     } else {
       return WillPopScope(
         onWillPop: () async {
-          await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+          await SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.manual,
+            overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+          );
           AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>);
           return false; // return false to prevent the pop operation
         }, // Zablokowanie możliwości cofnięcia
@@ -430,7 +433,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       barrierDismissible: false,
       builder: (dialogContext) {
         return WillPopScope(
-          onWillPop: () async => false,
+          onWillPop: () async {
+            AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>);
+            return false; // return false to prevent the pop operation
+          },
           child: Dialog(
             backgroundColor: Colors.black54,
             shadowColor: Colors.transparent,

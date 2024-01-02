@@ -18,22 +18,42 @@ Widget wordText(BuildContext context, String wordKey, double fontSize, Color tex
       String word = translationProvider.getWord(wordKey);
       List<String> words = word.split(';'); // Dzielenie tekstu na słowa
 
-      if (index != null && index >= 0 && index < words.length) {
+      List<Widget> textWidgets = []; // Lista widgetów tekstowych
+
+      for (String word in words) {
+        if (word.length > 15) {
+          int spaceIndex = word.indexOf(' ', 1);
+          if (spaceIndex != -1) {
+            // Dodanie pierwszej części słowa
+            textWidgets.add(letsText(context, word.substring(0, spaceIndex), fontSize, textColor, textAlign: textAlign));
+            // Dodanie znaku nowego wiersza
+            textWidgets.add(Text('\n'));
+            // Dodanie drugiej części słowa
+            textWidgets.add(letsText(context, word.substring(spaceIndex + 1), fontSize, textColor, textAlign: textAlign));
+          } else {
+            // Jeśli nie ma spacji, dodaj całe słowo
+            textWidgets.add(letsText(context, word, fontSize, textColor, textAlign: textAlign));
+          }
+        } else {
+          // Jeśli słowo jest krótsze niż 15 znaków
+          textWidgets.add(letsText(context, word, fontSize, textColor, textAlign: textAlign));
+        }
+      }
+
+      if (index != null && index >= 0 && index < textWidgets.length) {
         // Zwracanie widgetu Text tylko dla wybranego słowa
-        return letsText(context, words[index], fontSize, textColor, textAlign: textAlign);
+        return textWidgets[index];
       } else {
         // Zwracanie wszystkich słów, jeśli indeks nie jest podany lub jest nieprawidłowy
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (String word in words)
-              letsText(context, word, fontSize, textColor, textAlign: textAlign),
-          ],
+          children: textWidgets,
         );
       }
     },
   );
 }
+
 
 List<String> getWordsList(BuildContext context, String wordKey) {
   TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);

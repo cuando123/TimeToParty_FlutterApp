@@ -730,7 +730,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        await SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+        );
         AnimatedAlertDialog.showExitGameDialog(
             context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
         return false;

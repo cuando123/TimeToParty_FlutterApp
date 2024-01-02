@@ -51,7 +51,10 @@ class _DrawingScreenState extends State<DrawingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        await     SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+        );
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
@@ -151,9 +154,9 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       widget.category == 'draw_movie'
                           ? Icons.movie
                           : widget.category == 'draw_proverb'
-                              ? Icons.message
+                              ? Icons.chat
                               : widget.category == 'draw_love_pos'
-                                  ? Icons.man
+                                  ? Icons.favorite
                                   : Icons.hourglass_empty,
                       color: Palette().bluegrey),
                 ],

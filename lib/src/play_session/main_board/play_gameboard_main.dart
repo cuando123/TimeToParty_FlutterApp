@@ -111,7 +111,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     super.build(context);
     return WillPopScope(
       onWillPop: () async {
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        await SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+        );
         AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',mutableTeamNames, mutableTeamColors);
         return false; // return false to prevent the pop operation
       },
