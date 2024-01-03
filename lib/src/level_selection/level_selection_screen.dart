@@ -10,6 +10,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
@@ -94,6 +95,15 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     }
     _animationController.dispose();
     super.dispose();
+  }
+
+  bool _areTeamNamesValid() {
+    for (var name in Provider.of<TeamProvider>(context, listen: false).teamNames) {
+      if (name.trim().isEmpty) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override
@@ -290,20 +300,32 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                     child: CustomStyledButton(
                                       icon: Icons.play_arrow_rounded,
                                       text: getTranslatedString(context, 'play_now'),
-                                      onPressed: () {
-                                        final audioController = context.read<AudioController>();
-                                        audioController.playSfx(SfxType.button_accept);
-                                        _toggleCelebration();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => LoadingScreenSecond(
-                                              teamNames: teamProvider.teamNames,
-                                              teamColors: teamColors,
+                                      onPressed: () async {
+                                        if (_areTeamNamesValid()) {
+                                          // Usuwa fokus z bieżącego pola tekstowego, co powinno zamknąć klawiaturę
+                                          FocusScope.of(context).requestFocus(FocusNode());
+
+                                          // Opcjonalne: Czekaj krótką chwilę na zamknięcie klawiatury
+                                          await Future.delayed(Duration(milliseconds: 300));
+
+                                          final audioController = context.read<AudioController>();
+                                          audioController.playSfx(SfxType.button_accept);
+                                          _toggleCelebration();
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => LoadingScreenSecond(
+                                                teamNames: teamProvider.teamNames,
+                                                teamColors: teamColors,
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        } else {
+                                          AnimatedAlertDialog.showAnimatedDialog(context, 'team_names_empty', SfxType.button_infos, 2, 20, false, false, true);
+                                        }
                                       },
+
                                       backgroundColor: Palette().pink,
                                       foregroundColor: Palette().white,
                                       width: 190,

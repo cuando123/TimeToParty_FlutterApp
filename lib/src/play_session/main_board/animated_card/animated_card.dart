@@ -188,7 +188,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SystemUiMode.manual,
             overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
           );
-          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>);
+          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
           return false; // return false to prevent the pop operation
         }, // Zablokowanie możliwości cofnięcia
         child: Stack(
@@ -434,7 +434,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
       builder: (dialogContext) {
         return WillPopScope(
           onWillPop: () async {
-            AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>);
+            AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
             return false; // return false to prevent the pop operation
           },
           child: Dialog(

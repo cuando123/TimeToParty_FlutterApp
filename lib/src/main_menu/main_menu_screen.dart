@@ -116,7 +116,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                           showDialog<void>(
                             context: context,
                             builder: (context) {
-                              return InstructionDialog();
+                              return InstructionDialog(isGameOpened: false);
                             },
                           );
                         });

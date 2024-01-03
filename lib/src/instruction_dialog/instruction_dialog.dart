@@ -1,16 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
+import '../win_game/triple_button_win.dart';
 
-class InstructionDialog extends StatelessWidget {
-  const InstructionDialog({super.key});
+class InstructionDialog extends StatefulWidget {
+  bool isGameOpened = false;
+
+  InstructionDialog({super.key, required this.isGameOpened});
+
+  @override
+  _InstructionDialogState createState() => _InstructionDialogState();
+}
+class _InstructionDialogState extends State<InstructionDialog> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimationLeftButton;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat();
+    _scaleAnimationLeftButton = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.0, end: 1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.1),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: Tween<double>(begin: 1.1, end: 1.0),
+          weight: 0.05
+      ),
+      TweenSequenceItem(
+          tween: ConstantTween<double>(1.0),
+          weight: 0.85
+      ),
+    ]).animate(_animationController);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +215,39 @@ class InstructionDialog extends StatelessWidget {
                         ResponsiveSizing.responsiveWidthGap(context, 10),
                         translatedText(context, 'instruction_dialog_have_fun',
                             16, Palette().menudark),
+                        ResponsiveSizing.responsiveWidthGap(context, 10),
+                        translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
+                            textAlign: TextAlign.center),
+                        AnimatedBuilder(
+                          animation: _scaleAnimationLeftButton,
+                          builder: (context, child) => Transform.scale(
+                            scale: _scaleAnimationLeftButton.value,
+                            child: child,
+                          ), child:
+                            Padding(
+                              padding: EdgeInsets.all(20),child:
+                            TripleButtonWin(
+                              svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+                              onPressed: () async {
+                                await Future.delayed(Duration(milliseconds: 150));
+                                if(widget.isGameOpened){
+                                  AnimatedAlertDialog.showExitGameDialog(
+                                      context,
+                                      false,
+                                      '',
+                                      [], // Pusta lista Stringów
+                                      [], // Pusta lista Colorów
+                                      true
+                                  );
+
+                                } else GoRouter.of(context).push('/card_advertisement');
+                              },
+                            )
+                            )
+                        ,
+                        ),
+                        ResponsiveSizing.responsiveWidthGap(context, 10),
+                        translatedText(context, 'buy_unlimited_version', 20, Palette().pink, textAlign: TextAlign.center),
                       ],
                     ),),
                   ), // Dodaj swoją linię SVG tutaj
@@ -211,4 +283,11 @@ class InstructionDialog extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vibration/vibration.dart';
@@ -101,7 +102,7 @@ class AnimatedAlertDialog {
 
   // czy na pewno chcesz wyjsc - przycisk wstecz i cofniecie w kazdym miejscu gry
   static void showExitGameDialog(
-      BuildContext context, bool hasShownAlertDialog, String response, List<String> teamNames, List<Color> teamColors) {
+      BuildContext context, bool hasShownAlertDialog, String response, List<String> teamNames, List<Color> teamColors, bool isPurchasePurpose) {
     showDialog(
       context: context,
       builder: (context) {
@@ -128,19 +129,24 @@ class AnimatedAlertDialog {
                     icon: null,
                     text: 'OK',
                     onPressed: () async {
-                      final audioController = context.read<AudioController>();
-                      audioController.playSfx(SfxType.button_back_exit);
-                      //Navigator.of(context).popUntil((route) => route.isFirst);
-                      await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => WinGameScreen(
-                          teamNames: teamNames,
-                          teamColors: teamColors,
-                        ),
-                      ));
                       if (!settings.musicOn.value) {
                         settingsController.toggleMusicOn();
                       }
                       hasShownAlertDialog = false;
+                      if(!isPurchasePurpose) {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.button_back_exit);
+                        //Navigator.of(context).popUntil((route) => route.isFirst);
+                        await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              WinGameScreen(
+                                teamNames: teamNames,
+                                teamColors: teamColors,
+                              ),
+                        ));
+                      } else {
+                        await GoRouter.of(context).push('/card_advertisement');
+                      }
                     },
                     backgroundColor: Palette().pink,
                     foregroundColor: Palette().white,

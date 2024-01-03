@@ -55,7 +55,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
           SystemUiMode.manual,
           overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
         );
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors);
+        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors, false);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(
@@ -76,7 +76,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
                         AnimatedAlertDialog.showExitGameDialog(
-                            context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors);
+                            context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors, false);
                         //Navigator.of(context).pop('response');
                       },
                     ),

@@ -735,7 +735,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
         );
         AnimatedAlertDialog.showExitGameDialog(
-            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
+            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors, false);
         return false;
       },
       child: Scaffold(
@@ -755,7 +755,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       icon: Icon(Icons.home_rounded, color: Colors.white, size: 30),
                       onPressed: () {
                         AnimatedAlertDialog.showExitGameDialog(
-                            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors);
+                            context, hasShownAlertDialog, '', widget.allTeamNames, widget.allTeamColors, false);
                         //Navigator.of(context).pop('response');
                       },
                     ),

@@ -87,7 +87,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           showDialog<void>(
                             context: context,
                             builder: (context) {
-                              return InstructionDialog();
+                              return InstructionDialog(isGameOpened: false,);
                             },
                           );
                         });

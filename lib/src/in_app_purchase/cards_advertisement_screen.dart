@@ -32,7 +32,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     return WillPopScope(
       onWillPop: () async {
         audioController.playSfx(SfxType.button_back_exit);
-        GoRouter.of(context).go('/');
+        Navigator.of(context).popUntil((route) => route.isFirst);
         return false;
       },
       child: Container(
@@ -48,6 +48,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               audioController.playSfx(SfxType.button_back_exit);
               widget.scaffoldKey.currentState?.openDrawer();
             },
+              onBackButtonPressed:(){
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
           ),
           body:
           ListView(
