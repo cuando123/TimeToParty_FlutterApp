@@ -126,6 +126,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                 double screenWidth = constraints.maxWidth;
                 double screenHeight = constraints.maxHeight;
                 double scale = min((screenHeight * 0.55) / screenWidth, 1.0);
+                print("Widthscreen: $screenWidth");
+                print("Heigtscreen: $screenHeight");
+                print("Heigtscreen055: ${screenHeight * 0.55}");
+                print("Scale: $scale");
                 return Column(
                   children: <Widget>[
                     Container(
@@ -171,7 +175,11 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                       downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
                                     ],
                                   ),
-                                  buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale),
+
+                                  buildFlagsStack(widget.teamColors, flagPositions, screenWidth * scale, screenWidth * scale * 0.02768 -
+                                      4 +
+                                      screenWidth * scale * 0.1436),
+
                                 ],
                               ),
                             ),
@@ -493,7 +501,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   }
 
   //budowanie widgetu flag i liczenie wszystkich przesuniec itp
-  Widget buildFlagsStack(List<Color> teamColors, List<Offset> flagPositions, double screenWidth) {
+  Widget buildFlagsStack(List<Color> teamColors, List<Offset> flagPositions, double screenWidth, double stepSize) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -520,30 +528,30 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
             return AnimatedPositioned(
               duration: Duration(milliseconds: 500),
               bottom: (teamColors.length == 2 || (teamColors.length == 3 && index != 1))
-                  ? flagPositions[index].dy + 23
+                  ? flagPositions[index].dy + stepSize * 0.2318
                   : (teamColors.length == 3 && index == 1)
-                      ? flagPositions[index].dy + 46
+                      ? flagPositions[index].dy + stepSize * 0.6760
                       : teamColors.length == 4
-                          ? flagPositions[index].dy + 10 + (index ~/ 2) * 40 - 4
+                          ? flagPositions[index].dy + stepSize * 0.1  + (index ~/ 2) * stepSize * 0.45 - stepSize * 0.1
                           : (teamColors.length == 5 && index == 1) // kula nr 2 dla 5 kulek
-                              ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                              ? flagPositions[index].dy + stepSize * 0.01 + (index ~/ 3) * stepSize * 0.45 - stepSize * 0.2
                               : (teamColors.length == 5 && index == 4) // kula nr 5 dla 5 kulek
-                                  ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
+                                  ? flagPositions[index].dy + stepSize * 0.01 + (index ~/ 3) * stepSize * 0.45 + stepSize * 0.15
                                   : (teamColors.length == 6 && index == 1) // kula nr 2 dla 6 kulek
-                                      ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 - 11
+                                      ? flagPositions[index].dy + stepSize * 0.01 + (index ~/ 3) * stepSize * 0.45 - stepSize * 0.15
                                       : (teamColors.length == 6 && index == 4) // kula nr 5 dla 6 kulek
-                                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25 + 11
-                                          : flagPositions[index].dy + 10 + (index ~/ 3) * 25,
+                                          ? flagPositions[index].dy + stepSize * 0.01 + (index ~/ 3) * stepSize * 0.45 + stepSize * 0.15
+                                          : flagPositions[index].dy + stepSize * 0.01 + (index ~/ 3) * stepSize * 0.45,
               // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2)
-                  ? flagPositions[index].dx + (index % 2) * 45 - 8
+                  ? flagPositions[index].dx + (index % 2) * stepSize * 0.78 - stepSize * 0.15
                   : (teamColors.length == 4)
-                      ? flagPositions[index].dx + (index % 2) * 35 - 3
+                      ? flagPositions[index].dx + (index % 2) * stepSize * 0.7 - stepSize * 0.1
                       : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                          ? flagPositions[index].dx + (index % 3) * 25 - 8
+                          ? flagPositions[index].dx + (index % 3) * stepSize * 0.39 - stepSize * 0.15
                           : flagPositions[index].dx +
-                              (index % 3) * 25 -
-                              8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+                              (index % 3) * stepSize * 0.4829 -
+                  stepSize * 0.15, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
               child: PionekWithRipple(assetPath: flag, animation: _animation, screenWidth: screenWidth),
             );
           });
