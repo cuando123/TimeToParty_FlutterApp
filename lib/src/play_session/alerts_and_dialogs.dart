@@ -133,7 +133,7 @@ class AnimatedAlertDialog {
                         settingsController.toggleMusicOn();
                       }
                       hasShownAlertDialog = false;
-                      if(!isPurchasePurpose) {
+                      if(isPurchasePurpose == false) {
                         final audioController = context.read<AudioController>();
                         audioController.playSfx(SfxType.button_back_exit);
                         //Navigator.of(context).popUntil((route) => route.isFirst);

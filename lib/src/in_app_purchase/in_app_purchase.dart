@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -11,9 +7,17 @@ import 'package:logging/logging.dart';
 import '../style/snack_bar.dart';
 import 'ad_removal.dart';
 
-/// Allows buying in-app. Facade of `package:in_app_purchase`.
+/// Allows buying in-app. ,Facade of `package:in_app_purchase`.
 class InAppPurchaseController extends ChangeNotifier {
   static final Logger _log = Logger('InAppPurchases');
+  bool _isPurchased = false;
+
+  bool get isPurchased => _isPurchased;
+
+  void setPurchased(bool value) {
+    _isPurchased = value;
+    notifyListeners();
+  }
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
@@ -21,22 +25,23 @@ class InAppPurchaseController extends ChangeNotifier {
 
   AdRemovalPurchase _adRemoval = const AdRemovalPurchase.notStarted();
 
-  /// Creates a new [InAppPurchaseController] with an injected
-  /// [InAppPurchase] instance.
+  /// Tworzy nowy kontroler [InAppPurchaseController] z wstrzykniętym
+  /// Instancja [InAppPurchase].
   ///
-  /// Example usage:
+  /// Przykładowe użycie:
   ///
-  ///     var controller = InAppPurchaseController(InAppPurchase.instance);
+  /// var kontroler = InAppPurchaseController(InAppPurchase.instance);
   InAppPurchaseController(this.inAppPurchaseInstance);
 
   /// The current state of the ad removal purchase.
   AdRemovalPurchase get adRemoval => _adRemoval;
 
-  /// Launches the platform UI for buying an in-app purchase.
+  /// Uruchamia interfejs platformy umożliwiający dokonywanie zakupów w aplikacji.
+  /// Obecnie jedynym obsługiwanym zakupem w aplikacji jest usuwanie reklam.
+  /// Aby obsłużyć więcej, dodaj dodatkowe klasy podobne do [AdRemovalPurchase]
+  /// i zmodyfikuj tę metodę.
   ///
-  /// Currently, the only supported in-app purchase is ad removal.
-  /// To support more, ad additional classes similar to [AdRemovalPurchase]
-  /// and modify this method.
+  ///
   Future<void> buy() async {
     if (!await inAppPurchaseInstance.isAvailable()) {
       _reportError('InAppPurchase.instance not available');
@@ -46,38 +51,35 @@ class InAppPurchaseController extends ChangeNotifier {
     _adRemoval = const AdRemovalPurchase.pending();
     notifyListeners();
 
-    _log.info('Querying the store with queryProductDetails()');
-    final response = await inAppPurchaseInstance
-        .queryProductDetails({AdRemovalPurchase.productId});
+    _log.info('Zapytanie do sklepu za pomocą queryProductDetails()');
+    final response = await inAppPurchaseInstance.queryProductDetails({AdRemovalPurchase.productId});
 
     if (response.error != null) {
-      _reportError('There was an error when making the purchase: '
+      _reportError('Podczas dokonywania zakupu wystąpił błąd: '
           '${response.error}');
       return;
     }
 
     if (response.productDetails.length != 1) {
       _log.info(
-        'Products in response: '
+        'Produkty w odpowiedzi: '
         '${response.productDetails.map((e) => '${e.id}: ${e.title}, ').join()}',
       );
-      _reportError('There was an error when making the purchase: '
-          'product ${AdRemovalPurchase.productId} does not exist?');
+      _reportError('Podczas dokonywania zakupu wystąpił błąd: '
+          'product ${AdRemovalPurchase.productId} nie istnieje?');
       return;
     }
     final productDetails = response.productDetails.single;
 
-    _log.info('Making the purchase');
+    _log.info('Dokonanie zakupu');
     final purchaseParam = PurchaseParam(productDetails: productDetails);
     try {
-      final success = await inAppPurchaseInstance.buyNonConsumable(
-          purchaseParam: purchaseParam);
-      _log.info('buyNonConsumable() request was sent with success: $success');
+      final success = await inAppPurchaseInstance.buyNonConsumable(purchaseParam: purchaseParam);
+      _log.info('buyNonConsumable() żądanie zostało wysłane pomyślnie: $success');
       // The result of the purchase will be reported in the purchaseStream,
       // which is handled in [_listenToPurchaseUpdated].
     } catch (e) {
-      _log.severe(
-          'Problem with calling inAppPurchaseInstance.buyNonConsumable(): '
+      _log.severe('Problem z wywołaniem inAppPurchaseInstance.buyNonConsumable(): '
           '$e');
     }
   }
@@ -88,37 +90,36 @@ class InAppPurchaseController extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Asks the underlying platform to list purchases that have been already
-  /// made (for example, in a previous session of the game).
+  /// Prosi platformę bazową o wyświetlenie listy zakupów, które już miały miejsce
+  /// wykonane (na przykład w poprzedniej sesji gry).
   Future<void> restorePurchases() async {
     if (!await inAppPurchaseInstance.isAvailable()) {
-      _reportError('InAppPurchase.instance not available');
+      _reportError('InAppPurchase.instancja niedostępna');
       return;
     }
 
     try {
       await inAppPurchaseInstance.restorePurchases();
     } catch (e) {
-      _log.severe('Could not restore in-app purchases: $e');
+      _log.severe('Nie można przywrócić zakupów w aplikacji: $e');
     }
-    _log.info('In-app purchases restored');
+    _log.info('Przywrócono zakupy w aplikacji');
   }
 
   /// Subscribes to the [inAppPurchaseInstance.purchaseStream].
+  /// Metoda subscribe(): Słucha strumienia zakupów i aktualizuje stan w zależności od zmian.
   void subscribe() {
     _subscription?.cancel();
-    _subscription =
-        inAppPurchaseInstance.purchaseStream.listen((purchaseDetailsList) {
+    _subscription = inAppPurchaseInstance.purchaseStream.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
       _subscription?.cancel();
     }, onError: (dynamic error) {
-      _log.severe('Error occurred on the purchaseStream: $error');
+      _log.severe('Wystąpił błąd w strumieniu zakupów: $error');
     });
   }
-
-  Future<void> _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailsList) async {
+/// _listenToPurchaseUpdated(): Obsługuje aktualizacje zakupów.
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
       _log.info(() => 'New PurchaseDetails instance received: '
           'productID=${purchaseDetails.productID}, '
@@ -128,8 +129,8 @@ class InAppPurchaseController extends ChangeNotifier {
           'pendingCompletePurchase=${purchaseDetails.pendingCompletePurchase}');
 
       if (purchaseDetails.productID != AdRemovalPurchase.productId) {
-        _log.severe("The handling of the product with id "
-            "'${purchaseDetails.productID}' is not implemented.");
+        _log.severe("Obsługa produktu o identyfikatorze"
+            "'${purchaseDetails.productID}' nie jest zaimplementowana.");
         _adRemoval = const AdRemovalPurchase.notStarted();
         notifyListeners();
         continue;
@@ -145,19 +146,19 @@ class InAppPurchaseController extends ChangeNotifier {
           bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
             _adRemoval = const AdRemovalPurchase.active();
+            setPurchased(true);
             if (purchaseDetails.status == PurchaseStatus.purchased) {
-              showSnackBar('Thank you for your support!');
+              showSnackBar('Dziękuję za Twoje wsparcie!');
             }
             notifyListeners();
           } else {
-            _log.severe('Purchase verification failed: $purchaseDetails');
-            _adRemoval = AdRemovalPurchase.error(
-                StateError('Purchase could not be verified'));
+            _log.severe('Weryfikacja zakupu nie powiodła się: $purchaseDetails');
+            _adRemoval = AdRemovalPurchase.error(StateError('Nie udało się zweryfikować zakupu'));
             notifyListeners();
           }
           break;
         case PurchaseStatus.error:
-          _log.severe('Error with purchase: ${purchaseDetails.error}');
+          _log.severe('Błąd przy zakupie: ${purchaseDetails.error}');
           _adRemoval = AdRemovalPurchase.error(purchaseDetails.error!);
           notifyListeners();
           break;
@@ -191,3 +192,13 @@ class InAppPurchaseController extends ChangeNotifier {
     return true;
   }
 }
+
+/*Consumer<InAppPurchaseController>(
+builder: (context, purchaseController, child) {
+if (purchaseController.isPurchased) {
+return PremiumContent(); // Zawartość dla użytkowników, którzy dokonali zakupu
+} else {
+return FreeContent(); // Zawartość dla użytkowników bez zakupu
+}
+},
+)*/

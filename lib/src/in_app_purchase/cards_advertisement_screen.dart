@@ -12,6 +12,7 @@ import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
+import 'in_app_purchase.dart';
 
 class CardAdvertisementScreen extends StatefulWidget {
   const CardAdvertisementScreen({
@@ -152,6 +153,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         text: getTranslatedString(context, 'pay_once'),
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
+                          //symulacja zakupu
+                          var provider = Provider.of<InAppPurchaseController>(context, listen: false);
+                          provider.setPurchased(true);
                         },
                         backgroundColor: Palette().pink,
                         foregroundColor: Palette().white,

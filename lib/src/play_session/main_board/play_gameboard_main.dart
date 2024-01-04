@@ -279,7 +279,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                 () => AnimatedAlertDialog.showExitGameDialog(
                                                     context, hasShownAlertDialog, '',mutableTeamNames, mutableTeamColors, false)),
                                             //DO TESTOW -> PRZYCISK KTORYM OTWIERAM DANA KARTE KTORA CHCE, KARTA, TEST
-                                            TextButton(
+                                            /*TextButton(
                                                 onPressed: () {
                                                   safeSetState(() {
                                                     showAnimatedCard = true;
@@ -293,7 +293,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                                             screenWidth * scale * 0.1436);*/
                                                   });
                                                 },
-                                                child: Text('TEST')),
+                                                child: Text('TEST')),*/
                                           ],
                                         ),
                                       ],

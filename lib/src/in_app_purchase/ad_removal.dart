@@ -1,22 +1,19 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
 
-/// Represents the state of an in-app purchase of ad removal such as
-/// [AdRemovalPurchase.notStarted()] or [AdRemovalPurchase.active()].
+/// Reprezentuje stan zakupu w aplikacji w celu usunięcia reklam, np
+/// [AdRemovalPurchase.notStarted()] lub [AdRemovalPurchase.active()].
 class AdRemovalPurchase {
-  /// The representation of this product on the stores.
+  /// Prezentacja tego produktu w sklepach.
   static const productId = 'remove_ads';
 
-  /// This is `true` if the `remove_ad` product has been purchased and verified.
-  /// Do not show ads if so.
+  /// To jest `true`, jeśli produkt `remove_ad` został zakupiony i zweryfikowany.
+  /// Nie wyświetlaj reklam, jeśli tak.
   final bool active;
 
-  /// This is `true` when the purchase is pending.
+  /// Wartość „prawda” występuje, gdy zakup jest w toku.
   final bool pending;
 
-  /// If there was an error with the purchase, this field will contain
-  /// that error.
+  /// Jeśli wystąpił błąd przy zakupie, to pole będzie zawierać
+  ///ten błąd.
   final Object? error;
 
   const AdRemovalPurchase.active() : this._(true, false, null);
