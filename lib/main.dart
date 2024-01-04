@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
@@ -110,6 +111,7 @@ Future<void> guardedMain() async {
   // }
 
   InAppPurchaseController? inAppPurchaseController;
+  inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance);
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance)
   //     // Subscribing to [InAppPurchase.instance.purchaseStream] as soon
@@ -140,6 +142,9 @@ Future<void> guardedMain() async {
           },),
           ChangeNotifierProvider<LoadingStatus>(
             create: (_) => LoadingStatus(),
+          ),
+          ChangeNotifierProvider<InAppPurchaseController?>(
+            create: (context) => inAppPurchaseController,
           ),
         ],
         child: MyApp(

@@ -10,6 +10,7 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
+import '../in_app_purchase/in_app_purchase.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -177,12 +178,24 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
-                    SizedBox(height: ResponsiveSizing.scaleHeight(context, 80))
+                    SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
+
+                    Consumer<InAppPurchaseController?>(
+                      builder: (context, purchaseController, child) {
+                        if (purchaseController!.isPurchased) {
+                          return Text('FULL VERSION'); // Zawartość dla użytkowników, którzy dokonali zakupu
+                        } else {
+                          return Container(); // Zawartość dla użytkowników bez zakupu
+                        }
+                      },
+                    ),
+
                   ],
                 ),
               ],
             ),
           ),
+          
         ),
       ),
     );
