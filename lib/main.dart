@@ -109,9 +109,10 @@ Future<void> guardedMain() async {
   //     // Attempt to log the player in.
   //     ..initialize();
   // }
-
+  final translationProvider = TranslationProvider.fromDeviceLanguage();
+  await translationProvider.loadWords();
   InAppPurchaseController? inAppPurchaseController;
-  inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance);
+  inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance, translationProvider);
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance)
   //     // Subscribing to [InAppPurchase.instance.purchaseStream] as soon
@@ -125,8 +126,7 @@ Future<void> guardedMain() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  final translationProvider = TranslationProvider.fromDeviceLanguage();
-  await translationProvider.loadWords();
+
   await translationProvider.loadTranslations().then((_) {
     runApp(
       MultiProvider(

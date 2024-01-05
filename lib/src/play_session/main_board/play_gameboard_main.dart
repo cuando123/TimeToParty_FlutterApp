@@ -18,6 +18,7 @@ import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
+import '../../in_app_purchase/in_app_purchase.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
 import '../../win_game/win_game_screen.dart';
@@ -338,6 +339,8 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     );
   }
 
+
+
   List<String> generateNewFieldsList(
       List<String> upRow, List<String> downRow, List<String> leftColumn, List<String> rightColumn) {
     List<String> newFields = [];
@@ -364,7 +367,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   final Random rng = Random();
 
   // Mapowanie FieldType do nazwy pliku SVG
-  final Map<FieldType, String> fieldTypes = {
+  final Map<FieldType, String> fieldTypesFree = {
+    FieldType.arrow: 'field_arrows',
+    FieldType.rhyme: 'field_sheet',
+    FieldType.alphabet: 'field_letters',
+    FieldType.pantomime: 'field_pantomime',
+    FieldType.famousPeople: 'field_microphone',
+    FieldType.starTaboo: 'field_taboo',
+    FieldType.start: 'field_start',
+  };
+  final Map<FieldType, String> fieldTypesPremium = {
     FieldType.arrow: 'field_arrows',
     FieldType.rhyme: 'field_sheet',
     FieldType.alphabet: 'field_letters',
@@ -377,10 +389,26 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starGreen: 'field_star_green',
     FieldType.starYellow: 'field_star_yellow',
   };
-
+  Map<FieldType, String> getFieldTypes(BuildContext context) {
+    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    if (purchaseController.isPurchased) {
+      return fieldTypesPremium; // Zwraca mapę premium
+    } else {
+      return fieldTypesFree; // Zwraca mapę darmową
+    }
+  }
   //mapowanie pol oraz ich ilosci
 
-  final Map<FieldType, int> fieldCount = {
+  final Map<FieldType, int> fieldCountFree = {
+    FieldType.arrow: 4,
+    FieldType.rhyme: 3,
+    FieldType.alphabet: 3,
+    FieldType.pantomime: 3,
+    FieldType.famousPeople: 3,
+    FieldType.starTaboo: 3,
+    FieldType.start: 1,
+  };
+  final Map<FieldType, int> fieldCountPremium = {
     FieldType.arrow: 3,
     FieldType.rhyme: 3,
     FieldType.alphabet: 3,
@@ -393,6 +421,16 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starGreen: 1,
     FieldType.starYellow: 1,
   };
+  Map<FieldType, int> getCountTypes(BuildContext context) {
+    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    if (purchaseController.isPurchased) {
+      return fieldCountPremium; // Zwraca mapę premium
+    } else {
+      return fieldCountFree; // Zwraca mapę darmową
+    }
+  }
+
+
 
   final Map<String, String> fieldDescriptions = {
     'field_arrows': 'field_arrows_description',
@@ -411,7 +449,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   //tasowanie pol tak aby sie nie powtarzaly, za wyjatkiem ostatnich 3 na liscie, czasem wystepuja jak są obok siebie ale to moze odwrotnie bede wkladac(od tylu generowac te listy?)
   List<String> _getShuffledFields() {
     List<FieldType> fields = [];
-    fieldCount.forEach((field, count) {
+    getCountTypes(context).forEach((field, count) {
       for (int i = 0; i < count; i++) {
         fields.add(field);
       }
@@ -434,10 +472,10 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       }
     }
     // Zamieniamy FieldType na nazwy plików SVG
-    List<String> shuffledSvgFields = shuffledFields.map((field) => fieldTypes[field]!).toList();
+    List<String> shuffledSvgFields = shuffledFields.map((field) => getFieldTypes(context)[field]!).toList();
 
-    shuffledSvgFields.remove(fieldTypes[FieldType.start]);
-    shuffledSvgFields.insert(13, fieldTypes[FieldType.start]!);
+    shuffledSvgFields.remove(getFieldTypes(context)[FieldType.start]);
+    shuffledSvgFields.insert(13, getFieldTypes(context)[FieldType.start]!);
 
     return shuffledSvgFields;
   }

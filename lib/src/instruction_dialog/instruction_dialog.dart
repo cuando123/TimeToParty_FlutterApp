@@ -11,6 +11,7 @@ import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 import '../win_game/triple_button_win.dart';
+import '../in_app_purchase/in_app_purchase.dart';
 
 class InstructionDialog extends StatefulWidget {
   bool isGameOpened = false;
@@ -215,39 +216,15 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                         ResponsiveSizing.responsiveWidthGap(context, 10),
                         translatedText(context, 'instruction_dialog_have_fun',
                             16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
-                            textAlign: TextAlign.center),
-                        AnimatedBuilder(
-                          animation: _scaleAnimationLeftButton,
-                          builder: (context, child) => Transform.scale(
-                            scale: _scaleAnimationLeftButton.value,
-                            child: child,
-                          ), child:
-                            Padding(
-                              padding: EdgeInsets.all(20),child:
-                            TripleButtonWin(
-                              svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-                              onPressed: () async {
-                                await Future.delayed(Duration(milliseconds: 150));
-                                if(widget.isGameOpened){
-                                  AnimatedAlertDialog.showExitGameDialog(
-                                      context,
-                                      false,
-                                      '',
-                                      [], // Pusta lista Stringów
-                                      [], // Pusta lista Colorów
-                                      true
-                                  );
-
-                                } else GoRouter.of(context).push('/card_advertisement');
-                              },
-                            )
-                            )
-                        ,
+                        Consumer<InAppPurchaseController?>(
+                          builder: (context, purchaseController, child) {
+                            if (purchaseController!.isPurchased) {
+                              return Container(); // Zawartość dla użytkowników, którzy dokonali zakupu
+                            } else {
+                              return buildFreeContent(context); // Zawartość dla użytkowników bez zakupu
+                            }
+                          },
                         ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'buy_unlimited_version', 20, Palette().pink, textAlign: TextAlign.center),
                       ],
                     ),),
                   ), // Dodaj swoją linię SVG tutaj
@@ -281,6 +258,46 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
           );
         },
       ),
+    );
+  }
+
+  Widget buildFreeContent(BuildContext context) {
+    return Column(
+      children: [
+        ResponsiveSizing.responsiveWidthGap(context, 10),
+        translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
+            textAlign: TextAlign.center),
+        AnimatedBuilder(
+          animation: _scaleAnimationLeftButton,
+          builder: (context, child) => Transform.scale(
+            scale: _scaleAnimationLeftButton.value,
+            child: child,
+          ), child:
+        Padding(
+            padding: EdgeInsets.all(20),child:
+        TripleButtonWin(
+          svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+          onPressed: () async {
+            await Future.delayed(Duration(milliseconds: 150));
+            if(widget.isGameOpened){
+              AnimatedAlertDialog.showExitGameDialog(
+                  context,
+                  false,
+                  '',
+                  [], // Pusta lista Stringów
+                  [], // Pusta lista Colorów
+                  true
+              );
+
+            } else GoRouter.of(context).push('/card_advertisement');
+          },
+        )
+        )
+          ,
+        ),
+        ResponsiveSizing.responsiveWidthGap(context, 10),
+        translatedText(context, 'buy_unlimited_version', 20, Palette().pink, textAlign: TextAlign.center),
+      ],
     );
   }
 

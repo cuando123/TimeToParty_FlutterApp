@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TranslationDatabase {
@@ -27,23 +28,37 @@ class TranslationDatabase {
     return translationsMap;
   }
 
-  Future<Map<String, String>> fetchWordsByLanguage(String language) async {
+  Future<Map<String, String>> fetchWordsByLanguage(String language, bool isPurchased) async {
     Database database = await initDatabase();
 
     final maps = await database.query(
       'Cards',
       columns: ['Key', 'words'], // pobieramy kolumny "Key" oraz "words"
-      where: 'language = ?',
+      where: isPurchased ? 'language = ?' : 'language = ? AND IsPurchased = "No"',
       whereArgs: [language],
     );
 
-    // Konwersja List<Map<String, dynamic>> na mapę, gdzie kluczem jest "Key" a wartością "words"
     Map<String, String> wordsMap = {};
     for (final row in maps) {
       wordsMap[row['Key'] as String] = row['words'] as String;
     }
+/*
+    print('Pobrano ${maps.length} rekordów dla języka $language, isPurchased: $isPurchased');
+    await saveMapToFile(wordsMap);
+*/
 
     return wordsMap;
   }
+/*
+  Future<void> saveMapToFile(Map<String, String> wordsMap) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/wordsMap.txt');
+    String content = wordsMap.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+    await file.writeAsString(content);
+    print('Mapa słów zapisana do pliku: ${file.path}');
+
+  }
+*/
+
 
 }

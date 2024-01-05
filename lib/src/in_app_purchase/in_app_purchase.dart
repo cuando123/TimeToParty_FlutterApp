@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
+import '../app_lifecycle/TranslationProvider.dart';
 
 import '../style/snack_bar.dart';
 import 'ad_removal.dart';
@@ -10,12 +11,16 @@ import 'ad_removal.dart';
 /// Allows buying in-app. ,Facade of `package:in_app_purchase`.
 class InAppPurchaseController extends ChangeNotifier {
   static final Logger _log = Logger('InAppPurchases');
+  final TranslationProvider translationProvider;
   bool _isPurchased = false;
 
   bool get isPurchased => _isPurchased;
 
   void setPurchased(bool value) {
     _isPurchased = value;
+    var purchaseState = PurchaseState();
+    purchaseState.isPurchased = true; // Ustawienie stanu zakupu
+    translationProvider.loadWords();
     notifyListeners();
   }
 
@@ -31,7 +36,7 @@ class InAppPurchaseController extends ChangeNotifier {
   /// Przykładowe użycie:
   ///
   /// var kontroler = InAppPurchaseController(InAppPurchase.instance);
-  InAppPurchaseController(this.inAppPurchaseInstance);
+  InAppPurchaseController(this.inAppPurchaseInstance, this.translationProvider);
 
   /// The current state of the ad removal purchase.
   AdRemovalPurchase get adRemoval => _adRemoval;
@@ -192,6 +197,19 @@ class InAppPurchaseController extends ChangeNotifier {
     return true;
   }
 }
+
+class PurchaseState {
+  static final PurchaseState _instance = PurchaseState._internal();
+
+  factory PurchaseState() {
+    return _instance;
+  }
+
+  PurchaseState._internal();
+
+  bool isPurchased = false;
+}
+
 
 /*Consumer<InAppPurchaseController>(
 builder: (context, purchaseController, child) {

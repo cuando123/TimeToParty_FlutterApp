@@ -168,6 +168,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Użyj istniejącej logiki do wybrania odpowiedniego słowa z listy
       currentWordOrKey = wordsList.isNotEmpty ? wordsList[currentWordIndex] : "";
     }
+    print('currentWordOrKey: $currentWordOrKey, currentWordIndex: $currentWordIndex, tablica: ${wordsList[currentWordIndex]}');
   }
 
   void _onButtonXPressed() {

@@ -755,6 +755,54 @@ class AnimatedAlertDialog {
       },
     );
   }
+
+  //dziekujemy za zakup full wersji
+  static void showThanksPurchaseDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final audioController = context.watch<AudioController>();
+        return WillPopScope(
+          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          child: AlertDialog(
+            backgroundColor: Palette().white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: translatedText(context, 'congratulations', 20, Palette().pink, textAlign: TextAlign.center),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                ),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                letsText(context, 'Odblokowałeś nowe karty, dziękujemy za zakup pełnej wersji, miłej rozrywki!', 16, Palette().menudark,
+                    textAlign: TextAlign.center),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                Center(
+                  child: CustomStyledButton(
+                    icon: null,
+                    text: 'OK',
+                    onPressed: () async {
+                      audioController.playSfx(SfxType.button_back_exit);
+                      Navigator.of(context).pop();
+                    },
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
+                    width: 200,
+                    height: 45,
+                    fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 enum AlertOrigin { cardScreen, otherScreen }

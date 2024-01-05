@@ -321,50 +321,73 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                       alignment: Alignment.topCenter,
                       margin: EdgeInsets.symmetric(vertical: 3, horizontal: 21),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          AnimatedBuilder(
-                            animation: _scaleAnimationLeftButton,
-                            builder: (context, child) => Transform.scale(
-                              scale: _scaleAnimationLeftButton.value,
-                              child: child,
-                            ), child:
-                            TripleButtonWin(
-                            svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-                            onPressed: () async {
-                              await Future.delayed(Duration(milliseconds: 150));
-                              GoRouter.of(context).push('/card_advertisement');
+                          SizedBox(width: 10),
+
+                          // Pierwszy przycisk (widoczny zawsze)
+                          Flexible(
+                            child: AnimatedBuilder(
+                              animation: _scaleAnimationLeftButton,
+                              builder: (context, child) => Transform.scale(
+                                scale: _scaleAnimationLeftButton.value,
+                                child:  TripleButtonWin(
+                                  iconData: Icons.arrow_back_rounded,
+                                  onPressed: () async {
+                                    await Future.delayed(Duration(milliseconds: 150));
+                                    Navigator.of(context).popUntil((route) => route.isFirst);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          // Drugi przycisk (widoczny tylko w wersji darmowej)
+                          Consumer<InAppPurchaseController?>(
+                            builder: (context, purchaseController, child) {
+                              if (!purchaseController!.isPurchased) {
+                                return Flexible(
+                                  child: AnimatedBuilder(
+                                    animation: _scaleAnimationCenterButton,
+                                    builder: (context, child) => Transform.scale(
+                                      scale: _scaleAnimationCenterButton.value,
+                                      child: TripleButtonWin(
+                                        svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+                                        onPressed: () async {
+                                          await Future.delayed(Duration(milliseconds: 150));
+                                          GoRouter.of(context).push('/card_advertisement');
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return SizedBox.shrink();
                             },
-                          ),),
-                          Spacer(),
-                      AnimatedBuilder(
-                        animation: _scaleAnimationCenterButton,
-                        builder: (context, child) => Transform.scale(
-                          scale: _scaleAnimationCenterButton.value,
-                          child: child,
-                        ), child:
-                      TripleButtonWin(
-                            // imageAsset: 'path/to/your/image.png',
-                            iconData: Icons.play_arrow_rounded,
-                            onPressed: () async {
-                              await Future.delayed(Duration(milliseconds: 150));
-                              Navigator.of(context).popUntil((route) => route.isFirst);
-                            },
-                          ),),
-                          Spacer(),
-                      AnimatedBuilder(
-                        animation: _scaleAnimationRightButton,
-                        builder: (context, child) => Transform.scale(
-                          scale: _scaleAnimationRightButton.value,
-                          child: child,
-                        ), child:
-                          TripleButtonWin(
-                            iconData: Icons.star,
-                            onPressed: () async {
-                              await Future.delayed(Duration(milliseconds: 150));
-                              AnimatedAlertDialog.showRateDialog(context);
-                            },
-                          ),),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          // Trzeci przycisk (widoczny zawsze)
+                          Flexible(
+                            child: AnimatedBuilder(
+                              animation: _scaleAnimationRightButton,
+                              builder: (context, child) => Transform.scale(
+                                scale: _scaleAnimationRightButton.value,
+                                child: TripleButtonWin(
+                                  iconData: Icons.star,
+                                  onPressed: () async {
+                                    await Future.delayed(Duration(milliseconds: 150));
+                                    AnimatedAlertDialog.showRateDialog(context);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
                         ],
                       ),
                     )),

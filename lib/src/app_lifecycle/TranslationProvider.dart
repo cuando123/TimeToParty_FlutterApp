@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../in_app_purchase/in_app_purchase.dart';
 import 'translation_database.dart';
 
 class TranslationProvider extends ChangeNotifier {
@@ -64,9 +65,13 @@ class TranslationProvider extends ChangeNotifier {
   }
 
   Future<void> loadWords() async {
-    _cachedWords = await _translationDatabase.fetchWordsByLanguage(_currentLanguage);
+    var purchaseState = PurchaseState();
+    _cachedWords = await _translationDatabase.fetchWordsByLanguage(_currentLanguage, purchaseState.isPurchased);
     notifyListeners();
+    print('_cachedWords: $_cachedWords');
   }
+
+
 
   String getWord(String key) {
     return _cachedWords[key] ?? '';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
+import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -156,6 +157,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                           //symulacja zakupu
                           var provider = Provider.of<InAppPurchaseController>(context, listen: false);
                           provider.setPurchased(true);
+                          AnimatedAlertDialog.showThanksPurchaseDialog(context);
                         },
                         backgroundColor: Palette().pink,
                         foregroundColor: Palette().white,
