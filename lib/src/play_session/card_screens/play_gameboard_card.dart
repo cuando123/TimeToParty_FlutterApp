@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
+import '../../in_app_purchase/in_app_purchase.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
@@ -583,27 +584,35 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   String generateCardTypeWithNumber(String currentField) {
     Random random = Random();
     int maxNumber = 1;
+    int maxFreeNumber = 10;
+    int randomNumber;
 
     String cardType;
     switch (currentField) {
       case 'field_sheet':
         cardType = 'rymes';
         maxNumber = 119;
+        maxFreeNumber = 10;
         break;
       case 'field_letters':
         cardType = 'alphabet';
+        maxNumber = 1;
+        maxFreeNumber = 1;
         break;
       case 'field_pantomime':
         cardType = 'pantomimes';
         maxNumber = 135;
+        maxFreeNumber = 10;
         break;
       case 'field_microphone':
         cardType = 'peoples';
         maxNumber = 138;
+        maxFreeNumber = 10;
         break;
       case 'field_taboo':
         cardType = 'taboo';
         maxNumber = 220;
+        maxFreeNumber = 10;
         break;
       case 'field_star_blue_dark':
         cardType = 'physical';
@@ -629,7 +638,14 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       default:
         cardType = 'default';
     }
-    int randomNumber = random.nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber
+    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    if (purchaseController.isPurchased) {
+      randomNumber = random.nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber - premium
+    } else {
+      randomNumber = random.nextInt(maxFreeNumber) + 1; // Losuje liczbę od 1 do maxFreeNumber - free
+    }
+    print('Polaczony ciag znakow z funkcji:');
+    print('$cardType$randomNumber');
 
     return '$cardType$randomNumber'; // Zwraca połączony ciąg znaków
   }

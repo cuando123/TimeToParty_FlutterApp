@@ -44,6 +44,7 @@ dependencies:
   fan_carousel_image_slider:
     path: lib/libraries/fan_carousel_image_slider-0.1.2
   newton_particles: ^0.1.7
+  mailer: ^6.0.1
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

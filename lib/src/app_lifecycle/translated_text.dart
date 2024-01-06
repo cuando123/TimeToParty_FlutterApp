@@ -16,6 +16,7 @@ Widget wordText(BuildContext context, String wordKey, double fontSize, Color tex
   return Consumer<TranslationProvider>(
     builder: (context, translationProvider, child) {
       String word = translationProvider.getWord(wordKey);
+      print("wordText: word: $word");
       List<String> words = word.split(';'); // Dzielenie tekstu na słowa
 
       List<Widget> textWidgets = []; // Lista widgetów tekstowych
