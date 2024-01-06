@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "607827242799",
+    "project_id": "time-to-party",
+    "storage_bucket": "time-to-party.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607827242799:android:dfdf55c84eeaef0ca27bda",
+        "android_client_info": {
+          "package_name": "com.frydoapps.timetoparty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607827242799-vhat19nqse0c0mlo5icibc6n7kl0esna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frydoapps.timetoparty",
+            "certificate_hash": "49fd1a0db2689b9276e8fea2aab7c923d5ac1ec4"
+          }
+        },
+        {
+          "client_id": "607827242799-90hslug8785io43a0hsrhvjuot36b4th.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEm7rWkHqg_BUC1nVN2I5q76iJThNycw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607827242799-90hslug8785io43a0hsrhvjuot36b4th.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

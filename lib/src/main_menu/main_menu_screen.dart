@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -10,6 +11,7 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
+import '../in_app_purchase/firebase_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -25,6 +27,7 @@ class MainMenuScreen extends StatefulWidget {
 class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  final FirebaseService _firebaseService = FirebaseService();
   @override
   void initState() {
     super.initState();
@@ -39,6 +42,17 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
+    _checkPurchaseStatus();
+  }
+
+  Future<void> _checkPurchaseStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isPurchased = prefs.getBool('isPurchased') ?? false;
+
+    if (isPurchased) {
+      // Jeśli aplikacja jest zakupiona, spróbuj zalogować użytkownika
+      await _firebaseService.signInAnonymouslyAndSaveUID();
+    }
   }
 
   @override

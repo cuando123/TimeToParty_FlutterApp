@@ -3,25 +3,40 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../app_lifecycle/TranslationProvider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../style/snack_bar.dart';
 import 'ad_removal.dart';
+import 'firebase_service.dart';
 
 /// Allows buying in-app. ,Facade of `package:in_app_purchase`.
 class InAppPurchaseController extends ChangeNotifier {
   static final Logger _log = Logger('InAppPurchases');
-  final TranslationProvider translationProvider;
+  late final TranslationProvider translationProvider;
+  final FirebaseService _firebaseService = FirebaseService();
+
   bool _isPurchased = false;
 
   bool get isPurchased => _isPurchased;
 
-  void setPurchased(bool value) {
+  Future<void> setPurchased(bool value) async {
     _isPurchased = value;
     var purchaseState = PurchaseState();
     purchaseState.isPurchased = true; // Ustawienie stanu zakupu
-    translationProvider.loadWords();
+    await translationProvider.loadWords();
     notifyListeners();
+
+    if (value) {
+      // Zapisz stan zakupu w pamięci lokalnej
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isPurchased', value);
+
+      // Zaloguj użytkownika w Firebase
+      await _firebaseService.signInAnonymouslyAndSaveUID();
+      await buy();
+    }
   }
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
@@ -196,6 +211,15 @@ class InAppPurchaseController extends ChangeNotifier {
     // https://codelabs.developers.google.com/codelabs/flutter-in-app-purchases#9
     return true;
   }
+/*
+  void savePurchaseData(String userId, String purchaseDetails) {
+    FirebaseFirestore.instance.collection('purchases').add({
+      'user_id': userId,
+      'details': purchaseDetails,
+      // Możesz dodać więcej szczegółów związanych z zakupem
+    });
+  }
+*/
 }
 
 class PurchaseState {
