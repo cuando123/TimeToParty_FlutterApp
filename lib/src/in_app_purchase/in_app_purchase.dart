@@ -5,7 +5,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_lifecycle/TranslationProvider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../style/snack_bar.dart';
 import 'ad_removal.dart';

@@ -1,4 +1,4 @@
-package com.example.game_template
+package com.frydoapps.timetoparty
 
 import io.flutter.embedding.android.FlutterActivity
 

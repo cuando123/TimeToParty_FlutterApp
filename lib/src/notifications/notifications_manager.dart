@@ -31,7 +31,6 @@ class NotificationsManager {
   }
 
   Future<void> scheduleWeeklyNotification() async {
-    var time = Time(19, 0, 0); // 19:00:00
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'weekly_notification_channel', 'Weekly Notifications',
         importance: Importance.max,

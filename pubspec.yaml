@@ -13,27 +13,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-  audioplayers: ^3.0.0 #odtwarzanie dzwiekow
-  cupertino_icons: ^1.0.2 #jakies ikonki
-  go_router: ^6.0.1 #Gorouter - przechodzenie do kolejnych ekranów itp
-  logging: ^1.1.0 #logger info
-  provider: ^6.0.2 #zarządzanie stanem
-  shared_preferences: ^2.0.13 #czy ja tego uzywam czy to juz jest outdated? - sprawdzic i posprztac
-  flutter_svg: ^2.0.5 #wyswietlanie obrazkow svg w aplikacji Svgpicture.asset
+  audioplayers: ^5.2.1 #odtwarzanie dzwiekow
+  cupertino_icons: ^1.0.6 #jakies ikonki
+  go_router: ^13.0.1 #Gorouter - przechodzenie do kolejnych ekranów itp
+  logging: ^1.2.0 #logger info
+  provider: ^6.1.1 #zarządzanie stanem
+  shared_preferences: ^2.2.2 #czy ja tego uzywam czy to juz jest outdated? - sprawdzic i posprztac
+  flutter_svg: ^2.0.9 #wyswietlanie obrazkow svg w aplikacji Svgpicture.asset
   flutter_colorpicker: ^1.0.3 #wybór kolorów na ekranie wyboru druzyn itp - pytanie czy ja tego uzywam, czy zrobilem jakis inny workaround? - nie pamietam, sprawdzic i posprzątać
-  http: ^0.13.5 #http do przekierowwywania do linkow
-  path_provider: ^2.0.14 #chyba do testow zwiazanych z mailerem zeby pobrac plik .txt zaimportowanej bazy - do debugowania?
-  flutter_pdfview: ^1.3.0 #wyswietlanie pdf z poziomu aplikacji - do regulaminu i polityki prywatności
+  http: ^1.1.2 #http do przekierowwywania do linkow
+  path_provider: ^2.1.1 #chyba do testow zwiazanych z mailerem zeby pobrac plik .txt zaimportowanej bazy - do debugowania?
+  flutter_pdfview: ^1.3.2 #wyswietlanie pdf z poziomu aplikacji - do regulaminu i polityki prywatności
   mailto: ^2.0.0 #wysyłanie mejli z aplikacji - czy ja tego uzywam ? - sprwadzic i posprztac
-  url_launcher: ^6.1.10 #możliwość uruchomienia z apki linkow np. do mojej stronki itp
-  share_plus: ^6.3.4 #możliwość udostępnienia aplikacji poprzez wysłanie zaproszenia lub googleplay
-  flutter_local_notifications: ^14.0.0+1 #lokalne powiadomienia
-  sqflite: ^2.2.8+1 #plugin dla bazy danych SQLite
+  url_launcher: ^6.2.2 #możliwość uruchomienia z apki linkow np. do mojej stronki itp
+  share_plus: ^7.2.1 #możliwość udostępnienia aplikacji poprzez wysłanie zaproszenia lub googleplay
+  flutter_local_notifications: ^16.3.0 #lokalne powiadomienia
+  sqflite: ^2.3.0 #plugin dla bazy danych SQLite
+  timezone: ^0.9.2
   flutter_localizations: #pobranie lokalizacji aby sprawdzić kiedy wyświetlić powiadomienie
     sdk: flutter
-  intl: ^0.18.0 #pobranie daty, do notyfikacji itp
-  vibration: ^1.7.7 #wibracje
-  flutter_native_splash: ^2.2.19 #pokazywanie logo w trakcie ładowania apki - ale czy ja to wykorzystuje, czy zrobiłem coś innego wtedy? - nie pamiętam - do sprawdzenia i ew. posprzątać
+  intl: ^0.18.1 #pobranie daty, do notyfikacji itp
+  vibration: ^1.8.4 #wibracje
+  flutter_native_splash: ^2.3.9 #pokazywanie logo w trakcie ładowania apki - ale czy ja to wykorzystuje, czy zrobiłem coś innego wtedy? - nie pamiętam - do sprawdzenia i ew. posprzątać
   flutter_fortune_wheel: ^1.3.0 #koło fortuny na głównym ekranie
   draw_your_image: ^0.2.0 #rysowanie obrazków - karta rysowania
   stacked_card_carousel:
@@ -49,14 +50,14 @@ dependencies:
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code
   # that references the dependency.
-  cloud_firestore: ^4.14.0 # Jest to klient Firebase Cloud Firestore, który pozwala na dostęp i manipulację danymi w bazie danych Firestore w czasie rzeczywistym. Umożliwia przechowywanie i synchronizację danych pomiędzy użytkownikami.
-  firebase_auth: ^4.16.0 # Biblioteka do autentykacji w Firebase. Pozwala na zarządzanie użytkownikami, w tym logowanie, rejestrację, resetowanie hasła itp.
-  firebase_core: ^2.24.2  # Jest to biblioteka podstawowa, konieczna do inicjalizacji i korzystania z różnych usług Firebase, potrzebna do Crashlytics
-  firebase_crashlytics: ^3.4.9  # Umożliwia śledzenie i analizę błędów w aplikacji. Crashlytics pomaga w identyfikacji i rozwiązywaniu problemów związanych z awariami aplikacji.
-  games_services: ^4.0.0  # Achievements and leaderboards
+  cloud_firestore: ^4.14.0
+  firebase_auth: ^4.16.0
+  firebase_core: ^2.24.2  # Needed for Crashlytics below
+  firebase_crashlytics: ^3.4.9  # Error reporting
+  games_services: ^3.0.1  # Achievements and leaderboards
   google_mobile_ads: ^4.0.0  # Ads
   in_app_purchase: ^3.1.12  # In-app purchases
-  google_sign_in: ^6.0.1 #logowanie przez konto google - moze sie przyda?
+  google_sign_in: ^6.2.1 #logowanie przez konto google - moze sie przyda?
 
 dev_dependencies:
   analysis_defaults:
