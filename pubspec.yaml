@@ -50,10 +50,10 @@ dependencies:
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code
   # that references the dependency.
-  cloud_firestore: ^4.14.0
-  firebase_auth: ^4.16.0
-  firebase_core: ^2.24.2  # Needed for Crashlytics below
-  firebase_crashlytics: ^3.4.9  # Error reporting
+  cloud_firestore: ^4.14.0 #Jest to klient Firebase Cloud Firestore, który pozwala na dostęp i manipulację danymi w bazie danych Firestore w czasie rzeczywistym. Umożliwia przechowywanie i synchronizację danych pomiędzy użytkownikami.
+  firebase_auth: ^4.16.0 #biblioteka do autentykacji w Firebase. Pozwala na zarządzanie użytkownikami, w tym logowanie, rejestrację, resetowanie hasła itp.
+  firebase_core: ^2.24.2  # Needed for Crashlytics below, Jest to biblioteka podstawowa, konieczna do inicjalizacji i korzystania z różnych usług Firebase w Twojej aplikacji Flutter.
+  firebase_crashlytics: ^3.4.9 # Umożliwia śledzenie i analizę błędów w aplikacji. Crashlytics pomaga w identyfikacji i rozwiązywaniu problemów związanych z awariami aplikacji.
   games_services: ^3.0.1  # Achievements and leaderboards
   google_mobile_ads: ^4.0.0  # Ads
   in_app_purchase: ^3.1.12  # In-app purchases
