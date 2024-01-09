@@ -46,6 +46,7 @@ dependencies:
     path: lib/libraries/fan_carousel_image_slider-0.1.2 #biblioteka która robi karuzele z kart + kilka modyfikacji z mojej strony
   newton_particles: ^0.1.7 # particle systems - ekran 'klikniecia' karty
   mailer: ^6.0.1 # wysylanie mejli z aplikacji - na razie w celu testowym do debugowania
+  connectivity_plus: ^5.0.2 #sprawdzanie czy jest internet
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

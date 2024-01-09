@@ -9,8 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
+import 'package:game_template/src/in_app_purchase/ad_mob_service.dart';
+import 'package:game_template/src/in_app_purchase/auth_service.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -47,8 +50,7 @@ Future<void> main() async {
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
   FirebaseCrashlytics? crashlytics;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   try {
@@ -70,6 +72,10 @@ Future<void> main() async {
 
 /// Without logging and crash reporting, this would be `void main()`.
 Future<void> guardedMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  final initAdFuture = MobileAds.instance.initialize();
 
   if (kReleaseMode) {
     // Don't log anything below warnings
@@ -82,8 +88,6 @@ Future<void> guardedMain() async {
         '${record.message}');
   });
 
-  WidgetsFlutterBinding.ensureInitialized();
-
   _log.info('Going full screen');
   WidgetsBinding.instance.addPostFrameCallback((_) {
     SystemChrome.setEnabledSystemUIMode(
@@ -94,6 +98,13 @@ Future<void> guardedMain() async {
 
   //TO_DO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.
+  AuthService? authService;
+  await authService?.getOrCreateUser();
+  AdMobService? adMobService = AdMobService(initAdFuture);
+  // Ustaw testowe ID urządzeń
+  RequestConfiguration configuration = RequestConfiguration(
+      testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Użyj Twojego ID urządzenia
+  await MobileAds.instance.updateRequestConfiguration(configuration);
 
   AdsController? adsController;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
@@ -132,6 +143,12 @@ Future<void> guardedMain() async {
     runApp(
       MultiProvider(
         providers: [
+          ChangeNotifierProvider<AuthService?>(
+            create: (context) => authService,//provider uzytkownika
+          ),
+          ChangeNotifierProvider<AdMobService?>(
+            create: (context) => adMobService,//provider admob
+          ),
           ChangeNotifierProvider.value(
             value: translationProvider,
           ),

@@ -33,7 +33,7 @@ class InAppPurchaseController extends ChangeNotifier {
       await prefs.setBool('isPurchased', value);
 
       // Zaloguj użytkownika w Firebase
-      await _firebaseService.signInAnonymouslyAndSaveUID();
+     // await _firebaseService.signInAnonymouslyAndSaveUID();
       await buy();
     }
   }

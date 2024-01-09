@@ -1,6 +1,10 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/in_app_purchase/ad_mob_service.dart';
+import 'package:game_template/src/in_app_purchase/auth_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,9 +32,15 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   final FirebaseService _firebaseService = FirebaseService();
+
+  //Ad related:
+  late AdMobService _adMobService;
+  BannerAd? _banner;
+
   @override
   void initState() {
     super.initState();
+    _setupConnectivityListener();
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
@@ -45,13 +55,25 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     _checkPurchaseStatus();
   }
 
+  void _setupConnectivityListener() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        _tryLoadAd();
+      }
+    });
+  }
+
+  void _tryLoadAd() {
+    context.read<AdMobService>().reloadAd();
+  }
+
   Future<void> _checkPurchaseStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isPurchased = prefs.getBool('isPurchased') ?? false;
 
     if (isPurchased) {
       // Jeśli aplikacja jest zakupiona, spróbuj zalogować użytkownika
-      await _firebaseService.signInAnonymouslyAndSaveUID();
+      //await _firebaseService.signInAnonymouslyAndSaveUID();
     }
   }
 
@@ -59,6 +81,29 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+/*
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _adMobService = context.read<AdMobService>();
+    _adMobService.initialization.then((value) {
+      setState(() {
+        _banner = BannerAd(
+            size: AdSize.fullBanner,
+            adUnitId: _adMobService.bannerAdUnitId!,
+            listener: _adMobService.bannerListener,
+            request: AdRequest())
+          ..load();
+      });
+    });
+  }*/
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Zamiast tworzyć BannerAd tutaj, używamy AdMobService.
+    _adMobService = context.read<AdMobService>();
+    // Nie potrzebujesz już inicjalizować BannerAd tutaj, ponieważ AdMobService to zarządza.
   }
 
   Route _createRoute() {
@@ -93,6 +138,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    final isAdLoaded = context.watch<AdMobService>().isAdLoaded;
+
     TeamScore.resetAllScores();
     return Container(
       decoration: BoxDecoration(
@@ -148,8 +195,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         scale: _scaleAnimation.value,
                         child: child,
                       ),
-                      child:
-                      CustomStyledButton(
+                      child: CustomStyledButton(
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
                         onPressed: () {
@@ -192,12 +238,20 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
                     SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
+
+                    Text("Account type: free"),
+                    Text("${context.read<AuthService?>()?.currentUser?.uid}"), // print user UID wygenerowanego w firebase
+                    //reklamka
+                    if (isAdLoaded)
+                      Container(
+                        height: 60,
+                        child: AdWidget(ad: context.read<AdMobService>().bannerAd),
+                      ) else  SizedBox(height: 60)
                   ],
                 ),
               ],
             ),
           ),
-          
         ),
       ),
     );
