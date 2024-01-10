@@ -2,6 +2,8 @@
 // import 'dart:io';
 
 // import 'firebase_options.dart';
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -15,6 +17,7 @@ import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +32,6 @@ import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
 import 'src/in_app_purchase/cards_advertisement_screen.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
-import 'src/level_selection/level_selection_screen.dart';
 import 'src/main_menu/main_menu_screen.dart';
 import 'src/notifications/notifications_manager.dart';
 import 'src/player_progress/persistence/local_storage_player_progress_persistence.dart';
@@ -125,6 +127,28 @@ Future<void> guardedMain() async {
   await translationProvider.loadWords();
   InAppPurchaseController? inAppPurchaseController;
   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance, translationProvider);
+  //IAP
+  late StreamSubscription<List<PurchaseDetails>> _iap_subscription;  //tworze stream subskrypcji - a raczej nasluchuje nawrotu
+  /*
+  @override
+  void initState(){
+     super.initState()
+     final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream; nasluchuje strumienia powrotu
+     _iap_subscription = pruchaseUpdated.listen((purchaseDetailsList){  // zapisuje updejt
+      print("Pruchase stream started");
+      IAPService(uid).listToPurchaseUpdated(purchaseDetailsList); //tu w miejscu wywolania musi byc dostepne UID generowane z firebase akurat jest tutaj w main menu to
+      }, onDone: (){
+      _iap_subscription.cancel(); jesli wykonano
+      }, onError (error){
+      _iap_subscription.cancel(); jesli jakis blad, anuluj subskrypcje
+     } as StreamSubscription<List<PurchaseDetails>>; //rzutowanie na typ subskrypcji na poczatku iap
+     //koniec init State
+    TO_DO trzeba to ogolnie przerobic i pomyslec gdzie powinienna byc oczekiwany strumien i jak go przekazac dalej do aplikacji - changeNotifierProvider?
+    TO_DO 2 trzeba przeanalizowac teraz mając obecna wiedze czy te funkcje ktore tu byly mi sie przydadza - powinienem juz to w miare zrozumiec to co tu bylo?
+below
+       }*/
+
+
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance)
   //     // Subscribing to [InAppPurchase.instance.purchaseStream] as soon
@@ -135,6 +159,7 @@ Future<void> guardedMain() async {
   // }
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
+
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);

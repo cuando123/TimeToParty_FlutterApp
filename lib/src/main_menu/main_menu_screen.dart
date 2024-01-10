@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,16 +33,14 @@ class MainMenuScreen extends StatefulWidget {
 class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   final FirebaseService _firebaseService = FirebaseService();
-
-  //Ad related:
-  late AdMobService _adMobService;
-  BannerAd? _banner;
 
   @override
   void initState() {
     super.initState();
     _setupConnectivityListener();
+
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
@@ -56,14 +56,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   }
 
   void _setupConnectivityListener() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       if (result != ConnectivityResult.none) {
         _tryLoadAd();
       }
     });
   }
 
-  void _tryLoadAd() {
+  void _tryLoadAd(){
     context.read<AdMobService>().reloadAd();
   }
 
@@ -79,6 +79,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   @override
   void dispose() {
+    _connectivitySubscription?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -102,7 +103,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Zamiast tworzyć BannerAd tutaj, używamy AdMobService.
-    _adMobService = context.read<AdMobService>();
     // Nie potrzebujesz już inicjalizować BannerAd tutaj, ponieważ AdMobService to zarządza.
   }
 
@@ -138,7 +138,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    final isAdLoaded = context.watch<AdMobService>().isAdLoaded;
+    final isBannerAdLoaded = context.watch<AdMobService>().isBannerAdLoaded;
+    final isInterstitialAdLoaded = context.watch<AdMobService>().isInterstitialAdLoaded;
 
     TeamScore.resetAllScores();
     return Container(
@@ -199,6 +200,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
                         onPressed: () {
+                          if (isInterstitialAdLoaded) {
+                            context.read<AdMobService>().showInterstitialAd();
+                            print('powinnoa byc000');
+                          }
                           audioController.playSfx(SfxType.button_accept);
                           Navigator.of(context).push(_createRoute());
                         },
@@ -237,12 +242,12 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
-                    SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
+                    //SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
 
-                    Text("Account type: free"),
-                    Text("${context.read<AuthService?>()?.currentUser?.uid}"), // print user UID wygenerowanego w firebase
+                    //Text("Account type: free"),
+                    //Text("${context.read<AuthService?>()?.currentUser?.uid}"), // print user UID wygenerowanego w firebase
                     //reklamka
-                    if (isAdLoaded)
+                    if (isBannerAdLoaded)
                       Container(
                         height: 60,
                         child: AdWidget(ad: context.read<AdMobService>().bannerAd),

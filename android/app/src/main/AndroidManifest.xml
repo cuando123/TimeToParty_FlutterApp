@@ -6,7 +6,8 @@
    <application
         android:label="Time to Party"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name=".MainActivity"
@@ -35,6 +36,7 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713"/>
+
        <!--  #app id for admob: ca-app-pub-8821222111683401~3436608123 - moje -->
        <!-- Google Play Games -->
        <!-- Warning: Never include the Play Games app_id directly here.

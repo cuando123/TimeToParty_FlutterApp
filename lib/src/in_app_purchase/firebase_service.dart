@@ -41,4 +41,27 @@ class FirebaseService {
       }
     }
   }
+
+/*
+  setAccountType({uid, type}){
+    FirebaseFirestore.instance.collection("users").doc(uid).update({
+      type true
+      next free question date time now
+
+    }
+END NA 5h filmu
+    )
+  }
+  */
+  //TO_DO funkcje ktore beda robily rozne rzeczy w firebase po zakupie
+
+  //example:
+  /*
+  increaseDecision({uid,quantity}) {
+    FirebaseFirestore.instance.collection("users").doc(uid).update({
+      'bank': FieldValue.increment(quantity),
+      'nextFreeQuestion': DateTime.now(),
+    });
+  }*/
 }
+
