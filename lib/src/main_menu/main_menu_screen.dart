@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_template/src/in_app_purchase/ad_mob_service.dart';
-import 'package:game_template/src/in_app_purchase/auth_service.dart';
+import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,7 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
-import '../in_app_purchase/firebase_service.dart';
+import '../in_app_purchase/services/firebase_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -52,11 +51,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
-    _checkPurchaseStatus();
+    //_checkPurchaseStatus();
   }
 
   void _setupConnectivityListener() {
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
       if (result != ConnectivityResult.none) {
         _tryLoadAd();
       }
@@ -102,8 +101,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Zamiast tworzyć BannerAd tutaj, używamy AdMobService.
-    // Nie potrzebujesz już inicjalizować BannerAd tutaj, ponieważ AdMobService to zarządza.
   }
 
   Route _createRoute() {
@@ -245,7 +242,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     //SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
 
                     //Text("Account type: free"),
-                    //Text("${context.read<AuthService?>()?.currentUser?.uid}"), // print user UID wygenerowanego w firebase
+                    Text("${context.read<FirebaseService?>()?.currentUser?.uid}", style: TextStyle(color: Colors.white)), // print user UID wygenerowanego w firebase
                     //reklamka
                     if (isBannerAdLoaded)
                       Container(

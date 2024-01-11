@@ -1,9 +1,7 @@
-// Uncomment the following lines when enabling Firebase Crashlytics
-// import 'dart:io';
-
-// import 'firebase_options.dart';
 import 'dart:async';
+import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -11,20 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
-import 'package:game_template/src/in_app_purchase/ad_mob_service.dart';
-import 'package:game_template/src/in_app_purchase/auth_service.dart';
+import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
+import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'src/Language_selector_screen/language_selector.dart';
 import 'src/Loading_screen/loading_screen.dart';
 import 'src/Loading_screen/loading_screen_second.dart';
-import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
@@ -49,22 +46,18 @@ final globalLoading = GlobalLoading();
 
 Future<void> main() async {
 
-  // To enable Firebase Crashlytics, uncomment the following lines and
-  // the import statements at the top of this file.
-  // See the 'Crashlytics' section of the main README.md file for details.
-
   FirebaseCrashlytics? crashlytics;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   try {
-  //     WidgetsFlutterBinding.ensureInitialized();
-  //     await Firebase.initializeApp(
-  //       options: DefaultFirebaseOptions.currentPlatform,
-  //     );
-  //     crashlytics = FirebaseCrashlytics.instance;
-  //   } catch (e) {
-  //     debugPrint("Firebase couldn't be initialized: $e");
-  //   }
-  // }
+   if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+     try {
+       WidgetsFlutterBinding.ensureInitialized();
+       await Firebase.initializeApp(
+         options: DefaultFirebaseOptions.currentPlatform,
+       );
+       crashlytics = FirebaseCrashlytics.instance;
+     } catch (e) {
+       debugPrint("Firebase couldn't be initialized: $e");
+     }
+   }
 
   await guardWithCrashlytics(
     guardedMain,
@@ -74,15 +67,8 @@ Future<void> main() async {
 
 /// Without logging and crash reporting, this would be `void main()`.
 Future<void> guardedMain() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  final initAdFuture = MobileAds.instance.initialize();
-
   if (kReleaseMode) {
-    // Don't log anything below warnings
-    // in production.
-    Logger.root.level = Level.WARNING;
+    Logger.root.level = Level.WARNING; // Don't log anything below warnings in production
   }
   Logger.root.onRecord.listen((record) {
     debugPrint('${record.level.name}: ${record.time}: '
@@ -90,7 +76,6 @@ Future<void> guardedMain() async {
         '${record.message}');
   });
 
-  _log.info('Going full screen');
   WidgetsBinding.instance.addPostFrameCallback((_) {
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
@@ -98,36 +83,33 @@ Future<void> guardedMain() async {
     );
   });
 
-  //TO_DO: When ready, uncomment the following lines to enable integrations.
-  //       Read the README for more info on each integration.
-  AuthService? authService;
-  await authService?.getOrCreateUser();
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final initAdFuture = MobileAds.instance.initialize();
+
+  FirebaseService firebaseService = FirebaseService();
+  await firebaseService.signInAnonymouslyAndSaveUID();
+
   AdMobService? adMobService = AdMobService(initAdFuture);
-  // Ustaw testowe ID urządzeń
   RequestConfiguration configuration = RequestConfiguration(
-      testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Użyj Twojego ID urządzenia
+      testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Ustaw testowe ID urządzeń
   await MobileAds.instance.updateRequestConfiguration(configuration);
 
-  AdsController? adsController;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   /// Prepare the google_mobile_ads plugin so that the first ad loads
-  //   /// faster. This can be done later or with a delay if startup
-  //   /// experience suffers.
-  //   adsController = AdsController(MobileAds.instance);
-  //   adsController.initialize();
-  // }
 
-  GamesServicesController? gamesServicesController;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   gamesServicesController = GamesServicesController()
-  //     // Attempt to log the player in.
-  //     ..initialize();
-  // }
   final translationProvider = TranslationProvider.fromDeviceLanguage();
   await translationProvider.loadWords();
+
+  GamesServicesController? gamesServicesController;
   InAppPurchaseController? inAppPurchaseController;
   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance, translationProvider);
-  //IAP
+
   late StreamSubscription<List<PurchaseDetails>> _iap_subscription;  //tworze stream subskrypcji - a raczej nasluchuje nawrotu
   /*
   @override
@@ -147,29 +129,12 @@ Future<void> guardedMain() async {
     TO_DO 2 trzeba przeanalizowac teraz mając obecna wiedze czy te funkcje ktore tu byly mi sie przydadza - powinienem juz to w miare zrozumiec to co tu bylo?
 below
        }*/
-
-
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance)
-  //     // Subscribing to [InAppPurchase.instance.purchaseStream] as soon
-  //     // as possible in order not to miss any updates.
-  //     ..subscribe();
-  //   // Ask the store what the player has bought already.
-  //   inAppPurchaseController.restorePurchases();
-  // }
-  WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
   await translationProvider.loadTranslations().then((_) {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<AuthService?>(
-            create: (context) => authService,//provider uzytkownika
+          ChangeNotifierProvider<FirebaseService?>(
+            create: (context) => firebaseService,//provider uzytkownika
           ),
           ChangeNotifierProvider<AdMobService?>(
             create: (context) => adMobService,//provider admob
@@ -177,7 +142,7 @@ below
           ChangeNotifierProvider.value(
             value: translationProvider,
           ),
-      ChangeNotifierProvider<TeamProvider>(
+          ChangeNotifierProvider<TeamProvider>(
           create: (context) {
             final provider = TeamProvider();
             provider.initializeTeams(context, 2);
@@ -194,7 +159,6 @@ below
           settingsPersistence: LocalStorageSettingsPersistence(),
           playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
           inAppPurchaseController: inAppPurchaseController,
-          adsController: adsController,
           gamesServicesController: gamesServicesController,
         ),
       ),
@@ -211,7 +175,6 @@ class LoadingStatus extends ChangeNotifier {
     notifyListeners();
   }
 }
-Logger _log = Logger('main.dart');
 
 class MyApp extends StatelessWidget {
 
@@ -291,8 +254,6 @@ class MyApp extends StatelessWidget {
 
   final InAppPurchaseController? inAppPurchaseController;
 
-  final AdsController? adsController;
-
   final Future initFuture = Future.wait([
     // umieść tutaj swoje operacje inicjalizacyjne, na przykład:
     // Firebase.initializeApp(),
@@ -301,14 +262,12 @@ class MyApp extends StatelessWidget {
     // initInAppPurchases(),
     // initGameServices(),
     // itd.
-    Future<void>.delayed(Duration(seconds: 3)),
   ]);
 
   MyApp({super.key, 
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,
-    required this.adsController,
     required this.gamesServicesController,
   });
 
@@ -333,7 +292,6 @@ class MyApp extends StatelessWidget {
                   ),
                   Provider<GamesServicesController?>.value(
                       value: gamesServicesController),
-                  Provider<AdsController?>.value(value: adsController),
                   ChangeNotifierProvider<InAppPurchaseController?>.value(
                       value: inAppPurchaseController),
                   ChangeNotifierProvider<SettingsController>(
@@ -344,12 +302,9 @@ class MyApp extends StatelessWidget {
                     )
                       ..loadStateFromPersistence(),
                   ),
-                  ProxyProvider2<SettingsController,
-                      ValueNotifier<AppLifecycleState>,
-                      AudioController>(
-                    // Ensures that the AudioController is created on startup,
-                    // and not "only when it's needed", as is default behavior.
-                    // This way, music starts immediately.
+                  ProxyProvider2<SettingsController, // Ensures that the AudioController is created on startup,
+                      ValueNotifier<AppLifecycleState>, // and not "only when it's needed", as is default behavior.
+                      AudioController>( // This way, music starts immediately.
                     lazy: false,
                     create: (context) =>
                     AudioController()
@@ -368,7 +323,6 @@ class MyApp extends StatelessWidget {
                 ],
                 child: Builder(builder: (context) {
                   final palette = context.watch<Palette>();
-
                   return MaterialApp.router(
                     title: 'Time To Party',
                     theme: ThemeData.from(

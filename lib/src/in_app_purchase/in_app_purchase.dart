@@ -7,16 +7,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../app_lifecycle/TranslationProvider.dart';
 
 import '../style/snack_bar.dart';
-import 'ad_removal.dart';
-import 'firebase_service.dart';
+import 'services/firebase_service.dart';
 
 /// Allows buying in-app. ,Facade of `package:in_app_purchase`.
 class InAppPurchaseController extends ChangeNotifier {
   static final Logger _log = Logger('InAppPurchases');
   late final TranslationProvider translationProvider;
-  final FirebaseService _firebaseService = FirebaseService();
+  //final FirebaseService _firebaseService = FirebaseService();
 
   bool _isPurchased = false;
+
+  InAppPurchaseController(InAppPurchase instance, TranslationProvider translationProvider);
 
   bool get isPurchased => _isPurchased;
 
@@ -33,16 +34,16 @@ class InAppPurchaseController extends ChangeNotifier {
       await prefs.setBool('isPurchased', value);
 
       // Zaloguj użytkownika w Firebase
-     // await _firebaseService.signInAnonymouslyAndSaveUID();
-      await buy();
+      // await _firebaseService.signInAnonymouslyAndSaveUID();
+      // await buy();
     }
   }
-
+/*
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
   InAppPurchase inAppPurchaseInstance;
 
-  AdRemovalPurchase _adRemoval = const AdRemovalPurchase.notStarted();
+  //AdRemovalPurchase _adRemoval = const AdRemovalPurchase.notStarted();
 
   /// Tworzy nowy kontroler [InAppPurchaseController] z wstrzykniętym
   /// Instancja [InAppPurchase].
@@ -52,15 +53,16 @@ class InAppPurchaseController extends ChangeNotifier {
   /// var kontroler = InAppPurchaseController(InAppPurchase.instance);
   InAppPurchaseController(this.inAppPurchaseInstance, this.translationProvider);
 
+
   /// The current state of the ad removal purchase.
-  AdRemovalPurchase get adRemoval => _adRemoval;
+  //AdRemovalPurchase get adRemoval => _adRemoval;
 
   /// Uruchamia interfejs platformy umożliwiający dokonywanie zakupów w aplikacji.
   /// Obecnie jedynym obsługiwanym zakupem w aplikacji jest usuwanie reklam.
   /// Aby obsłużyć więcej, dodaj dodatkowe klasy podobne do [AdRemovalPurchase]
   /// i zmodyfikuj tę metodę.
-  ///
-  ///
+
+
   Future<void> buy() async {
     if (!await inAppPurchaseInstance.isAvailable()) {
       _reportError('InAppPurchase.instance not available');
@@ -82,7 +84,7 @@ class InAppPurchaseController extends ChangeNotifier {
     if (response.productDetails.length != 1) {
       _log.info(
         'Produkty w odpowiedzi: '
-        '${response.productDetails.map((e) => '${e.id}: ${e.title}, ').join()}',
+            '${response.productDetails.map((e) => '${e.id}: ${e.title}, ').join()}',
       );
       _reportError('Podczas dokonywania zakupu wystąpił błąd: '
           'product ${AdRemovalPurchase.productId} nie istnieje?');
@@ -137,7 +139,8 @@ class InAppPurchaseController extends ChangeNotifier {
       _log.severe('Wystąpił błąd w strumieniu zakupów: $error');
     });
   }
-/// _listenToPurchaseUpdated(): Obsługuje aktualizacje zakupów.
+
+  /// _listenToPurchaseUpdated(): Obsługuje aktualizacje zakupów.
   Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
       _log.info(() => 'New PurchaseDetails instance received: '
@@ -210,6 +213,7 @@ class InAppPurchaseController extends ChangeNotifier {
     // https://codelabs.developers.google.com/codelabs/flutter-in-app-purchases#9
     return true;
   }
+*/
 /*
   void savePurchaseData(String userId, String purchaseDetails) {
     FirebaseFirestore.instance.collection('purchases').add({
@@ -219,6 +223,8 @@ class InAppPurchaseController extends ChangeNotifier {
     });
   }
 */
+
+
 }
 
 class PurchaseState {

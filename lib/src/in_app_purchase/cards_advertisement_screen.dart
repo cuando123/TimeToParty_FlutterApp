@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
-import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
@@ -89,7 +88,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: _products[0]);
-    
+
     return WillPopScope(
       onWillPop: () async {
         audioController.playSfx(SfxType.button_back_exit);
@@ -124,6 +123,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       //IAP tutorial
+                      /*
                       if(_notice != null)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -148,7 +148,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                                 )
                               );
                             })
-                      ),
+                      ),*/
 
                       //IAP tutorial
                       ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
@@ -242,12 +242,13 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
                           //IAP:
+                          if (_products.isNotEmpty) {
                           if (_products[0] == 'premium'){
                             InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
                           } // non consunable..
                           else {
                            // InAppPurchase.instance.buyConsumable(purchaseParam: _products[1]); for example
-                          }
+                          }}
 
                           //symulacja zakupu
 

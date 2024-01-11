@@ -6,14 +6,13 @@ import 'package:game_template/src/win_game/triple_button_win.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../ads/ads_controller.dart';
-import '../ads/banner_ad_widget.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
+import '../in_app_purchase/services/ad_mob_service.dart';
 import '../in_app_purchase/in_app_purchase.dart';
 import '../style/palette.dart';
 
@@ -108,8 +107,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   }
   @override
   Widget build(BuildContext context) {
-    final adsControllerAvailable = context.watch<AdsController?>() != null;
-    final adsRemoved = context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
+    final adsControllerAvailable = context.watch<AdMobService?>() != null;
+    //final adsRemoved = context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
     final palette = context.watch<Palette>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final audioController = context.watch<AudioController>();
@@ -151,13 +150,13 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
               Image.asset('assets/time_to_party_assets/win_screen/team_ranking_win.png',
                   height: ResponsiveSizing.scaleHeight(context, 150)),
               Padding(padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
-              if (adsControllerAvailable && !adsRemoved) ...[
+            /*  if (adsControllerAvailable && !adsRemoved) ...[
                 const Expanded(
                   child: Center(
-                    child: BannerAdWidget(),
+                    child: SizedBox.shrink()
                   ),
                 ),
-              ],
+              ],*/
 
               Expanded(
                 flex: 3,

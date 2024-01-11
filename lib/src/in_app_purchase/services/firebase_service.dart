@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
-class FirebaseService {
+class FirebaseService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -42,6 +43,17 @@ class FirebaseService {
     }
   }
 
+  Future<void> initializeAccount() async {
+    // Uzyskaj referencję do dokumentu użytkownika
+    DocumentReference document = FirebaseFirestore.instance.collection('users').doc(currentUser?.uid);
+
+    // Pobierz dokument i sprawdź, czy istnieje
+    DocumentSnapshot documentSnapshot = await document.get();
+    if (!documentSnapshot.exists) {
+      // Jeśli dokument nie istnieje, ustaw początkową wartość 'bank'
+      await document.set({"bank": 3});
+    }
+  }
 /*
   setAccountType({uid, type}){
     FirebaseFirestore.instance.collection("users").doc(uid).update({
@@ -65,3 +77,13 @@ END NA 5h filmu
   }*/
 }
 
+class UserInFirebase {
+  bool? isPurchased;
+  String? purchaseID;
+  DateTime? createdDate;
+  String? productID;
+  String? amount;
+  String? currency;
+
+  UserInFirebase();
+}

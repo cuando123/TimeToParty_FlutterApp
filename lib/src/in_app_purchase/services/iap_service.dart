@@ -1,4 +1,4 @@
-import 'package:game_template/src/in_app_purchase/firebase_service.dart';
+import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 class IAPService {
