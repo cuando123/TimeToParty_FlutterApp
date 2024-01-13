@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
@@ -41,8 +42,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _firebaseService = FirebaseService(isOffline: !isOnline);
-
+    // Załadowanie reklam na początku, jeśli jesteśmy online
+    if (isOnline) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _firebaseService = FirebaseService(isConncected: isOnline);
     _setupConnectivityListener();
 
     _animationController = AnimationController(
@@ -65,19 +69,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       setState(() {
         isOnline = isConnected;
       });
-
-      if (isOnline) {
-        _tryLoadAd();
-        _firebaseService.updateConnectionStatus(isConnected);
-        print("ISONLINE: $isOnline");
-        _firebaseService.signInAnonymouslyAndSaveUID();
+      context.read<AdMobService>().onConnectionChanged(isConnected);
+      if (isConnected) {
+        _firebaseService
+            .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
+        print("ISONLINE: $isConnected");
+        print("${_firebaseService.currentUser}");
       }
     });
-  }
-
-
-  void _tryLoadAd() {
-    context.read<AdMobService>().reloadAd();
   }
 
   Future<void> _checkPurchaseStatus() async {
@@ -150,7 +149,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    final isBannerAdLoaded = context.watch<AdMobService>().isBannerAdLoaded;
     final isInterstitialAdLoaded = context.watch<AdMobService>().isInterstitialAdLoaded;
 
     TeamScore.resetAllScores();
@@ -257,17 +255,33 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     //SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
 
                     //Text("Account type: free"),
-                    if (isOnline)
-                      Text("${context.read<FirebaseService?>()?.currentUser?.uid}",
-                          style: TextStyle(color: Colors.white)), // print user UID wygenerowanego w firebase
-
-                    if (isBannerAdLoaded)
-                      Container(
-                        height: 60,
-                        child: AdWidget(ad: context.read<AdMobService>().bannerAd),
-                      )
-                    else
-                      SizedBox(height: 60),
+                    Consumer<FirebaseService>(
+                      builder: (context, firebaseService, child) {
+                        //print('FIREBASE WIDGET z CONSUMERA: $uidUserLoaded');
+                        return Text(
+                          firebaseService.currentUser?.uid ?? 'Brak UID',
+                          style: TextStyle(color: Colors.white),
+                        );
+                      },
+                    ),
+                    Consumer<AdMobService>(
+                      builder: (context, adMobService, child) {
+                        if (adMobService.isBannerAdLoaded) {
+                          // Reklama jest załadowana, wyświetl ją
+                          return SizedBox(
+                            height: 60,
+                            child: AdWidget(ad: adMobService.bannerAd),
+                          );
+                        } else {
+                          return SizedBox(
+                            height: 60,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                      },
+                    )
                   ],
                 ),
               ],

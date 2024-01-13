@@ -49,15 +49,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FirebaseCrashlytics? crashlytics;
-  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-    try {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-      crashlytics = FirebaseCrashlytics.instance;
-    } catch (e) {
-      debugPrint("Firebase couldn't be initialized: $e");
-    }
+
+  try {
+    await Firebase.initializeApp();
+    crashlytics = FirebaseCrashlytics.instance;
+  } catch (e) {
+    debugPrint("Firebase couldn't be initialized: $e");
   }
 
   await guardWithCrashlytics(
@@ -85,7 +82,6 @@ Future<void> guardedMain() async {
   });
 
   await SystemChrome.setPreferredOrientations([
-
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -93,19 +89,19 @@ Future<void> guardedMain() async {
   // Sprawdź połączenie internetowe
   var connectivityResult = await Connectivity().checkConnectivity();
   FirebaseService firebaseService;
-
+  // inicjalizacja która dotyczy TYLKO POCZATKOWEGO STANU
   // Inicjalizuj usługi tylko przy dostępnym połączeniu
   if (connectivityResult != ConnectivityResult.none) {
-    firebaseService = FirebaseService();  // Przy dostępnym połączeniu
+    firebaseService = FirebaseService(); // Przy dostępnym połączeniu
     // Inicjalizuj inne usługi zależne od połączenia
   } else {
-    firebaseService = FirebaseService(isOffline: true); // W trybie offline
+    firebaseService = FirebaseService(isConncected: false); // W trybie offline
   }
   final initAdFuture = MobileAds.instance.initialize();
 
   AdMobService? adMobService = AdMobService(initAdFuture);
-  RequestConfiguration configuration = RequestConfiguration(
-      testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Ustaw testowe ID urządzeń
+  RequestConfiguration configuration =
+      RequestConfiguration(testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Ustaw testowe ID urządzeń
   await MobileAds.instance.updateRequestConfiguration(configuration);
 
   final translationProvider = TranslationProvider.fromDeviceLanguage();
@@ -115,7 +111,8 @@ Future<void> guardedMain() async {
   InAppPurchaseController? inAppPurchaseController;
   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance, translationProvider);
 
-  late StreamSubscription<List<PurchaseDetails>> _iap_subscription;  //tworze stream subskrypcji - a raczej nasluchuje nawrotu
+  late StreamSubscription<List<PurchaseDetails>>
+      _iap_subscription; //tworze stream subskrypcji - a raczej nasluchuje nawrotu
   /*
   @override
   void initState(){
@@ -134,43 +131,44 @@ Future<void> guardedMain() async {
     TO_DO 2 trzeba przeanalizowac teraz mając obecna wiedze czy te funkcje ktore tu byly mi sie przydadza - powinienem juz to w miare zrozumiec to co tu bylo?
 below
        }*/
-    await translationProvider.loadTranslations().then((_) {
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<FirebaseService?>(
-              create: (context) => firebaseService,//provider uzytkownika
-            ),
-            ChangeNotifierProvider<AdMobService?>(
-              create: (context) => adMobService,//provider admob
-            ),
-            ChangeNotifierProvider.value(
-              value: translationProvider,
-            ),
-            ChangeNotifierProvider<TeamProvider>(
-              create: (context) {
-                final provider = TeamProvider();
-                provider.initializeTeams(context, 2);
-                return provider;
-              },),
-            ChangeNotifierProvider<LoadingStatus>(
-              create: (_) => LoadingStatus(),
-            ),
-            ChangeNotifierProvider<InAppPurchaseController?>(
-              create: (context) => inAppPurchaseController,
-            ),
-          ],
-          child: MyApp(
-            settingsPersistence: LocalStorageSettingsPersistence(),
-            playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-            inAppPurchaseController: inAppPurchaseController,
-            gamesServicesController: gamesServicesController,
-            firebaseService: firebaseService,
+  await translationProvider.loadTranslations().then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<FirebaseService?>(
+            create: (context) => firebaseService, //provider uzytkownika
           ),
+          ChangeNotifierProvider<AdMobService?>(
+            create: (context) => adMobService, //provider admob
+          ),
+          ChangeNotifierProvider.value(
+            value: translationProvider,
+          ),
+          ChangeNotifierProvider<TeamProvider>(
+            create: (context) {
+              final provider = TeamProvider();
+              provider.initializeTeams(context, 2);
+              return provider;
+            },
+          ),
+          ChangeNotifierProvider<LoadingStatus>(
+            create: (_) => LoadingStatus(),
+          ),
+          ChangeNotifierProvider<InAppPurchaseController?>(
+            create: (context) => inAppPurchaseController,
+          ),
+        ],
+        child: MyApp(
+          settingsPersistence: LocalStorageSettingsPersistence(),
+          playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
+          inAppPurchaseController: inAppPurchaseController,
+          gamesServicesController: gamesServicesController,
+          firebaseService: firebaseService,
         ),
-      );
-    });
-  }
+      ),
+    );
+  });
+}
 
 class LoadingStatus extends ChangeNotifier {
   bool _isLoading = false;
@@ -184,73 +182,40 @@ class LoadingStatus extends ChangeNotifier {
 }
 
 class MyApp extends StatelessWidget {
-
-  static final _router = GoRouter(
-    routes: [
+  static final _router = GoRouter(routes: [
+    GoRoute(path: '/', builder: (context, state) => const MainMenuScreen(key: Key('main menu')), routes: [
       GoRoute(
-          path: '/',
-          builder: (context, state) =>
-          const MainMenuScreen(key: Key('main menu')),
-          routes: [
-            GoRoute(
-              path: 'settings',
-              pageBuilder: (context, state) =>
-                  buildMyTransition<void>(
-                    child: SettingsScreen(
-                        key: Key('settings'),
-                        scaffoldKey: GlobalKey<ScaffoldState>()),
-                    color: context
-                        .watch<Palette>()
-                        .backgroundTransparent,
-                    decoration: BoxDecoration(
-                        gradient: context
-                            .watch<Palette>()
-                            .backgroundLoadingSessionGradient),
-                  ),
-            ),
-            GoRoute(
-              path: 'loading',
-              pageBuilder: (context, state) =>
-                  buildMyTransition<void>(
-                    child: LoaderWidgetSecond(key: Key('loading'), countdown: 3),
-                    color: context
-                        .watch<Palette>()
-                        .backgroundPlaySession,
-                  ),
-            ),
-            GoRoute(
-              path: 'language_selector',
-              pageBuilder: (context, state) =>
-                  buildMyTransition<void>(
-                    child: LanguageSelector(
-                        key: Key('language_selector'),
-                        scaffoldKey: GlobalKey<ScaffoldState>()),
-                    color: context
-                        .watch<Palette>()
-                        .backgroundTransparent,
-                    decoration: BoxDecoration(
-                        gradient: context
-                            .watch<Palette>()
-                            .backgroundLoadingSessionGradient),
-                  ),
-            ),
-            GoRoute(
-              path: 'card_advertisement',
-              pageBuilder: (context, state) =>
-                  buildMyTransition<void>(
-                    child: CardAdvertisementScreen(
-                        key: Key('card_advertisement'),
-                        scaffoldKey: GlobalKey<ScaffoldState>()),
-                    color: context
-                        .watch<Palette>()
-                        .backgroundTransparent,
-                    decoration: BoxDecoration(
-                        gradient: context
-                            .watch<Palette>()
-                            .backgroundLoadingSessionGradient),
-                  ),
-            ),
-          ]),
+        path: 'settings',
+        pageBuilder: (context, state) => buildMyTransition<void>(
+          child: SettingsScreen(key: Key('settings'), scaffoldKey: GlobalKey<ScaffoldState>()),
+          color: context.watch<Palette>().backgroundTransparent,
+          decoration: BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+        ),
+      ),
+      GoRoute(
+        path: 'loading',
+        pageBuilder: (context, state) => buildMyTransition<void>(
+          child: LoaderWidgetSecond(key: Key('loading'), countdown: 3),
+          color: context.watch<Palette>().backgroundPlaySession,
+        ),
+      ),
+      GoRoute(
+        path: 'language_selector',
+        pageBuilder: (context, state) => buildMyTransition<void>(
+          child: LanguageSelector(key: Key('language_selector'), scaffoldKey: GlobalKey<ScaffoldState>()),
+          color: context.watch<Palette>().backgroundTransparent,
+          decoration: BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+        ),
+      ),
+      GoRoute(
+        path: 'card_advertisement',
+        pageBuilder: (context, state) => buildMyTransition<void>(
+          child: CardAdvertisementScreen(key: Key('card_advertisement'), scaffoldKey: GlobalKey<ScaffoldState>()),
+          color: context.watch<Palette>().backgroundTransparent,
+          decoration: BoxDecoration(gradient: context.watch<Palette>().backgroundLoadingSessionGradient),
+        ),
+      ),
+    ]),
   ]);
 
   final PlayerProgressPersistence playerProgressPersistence;
@@ -265,7 +230,8 @@ class MyApp extends StatelessWidget {
 
   final Future initFuture = Future.wait([]);
 
-  MyApp({super.key, 
+  MyApp({
+    super.key,
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,
@@ -292,25 +258,21 @@ class MyApp extends StatelessWidget {
                   Provider(
                     create: (_) => NotificationsManager(context),
                   ),
-                  Provider<GamesServicesController?>.value(
-                      value: gamesServicesController),
-                  ChangeNotifierProvider<InAppPurchaseController?>.value(
-                      value: inAppPurchaseController),
+                  Provider<GamesServicesController?>.value(value: gamesServicesController),
+                  ChangeNotifierProvider<InAppPurchaseController?>.value(value: inAppPurchaseController),
                   ChangeNotifierProvider<SettingsController>(
                     lazy: false,
-                    create: (context) =>
-                    SettingsController(
+                    create: (context) => SettingsController(
                       persistence: settingsPersistence,
-                    )
-                      ..loadStateFromPersistence(),
+                    )..loadStateFromPersistence(),
                   ),
-                  ProxyProvider2<SettingsController, // Ensures that the AudioController is created on startup,
+                  ProxyProvider2<
+                      SettingsController, // Ensures that the AudioController is created on startup,
                       ValueNotifier<AppLifecycleState>, // and not "only when it's needed", as is default behavior.
-                      AudioController>( // This way, music starts immediately.
+                      AudioController>(
+                    // This way, music starts immediately.
                     lazy: false,
-                    create: (context) =>
-                    AudioController()
-                      ..initialize(),
+                    create: (context) => AudioController()..initialize(),
                     update: (context, settings, lifecycleNotifier, audio) {
                       if (audio == null) throw ArgumentError.notNull();
                       audio.attachSettings(settings);
@@ -322,6 +284,7 @@ class MyApp extends StatelessWidget {
                   Provider(
                     create: (context) => Palette(),
                   ),
+                  ChangeNotifierProvider<FirebaseService>(create: (context) => firebaseService),
                 ],
                 child: Builder(builder: (context) {
                   final palette = context.watch<Palette>();
@@ -361,13 +324,8 @@ class MyApp extends StatelessWidget {
               ),
             );
           } else {
-            return MaterialApp(
-                home: Scaffold(
-                  body: LoaderWidget()
-                )
-            );
+            return MaterialApp(home: Scaffold(body: LoaderWidget()));
           }
-        }
-    );
+        });
   }
 }

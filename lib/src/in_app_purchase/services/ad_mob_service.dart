@@ -19,6 +19,27 @@ class AdMobService extends ChangeNotifier {
     _setupInterstitialAd();
     _setupRewardedAd();
   }
+
+  void onConnectionChanged(bool isConnected) {
+    if (isConnected) {
+      // Połączenie z internetem przywrócone, próbujemy załadować reklamy
+      reloadAd();
+    } else {
+      // Połączenie z internetem utracone
+      _handleLostConnection();
+    }
+  }
+
+  void _handleLostConnection() {
+    _isBannerAdLoaded = false;
+    _isInterstitialAdLoaded = false;
+    _isRewardedAdLoaded = false;
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
+    _rewardedAd?.dispose();
+    notifyListeners();
+  }
+
   void reloadAd() {
     _bannerAd?.dispose();
     _interstitialAd?.dispose();

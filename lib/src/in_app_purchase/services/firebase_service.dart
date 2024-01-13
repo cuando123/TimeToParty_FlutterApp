@@ -8,30 +8,42 @@ class FirebaseService extends ChangeNotifier {
   //ogolnie wszedzie znaki zapytania bo inicjalizacja w tybie offline - same nulle sa
   FirebaseAuth? _auth;
   FirebaseFirestore? _firestore;
-  bool isOffline;
+  bool isConncected;
 
-  FirebaseService({this.isOffline = false}) {
-    if (!isOffline) {
+  FirebaseService({this.isConncected = false}) {
+    if (!isConncected) {
       _auth = FirebaseAuth.instance;
       _firestore = FirebaseFirestore.instance;
     }
   }
 
   // Aktualizacja stanu połączenia
-  void updateConnectionStatus(bool isConnected) {
-    isOffline = !isConnected;
+  void updateConnectionStatusIfConnected() {
+      print('Logika połączenia (np. ponowna autentykacja, odświeżenie danych)');
+      _auth ??= FirebaseAuth.instance;
+      _firestore ??= FirebaseFirestore.instance; //ponowne polaczenie i autentkacja gdy internet sie pojawi
+      signInAnonymouslyAndSaveUID();//ponowne zalogowanie i zapis uid
+      refreshCurrentUser(); //odswiezenie stanu uzytkoniwka aby nie zwracac null gdy apka sie odpali w trybie offline
+      print('Firebase: Zalogowane UID: ${currentUser?.uid}');
     notifyListeners();
   }
 
   User? get currentUser {
-    if (_auth != null) {
-      return _auth!.currentUser;
+    return _auth?.currentUser;
+  }
+
+  Future<void> refreshCurrentUser() async {
+    try {
+      // Wymuszenie odświeżenia stanu użytkownika
+      await _auth?.currentUser?.reload();
+      notifyListeners(); // Poinformowanie o zmianie stanu
+    } catch (e) {
+      print("Błąd podczas odświeżania danych użytkownika: $e");
     }
-    return null;
   }
 
   Future<void> signInAnonymouslyAndSaveUID() async {
-    if (isOffline) {
+    if (isConncected) {
       // Logika, gdy aplikacja jest w trybie offline
       print("Próba logowania w trybie offline - nieudana.");
       return;
@@ -69,7 +81,7 @@ class FirebaseService extends ChangeNotifier {
   }
 
   Future<void> setPurchasedFlag() async {
-    if (isOffline) {
+    if (isConncected) {
       // Logika, gdy aplikacja jest w trybie offline
       print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
       return;
