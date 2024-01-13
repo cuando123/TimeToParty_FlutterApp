@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -45,19 +46,19 @@ import 'src/style/snack_bar.dart';
 final globalLoading = GlobalLoading();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   FirebaseCrashlytics? crashlytics;
-   if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-     try {
-       WidgetsFlutterBinding.ensureInitialized();
-       await Firebase.initializeApp(
-         options: DefaultFirebaseOptions.currentPlatform,
-       );
-       crashlytics = FirebaseCrashlytics.instance;
-     } catch (e) {
-       debugPrint("Firebase couldn't be initialized: $e");
-     }
-   }
+  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      crashlytics = FirebaseCrashlytics.instance;
+    } catch (e) {
+      debugPrint("Firebase couldn't be initialized: $e");
+    }
+  }
 
   await guardWithCrashlytics(
     guardedMain,
@@ -83,25 +84,29 @@ Future<void> guardedMain() async {
     );
   });
 
-  WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
 
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  final initAdFuture = MobileAds.instance.initialize();
+  // Sprawdź połączenie internetowe
+  var connectivityResult = await Connectivity().checkConnectivity();
+  FirebaseService firebaseService;
 
-  FirebaseService firebaseService = FirebaseService();
-  await firebaseService.signInAnonymouslyAndSaveUID();
+  // Inicjalizuj usługi tylko przy dostępnym połączeniu
+  if (connectivityResult != ConnectivityResult.none) {
+    firebaseService = FirebaseService();  // Przy dostępnym połączeniu
+    // Inicjalizuj inne usługi zależne od połączenia
+  } else {
+    firebaseService = FirebaseService(isOffline: true); // W trybie offline
+  }
+  final initAdFuture = MobileAds.instance.initialize();
 
   AdMobService? adMobService = AdMobService(initAdFuture);
   RequestConfiguration configuration = RequestConfiguration(
       testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]); // Ustaw testowe ID urządzeń
   await MobileAds.instance.updateRequestConfiguration(configuration);
-
 
   final translationProvider = TranslationProvider.fromDeviceLanguage();
   await translationProvider.loadWords();
@@ -129,42 +134,44 @@ Future<void> guardedMain() async {
     TO_DO 2 trzeba przeanalizowac teraz mając obecna wiedze czy te funkcje ktore tu byly mi sie przydadza - powinienem juz to w miare zrozumiec to co tu bylo?
 below
        }*/
-  await translationProvider.loadTranslations().then((_) {
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<FirebaseService?>(
-            create: (context) => firebaseService,//provider uzytkownika
+    await translationProvider.loadTranslations().then((_) {
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<FirebaseService?>(
+              create: (context) => firebaseService,//provider uzytkownika
+            ),
+            ChangeNotifierProvider<AdMobService?>(
+              create: (context) => adMobService,//provider admob
+            ),
+            ChangeNotifierProvider.value(
+              value: translationProvider,
+            ),
+            ChangeNotifierProvider<TeamProvider>(
+              create: (context) {
+                final provider = TeamProvider();
+                provider.initializeTeams(context, 2);
+                return provider;
+              },),
+            ChangeNotifierProvider<LoadingStatus>(
+              create: (_) => LoadingStatus(),
+            ),
+            ChangeNotifierProvider<InAppPurchaseController?>(
+              create: (context) => inAppPurchaseController,
+            ),
+          ],
+          child: MyApp(
+            settingsPersistence: LocalStorageSettingsPersistence(),
+            playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
+            inAppPurchaseController: inAppPurchaseController,
+            gamesServicesController: gamesServicesController,
+            firebaseService: firebaseService,
           ),
-          ChangeNotifierProvider<AdMobService?>(
-            create: (context) => adMobService,//provider admob
-          ),
-          ChangeNotifierProvider.value(
-            value: translationProvider,
-          ),
-          ChangeNotifierProvider<TeamProvider>(
-          create: (context) {
-            final provider = TeamProvider();
-            provider.initializeTeams(context, 2);
-            return provider;
-          },),
-          ChangeNotifierProvider<LoadingStatus>(
-            create: (_) => LoadingStatus(),
-          ),
-          ChangeNotifierProvider<InAppPurchaseController?>(
-            create: (context) => inAppPurchaseController,
-          ),
-        ],
-        child: MyApp(
-          settingsPersistence: LocalStorageSettingsPersistence(),
-          playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-          inAppPurchaseController: inAppPurchaseController,
-          gamesServicesController: gamesServicesController,
         ),
-      ),
-    );
-  });
-}
+      );
+    });
+  }
+
 class LoadingStatus extends ChangeNotifier {
   bool _isLoading = false;
 
@@ -252,23 +259,18 @@ class MyApp extends StatelessWidget {
 
   final GamesServicesController? gamesServicesController;
 
+  final FirebaseService firebaseService;
+
   final InAppPurchaseController? inAppPurchaseController;
 
-  final Future initFuture = Future.wait([
-    // umieść tutaj swoje operacje inicjalizacyjne, na przykład:
-    // Firebase.initializeApp(),
-    // initCrashlytics(),
-    // initAdmob(),
-    // initInAppPurchases(),
-    // initGameServices(),
-    // itd.
-  ]);
+  final Future initFuture = Future.wait([]);
 
   MyApp({super.key, 
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,
     required this.gamesServicesController,
+    required this.firebaseService,
   });
 
   @override

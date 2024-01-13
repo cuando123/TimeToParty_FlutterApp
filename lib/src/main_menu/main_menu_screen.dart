@@ -33,11 +33,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
-  final FirebaseService _firebaseService = FirebaseService();
+  late FirebaseService _firebaseService;
+  bool isOnline = false;
+
+  final Connectivity _connectivity = Connectivity();
 
   @override
   void initState() {
     super.initState();
+    _firebaseService = FirebaseService(isOffline: !isOnline);
+
     _setupConnectivityListener();
 
     _animationController = AnimationController(
@@ -55,14 +60,23 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   }
 
   void _setupConnectivityListener() {
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
-      if (result != ConnectivityResult.none) {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      bool isConnected = result != ConnectivityResult.none;
+      setState(() {
+        isOnline = isConnected;
+      });
+
+      if (isOnline) {
         _tryLoadAd();
+        _firebaseService.updateConnectionStatus(isConnected);
+        print("ISONLINE: $isOnline");
+        _firebaseService.signInAnonymouslyAndSaveUID();
       }
     });
   }
 
-  void _tryLoadAd(){
+
+  void _tryLoadAd() {
     context.read<AdMobService>().reloadAd();
   }
 
@@ -82,6 +96,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     _animationController.dispose();
     super.dispose();
   }
+
 /*
   @override
   void didChangeDependencies() {
@@ -242,13 +257,17 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     //SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
 
                     //Text("Account type: free"),
-                    Text("${context.read<FirebaseService?>()?.currentUser?.uid}", style: TextStyle(color: Colors.white)), // print user UID wygenerowanego w firebase
-                    //reklamka
+                    if (isOnline)
+                      Text("${context.read<FirebaseService?>()?.currentUser?.uid}",
+                          style: TextStyle(color: Colors.white)), // print user UID wygenerowanego w firebase
+
                     if (isBannerAdLoaded)
                       Container(
                         height: 60,
                         child: AdWidget(ad: context.read<AdMobService>().bannerAd),
-                      ) else  SizedBox(height: 60)
+                      )
+                    else
+                      SizedBox(height: 60),
                   ],
                 ),
               ],

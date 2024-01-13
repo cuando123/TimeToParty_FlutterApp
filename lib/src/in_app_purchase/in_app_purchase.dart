@@ -28,15 +28,11 @@ class InAppPurchaseController extends ChangeNotifier {
     await translationProvider.loadWords();
     notifyListeners();
 
-    if (value) {
-      // Zapisz stan zakupu w pamięci lokalnej
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isPurchased', value);
 
       // Zaloguj użytkownika w Firebase
       // await _firebaseService.signInAnonymouslyAndSaveUID();
       // await buy();
-    }
+
   }
 /*
   StreamSubscription<List<PurchaseDetails>>? _subscription;

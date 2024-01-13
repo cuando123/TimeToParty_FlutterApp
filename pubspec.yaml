@@ -51,6 +51,7 @@ dependencies:
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code
   # that references the dependency.
+  flutter_secure_storage: ^9.0.0 #szyfrowanie danych dla shared preferences
   cloud_firestore: ^4.14.0 #Jest to klient Firebase Cloud Firestore, który pozwala na dostęp i manipulację danymi w bazie danych Firestore w czasie rzeczywistym. Umożliwia przechowywanie i synchronizację danych pomiędzy użytkownikami.
   firebase_auth: ^4.16.0 #biblioteka do autentykacji w Firebase. Pozwala na zarządzanie użytkownikami, w tym logowanie, rejestrację, resetowanie hasła itp.
   firebase_core: ^2.24.2  # Needed for Crashlytics below, Jest to biblioteka podstawowa, konieczna do inicjalizacji i korzystania z różnych usług Firebase w Twojej aplikacji Flutter.

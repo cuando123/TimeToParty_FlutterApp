@@ -68,7 +68,7 @@ class TranslationProvider extends ChangeNotifier {
     var purchaseState = PurchaseState();
     _cachedWords = await _translationDatabase.fetchWordsByLanguage(_currentLanguage, purchaseState.isPurchased);
     notifyListeners();
-    print('_cachedWords: $_cachedWords');
+    //print('_cachedWords: $_cachedWords');
   }
 
 
