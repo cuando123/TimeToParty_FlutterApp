@@ -20,6 +20,12 @@ class AdMobService extends ChangeNotifier {
     _setupRewardedAd();
   }
 
+  Function? onInterstitialClosed;
+
+  void setOnInterstitialClosed(Function callback) {
+    onInterstitialClosed = callback;
+  }
+
   void onConnectionChanged(bool isConnected) {
     if (isConnected) {
       // Połączenie z internetem przywrócone, próbujemy załadować reklamy
@@ -154,6 +160,7 @@ class AdMobService extends ChangeNotifier {
     );
   }
 
+
   void showInterstitialAd() {
     final interstitialAd = _interstitialAd;
     if (interstitialAd != null) {
@@ -164,6 +171,10 @@ class AdMobService extends ChangeNotifier {
           ad.dispose();
           print('Ad dismissed full screen content.');
           _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej
+          // Wywołanie callbacku
+          if (onInterstitialClosed != null) {
+            onInterstitialClosed!();
+          }
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           print('Ad failed to show full screen content: $error');

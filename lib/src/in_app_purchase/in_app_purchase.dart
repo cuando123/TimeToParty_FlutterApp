@@ -29,8 +29,8 @@ class InAppPurchaseController extends ChangeNotifier {
     notifyListeners();
 
 
-      // Zaloguj użytkownika w Firebase
-      // await _firebaseService.signInAnonymouslyAndSaveUID();
+      // tu będzie do przestawienia flaga w firebase
+
       // await buy();
 
   }

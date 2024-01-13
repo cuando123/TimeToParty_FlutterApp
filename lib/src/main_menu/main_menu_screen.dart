@@ -21,6 +21,7 @@ import '../in_app_purchase/services/firebase_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
+import '../settings/settings.dart';
 import '../style/palette.dart';
 
 class MainMenuScreen extends StatefulWidget {
@@ -61,6 +62,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
     //_checkPurchaseStatus();
+    // Ustaw callback
+    Provider.of<AdMobService>(context, listen: false)
+        .setOnInterstitialClosed(() {
+      final settings = context.watch<SettingsController>();
+      final settingsController = context.watch<SettingsController>();
+      if (!settings.musicOn.value) {
+        settingsController.toggleMusicOn();
+      } //TO_DO do naprawienia ten callback tutaj jest
+      print("Reklama interstitial została zamknięta");
+    });
   }
 
   void _setupConnectivityListener() {
@@ -150,6 +161,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final isInterstitialAdLoaded = context.watch<AdMobService>().isInterstitialAdLoaded;
+    final settings = context.watch<SettingsController>();
+    final settingsController = context.watch<SettingsController>();
 
     TeamScore.resetAllScores();
     return Container(
@@ -210,11 +223,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
                         onPressed: () {
-                          if (isInterstitialAdLoaded) {
-                            context.read<AdMobService>().showInterstitialAd();
-                            print('powinnoa byc000');
-                          }
+                          print("Uruchamiam interstitial");
                           audioController.playSfx(SfxType.button_accept);
+                          if (isInterstitialAdLoaded) {
+                            if (settings.musicOn.value) {
+                              settingsController.toggleMusicOn();
+                            } //music off
+                            context.read<AdMobService>().showInterstitialAd();
+                          }
                           Navigator.of(context).push(_createRoute());
                         },
                         backgroundColor: Palette().pink,
