@@ -37,23 +37,38 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   late FirebaseService _firebaseService;
   bool isOnline = false;
+  late NativeAd? _nativeAd;
+  bool _nativeAdLoaded = false;
 
   final Connectivity _connectivity = Connectivity();
 
   @override
   void initState() {
     super.initState();
-    // Załadowanie reklam na początku, jeśli jesteśmy online
-    if (isOnline) {
-      context.read<AdMobService>().reloadAd();
-    }
+    //if ACCOUNT = FREE
+    _nativeAd = NativeAd(adUnitId: context
+        .read<AdMobService>()
+        .nativeAdUnitId!, factoryId: 'listTile', request: AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (Ad ad) {
+            setState(() {
+              _nativeAdLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+          },
+        ))
+      ..load();
+
     _firebaseService = FirebaseService(isConncected: isOnline);
     _setupConnectivityListener();
 
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
-    )..repeat(); // Powtarza animację w nieskończoność
+    )
+      ..repeat(); // Powtarza animację w nieskończoność
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
@@ -62,16 +77,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
     //_checkPurchaseStatus();
-    // Ustaw callback
-    Provider.of<AdMobService>(context, listen: false)
-        .setOnInterstitialClosed(() {
-      final settings = context.watch<SettingsController>();
-      final settingsController = context.watch<SettingsController>();
-      if (!settings.musicOn.value) {
-        settingsController.toggleMusicOn();
-      } //TO_DO do naprawienia ten callback tutaj jest
-      print("Reklama interstitial została zamknięta");
-    });
+
   }
 
   void _setupConnectivityListener() {
@@ -160,9 +166,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    final isInterstitialAdLoaded = context.watch<AdMobService>().isInterstitialAdLoaded;
-    final settings = context.watch<SettingsController>();
-    final settingsController = context.watch<SettingsController>();
 
     TeamScore.resetAllScores();
     return Container(
@@ -181,17 +184,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         ),
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: LogoWidget(),
-                ),
-                ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Center(child: LogoWidget()),
+                    ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
                     CustomStyledButton(
                       icon: Icons.question_mark,
                       text: getTranslatedString(context, 'game_rules'),
@@ -215,22 +215,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
                     AnimatedBuilder(
                       animation: _scaleAnimation,
-                      builder: (context, child) => Transform.scale(
-                        scale: _scaleAnimation.value,
-                        child: child,
-                      ),
+                      builder: (context, child) =>
+                          Transform.scale(
+                            scale: _scaleAnimation.value,
+                            child: child,
+                          ),
                       child: CustomStyledButton(
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
                         onPressed: () {
-                          print("Uruchamiam interstitial");
                           audioController.playSfx(SfxType.button_accept);
-                          if (isInterstitialAdLoaded) {
-                            if (settings.musicOn.value) {
-                              settingsController.toggleMusicOn();
-                            } //music off
-                            context.read<AdMobService>().showInterstitialAd();
-                          }
                           Navigator.of(context).push(_createRoute());
                         },
                         backgroundColor: Palette().pink,
@@ -268,9 +262,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
-                    //SizedBox(height: ResponsiveSizing.scaleHeight(context, 80)),
-
-                    //Text("Account type: free"),
                     Consumer<FirebaseService>(
                       builder: (context, firebaseService, child) {
                         //print('FIREBASE WIDGET z CONSUMERA: $uidUserLoaded');
@@ -280,28 +271,28 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         );
                       },
                     ),
-                    Consumer<AdMobService>(
-                      builder: (context, adMobService, child) {
-                        if (adMobService.isBannerAdLoaded) {
-                          // Reklama jest załadowana, wyświetl ją
-                          return SizedBox(
-                            height: 60,
-                            child: AdWidget(ad: adMobService.bannerAd),
-                          );
-                        } else {
-                          return SizedBox(
-                            height: 60,
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                      },
-                    )
+                    // Dodaj tutaj pozostałe widgety
                   ],
                 ),
-              ],
-            ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<AdMobService>(
+                  builder: (context, adMobService, child) {
+                    return _nativeAdLoaded
+                        ? Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: AdWidget(ad: _nativeAd!),
+                    )
+                        : SizedBox(
+                      height: 50,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),

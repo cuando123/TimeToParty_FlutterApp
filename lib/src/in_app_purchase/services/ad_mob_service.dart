@@ -20,7 +20,7 @@ class AdMobService extends ChangeNotifier {
     _setupRewardedAd();
   }
 
-  Function? onInterstitialClosed;
+  late Function onInterstitialClosed;
 
   void setOnInterstitialClosed(Function callback) {
     onInterstitialClosed = callback;
@@ -109,6 +109,23 @@ class AdMobService extends ChangeNotifier {
     }
   }
 
+  String? get nativeAdUnitId {
+    if (kReleaseMode) {
+      if (Platform.isIOS) {
+        return "ios-value-of-app-id-from-admob-production";
+      } else {
+        return "android-value-of-app-id-from-admob-production";
+      }
+    } else {
+      if (Platform.isIOS) {
+        return "ios-value-of-app-id-from-admob-test";
+      } else {
+        return "ca-app-pub-3940256099942544/2247696110";  //testowa natywna image
+         // "ca-app-pub-3940256099942544/1044960115"; //testowa natywna video
+        //moja natywna ca-app-pub-8821222111683401/7028254802
+      }
+    }
+  }
   void _setupBannerAd() {
     _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId ?? '',
@@ -123,6 +140,7 @@ class AdMobService extends ChangeNotifier {
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           print('Ad failed to load: $error');
           ad.dispose();
+          notifyListeners();
           // Ustawienie timera do ponownego próbowania załadowania
           Timer(Duration(seconds: 30), () {
             _setupBannerAd(); // Ponowne próby ładowania
@@ -167,14 +185,13 @@ class AdMobService extends ChangeNotifier {
       interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (ad) =>
             print('Ad showed full screen content.'),
-        onAdDismissedFullScreenContent: (ad) {
+        onAdDismissedFullScreenContent: (ad) async {
           ad.dispose();
           print('Ad dismissed full screen content.');
-          _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej
           // Wywołanie callbacku
-          if (onInterstitialClosed != null) {
-            onInterstitialClosed!();
-          }
+          await onInterstitialClosed();
+          print('wykonalem callback');
+          _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           print('Ad failed to show full screen content: $error');
