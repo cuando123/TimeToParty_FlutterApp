@@ -456,10 +456,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                       alignment: Alignment.center,
                                       child: AdWidget(ad: _nativeAd!),
                                     )
-                                  : SizedBox(
-                                      height: 50,
-                                      child: Center(child: CircularProgressIndicator()),
-                                    );
+                                  : SizedBox.shrink();
                             },
                           ),
                         ),

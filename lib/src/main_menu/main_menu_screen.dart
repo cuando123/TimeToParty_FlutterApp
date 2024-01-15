@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
@@ -21,7 +20,6 @@ import '../in_app_purchase/services/firebase_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
-import '../settings/settings.dart';
 import '../style/palette.dart';
 
 class MainMenuScreen extends StatefulWidget {
@@ -61,7 +59,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         ))
       ..load();
 
-    _firebaseService = FirebaseService(isConncected: isOnline);
+    _firebaseService = FirebaseService(isConnected: isOnline);
     _setupConnectivityListener();
 
     _animationController = AnimationController(
@@ -113,22 +111,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     super.dispose();
   }
 
-/*
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _adMobService = context.read<AdMobService>();
-    _adMobService.initialization.then((value) {
-      setState(() {
-        _banner = BannerAd(
-            size: AdSize.fullBanner,
-            adUnitId: _adMobService.bannerAdUnitId!,
-            listener: _adMobService.bannerListener,
-            request: AdRequest())
-          ..load();
-      });
-    });
-  }*/
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -285,10 +267,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       alignment: Alignment.center,
                       child: AdWidget(ad: _nativeAd!),
                     )
-                        : SizedBox(
-                      height: 50,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
+                        : SizedBox.shrink();
                   },
                 ),
               ),

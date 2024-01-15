@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
 import 'package:game_template/src/play_session/extensions.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_lifecycle/translated_text.dart';
@@ -50,6 +52,13 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   late Animation<double> _timeUpScaleAnimation;
   late Animation<double> _timeUpFadeOutAnimation;
 
+  late NativeAd? _nativeAd;
+  bool _nativeAdLoaded = false;
+
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  bool isOnline = false;
+  final Connectivity _connectivity = Connectivity();
+
   bool hasShownAlertDialog = false;
   late Timer _timer;
   double _opacity = 0;
@@ -83,6 +92,26 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   @override
   void initState() {
     super.initState();
+    _nativeAd = NativeAd(
+        adUnitId: context.read<AdMobService>().nativeAdUnitId!,
+        factoryId: 'listTile',
+        request: AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (Ad ad) {
+            setState(() {
+              _nativeAdLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+          },
+        ))
+      ..load();
+    // Załadowanie reklam na początku, jeśli jesteśmy online
+    if (isOnline) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _setupConnectivityListener();
     _setTimerDuration();
     initialTime = remainingTime;
     _slideAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -174,6 +203,16 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
       }
       print("Reklama interstitial została zamknięta");
+    });
+  }
+
+  void _setupConnectivityListener() {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      bool isConnected = result != ConnectivityResult.none;
+      setState(() {
+        isOnline = isConnected;
+      });
+      context.read<AdMobService>().onConnectionChanged(isConnected);
     });
   }
 
@@ -1066,6 +1105,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       },
                       text: getTranslatedString(context, 'continue'),
                     ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<AdMobService>(
+                  builder: (context, adMobService, child) {
+                    return _nativeAdLoaded
+                        ? Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: AdWidget(ad: _nativeAd!),
+                    )
+                        : SizedBox.shrink();
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -1081,6 +1134,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _animationController.dispose();
     _slideAnimationController.dispose();
     _rotationAnimationController.dispose();
+    _connectivitySubscription?.cancel();
     super.dispose();
   }
 

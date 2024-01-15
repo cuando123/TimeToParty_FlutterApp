@@ -1,9 +1,13 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/app_lifecycle/translated_text.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/win_game/triple_button_win.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
@@ -32,9 +36,38 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   late Animation<double> _scaleAnimationCenterButton;
   late Animation<double> _scaleAnimationRightButton;
 
+  late NativeAd? _nativeAd;
+  bool _nativeAdLoaded = false;
+
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  bool isOnline = false;
+  final Connectivity _connectivity = Connectivity();
+
   @override
   void initState() {
     super.initState();
+    //if ACCOUNT = FREE
+    _nativeAd = NativeAd(
+        adUnitId: context.read<AdMobService>().nativeAdUnitId!,
+        factoryId: 'listTile',
+        request: AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (Ad ad) {
+            setState(() {
+              _nativeAdLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+          },
+        ))
+      ..load();
+    // Załadowanie reklam na początku, jeśli jesteśmy online
+    if (isOnline) {
+      context.read<AdMobService>().reloadAd();
+    }
+
+    _setupConnectivityListener();
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
@@ -105,6 +138,17 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
       ),
     ]).animate(_animationController);
   }
+
+  void _setupConnectivityListener() {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      bool isConnected = result != ConnectivityResult.none;
+      setState(() {
+        isOnline = isConnected;
+      });
+      context.read<AdMobService>().onConnectionChanged(isConnected);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final adsControllerAvailable = context.watch<AdMobService?>() != null;
@@ -390,8 +434,23 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                         ],
                       ),
                     )),
-              )
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<AdMobService>(
+                  builder: (context, adMobService, child) {
+                    return _nativeAdLoaded
+                        ? Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: AdWidget(ad: _nativeAd!),
+                    )
+                        : SizedBox.shrink();
+                  },
+                ),
+              ),
             ],
+
           ),
         ),
       ),
@@ -414,6 +473,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   @override
   void dispose() {
     _animationController.dispose();
+    _connectivitySubscription?.cancel();
     super.dispose();
   }
 }

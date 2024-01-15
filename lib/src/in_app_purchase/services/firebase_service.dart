@@ -8,10 +8,10 @@ class FirebaseService extends ChangeNotifier {
   //ogolnie wszedzie znaki zapytania bo inicjalizacja w tybie offline - same nulle sa
   FirebaseAuth? _auth;
   FirebaseFirestore? _firestore;
-  bool isConncected;
+  bool isConnected;
 
-  FirebaseService({this.isConncected = false}) {
-    if (!isConncected) {
+  FirebaseService({this.isConnected = false}) {
+    if (!isConnected) {
       _auth = FirebaseAuth.instance;
       _firestore = FirebaseFirestore.instance;
     }
@@ -43,7 +43,7 @@ class FirebaseService extends ChangeNotifier {
   }
 
   Future<void> signInAnonymouslyAndSaveUID() async {
-    if (isConncected) {
+    if (isConnected) {
       // Logika, gdy aplikacja jest w trybie offline
       print("Próba logowania w trybie offline - nieudana.");
       return;
@@ -81,7 +81,7 @@ class FirebaseService extends ChangeNotifier {
   }
 
   Future<void> setPurchasedFlag() async {
-    if (isConncected) {
+    if (isConnected) {
       // Logika, gdy aplikacja jest w trybie offline
       print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
       return;
