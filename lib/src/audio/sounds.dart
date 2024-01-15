@@ -72,6 +72,10 @@ List<String> soundTypeToFilename(SfxType type) {
       return const [
         'physical_challenge_lottery.mp3',
       ];
+    case SfxType.clock_effect:
+      return const [
+        'clock_effect.mp3',
+      ];
   }
 
 
@@ -88,6 +92,7 @@ double soundTypeToVolume(SfxType type) {
     case SfxType.button_accept:
     case SfxType.button_back_exit:
     case SfxType.card_skip_sound:
+    case SfxType.clock_effect:
       return 1.0;
       default: return 1.0;
   }
@@ -111,5 +116,6 @@ enum SfxType {
   roulette_wheel,
   win_game,
   score_sound_effect,
-  physical_challenge_lottery
+  physical_challenge_lottery,
+  clock_effect
 }

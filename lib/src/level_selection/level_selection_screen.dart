@@ -386,7 +386,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     context.read<AdMobService>().showInterstitialAd();
                                                   } else {
                                                     //TO_DO tu będzie do dodania IF czy user jest free czy nie, na razie callback obsluguje brak internetu itp
-                                                    Navigator.push(
+                                                    await Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) => LoadingScreenSecond(

@@ -12,6 +12,7 @@ import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
 import '../../in_app_purchase/in_app_purchase.dart';
+import '../../in_app_purchase/services/ad_mob_service.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
@@ -154,6 +155,26 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     });
     determineTotalCards();
     _initializeCards();
+    // Ustaw callback
+    Provider.of<AdMobService>(context, listen: false).setOnInterstitialClosed(() {
+      if (widget.currentField[0] == 'field_star_blue_dark')
+      {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed);}
+      else
+      {
+        if (isAlertOpened)
+        {
+          Navigator.of(context).pop();
+      Navigator.of(context).pop('response');
+      AnimatedAlertDialog.showPointsDialog(
+      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      }
+      else
+      Navigator.of(context).pop('response');
+      AnimatedAlertDialog.showPointsDialog(
+      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      }
+      print("Reklama interstitial została zamknięta");
+    });
   }
 
   bool shouldStartTimerInitially() {
@@ -458,6 +479,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       if (!mounted) return;
       safeSetState(() {
         if (remainingTime > 0) {
+          final audioController = context.read<AudioController>();
+          if(remainingTime <= 5){
+            audioController.playSfx(SfxType.heartbeat);
+          } else {
+            audioController.playSfx(SfxType.clock_effect);
+          }
           remainingTime--;
         } else {
           _showTimeUpAnimation();
@@ -491,6 +518,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 // animacja time up
   void _showTimeUpAnimation() {
+    final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
     for (int i = 0; i < starsColors.length; i++) {
       if (starsColors[i] == Colors.yellow || starsColors[i] == Colors.grey) {
         starsColors[i] = Colors.red;
@@ -498,23 +526,27 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     // Powyższe spowoduje że animacja punktów będzie dobrze wyglądała gdy czas się skończy
     _timeUpAnimationController.forward().then((value) => {
-          if (widget.currentField[0] == 'field_star_blue_dark')
-            {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
-          else
-            {
-              if (isAlertOpened)
-                {
-                  Navigator.of(context).pop(),
-                  Navigator.of(context).pop('response'),
-                  AnimatedAlertDialog.showPointsDialog(
-                      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
-                }
-              else
+    if (isInterstitialAdLoaded)
+      Provider.of<AdMobService>(context, listen: false).showInterstitialAd()
+    else
+      {
+        if (widget.currentField[0] == 'field_star_blue_dark')
+          {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
+        else
+          {
+            if (isAlertOpened)
+              {
+                Navigator.of(context).pop(),
                 Navigator.of(context).pop('response'),
-              AnimatedAlertDialog.showPointsDialog(
-                  context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
-            }
-        });
+                AnimatedAlertDialog.showPointsDialog(
+                    context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+              }
+            else
+              Navigator.of(context).pop('response'),
+            AnimatedAlertDialog.showPointsDialog(
+                context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+          }
+      },});
   }
 
 // ustalenie konkretnego czasu dla danej karty
@@ -665,9 +697,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     } else if (currentCardIndex == totalCards - 1) {
       starsColors[currentCardIndex] = Colors.red;
       await Future.delayed(Duration(milliseconds: 200));
-      Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(
-          context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+
+      final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
+      if (isInterstitialAdLoaded){
+        Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+      } else {
+        Navigator.of(context).pop('response');
+        AnimatedAlertDialog.showPointsDialog(
+            context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      }
     }
   }
 
@@ -687,9 +725,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Jeśli to była ostatnia karta
       starsColors[currentCardIndex] = Colors.green;
       await Future.delayed(Duration(milliseconds: 200));
-      Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(
-          context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+
+      final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
+      if (isInterstitialAdLoaded){
+        Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+      } else {
+        Navigator.of(context).pop('response');
+        AnimatedAlertDialog.showPointsDialog(
+            context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+      }
     }
   }
 
