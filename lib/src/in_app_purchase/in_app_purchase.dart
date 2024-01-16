@@ -16,7 +16,7 @@ class InAppPurchaseController extends ChangeNotifier {
 
 
 /*
-  StreamSubscription<List<PurchaseDetails>>? _subscription;
+
 
   InAppPurchase inAppPurchaseInstance;
 
@@ -30,9 +30,6 @@ class InAppPurchaseController extends ChangeNotifier {
   /// var kontroler = InAppPurchaseController(InAppPurchase.instance);
   InAppPurchaseController(this.inAppPurchaseInstance, this.translationProvider);
 
-
-  /// The current state of the ad removal purchase.
-  //AdRemovalPurchase get adRemoval => _adRemoval;
 
   /// Uruchamia interfejs platformy umożliwiający dokonywanie zakupów w aplikacji.
   /// Obecnie jedynym obsługiwanym zakupem w aplikacji jest usuwanie reklam.

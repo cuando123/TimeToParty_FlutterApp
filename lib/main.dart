@@ -19,9 +19,7 @@ import 'package:provider/provider.dart';
 
 import 'myapp.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
-import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
-import 'src/in_app_purchase/in_app_purchase.dart';
 import 'src/player_progress/persistence/local_storage_player_progress_persistence.dart';
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 
