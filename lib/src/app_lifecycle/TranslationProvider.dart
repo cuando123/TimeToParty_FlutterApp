@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../in_app_purchase/in_app_purchase.dart';
+import '../in_app_purchase/models/purchase_state.dart';
 import 'translation_database.dart';
 
 class TranslationProvider extends ChangeNotifier {
@@ -65,7 +66,7 @@ class TranslationProvider extends ChangeNotifier {
   }
 
   Future<void> loadWords() async {
-    var purchaseState = PurchaseState();
+    var purchaseState = PurchaseState(); //bierzemy purchase state aby pobierac więcej słów z bazy tutaj
     _cachedWords = await _translationDatabase.fetchWordsByLanguage(_currentLanguage, purchaseState.isPurchased);
     notifyListeners();
   }

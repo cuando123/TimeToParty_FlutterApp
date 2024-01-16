@@ -11,29 +11,10 @@ import 'services/firebase_service.dart';
 
 /// Allows buying in-app. ,Facade of `package:in_app_purchase`.
 class InAppPurchaseController extends ChangeNotifier {
-  static final Logger _log = Logger('InAppPurchases');
-  late final TranslationProvider translationProvider;
-  //final FirebaseService _firebaseService = FirebaseService();
-
-  bool _isPurchased = false;
-
-  InAppPurchaseController(InAppPurchase instance, TranslationProvider translationProvider);
-
-  bool get isPurchased => _isPurchased;
-
-  Future<void> setPurchased(bool value) async {
-    _isPurchased = value;
-    var purchaseState = PurchaseState();
-    purchaseState.isPurchased = true; // Ustawienie stanu zakupu
-    await translationProvider.loadWords();
-    notifyListeners();
 
 
-      // tu będzie do przestawienia flaga w firebase
 
-      // await buy();
 
-  }
 /*
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
@@ -223,17 +204,7 @@ class InAppPurchaseController extends ChangeNotifier {
 
 }
 
-class PurchaseState {
-  static final PurchaseState _instance = PurchaseState._internal();
 
-  factory PurchaseState() {
-    return _instance;
-  }
-
-  PurchaseState._internal();
-
-  bool isPurchased = false;
-}
 
 
 /*Consumer<InAppPurchaseController>(

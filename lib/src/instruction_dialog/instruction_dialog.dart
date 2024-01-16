@@ -7,6 +7,7 @@ import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../in_app_purchase/services/iap_service.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
@@ -216,7 +217,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                         ResponsiveSizing.responsiveWidthGap(context, 10),
                         translatedText(context, 'instruction_dialog_have_fun',
                             16, Palette().menudark),
-                        Consumer<InAppPurchaseController?>(
+                        Consumer<IAPService?>(
                           builder: (context, purchaseController, child) {
                             if (purchaseController!.isPurchased) {
                               return Container(); // Zawartość dla użytkowników, którzy dokonali zakupu

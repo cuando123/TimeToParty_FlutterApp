@@ -16,6 +16,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../in_app_purchase/services/iap_service.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../settings/settings.dart';
@@ -149,6 +150,11 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     for (var controller in controllers) {
       controller.dispose();
@@ -167,11 +173,26 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     return true;
   }
 
+  Future<void> navigateToLoadingScreen(BuildContext context, List<String> teamNames) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoadingScreenSecond(
+          teamNames: teamNames,
+          teamColors: teamColors,
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final isInterstitialAdLoaded = context.watch<AdMobService>().isInterstitialAdLoaded;
     final settings = context.watch<SettingsController>();
     final settingsController = context.watch<SettingsController>();
+    final iapService = Provider.of<IAPService>(context, listen: false);
+    final isPurchased = iapService.isPurchased;
 
     return Selector<TeamProvider, List<String>>(
       selector: (_, provider) => provider.teamNames,
@@ -181,7 +202,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
         }
         for (int i = 0; i < teamNames.length; i++) {
           controllers[i].text = teamNames[i];
-        }
+        }print('isPurchased: $isPurchased, isOnline: $isOnline, nativeAdLoaded: $_nativeAdLoaded');
         return GestureDetector(
           onTap: () {
             if (!FocusScope.of(context).hasPrimaryFocus) {
@@ -379,22 +400,19 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   audioController.playSfx(SfxType.button_accept);
                                                   _toggleCelebration();
 
-                                                  if (isInterstitialAdLoaded) {
-                                                    if (settings.musicOn.value) {
-                                                      settingsController.toggleMusicOn();
-                                                    } //music off
-                                                    context.read<AdMobService>().showInterstitialAd();
+                                                  if (isPurchased) {
+                                                    // Zawartość dla użytkowników, którzy dokonali zakupu
+                                                    navigateToLoadingScreen(context, teamProvider.teamNames);
                                                   } else {
-                                                    //TO_DO tu będzie do dodania IF czy user jest free czy nie, na razie callback obsluguje brak internetu itp
-                                                    await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => LoadingScreenSecond(
-                                                          teamNames: teamProvider.teamNames,
-                                                          teamColors: teamColors,
-                                                        ),
-                                                      ),
-                                                    );
+                                                    // Zawartość dla użytkowników bez zakupu
+                                                    if (isInterstitialAdLoaded) {
+                                                      if (settings.musicOn.value) {
+                                                        settingsController.toggleMusicOn();
+                                                      }
+                                                      context.read<AdMobService>().showInterstitialAd();
+                                                    } else {
+                                                      navigateToLoadingScreen(context, teamProvider.teamNames);
+                                                    }
                                                   }
                                                 } else {
                                                   AnimatedAlertDialog.showAnimatedDialog(context, 'team_names_empty',
@@ -446,20 +464,23 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                           ),
                         ),
                         //ad
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Consumer<AdMobService>(
-                            builder: (context, adMobService, child) {
-                              return _nativeAdLoaded
-                                  ? Container(
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      child: AdWidget(ad: _nativeAd!),
-                                    )
-                                  : SizedBox.shrink();
-                            },
+                        if (!isPurchased)
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Consumer<AdMobService>(
+                              builder: (context, adMobService, child) {
+                                if (isOnline && _nativeAdLoaded) {
+                                  return Container(
+                                    height: 50,
+                                    alignment: Alignment.center,
+                                    child: AdWidget(ad: _nativeAd!),
+                                  );
+                                } else {
+                                  return Text('nie zaladowano reklamy');//SizedBox.shrink();
+                                }
+                              },
+                            ),
                           ),
-                        ),
                       ],
                     )),
               ),
@@ -468,5 +489,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
         );
       },
     );
+
   }
+
 }

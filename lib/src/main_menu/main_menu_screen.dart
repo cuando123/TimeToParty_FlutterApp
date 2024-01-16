@@ -17,6 +17,7 @@ import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/services/firebase_service.dart';
+import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -176,7 +177,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     ResponsiveSizing.responsiveHeightGapWithCondition(context, 30, 45, 650),
                     CustomStyledButton(
                       icon: Icons.question_mark,
-                      text: getTranslatedString(context, 'game_rules'),
+                      text: getTranslatedString(context, 'game_rules', listen: true),
                       onPressed: () {
                         audioController.playSfx(SfxType.button_infos);
                         Future.delayed(Duration(milliseconds: 150), () {
@@ -257,19 +258,29 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                   ],
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Consumer<AdMobService>(
-                  builder: (context, adMobService, child) {
-                    return _nativeAdLoaded
-                        ? Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: AdWidget(ad: _nativeAd!),
-                    )
-                        : SizedBox.shrink();
-                  },
-                ),
+              Consumer<IAPService?>(
+                builder: (context, purchaseController, child) {
+                  if (purchaseController!.isPurchased) {
+                    return SizedBox.shrink();
+                  } else {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Consumer<AdMobService>(
+                        builder: (context, adMobService, child) {
+                          if (isOnline && _nativeAdLoaded) {
+                            return Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: AdWidget(ad: _nativeAd!),
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),

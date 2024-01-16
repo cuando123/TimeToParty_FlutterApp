@@ -15,6 +15,7 @@ import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
 import '../../in_app_purchase/in_app_purchase.dart';
 import '../../in_app_purchase/services/ad_mob_service.dart';
+import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
 import '../custom_style_buttons.dart';
@@ -88,10 +89,14 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   bool isMatch = false;
   int? resetSelection = -1;
   ImageType? selectedImageType;
+  late bool isInterstitialAdLoaded = false;
+  late bool isPurchased;
 
   @override
   void initState() {
     super.initState();
+    isPurchased = Provider.of<IAPService>(context, listen: false).isPurchased;
+    isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
     _nativeAd = NativeAd(
         adUnitId: context.read<AdMobService>().nativeAdUnitId!,
         factoryId: 'listTile',
@@ -517,17 +522,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (!mounted) return;
       safeSetState(() {
-        if (remainingTime > 0) {
-          final audioController = context.read<AudioController>();
-          if(remainingTime <= 5){
-            audioController.playSfx(SfxType.heartbeat);
-          } else {
-            audioController.playSfx(SfxType.clock_effect);
-          }
-          remainingTime--;
-        } else {
-          _showTimeUpAnimation();
-          _timer?.cancel();
+
+        if (!Provider.of<AdMobService>(context, listen: false).isInterstitialAdShowed) {
+          if (remainingTime > 0) {
+                    final audioController = context.read<AudioController>();
+                    if(remainingTime <= 5){
+                      audioController.playSfx(SfxType.heartbeat);
+                    } else {
+                      audioController.playSfx(SfxType.clock_effect);
+                    }
+                    remainingTime--;
+                  } else {
+                    _showTimeUpAnimation();
+                    _timer?.cancel();
+                  }
         }
       });
     });
@@ -557,7 +565,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
 // animacja time up
   void _showTimeUpAnimation() {
-    final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
+
     for (int i = 0; i < starsColors.length; i++) {
       if (starsColors[i] == Colors.yellow || starsColors[i] == Colors.grey) {
         starsColors[i] = Colors.red;
@@ -565,7 +573,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     // Powyższe spowoduje że animacja punktów będzie dobrze wyglądała gdy czas się skończy
     _timeUpAnimationController.forward().then((value) => {
-    if (isInterstitialAdLoaded)
+    if (isInterstitialAdLoaded && !isPurchased)
       Provider.of<AdMobService>(context, listen: false).showInterstitialAd()
     else
       {
@@ -709,7 +717,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       default:
         cardType = 'default';
     }
-    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    var purchaseController = Provider.of<IAPService>(context, listen: false);
     if (purchaseController.isPurchased) {
       randomNumber = random.nextInt(maxNumber) + 1; // Losuje liczbę od 1 do maxNumber - premium
     } else {
@@ -737,8 +745,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       starsColors[currentCardIndex] = Colors.red;
       await Future.delayed(Duration(milliseconds: 200));
 
-      final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
-      if (isInterstitialAdLoaded){
+      if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
       } else {
         Navigator.of(context).pop('response');
@@ -765,8 +772,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       starsColors[currentCardIndex] = Colors.green;
       await Future.delayed(Duration(milliseconds: 200));
 
-      final isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
-      if (isInterstitialAdLoaded){
+      if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
       } else {
         Navigator.of(context).pop('response');

@@ -12,6 +12,7 @@ import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../in_app_purchase/in_app_purchase.dart';
+import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../style/palette.dart';
@@ -40,7 +41,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   ResponsiveSizing.responsiveHeightGap(context, 10),
-                  Consumer<InAppPurchaseController?>(
+                  Consumer<IAPService?>(
                     builder: (context, purchaseController, child) {
                       if (purchaseController!.isPurchased) {
                         return buildDrawerPremiumContent(context); // Zawartość dla użytkowników, którzy dokonali zakupu

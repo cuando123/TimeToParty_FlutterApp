@@ -18,6 +18,7 @@ import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/services/ad_mob_service.dart';
 import '../in_app_purchase/in_app_purchase.dart';
+import '../in_app_purchase/services/iap_service.dart';
 import '../style/palette.dart';
 
 class WinGameScreen extends StatefulWidget {
@@ -384,11 +385,9 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                               ),
                             ),
                           ),
-
                           SizedBox(width: 10),
-
                           // Drugi przycisk (widoczny tylko w wersji darmowej)
-                          Consumer<InAppPurchaseController?>(
+                          Consumer<IAPService>(
                             builder: (context, purchaseController, child) {
                               if (!purchaseController!.isPurchased) {
                                 return Flexible(

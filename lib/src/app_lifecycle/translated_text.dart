@@ -65,8 +65,10 @@ List<String> getWordsList(BuildContext context, String wordKey) {
   return words;
 }
 
-String getTranslatedString(BuildContext context, String translationKey) {
-  return Provider.of<TranslationProvider>(context, listen: false).getTranslationText(translationKey);
+String getTranslatedString(BuildContext context, String translationKey, {bool listen = false}) {
+  TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: listen);
+  String word = translationProvider.getTranslationText(translationKey);
+  return word;
 }
 
 TextSpan translatedTextSpan(BuildContext context, String translationKey, double fontSize, Color textColor, {TextAlign? textAlign}) {

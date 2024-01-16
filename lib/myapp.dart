@@ -10,6 +10,7 @@ import 'package:game_template/src/games_services/games_services.dart';
 import 'package:game_template/src/in_app_purchase/cards_advertisement_screen.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
+import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/main_menu/main_menu_screen.dart';
 import 'package:game_template/src/notifications/notifications_manager.dart';
 import 'package:game_template/src/player_progress/persistence/player_progress_persistence.dart';
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
 
   final FirebaseService firebaseService;
 
-  final InAppPurchaseController? inAppPurchaseController;
+  final IAPService iapService;
 
   final Future initFuture = Future.wait([]);
 
@@ -76,7 +77,7 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.playerProgressPersistence,
     required this.settingsPersistence,
-    required this.inAppPurchaseController,
+    required this.iapService,
     required this.gamesServicesController,
     required this.firebaseService,
   });
@@ -101,7 +102,7 @@ class MyApp extends StatelessWidget {
                     create: (_) => NotificationsManager(context),
                   ),
                   Provider<GamesServicesController?>.value(value: gamesServicesController),
-                  ChangeNotifierProvider<InAppPurchaseController?>.value(value: inAppPurchaseController),
+                  ChangeNotifierProvider<IAPService>.value(value: iapService),
                   ChangeNotifierProvider<SettingsController>(
                     lazy: false,
                     create: (context) => SettingsController(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
+import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
@@ -252,7 +253,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
 
                           //symulacja zakupu
 
-                          var provider = Provider.of<InAppPurchaseController>(context, listen: false);
+                          var provider = Provider.of<IAPService>(context, listen: false);
                           provider.setPurchased(true);
                           AnimatedAlertDialog.showThanksPurchaseDialog(context);
                         },

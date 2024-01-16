@@ -19,6 +19,7 @@ import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
 import '../../in_app_purchase/in_app_purchase.dart';
+import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
 import '../../win_game/win_game_screen.dart';
@@ -390,7 +391,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starYellow: 'field_star_yellow',
   };
   Map<FieldType, String> getFieldTypes(BuildContext context) {
-    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    var purchaseController = Provider.of<IAPService>(context, listen: false);
     if (purchaseController.isPurchased) {
       return fieldTypesPremium; // Zwraca mapę premium
     } else {
@@ -422,7 +423,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     FieldType.starYellow: 1,
   };
   Map<FieldType, int> getCountTypes(BuildContext context) {
-    var purchaseController = Provider.of<InAppPurchaseController>(context, listen: false);
+    var purchaseController = Provider.of<IAPService>(context, listen: false);
     if (purchaseController.isPurchased) {
       return fieldCountPremium; // Zwraca mapę premium
     } else {

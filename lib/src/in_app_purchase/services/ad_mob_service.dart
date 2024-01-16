@@ -13,6 +13,7 @@ class AdMobService extends ChangeNotifier {
   bool _isBannerAdLoaded = false;
   bool _isInterstitialAdLoaded = false;
   bool _isRewardedAdLoaded = false;
+  bool isInterstitialAdShowed = false;
 
   AdMobService(this.initialization) {
     _setupBannerAd();
@@ -183,12 +184,15 @@ class AdMobService extends ChangeNotifier {
     final interstitialAd = _interstitialAd;
     if (interstitialAd != null) {
       interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
-        onAdShowedFullScreenContent: (ad) =>
-            print('Ad showed full screen content.'),
+        onAdShowedFullScreenContent: (ad) {
+          isInterstitialAdShowed = true;
+          print('Ad showed full screen content.');
+        },
         onAdDismissedFullScreenContent: (ad) async {
           ad.dispose();
           print('Ad dismissed full screen content.');
           // Wywołanie callbacku
+          isInterstitialAdShowed = false;
           await onInterstitialClosed();
           print('wykonalem callback');
           _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej

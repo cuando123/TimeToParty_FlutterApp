@@ -10,6 +10,7 @@ import 'package:game_template/src/app_lifecycle/loading_status.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
+import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -71,7 +72,7 @@ Future<void> main() async {
   await translationProvider.loadWords();
   await translationProvider.loadTranslations();
 
-  InAppPurchaseController inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance, translationProvider);
+  IAPService iapService = IAPService(InAppPurchase.instance, translationProvider);
 
   //probably to be unused
   GamesServicesController? gamesServicesController;
@@ -97,14 +98,14 @@ Future<void> main() async {
           ChangeNotifierProvider<LoadingStatus>(
             create: (_) => LoadingStatus(),
           ),
-          ChangeNotifierProvider<InAppPurchaseController?>(
-            create: (context) => inAppPurchaseController,
+          ChangeNotifierProvider<IAPService?>(
+            create: (context) => iapService,
           ),
         ],
         child: MyApp(
           settingsPersistence: LocalStorageSettingsPersistence(),
           playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-          inAppPurchaseController: inAppPurchaseController,
+          iapService: iapService,
           gamesServicesController: gamesServicesController,
           firebaseService: firebaseService,
         ),
