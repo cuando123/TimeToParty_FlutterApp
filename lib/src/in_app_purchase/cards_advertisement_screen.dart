@@ -186,7 +186,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
                           //IAP:
-                          _iapService.buyProduct(productIds[0]);
+                          _iapService.buyProduct(productIds);
                           //symulacja zakupu
                           //var provider = Provider.of<IAPService>(context, listen: false);
                           //provider.setPurchased(true);

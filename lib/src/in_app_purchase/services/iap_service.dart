@@ -60,20 +60,22 @@ class IAPService extends ChangeNotifier{
     });
   }
 
-  // Inicjalizacja informacji o sklepie i dostępnych produktach.
+// Inicjalizacja informacji o sklepie i dostępnych produktach.
   Future<void> initStoreInfo(List<String> productIds) async {
     _isAvailable = await _inAppPurchase.isAvailable();
     if (!_isAvailable) {
       // Sklep nie jest dostępny.
       return;
     }
-    final ProductDetailsResponse response =
-    await _inAppPurchase.queryProductDetails(productIds.toSet());
+    final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails(productIds.toSet());
     if (response.error != null) {
       // Obsługa błędów związanych z pobieraniem szczegółów produktu.
       return;
     }
+    // Dodanie pobranych szczegółów produktu do listy _products
+    _products.addAll(response.productDetails);
   }
+
 
   // Funkcja do przywracania zakupów
   Future<void> restorePurchases() async {
@@ -168,19 +170,21 @@ class IAPService extends ChangeNotifier{
     }
   }
 
-  void buyProduct(String productId) {
-    final productDetails = _products.firstWhere(
-          (product) => product.id == productId,
-    );
-
-    if (productDetails != null) {
-      final PurchaseParam purchaseParam = PurchaseParam(
-        productDetails: productDetails,
+  void buyProduct(List<String> productIds) {
+    for (String productId in productIds) {
+      final productDetails = _products.firstWhere(
+            (product) => product.id == productId,
       );
-      _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-    } else {
-      // Obsługa sytuacji, gdy nie znaleziono szczegółów produktu
-      // Możesz tutaj wyświetlić komunikat o błędzie lub podjąć inne działania
+
+      if (productDetails != null) {
+        final PurchaseParam purchaseParam = PurchaseParam(
+          productDetails: productDetails,
+        );
+        _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+      } else {
+        // Obsługa sytuacji, gdy nie znaleziono szczegółów produktu
+        print("Nie znaleziono szczegółów produktu dla ID: $productId");
+      }
     }
   }
 
