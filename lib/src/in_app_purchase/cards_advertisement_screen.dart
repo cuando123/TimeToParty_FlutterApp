@@ -14,7 +14,6 @@ import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
-import 'in_app_purchase.dart';
 
 class CardAdvertisementScreen extends StatefulWidget {
   const CardAdvertisementScreen({
@@ -28,54 +27,28 @@ class CardAdvertisementScreen extends StatefulWidget {
   _CardAdvertisementScreenState createState() => _CardAdvertisementScreenState();
 }
 
-const List<String> _productIds =<String>[
+const List<String> productIds =<String>[
   'com.frydoapps.timetoparty.fullversion'
 ];
 
 class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
-  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  bool _isAvailable = false;
-  String? _notice;
-  List<ProductDetails> _products = [];
+  late IAPService _iapService;
+
   @override
   void initState() {
     super.initState();
-    initStoreInfo();
+    _iapService = IAPService(InAppPurchase.instance); // Tworzenie instancji IAPService
+    _iapService.initializePurchaseStream(); // Inicjalizacja strumienia zakupów
+    _iapService.initStoreInfo(productIds); // Ładowanie informacji o produktach
+
+    _iapService.onPurchaseComplete(() {
+      setState(() {
+        // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
+        AnimatedAlertDialog.showThanksPurchaseDialog(context);
+      });
+    });
   }
 
-  Future<void> initStoreInfo() async {
-    final bool isAvailable = await _inAppPurchase.isAvailable();
-    setState(() {
-      _isAvailable = isAvailable;
-    });
-
-    if (!_isAvailable){
-      setState(() {
-        _notice = "There are no upgrades at this time";
-      });
-      return;
-    }
-
-    setState(() {
-      _notice = "There is a connection to the store!";
-    });
-    //get iap
-    ProductDetailsResponse productDetailsResponse = await _inAppPurchase.queryProductDetails(_productIds.toSet());
-    setState(() {
-      _products = productDetailsResponse.productDetails;
-      print(_products);
-      print("not found products: ${productDetailsResponse.notFoundIDs}");
-    });
-    if (productDetailsResponse.error != null){
-      setState(() {
-        _notice = "There was a problem connecting to the store";
-      });
-    }else if(productDetailsResponse.productDetails.isEmpty){
-      setState(() {
-        _notice = "There are no uprgrades at this time";
-      });
-    }
-  }
   Widget? _getIAPIcon(productId){
     if(productId == "premium_yt"){
       return Icon(Icons.brightness_7_outlined, size: 50);
@@ -88,7 +61,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   @override
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
-    //final PurchaseParam purchaseParam = PurchaseParam(productDetails: _products[0]);
 
     return WillPopScope(
       onWillPop: () async {
@@ -123,35 +95,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      //IAP tutorial
-                      /*
-                      if(_notice != null)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(_notice!),
-                        ),
-                      Expanded(
-                        child: ListView.builder(
-                            itemCount: _products.length,
-                            itemBuilder: (context, index){
-                              final ProductDetails productDetails = _products[index];
-                              return Card(
-                                child: Row(
-                                  children: [
-                                    //_getIAPIcon(productDetails.id), itd robił potem ikonki ktore wyswietlaly sie w zaleznosci od pobranego produktu
-                                    Column(
-                                      children: [
-                                        Text(productDetails.title, style: Theme.of(context).textTheme.headlineMedium),
-                                        Text(productDetails.description, style: Theme.of(context).textTheme.headlineSmall)
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              );
-                            })
-                      ),*/
-
-                      //IAP tutorial
                       ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
                       translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
                       SvgPicture.asset(
@@ -243,19 +186,11 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
                           //IAP:
-                          if (_products.isNotEmpty) {
-                          if (_products[0] == 'premium'){
-                          //  InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
-                          } // non consunable..
-                          else {
-                           // InAppPurchase.instance.buyConsumable(purchaseParam: _products[1]); for example
-                          }}
-
+                          _iapService.buyProduct(productIds[0]);
                           //symulacja zakupu
-
-                          var provider = Provider.of<IAPService>(context, listen: false);
-                          provider.setPurchased(true);
-                          AnimatedAlertDialog.showThanksPurchaseDialog(context);
+                          //var provider = Provider.of<IAPService>(context, listen: false);
+                          //provider.setPurchased(true);
+                          //AnimatedAlertDialog.showThanksPurchaseDialog(context);
                         },
                         backgroundColor: Palette().pink,
                         foregroundColor: Palette().white,

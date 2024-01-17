@@ -60,6 +60,8 @@ dependencies:
   google_mobile_ads: ^4.0.0  # Ads
   in_app_purchase: ^3.1.12  # In-app purchases
   google_sign_in: ^6.2.1 #logowanie przez konto google - moze sie przyda?
+  pointycastle: ^3.7.4 #do weryfikacja zakupu z google play billing
+  asn1lib: ^1.5.0
 
 dev_dependencies:
   analysis_defaults:
