@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:asn1lib/asn1lib.dart' as asn1lib;
 import 'package:flutter/cupertino.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -29,24 +30,18 @@ class IAPService extends ChangeNotifier{
     // rejestracja callbacku
     purchaseCompleteCallback = callback;
   }
-  Future<void> setPurchased(bool value) async {
+  Future<void> setPurchased(bool value, PurchaseDetails purchaseDetails) async {
     _isPurchased = value;
-    var purchaseState = PurchaseState();
-    purchaseState.isPurchased = true; // Ustawienie stanu zakupu
+    var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej
+    purchaseState.isPurchased = true;
     notifyListeners();
-
-    // tu będzie do przestawienia flaga w firebase
-    // await buy();???? // jeszce nie wiem czy tu wywolac?
-  }
-
-  void _deliverProduct(PurchaseDetails purchaseDetails){ //convert to product list?
     if (purchaseDetails.productID == "com.frydoapps.timetoparty.fullversion"){
-      // on tutaj updejtuje pozniej do firebase service... itd np:
-
-    }
+      // tu będzie do przestawienia flaga w firebase i updejty
+    //oraz wywolanie callbacku np do wyswietlenia alertdialoga
     if (purchaseCompleteCallback != null) {
       purchaseCompleteCallback();
     }
+  }
   }
 
   initializePurchaseStream() {
@@ -96,16 +91,16 @@ class IAPService extends ChangeNotifier{
         // Weryfikacja zakupu przed dostarczeniem produktu
           bool isValid = await _verifyPurchase(purchaseDetails);
           if (isValid) {
-            _deliverProduct(purchaseDetails);
             print("Zakup zweryfikowany i dostarczony");
+            await setPurchased(true, purchaseDetails);
           } else {
             // Obsługa nieudanej weryfikacji
             print("Weryfikacja zakupu nieudana");
           }
           break;
         case PurchaseStatus.error:
-        // Obsługa błędów zakupu
-          print("Błąd zakupu: ${purchaseDetails.error}");
+        // Obsługa błędów zakupu - karta zawsze odrzuca
+          print("Błąd zakupu: ${purchaseDetails.error?.message}");
           break;
         case PurchaseStatus.pending:
         // Obsługa zakupów oczekujących
@@ -125,19 +120,25 @@ class IAPService extends ChangeNotifier{
     });
   }
 
-
   RSAPublicKey parsePublicKey(String base64PublicKey) {
     Uint8List publicKeyDER = base64.decode(base64PublicKey);
-    ASN1Parser parser = ASN1Parser(publicKeyDER);
+    asn1lib.ASN1Parser parser = asn1lib.ASN1Parser(publicKeyDER);
 
-    ASN1Sequence topLevelSeq = parser.nextObject() as ASN1Sequence;
-    ASN1Sequence publicKeySeq = topLevelSeq.elements?[1] as ASN1Sequence;
+    asn1lib.ASN1Sequence topLevelSeq = parser.nextObject() as asn1lib.ASN1Sequence;
 
-    ASN1Integer modulusAsn1 = publicKeySeq.elements?[0] as ASN1Integer;
-    ASN1Integer exponentAsn1 = publicKeySeq.elements?[1] as ASN1Integer;
+    // Pobieramy bit string, który zawiera właściwą sekwencję klucza
+    asn1lib.ASN1BitString publicKeyBitString = topLevelSeq.elements![1] as asn1lib.ASN1BitString;
 
-    BigInt modulus = modulusAsn1.integer!;
-    BigInt exponent = exponentAsn1.integer!;
+    // Parsujemy zawartość bit stringa, aby uzyskać sekwencję klucza
+    asn1lib.ASN1Parser publicKeyParser = asn1lib.ASN1Parser(publicKeyBitString.contentBytes()!);
+    asn1lib.ASN1Sequence publicKeySeq = publicKeyParser.nextObject() as asn1lib.ASN1Sequence;
+
+    // Pobieramy wartości modułu i wykładnika z sekwencji klucza
+    asn1lib.ASN1Integer modulusAsn1 = publicKeySeq.elements![0] as asn1lib.ASN1Integer;
+    asn1lib.ASN1Integer exponentAsn1 = publicKeySeq.elements![1] as asn1lib.ASN1Integer;
+
+    BigInt modulus = modulusAsn1.intValue! as BigInt;
+    BigInt exponent = exponentAsn1.intValue! as BigInt;
 
     return RSAPublicKey(modulus, exponent);
   }
