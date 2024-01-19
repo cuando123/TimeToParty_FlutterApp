@@ -44,7 +44,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     _iapService.onPurchaseComplete(() {
       setState(() {
         // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-        AnimatedAlertDialog.showThanksPurchaseDialog(context);
+        AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseSuccess");
       });
     });
   }
@@ -186,6 +186,17 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
                           //IAP:
+                          _iapService.invokeMethodPlatform().then((result) {
+                            // Tutaj możesz obsłużyć wynik
+                            print("Wynik z native: $result");
+                          }).catchError((error) {
+                            // Obsługa błędów
+                            print("Wystąpił błąd: $error");
+                          });
+                          //BillingClient.queryPurchasesAsync();
+                          _iapService.onPurchaseErrorsComplete(() {
+                            AnimatedAlertDialog.showPurchaseDialogs(context, _iapService.billingResponsesErrors);
+                          });
                           _iapService.buyProduct(productIds);
                           //symulacja zakupu
                           //var provider = Provider.of<IAPService>(context, listen: false);

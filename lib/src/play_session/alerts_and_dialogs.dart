@@ -757,7 +757,37 @@ class AnimatedAlertDialog {
   }
 
   //dziekujemy za zakup full wersji
-  static void showThanksPurchaseDialog(BuildContext context) {
+  static void showPurchaseDialogs(BuildContext context, String billingResponse) {
+    final Map<String, Widget> billingResponseTitles = {
+      'PurchaseSuccess': translatedText(context, 'purchase_success', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemAlreadyOwned': translatedText(context, 'billing_response_item_already_owned', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.serviceUnavailable': translatedText(context, 'billing_response_service_unavailable', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.billingUnavailable': translatedText(context, 'billing_response_billing_unavailable', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemUnavailable': translatedText(context, 'billing_response_item_unavailable', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.developerError': translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.error': translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemNotOwned': translatedText(context, 'billing_response_item_not_owned', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.userCancelled': translatedText(context, 'billing_response_user_cancelled', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.featureNotSupported': translatedText(context, 'billing_response_feature_not_supported', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.serviceDisconnected': translatedText(context, 'billing_response_service_disconnected', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.timeout': translatedText(context, 'billing_response_timeout', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.offerExpired': translatedText(context, 'billing_response_offer_expired', 16, Palette().menudark, textAlign: TextAlign.center),
+    };
+    final Map<String, Widget> billingResponseDescriptions = {
+      'PurchaseSuccess': translatedText(context, 'purchase_success_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemAlreadyOwned': translatedText(context, 'billing_response_item_already_owned_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.serviceUnavailable': translatedText(context, 'billing_response_service_unavailable_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.billingUnavailable': translatedText(context, 'billing_response_billing_unavailable_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemUnavailable': translatedText(context, 'billing_response_item_unavailable_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.developerError': translatedText(context, 'billing_response_developer_error_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.error': translatedText(context, 'billing_response_error_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.itemNotOwned': translatedText(context, 'billing_response_item_not_owned_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.userCancelled': translatedText(context, 'billing_response_user_cancelled_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.featureNotSupported': translatedText(context, 'billing_response_feature_not_supported_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.serviceDisconnected': translatedText(context, 'billing_response_service_disconnected_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.timeout': translatedText(context, 'billing_response_timeout_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'BillingResponse.offerExpired': translatedText(context, 'billing_response_offer_expired_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+    };
     showDialog(
       context: context,
       builder: (context) {
@@ -769,7 +799,7 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: translatedText(context, 'congratulations', 20, Palette().pink, textAlign: TextAlign.center),
+            title: billingResponseTitles[billingResponse],
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -778,9 +808,10 @@ class AnimatedAlertDialog {
                   child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
                 ),
                 ResponsiveSizing.responsiveHeightGap(context, 10),
-                letsText(context, 'Odblokowałeś nowe karty, dziękujemy za zakup pełnej wersji, miłej rozrywki!', 16, Palette().menudark,
-                    textAlign: TextAlign.center),
-                ResponsiveSizing.responsiveHeightGap(context, 10),
+                Center(child:
+                billingResponseDescriptions[billingResponse] ?? translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center),
+                ),
+                  ResponsiveSizing.responsiveHeightGap(context, 10),
                 Center(
                   child: CustomStyledButton(
                     icon: null,
@@ -796,6 +827,18 @@ class AnimatedAlertDialog {
                     fontSize: ResponsiveSizing.scaleHeight(context, 20),
                   ),
                 ),
+                translatedText(context, 'do_you_need_help_contact_us', 16, Palette().menudark, textAlign: TextAlign.center),
+          Center(child:
+                CustomStyledButton(
+                  icon: Icons.edit,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    showExitDialog(context);
+                  },
+                  text: getTranslatedString(context, 'contact_us'),
+                  backgroundColor: Palette().pink,
+                  foregroundColor: Palette().white,
+                ),),
               ],
             ),
           ),

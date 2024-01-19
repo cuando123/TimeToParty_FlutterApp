@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart' as asn1lib;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pointycastle/pointycastle.dart';
 
@@ -13,6 +14,7 @@ class IAPService extends ChangeNotifier{
   // cd. https://pub.dev/packages/in_app_purchase/example
   // and: https://www.youtube.com/watch?v=w7oqVDGMMJU
   late String uid;
+  late String billingResponsesErrors;
 
   bool _isPurchased = false;
   bool get isPurchased => _isPurchased;
@@ -24,18 +26,36 @@ class IAPService extends ChangeNotifier{
   IAPService(InAppPurchase instance);
 
   late Function purchaseCompleteCallback;
+  late Function purchaseErrorsCallback;
+
+  static const platform = MethodChannel('com.frydoapps.timetoparty/billing');
+
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Future<String> invokeMethodPlatform() async {
+    try {
+      final String result = await platform.invokeMethod('getPurchases') as String;
+      return result; // Zwraca wynik, jeśli wszystko przebiegnie pomyślnie
+    } catch (e) {
+      // Obsługa błędów
+      return 'Error: $e'; // Zwraca komunikat o błędzie
+    }
+  }
+
   void onPurchaseComplete(Function callback) {
     // rejestracja callbacku
     purchaseCompleteCallback = callback;
+  }
+  void onPurchaseErrorsComplete(Function callback) {
+    // rejestracja callbacku
+    purchaseErrorsCallback = callback;
   }
   Future<void> setPurchased(bool value, PurchaseDetails purchaseDetails) async {
     _isPurchased = value;
     var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej
     purchaseState.isPurchased = true;
     notifyListeners();
-    if (purchaseDetails.productID == "com.frydoapps.timetoparty.fullversion"){
+    if (purchaseDetails.productID == "timetoparty.fullversion.test"){
       // tu będzie do przestawienia flaga w firebase i updejty
     //oraz wywolanie callbacku np do wyswietlenia alertdialoga
     if (purchaseCompleteCallback != null) {
@@ -89,26 +109,33 @@ class IAPService extends ChangeNotifier{
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
         // Weryfikacja zakupu przed dostarczeniem produktu
-          bool isValid = await _verifyPurchase(purchaseDetails);
+          bool isValid = _verifyPurchase(purchaseDetails);
           if (isValid) {
             print("Zakup zweryfikowany i dostarczony");
             await setPurchased(true, purchaseDetails);
+            purchaseCompleteCallback.call();
           } else {
             // Obsługa nieudanej weryfikacji
             print("Weryfikacja zakupu nieudana");
+            purchaseCompleteCallback.call();
           }
           break;
         case PurchaseStatus.error:
         // Obsługa błędów zakupu - karta zawsze odrzuca
           print("Błąd zakupu: ${purchaseDetails.error?.message}");
+          billingResponsesErrors = purchaseDetails.error!.message;
+          purchaseErrorsCallback.call();
           break;
         case PurchaseStatus.pending:
         // Obsługa zakupów oczekujących
           print("Zakup oczekujący");
+          //pododawac billingResponsesErrors = dane tutaj BillingResponses od danego problemu...
+          purchaseCompleteCallback.call();
           break;
         default:
         // Obsługa innych stanów zakupu
           print("Nieobsłużony status zakupu: ${purchaseDetails.status}");
+          purchaseCompleteCallback.call();
           break;
       }
 
@@ -116,6 +143,7 @@ class IAPService extends ChangeNotifier{
         // Ukończenie zakupu
         await InAppPurchase.instance.completePurchase(purchaseDetails);
         print("Zakup oznaczony jako kompletny");
+        purchaseCompleteCallback.call();
       }
     });
   }
