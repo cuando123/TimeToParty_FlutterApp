@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -258,7 +259,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                   ],
                 ),
               ),
-              Consumer<IAPService?>(
+              Consumer<IAPService>(
                 builder: (context, purchaseController, child) {
                   if (purchaseController!.isPurchased) {
                     return SizedBox.shrink();

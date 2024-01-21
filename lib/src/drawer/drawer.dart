@@ -1,7 +1,11 @@
 
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -26,6 +30,14 @@ class CustomAppDrawer extends StatefulWidget {
 }
 
 class CustomAppDrawerState extends State<CustomAppDrawer> {
+  late IAPService _iapService;
+
+  @override
+  void initState() {
+    super.initState();
+    _iapService = Provider.of<IAPService>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final audioController = context.read<AudioController>();
@@ -41,7 +53,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   ResponsiveSizing.responsiveHeightGap(context, 10),
-                  Consumer<IAPService?>(
+                  Consumer<IAPService>(
                     builder: (context, purchaseController, child) {
                       if (purchaseController!.isPurchased) {
                         return buildDrawerPremiumContent(context); // Zawartość dla użytkowników, którzy dokonali zakupu
@@ -170,6 +182,13 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       onTap: () async {
                         audioController.playSfx(SfxType.button_back_exit);
                         await Future.delayed(Duration(milliseconds: 150));
+                       await _iapService.restorePurchases();
+                        _iapService.onPurchaseComplete(() {
+                          setState(() {
+                            // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
+                            AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");//TO_DO do dorobienia tekst
+                          });
+                        });
                       },
                       child: ListTile(
                         leading: Icon(

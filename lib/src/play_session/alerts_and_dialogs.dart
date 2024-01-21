@@ -758,6 +758,8 @@ class AnimatedAlertDialog {
 
   //dziekujemy za zakup full wersji
   static void showPurchaseDialogs(BuildContext context, String billingResponse) {
+    final Widget defaultTitle = translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center);
+    final Widget defaultDescription = translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center);
     final Map<String, Widget> billingResponseTitles = {
       'PurchaseSuccess': translatedText(context, 'purchase_success', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.itemAlreadyOwned': translatedText(context, 'billing_response_item_already_owned', 16, Palette().menudark, textAlign: TextAlign.center),
@@ -771,7 +773,7 @@ class AnimatedAlertDialog {
       'BillingResponse.featureNotSupported': translatedText(context, 'billing_response_feature_not_supported', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.serviceDisconnected': translatedText(context, 'billing_response_service_disconnected', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.timeout': translatedText(context, 'billing_response_timeout', 16, Palette().menudark, textAlign: TextAlign.center),
-      'BillingResponse.offerExpired': translatedText(context, 'billing_response_offer_expired', 16, Palette().menudark, textAlign: TextAlign.center),
+      'NoInternetConnection': translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center),
     };
     final Map<String, Widget> billingResponseDescriptions = {
       'PurchaseSuccess': translatedText(context, 'purchase_success_desc', 16, Palette().menudark, textAlign: TextAlign.center),
@@ -787,10 +789,24 @@ class AnimatedAlertDialog {
       'BillingResponse.serviceDisconnected': translatedText(context, 'billing_response_service_disconnected_desc', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.timeout': translatedText(context, 'billing_response_timeout_desc', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.offerExpired': translatedText(context, 'billing_response_offer_expired_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'NoInternetConnection': translatedText(context, 'no_internet_connection', 16, Palette().menudark, textAlign: TextAlign.center),
     };
     showDialog(
       context: context,
       builder: (context) {
+        Widget title = billingResponseTitles[billingResponse] ?? defaultTitle;
+        Widget description = billingResponseDescriptions[billingResponse] ?? defaultDescription;
+        print("BillingResponse: ${billingResponse}");
+        if (!billingResponseTitles.containsKey(billingResponse)) {
+          description = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center),
+              letsText(context, ' ${billingResponse}', 16, Palette().menudark),
+            ],
+          );
+        }
+
         final audioController = context.watch<AudioController>();
         return WillPopScope(
           onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
@@ -799,7 +815,7 @@ class AnimatedAlertDialog {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: billingResponseTitles[billingResponse],
+            title: title,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -809,7 +825,7 @@ class AnimatedAlertDialog {
                 ),
                 ResponsiveSizing.responsiveHeightGap(context, 10),
                 Center(child:
-                billingResponseDescriptions[billingResponse] ?? translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center),
+                description
                 ),
                   ResponsiveSizing.responsiveHeightGap(context, 10),
                 Center(

@@ -96,7 +96,7 @@ Future<void> main() async {
           ChangeNotifierProvider<LoadingStatus>(
             create: (_) => LoadingStatus(),
           ),
-          ChangeNotifierProvider<IAPService?>(
+          ChangeNotifierProvider<IAPService>(
             create: (context) => iapService,
           ),
         ],

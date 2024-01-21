@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
+import 'package:game_template/src/play_session/extensions.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
@@ -28,34 +32,59 @@ class CardAdvertisementScreen extends StatefulWidget {
 }
 
 const List<String> productIds =<String>[
-  'com.frydoapps.timetoparty.fullversion'
+  'timetoparty.fullversion.test'
 ];
 
 class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   late IAPService _iapService;
+  bool isOnline = false;
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
     _iapService = IAPService(InAppPurchase.instance); // Tworzenie instancji IAPService
     _iapService.initializePurchaseStream(); // Inicjalizacja strumienia zakupów
-    _iapService.initStoreInfo(productIds); // Ładowanie informacji o produktach
-
+    //_iapService.initStoreInfo(productIds); // Ładowanie informacji o produktach
+    _setupConnectivityListener();
     _iapService.onPurchaseComplete(() {
-      setState(() {
+      safeSetState(() {
         // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
         AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseSuccess");
+        print("IS PURCHASED: ${_iapService!.isPurchased}");
       });
     });
   }
 
-  Widget? _getIAPIcon(productId){
-    if(productId == "premium_yt"){
-      return Icon(Icons.brightness_7_outlined, size: 50);
-    } else if (productId == "unlimited"){
-      return Icon(Icons.brightness_5, size: 50);
-    } //and so on....
-    return null;
+  void _setupConnectivityListener() async {
+    // Sprawdzenie początkowego stanu połączenia
+    var initialResult = await _connectivity.checkConnectivity();
+    bool isConnected = initialResult != ConnectivityResult.none;
+    safeSetState(() {
+      isOnline = isConnected;
+    });
+    if (isConnected) {
+      _iapService.initStoreInfo(productIds);
+    }
+    // Ustawienie listenera na zmiany stanu połączenia
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      isConnected = result != ConnectivityResult.none;
+      print('isConnected: $isConnected');
+      safeSetState(() {
+        isOnline = isConnected;
+      });
+      if (isConnected) {
+        _iapService.initStoreInfo(productIds);
+      }
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -185,7 +214,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         text: getTranslatedString(context, 'pay_once'),
                         onPressed: () {
                           audioController.playSfx(SfxType.button_back_exit);
-                          //IAP:
+                          //IAP wynik z NATIVE:
                           _iapService.invokeMethodPlatform().then((result) {
                             // Tutaj możesz obsłużyć wynik
                             print("Wynik z native: $result");
@@ -193,11 +222,17 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                             // Obsługa błędów
                             print("Wystąpił błąd: $error");
                           });
-                          //BillingClient.queryPurchasesAsync();
-                          _iapService.onPurchaseErrorsComplete(() {
+                          //IAP konie wynik z native
+                          _iapService.onPurchaseErrorsComplete(() { //IAP obsługa błędów
                             AnimatedAlertDialog.showPurchaseDialogs(context, _iapService.billingResponsesErrors);
                           });
-                          _iapService.buyProduct(productIds);
+                          //IAP kupno i alert gdy brak internetu
+                          print("IsOnline: $isOnline");
+                          if (isOnline == true) {
+                            _iapService.buyProduct(productIds);
+                          } else {
+                            AnimatedAlertDialog.showPurchaseDialogs(context, 'NoInternetConnection');
+                          }
                           //symulacja zakupu
                           //var provider = Provider.of<IAPService>(context, listen: false);
                           //provider.setPurchased(true);

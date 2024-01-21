@@ -50,17 +50,15 @@ class IAPService extends ChangeNotifier{
     // rejestracja callbacku
     purchaseErrorsCallback = callback;
   }
-  Future<void> setPurchased(bool value, PurchaseDetails purchaseDetails) async {
+  void setPurchased(bool value, PurchaseDetails purchaseDetails) {
     _isPurchased = value;
-    var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej
+    var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej do translations providera only
     purchaseState.isPurchased = true;
     notifyListeners();
+    purchaseCompleteCallback.call();
     if (purchaseDetails.productID == "timetoparty.fullversion.test"){
       // tu będzie do przestawienia flaga w firebase i updejty
     //oraz wywolanie callbacku np do wyswietlenia alertdialoga
-    if (purchaseCompleteCallback != null) {
-      purchaseCompleteCallback();
-    }
   }
   }
 
@@ -96,10 +94,44 @@ class IAPService extends ChangeNotifier{
   Future<void> restorePurchases() async {
     try {
       await _inAppPurchase.restorePurchases();
-      print("Zakupy przywrócone");
+      _inAppPurchase.purchaseStream.listen((purchaseDetailsList) {
+        for (var purchaseDetails in purchaseDetailsList) {
+          if (purchaseDetails.status == PurchaseStatus.purchased ||
+              purchaseDetails.status == PurchaseStatus.restored) {
+            bool isValid = _verifyPurchase(purchaseDetails);
+            if (isValid) {
+              print("Zakup zweryfikowany i przywrócony");
+              setPurchased(true, purchaseDetails);
+            } else {
+              print("Weryfikacja zakupu nieudana");
+              billingResponsesErrors = purchaseDetails.error?.message ?? 'Błąd weryfikacji';
+              purchaseErrorsCallback.call();
+            }
+          }
+        }
+      });
     } catch (e) {
       print("Błąd przy przywracaniu zakupów: $e");
+      billingResponsesErrors = e.toString();
+      purchaseErrorsCallback.call();
     }
+  }
+
+//czekaj na dokonczenie transakcji
+  Future<bool> waitForPurchaseCompletion(PurchaseDetails purchaseDetails, Duration timeout) async {
+    final startTime = DateTime.now();
+    while (DateTime.now().difference(startTime) < timeout) {
+      if (purchaseDetails.status == PurchaseStatus.purchased ||
+          purchaseDetails.status == PurchaseStatus.error) {
+        return _verifyPurchase(purchaseDetails);
+      }
+      // Czekaj przez krótki czas przed kolejnym sprawdzeniem
+      await Future.delayed(Duration(seconds: 1));
+      // Opcjonalnie: odśwież informacje o zakupie
+    }
+    // Jeśli czas minął, a status nie zmienił się na 'purchased' lub 'error'
+    print("Timeout - status zakupu nie został potwierdzony");
+    return false;
   }
 
   // Funkcja do obsługi aktualizacji zakupów.
@@ -112,12 +144,12 @@ class IAPService extends ChangeNotifier{
           bool isValid = _verifyPurchase(purchaseDetails);
           if (isValid) {
             print("Zakup zweryfikowany i dostarczony");
-            await setPurchased(true, purchaseDetails);
-            purchaseCompleteCallback.call();
+            setPurchased(true, purchaseDetails);
           } else {
             // Obsługa nieudanej weryfikacji
             print("Weryfikacja zakupu nieudana");
-            purchaseCompleteCallback.call();
+            billingResponsesErrors = purchaseDetails.error!.message;
+            purchaseErrorsCallback.call();
           }
           break;
         case PurchaseStatus.error:
@@ -127,75 +159,67 @@ class IAPService extends ChangeNotifier{
           purchaseErrorsCallback.call();
           break;
         case PurchaseStatus.pending:
-        // Obsługa zakupów oczekujących
-          print("Zakup oczekujący");
-          //pododawac billingResponsesErrors = dane tutaj BillingResponses od danego problemu...
-          purchaseCompleteCallback.call();
+          print("Zakup oczekujący, oczekiwanie na potwierdzenie...");
+          bool isCompleted = await waitForPurchaseCompletion(purchaseDetails, Duration(minutes: 5));
+          if (isCompleted) {
+            try {
+              // Ukończenie zakupu
+              await InAppPurchase.instance.completePurchase(purchaseDetails);
+              bool isValid = _verifyPurchase(purchaseDetails);
+
+              if (isValid) {
+                print("Zakup zweryfikowany i dostarczony");
+                setPurchased(true, purchaseDetails);
+              } else {
+                print("Weryfikacja zakupu nieudana");
+                billingResponsesErrors = purchaseDetails.error!.message;
+                purchaseErrorsCallback.call();
+              }
+            } catch (e) {
+              print("Błąd podczas finalizowania zakupu: $e");
+              billingResponsesErrors = purchaseDetails.error!.message;
+              purchaseErrorsCallback.call();
+            }
+          } else {
+            print("Zakup nie został zakończony w odpowiednim czasie");// tu chyba trzeba dorobic ręcznie tekst?
+            billingResponsesErrors = purchaseDetails.status.toString();
+            purchaseErrorsCallback.call();
+          }
           break;
         default:
         // Obsługa innych stanów zakupu
           print("Nieobsłużony status zakupu: ${purchaseDetails.status}");
-          purchaseCompleteCallback.call();
+          billingResponsesErrors = purchaseDetails.status.toString();
+          purchaseErrorsCallback.call();
           break;
-      }
-
-      if (purchaseDetails.pendingCompletePurchase) {
-        // Ukończenie zakupu
-        await InAppPurchase.instance.completePurchase(purchaseDetails);
-        print("Zakup oznaczony jako kompletny");
-        purchaseCompleteCallback.call();
       }
     });
   }
 
-  RSAPublicKey parsePublicKey(String base64PublicKey) {
-    Uint8List publicKeyDER = base64.decode(base64PublicKey);
-    asn1lib.ASN1Parser parser = asn1lib.ASN1Parser(publicKeyDER);
-
-    asn1lib.ASN1Sequence topLevelSeq = parser.nextObject() as asn1lib.ASN1Sequence;
-
-    // Pobieramy bit string, który zawiera właściwą sekwencję klucza
-    asn1lib.ASN1BitString publicKeyBitString = topLevelSeq.elements![1] as asn1lib.ASN1BitString;
-
-    // Parsujemy zawartość bit stringa, aby uzyskać sekwencję klucza
-    asn1lib.ASN1Parser publicKeyParser = asn1lib.ASN1Parser(publicKeyBitString.contentBytes()!);
-    asn1lib.ASN1Sequence publicKeySeq = publicKeyParser.nextObject() as asn1lib.ASN1Sequence;
-
-    // Pobieramy wartości modułu i wykładnika z sekwencji klucza
-    asn1lib.ASN1Integer modulusAsn1 = publicKeySeq.elements![0] as asn1lib.ASN1Integer;
-    asn1lib.ASN1Integer exponentAsn1 = publicKeySeq.elements![1] as asn1lib.ASN1Integer;
-
-    BigInt modulus = modulusAsn1.intValue! as BigInt;
-    BigInt exponent = exponentAsn1.intValue! as BigInt;
-
-    return RSAPublicKey(modulus, exponent);
-  }
-
   bool _verifyPurchase(PurchaseDetails purchaseDetails) {
-    String base64PublicKey  = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz+s/7/8sbjGmlmYpTYwv05NNOsrAJoKoUU/VyDN1yqYw5bq1oDhBM+VAhUQS5aztIDurMa28p8gwQkg36tJrn1GXnVnLCooKrc6qjQbaTaiIt8LuYlTjvP73mS5MW+mFmhj1IjPyxic7dHku4/7lc9LwiWAPR3T+HgpA9oScz/HmgDIM0KS2Zq7WznnxqMbB5c1Zs6fEr1LmJ3KwOHfHTlZH7q8ZEojQkcW1JwLSLhUSDnLAd/hXNjsK81TYgoV5x3lOv14II6l7frPGYG105qiwqOwIufeTaCy32FTW3zQr5hrTDho8UBSKuUu8phOuaZ46juqDbicjU8cemAGqmQIDAQAB';
+    // Pobranie i parsowanie danych zakupu
+    var localVerificationData = json.decode(purchaseDetails.verificationData.localVerificationData);
+    print("localVerificationData JSON: $localVerificationData");
 
-    // Pobranie danych zakupu i podpisu
-    Uint8List purchaseDataBytes = Uint8List.fromList(purchaseDetails.verificationData.source.codeUnits);
+    String? localPurchaseToken = localVerificationData['purchaseToken'] as String;
+    if (localPurchaseToken == null) {
+      print("Brak purchaseToken w danych lokalnych.");
+      return false;
+    }
 
-    // Konwersja publicKeyBytes do RSAPublicKey
-    RSAPublicKey publicKey = parsePublicKey(base64PublicKey); // Implementacja konwersji binarnej do RSAPublicKey
+    String serverPurchaseToken = purchaseDetails.verificationData.serverVerificationData;
+    if (serverPurchaseToken.isEmpty) {
+      print("Brak purchaseToken w danych serwerowych.");
+      return false;
+    }
 
-    // Pobranie danych zakupu i podpisu
-    Uint8List signatureBytes = base64.decode(purchaseDetails.verificationData.localVerificationData);
-
-    try {
-    // Inicjalizacja obiektu Signer
-    Signer signer = Signer("SHA-256/RSA");
-    signer.init(false, PublicKeyParameter<RSAPublicKey>(publicKey));
-
-    // Utworzenie obiektu Signature
-    RSASignature signature = RSASignature(signatureBytes);
-
-    // Weryfikacja podpisu
-    return signer.verifySignature(purchaseDataBytes, signature);
-    } catch (e) {
-    print("Weryfikacja zakupu nie powiodła się: $e");
-    return false;
+    // Porównanie całych tokenów zakupu
+    if (localPurchaseToken == serverPurchaseToken) {
+      print ("Tokeny są zgodne!");
+      return true;
+    } else {
+      print("Tokeny zakupu nie są zgodne.");
+      return false;
     }
   }
 
