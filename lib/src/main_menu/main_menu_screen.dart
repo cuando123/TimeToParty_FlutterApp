@@ -159,9 +159,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       child: Scaffold(
         drawer: CustomAppDrawer(),
         key: scaffoldKey,
-        appBar: CustomAppBar_notitle(
+        appBar: CustomAppBarNoTitle(
           onMenuButtonPressed: () {
-            audioController.playSfx(SfxType.button_back_exit);
+            audioController.playSfx(SfxType.buttonBackExit);
             scaffoldKey.currentState?.openDrawer();
           },
           title: '',
@@ -208,7 +208,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
                         onPressed: () {
-                          audioController.playSfx(SfxType.button_accept);
+                          audioController.playSfx(SfxType.buttonAccept);
                           Navigator.of(context).push(_createRoute());
                         },
                         backgroundColor: Palette().pink,
@@ -223,7 +223,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       icon: Icons.settings,
                       text: getTranslatedString(context, 'settings'),
                       onPressed: () {
-                        audioController.playSfx(SfxType.button_back_exit);
+                        audioController.playSfx(SfxType.buttonBackExit);
                         GoRouter.of(context).go('/settings');
                       },
                       backgroundColor: Palette().bluegrey,
@@ -237,7 +237,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       icon: null,
                       text: getTranslatedString(context, 'exit'),
                       onPressed: () {
-                        audioController.playSfx(SfxType.button_back_exit);
+                        audioController.playSfx(SfxType.buttonBackExit);
                         SystemNavigator.pop();
                       },
                       backgroundColor: Palette().bluegrey,

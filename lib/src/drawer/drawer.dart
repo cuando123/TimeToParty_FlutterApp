@@ -1,11 +1,9 @@
 
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,7 +13,6 @@ import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
-import '../in_app_purchase/in_app_purchase.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../play_session/alerts_and_dialogs.dart';
@@ -55,7 +52,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   ResponsiveSizing.responsiveHeightGap(context, 10),
                   Consumer<IAPService>(
                     builder: (context, purchaseController, child) {
-                      if (purchaseController!.isPurchased) {
+                      if (purchaseController.isPurchased) {
                         return buildDrawerPremiumContent(context); // Zawartość dla użytkowników, którzy dokonali zakupu
                       } else {
                         return buildDrawerFreeContent(context); // Zawartość dla użytkowników bez zakupu
@@ -107,7 +104,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           title: translatedText(
                               context, 'privacy_policy', 14, Palette().white),
                           onTap: () async {
-                            audioController.playSfx(SfxType.button_back_exit);
+                            audioController.playSfx(SfxType.buttonBackExit);
                             await globalLoading
                                 .privacy_policy_function(context);
                           }),
@@ -118,7 +115,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
+                        audioController.playSfx(SfxType.buttonBackExit);
                         await globalLoading.eula_function(context);
                       },
                       child: ListTile(
@@ -138,9 +135,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
+                      onTap: ()  {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/language_selector');
                       },
                       child: ListTile(
@@ -157,9 +154,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
+                      onTap: ()  {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/settings');
                       },
                       child: ListTile(
@@ -175,18 +172,17 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Divider(
                     color: Palette().white,
                   ),
-                  //TO_DO Przywróć platnosci
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
-                       await _iapService.restorePurchases();
+                      onTap: () {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
+                        _iapService.restorePurchases();
                         _iapService.onPurchaseComplete(() {
                           setState(() {
                             // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-                            AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");//TO_DO do dorobienia tekst
+                            AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");
                           });
                         });
                       },
@@ -204,9 +200,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
+                      onTap: () {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
                         AnimatedAlertDialog.showExitDialog(context);
                       },
                       child: ListTile(
@@ -223,10 +219,10 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
-                        await _shareContent(context);
+                      onTap: ()  {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
+                        _shareContent(context);
                       },
                       child: ListTile(
                         leading: Icon(
@@ -242,9 +238,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.button_back_exit);
-                        await Future.delayed(Duration(milliseconds: 150));
+                      onTap: () {
+                        audioController.playSfx(SfxType.buttonBackExit);
+                        Future.delayed(Duration(milliseconds: 150));
                         AnimatedAlertDialog.showRateDialog(context);
                       },
                       child: ListTile(
@@ -298,7 +294,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () async {
-            audioController.playSfx(SfxType.button_back_exit);
+            audioController.playSfx(SfxType.buttonBackExit);
             await Future.delayed(Duration(milliseconds: 150));
             await GoRouter.of(context).push('/card_advertisement');
           },

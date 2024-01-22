@@ -73,7 +73,7 @@ Future<void> main() async {
   IAPService iapService = IAPService(InAppPurchase.instance);
 
   //probably to be unused
-  GamesServicesController? gamesServicesController;
+  //GamesServicesController? gamesServicesController;
   runApp(
       MultiProvider(
         providers: [
@@ -104,30 +104,9 @@ Future<void> main() async {
           settingsPersistence: LocalStorageSettingsPersistence(),
           playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
           iapService: iapService,
-          gamesServicesController: gamesServicesController,
+          //gamesServicesController: gamesServicesController,
           firebaseService: firebaseService,
         ),
       ),
   );
 }
-/*
-  late StreamSubscription<List<PurchaseDetails>>
-      _iap_subscription; //tworze stream subskrypcji - a raczej nasluchuje nawrotu
-
-  @override
-  void initState(){
-     super.initState()
-     final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream; nasluchuje strumienia powrotu
-     _iap_subscription = pruchaseUpdated.listen((purchaseDetailsList){  // zapisuje updejt
-      print("Pruchase stream started");
-      IAPService(uid).listToPurchaseUpdated(purchaseDetailsList); //tu w miejscu wywolania musi byc dostepne UID generowane z firebase akurat jest tutaj w main menu to
-      }, onDone: (){
-      _iap_subscription.cancel(); jesli wykonano
-      }, onError (error){
-      _iap_subscription.cancel(); jesli jakis blad, anuluj subskrypcje
-     } as StreamSubscription<List<PurchaseDetails>>; //rzutowanie na typ subskrypcji na poczatku iap
-     //koniec init State
-    TO_DO trzeba to ogolnie przerobic i pomyslec gdzie powinienna byc oczekiwany strumien i jak go przekazac dalej do aplikacji - changeNotifierProvider?
-    TO_DO 2 trzeba przeanalizowac teraz mając obecna wiedze czy te funkcje ktore tu byly mi sie przydadza - powinienem juz to w miare zrozumiec to co tu bylo?
-below
-       }*/

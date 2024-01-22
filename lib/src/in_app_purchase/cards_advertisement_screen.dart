@@ -93,7 +93,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        audioController.playSfx(SfxType.button_back_exit);
+        audioController.playSfx(SfxType.buttonBackExit);
         Navigator.of(context).popUntil((route) => route.isFirst);
         return false;
       },
@@ -107,7 +107,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
           appBar: CustomAppBar(
             title: translatedText(context, 'buy_now', 14, Palette().white),
             onMenuButtonPressed: () {
-              audioController.playSfx(SfxType.button_back_exit);
+              audioController.playSfx(SfxType.buttonBackExit);
               widget.scaffoldKey.currentState?.openDrawer();
             },
               onBackButtonPressed:(){
@@ -143,7 +143,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                           children: [
                             TextButton(
                               onPressed: () {
-                                audioController.playSfx(SfxType.button_back_exit);
+                                audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogMoreFun(context);
                               },
                               child: Row(
@@ -164,7 +164,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                audioController.playSfx(SfxType.button_back_exit);
+                                audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogMoreRandomEvents(context);
                               },
                               child: Row(
@@ -186,7 +186,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                audioController.playSfx(SfxType.button_back_exit);
+                                audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogLongerGameplay(context);
                               },
                               child: Row(
@@ -213,7 +213,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         icon: null,
                         text: getTranslatedString(context, 'pay_once'),
                         onPressed: () {
-                          audioController.playSfx(SfxType.button_back_exit);
+                          audioController.playSfx(SfxType.buttonBackExit);
                           //IAP wynik z NATIVE:
                           _iapService.invokeMethodPlatform().then((result) {
                             // Tutaj możesz obsłużyć wynik
@@ -246,7 +246,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                       ),
                       TextButton(
                         onPressed: () async {
-                          audioController.playSfx(SfxType.button_back_exit);
+                          audioController.playSfx(SfxType.buttonBackExit);
                           await globalLoading.privacy_policy_function(context);
                         },
                         child: translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white,
@@ -254,7 +254,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          audioController.playSfx(SfxType.button_back_exit);
+                          audioController.playSfx(SfxType.buttonBackExit);
                         },
                         child: translatedText(context, 'restore_purchases', 14, Palette().white,
                             textAlign: TextAlign.center),
@@ -297,7 +297,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   icon: null,
                   text: 'OK',
                   onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Palette().pink,
@@ -341,7 +341,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   icon: null,
                   text: 'OK',
                   onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Palette().pink,
@@ -386,7 +386,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                   icon: null,
                   text: 'OK',
                   onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Palette().pink,

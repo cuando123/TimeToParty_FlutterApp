@@ -1,6 +1,6 @@
 List<String> soundTypeToFilename(SfxType type) {
   switch (type) {
-    case SfxType.animation_card_sound:
+    case SfxType.animationCardSound:
       return const [
         'animation_card_sound.mp3',
       ];
@@ -8,15 +8,15 @@ List<String> soundTypeToFilename(SfxType type) {
       return const [
         'aplauz.mp3',
       ];
-    case SfxType.booing_sound:
+    case SfxType.booingSound:
       return const [
         'booing_sound.mp3',
       ];
-    case SfxType.button_accept:
+    case SfxType.buttonAccept:
       return const [
         'button_accept.mp3',
       ];
-    case SfxType.button_back_exit:
+    case SfxType.buttonBackExit:
       return const [
         'button_back_exit.mp3',
       ];
@@ -84,13 +84,13 @@ List<String> soundTypeToFilename(SfxType type) {
 //glosnosc
 double soundTypeToVolume(SfxType type) {
   switch (type) {
-    case SfxType.animation_card_sound:
+    case SfxType.animationCardSound:
       return 0.4;
     case SfxType.card_x_sound:
       return 0.2;
-    case SfxType.booing_sound:
-    case SfxType.button_accept:
-    case SfxType.button_back_exit:
+    case SfxType.booingSound:
+    case SfxType.buttonAccept:
+    case SfxType.buttonBackExit:
     case SfxType.card_skip_sound:
     case SfxType.clock_effect:
       return 1.0;
@@ -99,11 +99,11 @@ double soundTypeToVolume(SfxType type) {
 }
 
 enum SfxType {
-  animation_card_sound,
+  animationCardSound,
   aplauz,
-  booing_sound,
-  button_accept,
-  button_back_exit,
+  booingSound,
+  buttonAccept,
+  buttonBackExit,
   button_infos,
   buzzer_sound,
   card_skip_sound,

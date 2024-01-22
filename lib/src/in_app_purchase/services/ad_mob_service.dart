@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -12,13 +11,13 @@ class AdMobService extends ChangeNotifier {
   RewardedAd? _rewardedAd;
   bool _isBannerAdLoaded = false;
   bool _isInterstitialAdLoaded = false;
-  bool _isRewardedAdLoaded = false;
+  //bool _isRewardedAdLoaded = false;
   bool isInterstitialAdShowed = false;
 
   AdMobService(this.initialization) {
     _setupBannerAd();
     _setupInterstitialAd();
-    _setupRewardedAd();
+   // _setupRewardedAd();
   }
 
   late Function onInterstitialClosed;
@@ -40,32 +39,32 @@ class AdMobService extends ChangeNotifier {
   void _handleLostConnection() {
     _isBannerAdLoaded = false;
     _isInterstitialAdLoaded = false;
-    _isRewardedAdLoaded = false;
-    _bannerAd?.dispose();
+   // _isRewardedAdLoaded = false;
+    _bannerAd.dispose();
     _interstitialAd?.dispose();
     _rewardedAd?.dispose();
     notifyListeners();
   }
 
   void reloadAd() {
-    _bannerAd?.dispose();
+    _bannerAd.dispose();
     _interstitialAd?.dispose();
     _rewardedAd?.dispose();
     _setupBannerAd();
     _setupInterstitialAd();
-    _setupRewardedAd();
+    //_setupRewardedAd();
   }
 
   bool get isBannerAdLoaded => _isBannerAdLoaded;
   bool get isInterstitialAdLoaded => _isInterstitialAdLoaded;
-  bool get isRewardedAdLoaded => _isRewardedAdLoaded;
+  //bool get isRewardedAdLoaded => _isRewardedAdLoaded;
 
   String? get bannerAdUnitId {
     if (kReleaseMode) {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-production";
       } else {
-        return "android-value-of-app-id-from-admob-production";
+        return "android-value-of-app-id-from-admob-production"; //TO_DO do updejtu finalne wersje produkcyjnych IDkow
       }
     } else {
       if (Platform.isIOS) {
@@ -81,7 +80,7 @@ class AdMobService extends ChangeNotifier {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-production";
       } else {
-        return "android-value-of-app-id-from-admob-production";
+        return "android-value-of-app-id-from-admob-production"; //TO_DO do updejtu finalne wersje produkcyjnych IDkow
       }
     } else {
       if (Platform.isIOS) {
@@ -92,7 +91,7 @@ class AdMobService extends ChangeNotifier {
       }
     }
   }
-
+/*
   String? get rewardAdUnitId {
     if (kReleaseMode) {
       if (Platform.isIOS) {
@@ -109,7 +108,7 @@ class AdMobService extends ChangeNotifier {
       }
     }
   }
-
+*/
   String? get nativeAdUnitId {
     if (kReleaseMode) {
       if (Platform.isIOS) {
@@ -133,13 +132,13 @@ class AdMobService extends ChangeNotifier {
       size: AdSize.banner,
       request: AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: (Ad ad) {
-          print('Ad loaded.');
+        onAdLoaded: (ad) {
+          //print('Ad loaded.');
           _isBannerAdLoaded = true;
           notifyListeners();
         },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('Ad failed to load: $error');
+        onAdFailedToLoad: (ad, error) {
+          //print('Ad failed to load: $error');
           ad.dispose();
           notifyListeners();
           // Ustawienie timera do ponownego próbowania załadowania
@@ -147,9 +146,9 @@ class AdMobService extends ChangeNotifier {
             _setupBannerAd(); // Ponowne próby ładowania
           });
         },
-        onAdOpened: (Ad ad) => print('Ad opened.'),
-        onAdClosed: (Ad ad) {
-          print('Ad closed.');
+        onAdOpened: (ad) => print('Ad opened.'),
+        onAdClosed: (ad) {
+          //print('Ad closed.');
           _isBannerAdLoaded = false;
           notifyListeners();
         },
@@ -170,7 +169,7 @@ class AdMobService extends ChangeNotifier {
           notifyListeners();
         },
         onAdFailedToLoad: (error) {
-          print('InterstitialAd failed to load: $error');
+          //print('InterstitialAd failed to load: $error');
           _interstitialAd = null;
           _isInterstitialAdLoaded = false; // Ustaw flagę, że reklama nie została załadowana
           notifyListeners();
@@ -186,29 +185,29 @@ class AdMobService extends ChangeNotifier {
       interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (ad) {
           isInterstitialAdShowed = true;
-          print('Ad showed full screen content.');
+          //print('Ad showed full screen content.');
         },
         onAdDismissedFullScreenContent: (ad) async {
-          ad.dispose();
-          print('Ad dismissed full screen content.');
+          await ad.dispose();
+          //print('Ad dismissed full screen content.');
           // Wywołanie callbacku
           isInterstitialAdShowed = false;
           await onInterstitialClosed();
-          print('wykonalem callback');
+          //print('wykonalem callback');
           _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
-          print('Ad failed to show full screen content: $error');
+          //print('Ad failed to show full screen content: $error');
           ad.dispose();
           _setupInterstitialAd(); // Ponowne ładowanie reklamy pełnoekranowej
         },
       );
       interstitialAd.show();
     } else {
-      print('Interstitial ad is not ready yet.');
+      //print('Interstitial ad is not ready yet.');
     }
   }
-
+/*
   void _setupRewardedAd(){
     RewardedAd.load(
         adUnitId: rewardAdUnitId ?? "",
@@ -248,10 +247,10 @@ class AdMobService extends ChangeNotifier {
       });
     }
   }
-
+*/
   @override
   void dispose() {
-    _bannerAd?.dispose();
+    _bannerAd.dispose();
     _interstitialAd?.dispose();
     super.dispose();
   }

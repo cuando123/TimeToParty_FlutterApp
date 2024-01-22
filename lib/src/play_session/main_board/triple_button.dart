@@ -76,7 +76,7 @@ class TripleButton extends StatelessWidget {
         if (icon == Icons.info_outlined){
           audioController.playSfx(SfxType.button_infos);
         } else {
-          audioController.playSfx(SfxType.button_back_exit);
+          audioController.playSfx(SfxType.buttonBackExit);
         }
         originalOnTap();
       },

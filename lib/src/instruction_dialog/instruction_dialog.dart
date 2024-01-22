@@ -12,7 +12,6 @@ import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 import '../win_game/triple_button_win.dart';
-import '../in_app_purchase/in_app_purchase.dart';
 
 class InstructionDialog extends StatefulWidget {
   bool isGameOpened = false;
@@ -244,7 +243,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                     text: 'OK',
                     onPressed: () {
                       final audioController = context.read<AudioController>();
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       Navigator.pop(context);
                     },
                     backgroundColor: Palette().pink,
@@ -278,8 +277,8 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
             padding: EdgeInsets.all(20),child:
         TripleButtonWin(
           svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-          onPressed: () async {
-            await Future.delayed(Duration(milliseconds: 150));
+          onPressed: ()  {
+            Future.delayed(Duration(milliseconds: 150));
             if(widget.isGameOpened){
               AnimatedAlertDialog.showExitGameDialog(
                   context,
@@ -290,7 +289,9 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                   true
               );
 
-            } else GoRouter.of(context).push('/card_advertisement');
+            } else {
+              GoRouter.of(context).push('/card_advertisement');
+            }
           },
         )
         )

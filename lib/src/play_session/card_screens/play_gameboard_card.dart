@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
-import '../../in_app_purchase/in_app_purchase.dart';
 import '../../in_app_purchase/services/ad_mob_service.dart';
 import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';

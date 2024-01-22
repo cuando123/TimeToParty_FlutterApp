@@ -361,7 +361,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                       //gesture detector na karcie ktora sie obroci nastepnie w nią klikamy
                       onTap: () {
                         final audioController = context.read<AudioController>();
-                        audioController.playSfx(SfxType.button_accept);
+                        audioController.playSfx(SfxType.buttonAccept);
                         if (widget.selectedCardIndex == 'field_arrows') {
                           widget.onArrowCardTapped();
                           _showStackedCardCrousel(context, widget.onCardSelected);

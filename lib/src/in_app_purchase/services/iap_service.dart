@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:asn1lib/asn1lib.dart' as asn1lib;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pointycastle/pointycastle.dart';
 
 import '../models/purchase_state.dart';
 
@@ -57,7 +55,11 @@ class IAPService extends ChangeNotifier{
     notifyListeners();
     purchaseCompleteCallback.call();
     if (purchaseDetails.productID == "timetoparty.fullversion.test"){
-      // tu będzie do przestawienia flaga w firebase i updejty
+      FirebaseFirestore.instance.collection('purchases').add({
+      //  'user_id': userId,
+      //  'details': purchaseDetails,
+        // Możesz dodać więcej szczegółów związanych z zakupem
+      });
     //oraz wywolanie callbacku np do wyswietlenia alertdialoga
   }
   }

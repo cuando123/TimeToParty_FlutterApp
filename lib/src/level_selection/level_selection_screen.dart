@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +75,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
         factoryId: 'listTile',
         request: AdRequest(),
         listener: NativeAdListener(
-          onAdLoaded: (Ad ad) {
+          onAdLoaded: (ad) {
             setState(() {
               _nativeAdLoaded = true;
             });
@@ -209,7 +208,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
               FocusScope.of(context).requestFocus(FocusNode());
             }
             final audioController = context.read<AudioController>();
-            audioController.playSfx(SfxType.button_back_exit);
+            audioController.playSfx(SfxType.buttonBackExit);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -222,7 +221,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                 title: translatedText(context, 'enter_team_names', 14, Palette().white),
                 onMenuButtonPressed: () {
                   final audioController = context.read<AudioController>();
-                  audioController.playSfx(SfxType.button_back_exit);
+                  audioController.playSfx(SfxType.buttonBackExit);
                   scaffoldKey.currentState?.openDrawer();
                 },
                 onBackButtonPressed: () {
@@ -285,7 +284,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                       teamProvider.updateTeams(context, numberOfTeams);
                                                     });
                                                     final audioController = context.read<AudioController>();
-                                                    audioController.playSfx(SfxType.button_back_exit);
+                                                    audioController.playSfx(SfxType.buttonBackExit);
                                                   },
                                             child: Icon(Icons.add),
                                           ),
@@ -310,7 +309,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     teamProvider.updateTeams(context, numberOfTeams);
                                                   });
                                                   final audioController = context.read<AudioController>();
-                                                  audioController.playSfx(SfxType.button_back_exit);
+                                                  audioController.playSfx(SfxType.buttonBackExit);
                                                 },
                                           child: Icon(Icons.remove),
                                         ),
@@ -340,7 +339,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     ),
                                                     onTap: () {
                                                       final audioController = context.read<AudioController>();
-                                                      audioController.playSfx(SfxType.button_back_exit);
+                                                      audioController.playSfx(SfxType.buttonBackExit);
                                                       if (!teamProvider.hasUserInput[index]) {
                                                         teamProvider.updateTeamName(index, '');
                                                       }
@@ -397,7 +396,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   await Future.delayed(Duration(milliseconds: 300));
 
                                                   final audioController = context.read<AudioController>();
-                                                  audioController.playSfx(SfxType.button_accept);
+                                                  audioController.playSfx(SfxType.buttonAccept);
                                                   _toggleCelebration();
 
                                                   if (isPurchased) {
@@ -445,7 +444,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               ),
                                               onPressed: () {
                                                 final audioController = context.read<AudioController>();
-                                                audioController.playSfx(SfxType.button_back_exit);
+                                                audioController.playSfx(SfxType.buttonBackExit);
                                                 setState(() {
                                                   List<Color> shuffledColors = List.from(availableColors)..shuffle();
                                                   teamColors = shuffledColors.sublist(0, numberOfTeams);

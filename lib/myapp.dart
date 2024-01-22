@@ -6,9 +6,7 @@ import 'package:game_template/src/Loading_screen/loading_screen.dart';
 import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:game_template/src/app_lifecycle/app_lifecycle.dart';
 import 'package:game_template/src/audio/audio_controller.dart';
-import 'package:game_template/src/games_services/games_services.dart';
 import 'package:game_template/src/in_app_purchase/cards_advertisement_screen.dart';
-import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/main_menu/main_menu_screen.dart';
@@ -65,7 +63,7 @@ class MyApp extends StatelessWidget {
 
   final SettingsPersistence settingsPersistence;
 
-  final GamesServicesController? gamesServicesController;
+  //final GamesServicesController? gamesServicesController;
 
   final FirebaseService firebaseService;
 
@@ -78,7 +76,7 @@ class MyApp extends StatelessWidget {
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.iapService,
-    required this.gamesServicesController,
+    //required this.gamesServicesController,
     required this.firebaseService,
   });
 
@@ -101,7 +99,7 @@ class MyApp extends StatelessWidget {
                   Provider(
                     create: (_) => NotificationsManager(context),
                   ),
-                  Provider<GamesServicesController?>.value(value: gamesServicesController),
+                  //Provider<GamesServicesController?>.value(value: gamesServicesController),
                   ChangeNotifierProvider<IAPService>.value(value: iapService),
                   ChangeNotifierProvider<SettingsController>(
                     lazy: false,

@@ -17,7 +17,6 @@ import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/services/ad_mob_service.dart';
-import '../in_app_purchase/in_app_purchase.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../style/palette.dart';
 
@@ -31,7 +30,7 @@ class WinGameScreen extends StatefulWidget {
   _WinGameScreenState createState() => _WinGameScreenState();
 }
 
-class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProviderStateMixin{
+class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimationLeftButton;
   late Animation<double> _scaleAnimationCenterButton;
@@ -72,71 +71,29 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
-    )..repeat();  // Powtarza animację w nieskończoność
+    )..repeat(); // Powtarza animację w nieskończoność
 
     _scaleAnimationLeftButton = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.1, end: 1.0),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.85
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
 
     _scaleAnimationCenterButton = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.4
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.1, end: 1.0),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.45
-      ),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.4),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.45),
     ]).animate(_animationController);
 
     _scaleAnimationRightButton = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.6
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.1, end: 1.0),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.25
-      ),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.6),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.25),
     ]).animate(_animationController);
   }
 
@@ -180,11 +137,11 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
           key: scaffoldKey,
           appBar: CustomAppBar(
             onMenuButtonPressed: () {
-              audioController.playSfx(SfxType.button_back_exit);
+              audioController.playSfx(SfxType.buttonBackExit);
               scaffoldKey.currentState?.openDrawer();
             },
             onBackButtonPressed: () {
-              audioController.playSfx(SfxType.button_back_exit);
+              audioController.playSfx(SfxType.buttonBackExit);
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             title: translatedText(context, 'congratulations', 14, Palette().white),
@@ -194,8 +151,9 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
             children: <Widget>[
               Image.asset('assets/time_to_party_assets/win_screen/team_ranking_win.png',
                   height: ResponsiveSizing.scaleHeight(context, 150)),
-              Padding(padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
-            /*  if (adsControllerAvailable && !adsRemoved) ...[
+              Padding(
+                  padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
+              /*  if (adsControllerAvailable && !adsRemoved) ...[
                 const Expanded(
                   child: Center(
                     child: SizedBox.shrink()
@@ -247,13 +205,16 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                               child: Text(getTranslatedString(context, 'color').toUpperCase(), style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text(getTranslatedString(context, 'x_teams').toUpperCase(), style: columnTitleStyle),
+                              child:
+                                  Text(getTranslatedString(context, 'x_teams').toUpperCase(), style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text(getTranslatedString(context, 'round').toUpperCase(), textAlign: TextAlign.center, style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'round').toUpperCase(),
+                                  textAlign: TextAlign.center, style: columnTitleStyle),
                             ),
                             Expanded(
-                              child: Text(getTranslatedString(context, 'points').toUpperCase(), textAlign: TextAlign.center, style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'points').toUpperCase(),
+                                  textAlign: TextAlign.center, style: columnTitleStyle),
                             ),
                           ],
                         ),
@@ -261,95 +222,96 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                       Flexible(
                         flex: 4,
                         child: Theme(
-                        data: Theme.of(context).copyWith(
-    scrollbarTheme: ScrollbarThemeData(
-    thumbColor: MaterialStateProperty.all(Palette().white),
-    ),
-    ),
-    child: Scrollbar(
-    thumbVisibility: true,
-    trackVisibility: true,
-    thickness: 6.0,
-    radius: Radius.circular(10),
-    child:  ListView.builder(
-                            itemCount: sortedTeams.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                height: 50,
-                                margin: EdgeInsets.symmetric(vertical: 3, horizontal: 21),
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Palette().pink, width: 1),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Spacer(), // Zastępuje SizedBox(width: 10)
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: sortedTeams[index]['color'] as Color,
+                          data: Theme.of(context).copyWith(
+                            scrollbarTheme: ScrollbarThemeData(
+                              thumbColor: MaterialStateProperty.all(Palette().white),
+                            ),
+                          ),
+                          child: Scrollbar(
+                            thumbVisibility: true,
+                            trackVisibility: true,
+                            thickness: 6.0,
+                            radius: Radius.circular(10),
+                            child: ListView.builder(
+                              itemCount: sortedTeams.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: 50,
+                                  margin: EdgeInsets.symmetric(vertical: 3, horizontal: 21),
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(color: Palette().pink, width: 1),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Spacer(), // Zastępuje SizedBox(width: 10)
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            color: sortedTeams[index]['color'] as Color,
+                                          ),
+                                          width: 24,
+                                          height: 24,
                                         ),
-                                        width: 24,
-                                        height: 24,
                                       ),
-                                    ),
-                                    Spacer(),
-                                    Expanded(
-                                      flex: 4,
-                                      child:
-                                          letsText(context, sortedTeams[index]['name'] as String, 14, Palette().white),
-                                    ),
-                                    Spacer(),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          SvgPicture.asset(
-                                              'assets/time_to_party_assets/win_screen/field_dark_empty.svg',
-                                              height: 35,
-                                              width: 35),
-                                          Text('${sortedTeams[index]['round'] - 1}',
-                                              textAlign: TextAlign.center, style: columnTitleStyle),
-                                        ],
+                                      Spacer(),
+                                      Expanded(
+                                        flex: 4,
+                                        child: letsText(
+                                            context, sortedTeams[index]['name'] as String, 14, Palette().white),
                                       ),
-                                    ),
-                                    Spacer(),
-                                    Expanded(
-                                      flex: 3, // Ustal proporcje dla punktów
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          SvgPicture.asset(
-                                              'assets/time_to_party_assets/win_screen/field_blue_empty.svg',
-                                              height: 35,
-                                              width: 35),
-                                          Text('${sortedTeams[index]['score']}',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Palette().yellowIndBorder,
-                                                fontSize: 14,
-                                                shadows: [
-                                                  Shadow(
-                                                    offset: Offset(1.0, 1.0),
-                                                    blurRadius: 3.0,
-                                                    color: Colors.black.withOpacity(0.5),
-                                                  ),
-                                                ],
-                                              )),
-                                        ],
+                                      Spacer(),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                                'assets/time_to_party_assets/win_screen/field_dark_empty.svg',
+                                                height: 35,
+                                                width: 35),
+                                            Text('${sortedTeams[index]['round'] - 1}',
+                                                textAlign: TextAlign.center, style: columnTitleStyle),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    // Zastępuje ostatni SizedBox
-                                  ],
-                                ),
-                              );
-                            },
-                          ),),
+                                      Spacer(),
+                                      Expanded(
+                                        flex: 3, // Ustal proporcje dla punktów
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                                'assets/time_to_party_assets/win_screen/field_blue_empty.svg',
+                                                height: 35,
+                                                width: 35),
+                                            Text('${sortedTeams[index]['score']}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Palette().yellowIndBorder,
+                                                  fontSize: 14,
+                                                  shadows: [
+                                                    Shadow(
+                                                      offset: Offset(1.0, 1.0),
+                                                      blurRadius: 3.0,
+                                                      color: Colors.black.withOpacity(0.5),
+                                                    ),
+                                                  ],
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                      // Zastępuje ostatni SizedBox
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -375,7 +337,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                               animation: _scaleAnimationLeftButton,
                               builder: (context, child) => Transform.scale(
                                 scale: _scaleAnimationLeftButton.value,
-                                child:  TripleButtonWin(
+                                child: TripleButtonWin(
                                   iconData: Icons.arrow_back_rounded,
                                   onPressed: () async {
                                     await Future.delayed(Duration(milliseconds: 150));
@@ -434,22 +396,29 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                       ),
                     )),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Consumer<AdMobService>(
-                  builder: (context, adMobService, child) {
-                    return _nativeAdLoaded
-                        ? Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: AdWidget(ad: _nativeAd!),
-                    )
-                        : SizedBox.shrink();
-                  },
-                ),
+              Consumer<IAPService>(
+                builder: (context, purchaseController, child) {
+                  if (purchaseController!.isPurchased) {
+                    return SizedBox.shrink();
+                  } else {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Consumer<AdMobService>(
+                        builder: (context, adMobService, child) {
+                          return _nativeAdLoaded
+                              ? Container(
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: AdWidget(ad: _nativeAd!),
+                                )
+                              : SizedBox.shrink();
+                        },
+                      ),
+                    );
+                  }
+                },
               ),
             ],
-
           ),
         ),
       ),

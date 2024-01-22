@@ -1,12 +1,12 @@
 // Copyright 2022, the Flutter project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-
+/*
 const gameLevels = [
   GameLevel(
     number: 1,
     difficulty: 5,
-    //TO_DO: When ready, change these achievement IDs.
+    When ready, change these achievement IDs.
     // You configure this in App Store Connect.
     achievementIdIOS: 'first_win',
     // You get this string when you configure an achievement in Play Console.
@@ -47,3 +47,4 @@ class GameLevel {
             'Either both iOS and Android achievement ID must be provided, '
             'or none');
 }
+*/

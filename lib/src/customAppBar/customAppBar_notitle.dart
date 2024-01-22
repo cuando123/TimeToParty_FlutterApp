@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBar_notitle extends StatelessWidget
+class CustomAppBarNoTitle extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBackButtonPressed;
   final VoidCallback? onMenuButtonPressed;
 
-  const CustomAppBar_notitle(
+  const CustomAppBarNoTitle(
       {super.key, required this.title,
       this.onBackButtonPressed,
       this.onMenuButtonPressed});

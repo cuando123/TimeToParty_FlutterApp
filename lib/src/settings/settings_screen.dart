@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final audioController = context.watch<AudioController>();
     return WillPopScope(
         onWillPop: () async {
-          audioController.playSfx(SfxType.button_back_exit);
+          audioController.playSfx(SfxType.buttonBackExit);
           GoRouter.of(context).go('/');
           return false;
         },
@@ -71,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: CustomAppBar(
         title: translatedText(context,'settings', 14, Palette().white),
         onMenuButtonPressed: () {
-          audioController.playSfx(SfxType.button_back_exit);
+          audioController.playSfx(SfxType.buttonBackExit);
           widget.scaffoldKey.currentState?.openDrawer();
         },
       ),
@@ -99,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.language,
                   text: getTranslatedString(context, 'select_language'),
                   onPressed: () async {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     await Future.delayed(Duration(milliseconds: 150));
                     GoRouter.of(context).go('/language_selector');
                   },
@@ -161,7 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(height: 20),
             translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
             TextButton(onPressed: () async {
-              audioController.playSfx(SfxType.button_back_exit);
+              audioController.playSfx(SfxType.buttonBackExit);
             await Future.delayed(Duration(milliseconds: 150));
             AnimatedAlertDialog.showExitDialog(context);
             },
@@ -177,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),),
             ElevatedButton(
               onPressed: () async {
-                audioController.playSfx(SfxType.button_back_exit);
+                audioController.playSfx(SfxType.buttonBackExit);
                 if (settingsController.notificationsEnabled.value) {
                   String translatedTitle = getTranslatedString(context, 'weekly_notification_up');
                   String translatedBody = getTranslatedString(context, 'weekly_notification_down');
@@ -248,7 +248,7 @@ class TogglesControl extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       onToggle();
                     },
                     icon: Icon(muted ? iconOn : iconOff,
@@ -258,7 +258,7 @@ class TogglesControl extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  audioController.playSfx(SfxType.button_back_exit);
+                  audioController.playSfx(SfxType.buttonBackExit);
     onToggle();
     },
                 child: Transform.scale(

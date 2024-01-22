@@ -1,7 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 
-@immutable
 class TeamScore {
   final String teamName;
   final Color teamColor;

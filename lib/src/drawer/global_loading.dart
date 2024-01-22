@@ -101,7 +101,7 @@ class GlobalLoading {
                   ),
                   onPressed: () {
                     final audioController = context.watch<AudioController>();
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },
                   child: Text('OK'),

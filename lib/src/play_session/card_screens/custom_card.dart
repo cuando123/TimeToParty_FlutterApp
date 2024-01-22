@@ -390,7 +390,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                 side: BorderSide(color: Palette().white, width: 13.0),
               ),
               elevation: 0.0,
-              child: image != null //TO_DO tu musze wiedziec ze trzeba uruchomic timer
+              child: image != null
                   ? Column(
                       children: [
                         SizedBox(height: 30),

@@ -18,7 +18,6 @@ import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
-import '../../in_app_purchase/in_app_purchase.dart';
 import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
@@ -709,7 +708,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         showCardAnimation = true;
         showAnimatedCard = true;
         final audioController = context.read<AudioController>();
-        audioController.playSfx(SfxType.animation_card_sound);
+        audioController.playSfx(SfxType.animationCardSound);
       });
     // navigateWithDelay(context);
   }

@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: Icon(Icons.arrow_back, color: Color(0xFFE5E5E5)),
         onPressed: onBackButtonPressed ?? () {
     GoRouter.of(context).go('/');
-    audioController.playSfx(SfxType.button_back_exit);
+    audioController.playSfx(SfxType.buttonBackExit);
     },
     ),
       title: title,

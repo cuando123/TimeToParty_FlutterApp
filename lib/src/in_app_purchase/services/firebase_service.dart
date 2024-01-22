@@ -19,12 +19,12 @@ class FirebaseService extends ChangeNotifier {
 
   // Aktualizacja stanu połączenia
   void updateConnectionStatusIfConnected() {
-      print('Logika połączenia (np. ponowna autentykacja, odświeżenie danych)');
+      //print('Logika połączenia (np. ponowna autentykacja, odświeżenie danych)');
       _auth ??= FirebaseAuth.instance;
       _firestore ??= FirebaseFirestore.instance; //ponowne polaczenie i autentkacja gdy internet sie pojawi
       signInAnonymouslyAndSaveUID();//ponowne zalogowanie i zapis uid
       refreshCurrentUser(); //odswiezenie stanu uzytkoniwka aby nie zwracac null gdy apka sie odpali w trybie offline
-      print('Firebase: Zalogowane UID: ${currentUser?.uid}');
+     // print('Firebase: Zalogowane UID: ${currentUser?.uid}');
     notifyListeners();
   }
 
@@ -38,14 +38,14 @@ class FirebaseService extends ChangeNotifier {
       await _auth?.currentUser?.reload();
       notifyListeners(); // Poinformowanie o zmianie stanu
     } catch (e) {
-      print("Błąd podczas odświeżania danych użytkownika: $e");
+     // print("Błąd podczas odświeżania danych użytkownika: $e");
     }
   }
 
   Future<void> signInAnonymouslyAndSaveUID() async {
     if (isConnected) {
       // Logika, gdy aplikacja jest w trybie offline
-      print("Próba logowania w trybie offline - nieudana.");
+     // print("Próba logowania w trybie offline - nieudana.");
       return;
     }
 
@@ -55,13 +55,13 @@ class FirebaseService extends ChangeNotifier {
       try {
         UserCredential? userCredential = await _auth?.signInAnonymously();
         user = userCredential?.user;
-        print("Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
+       // print("Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
       } catch (e) {
-        print("Błąd podczas logowania anonimowego: $e");
+       // print("Błąd podczas logowania anonimowego: $e");
         return;
       }
     } else {
-      print("Użytkownik jest już zalogowany z UID: ${user.uid}");
+     // print("Użytkownik jest już zalogowany z UID: ${user.uid}");
     }
 
     if (user != null) {
@@ -73,9 +73,9 @@ class FirebaseService extends ChangeNotifier {
           ..createdUserDate = DateTime.now();
 
         await _firestore?.collection('users').doc(user.uid).set(newUser.toJson());
-        print('UID zapisany w Firestore');
+       // print('UID zapisany w Firestore');
       } else {
-        print('Dokument użytkownika już istnieje w Firestore');
+       // print('Dokument użytkownika już istnieje w Firestore');
       }
     }
   }
@@ -83,22 +83,22 @@ class FirebaseService extends ChangeNotifier {
   Future<void> setPurchasedFlag() async {
     if (isConnected) {
       // Logika, gdy aplikacja jest w trybie offline
-      print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
+     // print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
       return;
     }
 
     User? user = _auth?.currentUser;
     if (user == null) {
-      print('Użytkownik nie jest zalogowany.');
+    //  print('Użytkownik nie jest zalogowany.');
       return;
     }
 
     try {
       DocumentReference userDocRef = _firestore?.collection('users').doc(user.uid) as DocumentReference<Object?>;
       await userDocRef.update({'isPurchased': true});
-      print('Flaga isPurchased została ustawiona na true.');
+     // print('Flaga isPurchased została ustawiona na true.');
     } catch (e) {
-      print('Błąd podczas ustawiania flagi isPurchased: $e');
+     // print('Błąd podczas ustawiania flagi isPurchased: $e');
     }
   }
 

@@ -135,7 +135,7 @@ class AnimatedAlertDialog {
                       hasShownAlertDialog = false;
                       if(isPurchasePurpose == false) {
                         final audioController = context.read<AudioController>();
-                        audioController.playSfx(SfxType.button_back_exit);
+                        audioController.playSfx(SfxType.buttonBackExit);
                         //Navigator.of(context).popUntil((route) => route.isFirst);
                         await Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
@@ -159,7 +159,7 @@ class AnimatedAlertDialog {
                   child: TextButton(
                     onPressed: () {
                       final audioController = context.read<AudioController>();
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       Navigator.of(context).pop(response);
                     },
                     child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
@@ -351,7 +351,7 @@ class AnimatedAlertDialog {
                       icon: null,
                       onPressed: () {
                         final audioController = context.read<AudioController>();
-                        audioController.playSfx(SfxType.button_back_exit);
+                        audioController.playSfx(SfxType.buttonBackExit);
                         Navigator.of(context).pop();
                       },
                       text: "OK",
@@ -412,7 +412,7 @@ class AnimatedAlertDialog {
                     icon: null,
                     text: 'OK',
                     onPressed: () async {
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       Navigator.pop(context);
                       String url = 'https://frydoapps.com/contact-apps';
                       if (await canLaunchUrlString(url)) {
@@ -646,7 +646,7 @@ class AnimatedAlertDialog {
                   icon: null,
                   text: getTranslatedString(context, 'rate_us_google_play'),
                   onPressed: () async {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     const String url = 'https://play.google.com/store/apps/details?id=<YOUR_APP_PACKAGE_NAME>';
                     if (await canLaunchUrlString(url)) {
                       await launchUrlString(url);
@@ -664,7 +664,7 @@ class AnimatedAlertDialog {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    audioController.playSfx(SfxType.button_back_exit);
+                    audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },
                   child: translatedText(context, 'cancel', 16, Palette().bluegrey),
@@ -719,7 +719,7 @@ class AnimatedAlertDialog {
                     icon: null,
                     text: getTranslatedString(context, 'yes_confirm'),
                     onPressed: () {
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => WinGameScreen(
                           teamNames: teamNames,
@@ -737,7 +737,7 @@ class AnimatedAlertDialog {
                     icon: null,
                     text: getTranslatedString(context, 'no_rejection'),
                     onPressed: () {
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       callback();
                       Navigator.of(context).pop();
                     },
@@ -762,6 +762,7 @@ class AnimatedAlertDialog {
     final Widget defaultDescription = translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center);
     final Map<String, Widget> billingResponseTitles = {
       'PurchaseSuccess': translatedText(context, 'purchase_success', 16, Palette().menudark, textAlign: TextAlign.center),
+      'PurchaseRestored': translatedText(context, 'purchase_restored', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.itemAlreadyOwned': translatedText(context, 'billing_response_item_already_owned', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.serviceUnavailable': translatedText(context, 'billing_response_service_unavailable', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.billingUnavailable': translatedText(context, 'billing_response_billing_unavailable', 16, Palette().menudark, textAlign: TextAlign.center),
@@ -777,6 +778,7 @@ class AnimatedAlertDialog {
     };
     final Map<String, Widget> billingResponseDescriptions = {
       'PurchaseSuccess': translatedText(context, 'purchase_success_desc', 16, Palette().menudark, textAlign: TextAlign.center),
+      'PurchaseRestored': translatedText(context, 'purchase_restored_desc', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.itemAlreadyOwned': translatedText(context, 'billing_response_item_already_owned_desc', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.serviceUnavailable': translatedText(context, 'billing_response_service_unavailable_desc', 16, Palette().menudark, textAlign: TextAlign.center),
       'BillingResponse.billingUnavailable': translatedText(context, 'billing_response_billing_unavailable_desc', 16, Palette().menudark, textAlign: TextAlign.center),
@@ -833,7 +835,7 @@ class AnimatedAlertDialog {
                     icon: null,
                     text: 'OK',
                     onPressed: () async {
-                      audioController.playSfx(SfxType.button_back_exit);
+                      audioController.playSfx(SfxType.buttonBackExit);
                       Navigator.of(context).pop();
                     },
                     backgroundColor: Palette().pink,

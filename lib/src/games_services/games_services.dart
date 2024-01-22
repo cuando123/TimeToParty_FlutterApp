@@ -1,7 +1,7 @@
 // Copyright 2022, the Flutter project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-
+/*
 import 'dart:async';
 
 import 'package:games_services/games_services.dart' as gs;
@@ -85,7 +85,7 @@ class GamesServicesController {
 
     try {
       await gs.GamesServices.showLeaderboards(
-        //TO_DO: When ready, change both these leaderboard IDs.
+        //When ready, change both these leaderboard IDs.
         iOSLeaderboardID: "some_id_from_app_store",
         androidLeaderboardID: "sOmE_iD_fRoM_gPlAy",
       );
@@ -95,3 +95,4 @@ class GamesServicesController {
   }
 
 }
+*/

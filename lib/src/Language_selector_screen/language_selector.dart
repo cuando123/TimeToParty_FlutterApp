@@ -27,7 +27,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     return WillPopScope(
         onWillPop: () async {
           final audioController = context.read<AudioController>();
-          audioController.playSfx(SfxType.button_back_exit);
+          audioController.playSfx(SfxType.buttonBackExit);
           GoRouter.of(context).go('/');
           return false;
         },
@@ -43,7 +43,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
           title: translatedText(context,'select_language', 14, Palette().white),
           onMenuButtonPressed: () {
             final audioController = context.read<AudioController>();
-            audioController.playSfx(SfxType.button_back_exit);
+            audioController.playSfx(SfxType.buttonBackExit);
             scaffoldKey.currentState?.openDrawer();
           },
         ),
@@ -91,7 +91,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         svgAsset: path, // Ścieżka do pliku SVG
         text: language,
         onPressed: () async {
-          audioController.playSfx(SfxType.button_back_exit);
+          audioController.playSfx(SfxType.buttonBackExit);
           await Provider.of<TranslationProvider>(context, listen: false)
               .changeLanguage(langPrefix);
           Navigator.of(context).popUntil((route) => route.isFirst);
