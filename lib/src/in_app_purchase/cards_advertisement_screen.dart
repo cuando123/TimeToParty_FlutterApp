@@ -35,29 +35,38 @@ const List<String> productIds =<String>[
   'timetoparty.fullversion.test'
 ];
 
-class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
+class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Zachowaj stan
   late IAPService _iapService;
   bool isOnline = false;
+
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
+  bool _isInitialized = false;
+
   @override
-  void initState() {
-    super.initState();
-    _iapService = IAPService(InAppPurchase.instance); // Tworzenie instancji IAPService
-    _iapService.initializePurchaseStream(); // Inicjalizacja strumienia zakupów
-    //_iapService.initStoreInfo(productIds); // Ładowanie informacji o produktach
-    _setupConnectivityListener();
-    _iapService.onPurchaseComplete(() {
-      safeSetState(() {
-        // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-        AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseSuccess");
-        print("IS PURCHASED: ${_iapService!.isPurchased}");
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _iapService = Provider.of<IAPService>(context, listen: true);
+      print("IS LOADING CARD ADS: ${_iapService.isLoading}");
+      _setupConnectivityListener();
+      _iapService.initializePurchaseStream();
+      _iapService.onPurchaseComplete(() {
+        safeSetState(() {
+          // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
+          AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseSuccess");
+          print("IS PURCHASED: ${_iapService.isPurchased}");
+        });
       });
-    });
+      _isInitialized = true;
+      setState(() {});
+    }
   }
 
-  void _setupConnectivityListener() async {
+    void _setupConnectivityListener() async {
     // Sprawdzenie początkowego stanu połączenia
     var initialResult = await _connectivity.checkConnectivity();
     bool isConnected = initialResult != ConnectivityResult.none;
@@ -65,7 +74,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
       isOnline = isConnected;
     });
     if (isConnected) {
-      _iapService.initStoreInfo(productIds);
+      await _iapService.initStoreInfo(productIds);
     }
     // Ustawienie listenera na zmiany stanu połączenia
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
@@ -87,10 +96,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     super.dispose();
   }
 
+  Widget _loadingOverlay() {
+    return Container(
+      color: Colors.black.withOpacity(0.5), // Przyciemnione tło
+      child: Center(
+        child: CircularProgressIndicator(color: Palette().pink),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
-
     return WillPopScope(
       onWillPop: () async {
         audioController.playSfx(SfxType.buttonBackExit);
@@ -114,7 +131,8 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
           ),
-          body:
+          body: Stack(
+              children: <Widget>[
           ListView(
             children: [Padding(
               padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
@@ -214,24 +232,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                         text: getTranslatedString(context, 'pay_once'),
                         onPressed: () {
                           audioController.playSfx(SfxType.buttonBackExit);
-                          //IAP wynik z NATIVE:
-                          _iapService.invokeMethodPlatform().then((result) {
-                            // Tutaj możesz obsłużyć wynik
-                            print("Wynik z native: $result");
-                          }).catchError((error) {
-                            // Obsługa błędów
-                            print("Wystąpił błąd: $error");
-                          });
-                          //IAP konie wynik z native
                           _iapService.onPurchaseErrorsComplete(() { //IAP obsługa błędów
                             AnimatedAlertDialog.showPurchaseDialogs(context, _iapService.billingResponsesErrors);
                           });
                           //IAP kupno i alert gdy brak internetu
-                          print("IsOnline: $isOnline");
-                          if (isOnline == true) {
-                            _iapService.buyProduct(productIds);
+                          if (_iapService.isLoading == false) {
+                            if (isOnline == true) {
+                              _iapService.buyProduct(productIds);
+                            } else {
+                              AnimatedAlertDialog.showPurchaseDialogs(context, 'NoInternetConnection');
+                            }
                           } else {
-                            AnimatedAlertDialog.showPurchaseDialogs(context, 'NoInternetConnection');
+                            AnimatedAlertDialog.showPurchaseDialogs(context, 'BillingResponse.pending');
                           }
                           //symulacja zakupu
                           //var provider = Provider.of<IAPService>(context, listen: false);
@@ -264,8 +276,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                 ),
               ]),
             ),],
-          )
-
+          ),
+                Consumer<IAPService>(
+                  builder: (context, iapService, child) {
+                    if (iapService.isLoading) {
+                      return _loadingOverlay();
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
+              ],
+          ),
         ),
       ),
     );
