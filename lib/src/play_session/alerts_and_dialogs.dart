@@ -756,8 +756,11 @@ class AnimatedAlertDialog {
     );
   }
 
-  //dziekujemy za zakup full wersji
+  //dziekujemy za zakup full wersji i inne error dialogi podczas zakupow
   static void showPurchaseDialogs(BuildContext context, String billingResponse) {
+    if (billingResponse == "PurchaseStatus.canceled"){
+      billingResponse = "BillingResponse.userCancelled";
+    }
     final Widget defaultTitle = translatedText(context, 'billing_response_developer_error', 16, Palette().menudark, textAlign: TextAlign.center);
     final Widget defaultDescription = translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center);
     final Map<String, Widget> billingResponseTitles = {

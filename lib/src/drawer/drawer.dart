@@ -175,10 +175,10 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: () {
+                      onTap: () async {
                         audioController.playSfx(SfxType.buttonBackExit);
                         Future.delayed(Duration(milliseconds: 150));
-                        _iapService.restorePurchases();
+                        await _iapService.restorePurchases();
                         _iapService.onPurchaseComplete(() {
                           setState(() {
                             // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog

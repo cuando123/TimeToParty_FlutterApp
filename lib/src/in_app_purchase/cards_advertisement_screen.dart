@@ -265,8 +265,15 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                             textAlign: TextAlign.center),
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           audioController.playSfx(SfxType.buttonBackExit);
+                          await _iapService.restorePurchases();
+                          _iapService.onPurchaseComplete(() {
+                            setState(() {
+                              // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
+                              AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");
+                            });
+                          });
                         },
                         child: translatedText(context, 'restore_purchases', 14, Palette().white,
                             textAlign: TextAlign.center),
