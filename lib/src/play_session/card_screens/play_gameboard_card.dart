@@ -52,7 +52,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   late Animation<double> _timeUpScaleAnimation;
   late Animation<double> _timeUpFadeOutAnimation;
 
-  late NativeAd? _nativeAd;
+  NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
@@ -101,9 +101,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         factoryId: 'listTile',
         request: AdRequest(),
         listener: NativeAdListener(
-          onAdLoaded: (Ad ad) {
+          onAdLoaded: (ad) {
             setState(() {
               _nativeAdLoaded = true;
+              isOnline = true;
             });
           },
           onAdFailedToLoad: (ad, error) {
@@ -111,11 +112,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           },
         ))
       ..load();
-    // Załadowanie reklam na początku, jeśli jesteśmy online
-    if (isOnline) {
-      context.read<AdMobService>().reloadAd();
-    }
-    _setupConnectivityListener();
     _setTimerDuration();
     initialTime = remainingTime;
     _slideAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -208,6 +204,15 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       }
       print("Reklama interstitial została zamknięta");
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isOnline == true && _nativeAdLoaded == false) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _setupConnectivityListener();
   }
 
   void _setupConnectivityListener() {
@@ -1110,19 +1115,29 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       },
                       text: getTranslatedString(context, 'continue'),
                     ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Consumer<AdMobService>(
-                  builder: (context, adMobService, child) {
-                    return _nativeAdLoaded
-                        ? Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: AdWidget(ad: _nativeAd!),
-                    )
-                        : SizedBox.shrink();
-                  },
-                ),
+              Consumer<IAPService>(
+                builder: (context, purchaseController, child) {
+                  if (purchaseController.isPurchased) {
+                    return SizedBox.shrink();
+                  } else {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Consumer<AdMobService>(
+                        builder: (context, adMobService, child) {
+                          if (isOnline && _nativeAdLoaded) {
+                            return Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: AdWidget(ad: _nativeAd!),
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -1133,6 +1148,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   @override
   void dispose() {
+    _nativeAd?.dispose();
+    _nativeAd = null;
+    _nativeAdLoaded = false;
     _timer?.cancel();
     _opacityController.dispose();
     _timeUpAnimationController.dispose();

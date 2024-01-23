@@ -29,7 +29,7 @@ class LevelSelectionScreen extends StatefulWidget {
 }
 
 class _LevelSelectionScreenState extends State<LevelSelectionScreen> with SingleTickerProviderStateMixin {
-  late NativeAd? _nativeAd;
+  NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
@@ -78,18 +78,16 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
           onAdLoaded: (ad) {
             setState(() {
               _nativeAdLoaded = true;
+              isOnline = true;
             });
           },
           onAdFailedToLoad: (ad, error) {
+            print("ERROR AD: $ad error: $error");
             ad.dispose();
           },
         ))
       ..load();
     // Załadowanie reklam na początku, jeśli jesteśmy online
-    if (isOnline) {
-      context.read<AdMobService>().reloadAd();
-    }
-    _setupConnectivityListener();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TeamProvider>(context, listen: false).initializeTeams(context, numberOfTeams);
     });
@@ -151,6 +149,10 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (isOnline == true && _nativeAdLoaded == false) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _setupConnectivityListener();
   }
 
   @override
@@ -158,6 +160,9 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     for (var controller in controllers) {
       controller.dispose();
     }
+    _nativeAd?.dispose();
+    _nativeAd = null;
+    _nativeAdLoaded = false;
     _connectivitySubscription?.cancel();
     _animationController.dispose();
     super.dispose();
@@ -191,7 +196,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     final settings = context.watch<SettingsController>();
     final settingsController = context.watch<SettingsController>();
     final iapService = Provider.of<IAPService>(context, listen: false);
-    final isPurchased = iapService.isPurchased;
 
     return Selector<TeamProvider, List<String>>(
       selector: (_, provider) => provider.teamNames,
@@ -201,7 +205,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
         }
         for (int i = 0; i < teamNames.length; i++) {
           controllers[i].text = teamNames[i];
-        }print('isPurchased: $isPurchased, isOnline: $isOnline, nativeAdLoaded: $_nativeAdLoaded');
+        }
         return GestureDetector(
           onTap: () {
             if (!FocusScope.of(context).hasPrimaryFocus) {
@@ -399,7 +403,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   audioController.playSfx(SfxType.buttonAccept);
                                                   _toggleCelebration();
 
-                                                  if (isPurchased) {
+                                                  if (iapService.isPurchased) {
                                                     // Zawartość dla użytkowników, którzy dokonali zakupu
                                                     navigateToLoadingScreen(context, teamProvider.teamNames);
                                                   } else {
@@ -462,24 +466,31 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                             ),
                           ),
                         ),
-                        //ad
-                        if (!isPurchased)
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Consumer<AdMobService>(
-                              builder: (context, adMobService, child) {
-                                if (isOnline && _nativeAdLoaded) {
-                                  return Container(
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    child: AdWidget(ad: _nativeAd!),
-                                  );
-                                } else {
-                                  return Text('nie zaladowano reklamy');//SizedBox.shrink();
-                                }
-                              },
-                            ),
-                          ),
+                        Consumer<IAPService>(
+                          builder: (context, purchaseController, child) {
+                            print("ADDD: isOnline: $isOnline, Adloaded: $_nativeAdLoaded");
+                            if (purchaseController.isPurchased) {
+                              return SizedBox.shrink();
+                            } else {
+                              return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Consumer<AdMobService>(
+                                  builder: (context, adMobService, child) {
+                                    if (isOnline && _nativeAdLoaded) {
+                                      return Container(
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                        child: AdWidget(ad: _nativeAd!),
+                                      );
+                                    } else {
+                                      return SizedBox.shrink();
+                                    }
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ],
                     )),
               ),

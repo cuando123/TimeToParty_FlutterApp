@@ -6,9 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -21,6 +19,7 @@ import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
+import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
@@ -37,7 +36,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   late FirebaseService _firebaseService;
   bool isOnline = false;
-  late NativeAd? _nativeAd;
+  NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
 
   final Connectivity _connectivity = Connectivity();
@@ -46,23 +45,28 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     //if ACCOUNT = FREE
-    _nativeAd = NativeAd(adUnitId: context
-        .read<AdMobService>()
-        .nativeAdUnitId!, factoryId: 'listTile', request: AdRequest(),
-        listener: NativeAdListener(
-          onAdLoaded: (Ad ad) {
-            setState(() {
-              _nativeAdLoaded = true;
-            });
-          },
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          },
-        ))
-      ..load();
-
+    try {
+      if (!_nativeAdLoaded) {
+        _nativeAd = NativeAd(adUnitId: context
+            .read<AdMobService>()
+            .nativeAdUnitId!, factoryId: 'listTile', request: AdRequest(),
+            listener: NativeAdListener(
+              onAdLoaded: (ad) {
+                setState(() {
+                  _nativeAdLoaded = true;
+                  isOnline = true;
+                });
+              },
+              onAdFailedToLoad: (ad, error) {
+                ad.dispose();
+              },
+            ))
+          ..load();
+      }
+    } catch (e) {
+      print('Wystąpił błąd podczas tworzenia reklamy: $e');
+    }
     _firebaseService = FirebaseService(isConnected: isOnline);
-    _setupConnectivityListener();
 
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
@@ -76,7 +80,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
-    //_checkPurchaseStatus();
 
   }
 
@@ -86,7 +89,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       setState(() {
         isOnline = isConnected;
       });
-      context.read<AdMobService>().onConnectionChanged(isConnected);
+      if(!_nativeAdLoaded) {
+        context.read<AdMobService>().onConnectionChanged(isConnected);
+      }
       if (isConnected) {
         _firebaseService
             .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
@@ -96,18 +101,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     });
   }
 
-  Future<void> _checkPurchaseStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isPurchased = prefs.getBool('isPurchased') ?? false;
-
-    if (isPurchased) {
-      // Jeśli aplikacja jest zakupiona, spróbuj zalogować użytkownika
-      //await _firebaseService.signInAnonymouslyAndSaveUID();
-    }
-  }
-
   @override
   void dispose() {
+    _nativeAd?.dispose();
+    _nativeAd = null;
+    _nativeAdLoaded = false;
     _connectivitySubscription?.cancel();
     _animationController.dispose();
     super.dispose();
@@ -116,6 +114,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (isOnline == true && _nativeAdLoaded == false) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _setupConnectivityListener();
   }
 
   Route _createRoute() {
@@ -148,10 +150,19 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     TeamScore.resetAllScores();
+    return Consumer<IAPService>(
+        builder: (context, iapService, child) {
+      if (iapService.purchaseStatusMessage == "PurchaseRestored") {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          AnimatedAlertDialog.showPurchaseDialogs(context, iapService.purchaseStatusMessage);
+          iapService.resetPurchaseStatusMessage();
+        });
+      }
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -261,7 +272,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
               ),
               Consumer<IAPService>(
                 builder: (context, purchaseController, child) {
-                  if (purchaseController!.isPurchased) {
+                  if (purchaseController.isPurchased) {
                     return SizedBox.shrink();
                   } else {
                     return Align(
@@ -288,5 +299,5 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         ),
       ),
     );
-  }
-}
+  },);
+}}

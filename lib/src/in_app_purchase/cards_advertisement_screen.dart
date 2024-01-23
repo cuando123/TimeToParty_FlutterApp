@@ -35,9 +35,8 @@ const List<String> productIds =<String>[
   'timetoparty.fullversion.test'
 ];
 
-class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true; // Zachowaj stan
+class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
+  bool _alertShown = false;
   late IAPService _iapService;
   bool isOnline = false;
 
@@ -54,13 +53,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
       print("IS LOADING CARD ADS: ${_iapService.isLoading}");
       _setupConnectivityListener();
       _iapService.initializePurchaseStream();
-      _iapService.onPurchaseComplete(() {
-        safeSetState(() {
-          // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-          AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseSuccess");
-          print("IS PURCHASED: ${_iapService.isPurchased}");
-        });
-      });
       _isInitialized = true;
       setState(() {});
     }
@@ -93,6 +85,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
   @override
   void dispose() {
     _connectivitySubscription?.cancel();
+    _alertShown = false; // Resetowanie flagi przy opuszczaniu ekranu
     super.dispose();
   }
 
@@ -105,16 +98,34 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
     );
   }
 
+  void showSuccessAlertDialog(BuildContext context) {
+    // Implementacja AlertDialog o sukcesie
+  }
+
+  void showErrorAlertDialog(BuildContext context, String error) {
+    // Implementacja AlertDialog o błędzie
+  }
+
   @override
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     return WillPopScope(
-      onWillPop: () async {
-        audioController.playSfx(SfxType.buttonBackExit);
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        return false;
-      },
-      child: Container(
+        onWillPop: () async {
+          audioController.playSfx(SfxType.buttonBackExit);
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          return false;
+        },
+      child: Consumer<IAPService>(
+        builder: (context, iapService, child) {
+          if (!_alertShown && iapService.purchaseStatusMessage.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Wyświetlenie odpowiedniego AlertDialog
+              AnimatedAlertDialog.showPurchaseDialogs(context, iapService.purchaseStatusMessage);
+              iapService.resetPurchaseStatusMessage(); // Resetowanie wiadomości po wyświetleniu alertu
+              _alertShown = true; // Ustawienie flagi, że alert został pokazany
+            });
+          }
+      return Container(
         decoration: BoxDecoration(
           gradient: Palette().backgroundLoadingSessionGradient,
         ),
@@ -231,24 +242,17 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                         icon: null,
                         text: getTranslatedString(context, 'pay_once'),
                         onPressed: () {
+                          _alertShown = false; // Resetowanie flagi przed nowym zakupem
                           audioController.playSfx(SfxType.buttonBackExit);
-                          _iapService.onPurchaseErrorsComplete(() { //IAP obsługa błędów
-                            AnimatedAlertDialog.showPurchaseDialogs(context, _iapService.billingResponsesErrors);
-                          });
-                          //IAP kupno i alert gdy brak internetu
                           if (_iapService.isLoading == false) {
-                            if (isOnline == true) {
+                            if (isOnline) {
                               _iapService.buyProduct(productIds);
                             } else {
-                              AnimatedAlertDialog.showPurchaseDialogs(context, 'NoInternetConnection');
+                              _iapService.setPurchaseStatusMessage('NoInternetConnection');
                             }
                           } else {
-                            AnimatedAlertDialog.showPurchaseDialogs(context, 'BillingResponse.pending');
+                            _iapService.setPurchaseStatusMessage('BillingResponse.pending');
                           }
-                          //symulacja zakupu
-                          //var provider = Provider.of<IAPService>(context, listen: false);
-                          //provider.setPurchased(true);
-                          //AnimatedAlertDialog.showThanksPurchaseDialog(context);
                         },
                         backgroundColor: Palette().pink,
                         foregroundColor: Palette().white,
@@ -268,12 +272,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                         onPressed: () async {
                           audioController.playSfx(SfxType.buttonBackExit);
                           await _iapService.restorePurchases();
-                          _iapService.onPurchaseComplete(() {
-                            setState(() {
-                              // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-                              AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");
-                            });
-                          });
                         },
                         child: translatedText(context, 'restore_purchases', 14, Palette().white,
                             textAlign: TextAlign.center),
@@ -296,7 +294,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
               ],
           ),
         ),
-      ),
+      );},),
     );
   }
 

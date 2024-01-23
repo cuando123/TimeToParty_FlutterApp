@@ -36,7 +36,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   late Animation<double> _scaleAnimationCenterButton;
   late Animation<double> _scaleAnimationRightButton;
 
-  late NativeAd? _nativeAd;
+  NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
@@ -55,6 +55,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
           onAdLoaded: (Ad ad) {
             setState(() {
               _nativeAdLoaded = true;
+              isOnline = true;
             });
           },
           onAdFailedToLoad: (ad, error) {
@@ -62,12 +63,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
           },
         ))
       ..load();
-    // Załadowanie reklam na początku, jeśli jesteśmy online
-    if (isOnline) {
-      context.read<AdMobService>().reloadAd();
-    }
 
-    _setupConnectivityListener();
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
@@ -103,15 +99,20 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
       setState(() {
         isOnline = isConnected;
       });
-      context.read<AdMobService>().onConnectionChanged(isConnected);
+        context.read<AdMobService>().onConnectionChanged(isConnected);
     });
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isOnline == true && _nativeAdLoaded == false) {
+      context.read<AdMobService>().reloadAd();
+    }
+    _setupConnectivityListener();
   }
 
   @override
   Widget build(BuildContext context) {
-    final adsControllerAvailable = context.watch<AdMobService?>() != null;
-    //final adsRemoved = context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
-    final palette = context.watch<Palette>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final audioController = context.watch<AudioController>();
     // Sortowanie drużyn według wyników
@@ -359,10 +360,15 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                       scale: _scaleAnimationCenterButton.value,
                                       child: TripleButtonWin(
                                         svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-                                        onPressed: () async {
-                                          await Future.delayed(Duration(milliseconds: 150));
-                                          GoRouter.of(context).push('/card_advertisement');
+                                        onPressed: () {
+                                          setState(() {
+                                            isOnline = false; //do ukrycia reklamy przez goroute bo wyrzucalo AdWidget is no longer available in widget tree
+                                          });
+                                          if (mounted) {
+                                            GoRouter.of(context).push('/card_advertisement');
+                                          }
                                         },
+
                                       ),
                                     ),
                                   ),
@@ -398,20 +404,22 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
               ),
               Consumer<IAPService>(
                 builder: (context, purchaseController, child) {
-                  if (purchaseController!.isPurchased) {
+                  if (purchaseController.isPurchased) {
                     return SizedBox.shrink();
                   } else {
                     return Align(
                       alignment: Alignment.bottomCenter,
                       child: Consumer<AdMobService>(
                         builder: (context, adMobService, child) {
-                          return _nativeAdLoaded
-                              ? Container(
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  child: AdWidget(ad: _nativeAd!),
-                                )
-                              : SizedBox.shrink();
+                          if (isOnline && _nativeAdLoaded) {
+                            return Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: AdWidget(ad: _nativeAd!),
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
                         },
                       ),
                     );
@@ -440,6 +448,9 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
 
   @override
   void dispose() {
+    _nativeAd?.dispose();
+    _nativeAd = null;
+    _nativeAdLoaded = false;
     _animationController.dispose();
     _connectivitySubscription?.cancel();
     super.dispose();

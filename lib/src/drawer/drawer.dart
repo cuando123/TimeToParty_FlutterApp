@@ -172,29 +172,32 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Divider(
                     color: Palette().white,
                   ),
-                  Material(
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () async {
-                        audioController.playSfx(SfxType.buttonBackExit);
-                        Future.delayed(Duration(milliseconds: 150));
-                        await _iapService.restorePurchases();
-                        _iapService.onPurchaseComplete(() {
-                          setState(() {
-                            // Aktualizuj stan po pomyślnym zakupie, np. wywołaj dialog
-                            AnimatedAlertDialog.showPurchaseDialogs(context, "PurchaseRestored");
-                          });
-                        });
-                      },
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.settings_backup_restore,
-                          color: Palette().white,
-                        ),
-                        title: translatedText(
-                            context, 'restore_purchases', 14, Palette().white),
-                      ),
-                    ),
+                  //Przywroc platnosci
+                  Consumer<IAPService>(
+                    builder: (context, purchaseController, child) {
+                      if (purchaseController.isPurchased) {
+                        return SizedBox.shrink(); // Zawartość dla użytkowników, którzy dokonali zakupu
+                      } else {
+                        return Material(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(4),
+                            onTap: () async {
+                              audioController.playSfx(SfxType.buttonBackExit);
+                              await Future.delayed(Duration(milliseconds: 150));
+                              await _iapService.restorePurchases();
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.settings_backup_restore,
+                                color: Palette().white,
+                              ),
+                              title: translatedText(
+                                  context, 'restore_purchases', 14, Palette().white),
+                            ),
+                          ),
+                        ); // Zawartość dla użytkowników bez zakupu
+                      }
+                    },
                   ),
                   //Napisz do nas
                   Material(
