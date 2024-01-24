@@ -266,8 +266,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                           if (_iapService.isLoading == false) {
                             if (isOnline) {
                               print('PRODUCT IDS: $productIds');
-                              _iapService.initializePurchaseStream();
-                              _iapService.initStoreInfo(productIds);
                               _iapService.restorePurchases();
                             } else {
                               _iapService.setPurchaseStatusMessage('NoInternetConnection');
