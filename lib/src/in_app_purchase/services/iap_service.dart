@@ -21,14 +21,13 @@ class IAPService extends ChangeNotifier{
   late bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-
-  late final TranslationProvider translationProvider;
+  late TranslationProvider translationProvider;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription; //inicjalizacja i subskrypcja strumienia aktualizacji zakupow
   bool _subscriptionInitialized = false;
   bool _isAvailable = false;
   final List<ProductDetails> _products = [];
-  IAPService(InAppPurchase instance);
+  IAPService(InAppPurchase instance, this.translationProvider);
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,16 +45,18 @@ class IAPService extends ChangeNotifier{
     notifyListeners(); // informuje obserwatorów o zmianie
   }
 
-  Future<void> setPurchased(bool value, PurchaseDetails purchaseDetails) async {
+  void setPurchased(bool value, PurchaseDetails purchaseDetails) {
     _isPurchased = value;
     var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej do translations providera only
     purchaseState.isPurchased = true;
     notifyListeners();
-    setPurchaseStatusMessage("PurchaseSuccess");
+    if (_purchaseStatusMessage != "PurchaseRestored" && _purchaseStatusMessage != '') {
+      setPurchaseStatusMessage("PurchaseSuccess");
+    }
     isLoading = false;
-    await translationProvider.loadWords();
+    translationProvider.loadWords();
     if (purchaseDetails.productID == "timetoparty.fullversion.test"){
-      await FirebaseFirestore.instance.collection('purchases').add({
+      FirebaseFirestore.instance.collection('purchases').add({
       //  'user_id': userId,
       //  'details': purchaseDetails,
         // Możesz dodać więcej szczegółów związanych z zakupem
@@ -64,7 +65,8 @@ class IAPService extends ChangeNotifier{
   }
   }
 
-  initializePurchaseStream() {
+  void initializePurchaseStream() {
+    print("wywolanie subskrypcji");
     if (!_subscriptionInitialized) {
       final Stream<List<PurchaseDetails>> purchaseUpdated = _inAppPurchase.purchaseStream;
       _subscription = purchaseUpdated.listen((purchaseDetailsList) {
@@ -74,6 +76,7 @@ class IAPService extends ChangeNotifier{
       });
       _subscriptionInitialized = true;
     }
+    print("koniec wywolanie subskrypcji");
   }
 
 
@@ -82,12 +85,12 @@ class IAPService extends ChangeNotifier{
     try {
       _isAvailable = await _inAppPurchase.isAvailable();
       if (!_isAvailable) {
-        // Sklep nie jest dostępny.
+        print("Skelp nie jest dostepny");
         return;
       }
       final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails(productIds.toSet());
       if (response.error != null) {
-        // Obsługa błędów związanych z pobieraniem szczegółów produktu.
+        print('Inicjalizacja sklepu: blad ${response.error}');
         return;
       }
       // Dodanie pobranych szczegółów produktu do listy _products
@@ -97,32 +100,47 @@ class IAPService extends ChangeNotifier{
   }
 
   // Funkcja do przywracania zakupów
-  Future<void> restorePurchases() async {
+  Future<bool> restorePurchases() async {
     isLoading = true;
+    bool restoreSuccessful = false;
+    bool isTimeout = false;
+    print("Poczatel wywolania restorePurchases");
     try {
       await _inAppPurchase.restorePurchases();
-      _inAppPurchase.purchaseStream.listen((purchaseDetailsList) {
-        for (var purchaseDetails in purchaseDetailsList) {
-          if (purchaseDetails.status == PurchaseStatus.purchased ||
-              purchaseDetails.status == PurchaseStatus.restored) {
-            bool isValid = _verifyPurchase(purchaseDetails);
-            if (isValid) {
-              print("Zakup zweryfikowany i przywrócony");
-              setPurchased(true, purchaseDetails);
-              setPurchaseStatusMessage("PurchaseRestored");
-            } else {
-              print("Weryfikacja zakupu nieudana");
-              setPurchaseStatusMessage(purchaseDetails.error?.message ?? 'Błąd weryfikacji');
-            }
-          }
+      if (_inAppPurchase.restorePurchases() != null){
+        restoreSuccessful = true;
+      }
+      // Tworzenie timera
+      var timer = Timer(Duration(seconds: 30), () {
+        if (!restoreSuccessful) {
+          print("Timeout - BillingResponse.timeout");
+          isTimeout = true;
         }
       });
+
+      // Czekanie na zaktualizowanie stanu przez istniejącą subskrypcję
+      while (!restoreSuccessful && !isTimeout) {
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+
+      // Anulowanie timera
+      timer.cancel();
+
     } catch (e) {
       print("Błąd przy przywracaniu zakupów: $e");
       setPurchaseStatusMessage(e.toString());
     } finally {
-      isLoading = false; // Kończy ładowanie
+      isLoading = false;
+      if (isTimeout){
+        setPurchaseStatusMessage("BillingResponse.timeout");
+      }
+      if (restoreSuccessful){
+        setPurchaseStatusMessage("PurchaseRestored");
+      }
+      print("Koniec procesu przywracania zakupów");
     }
+    print("koniec wywolania restorePurchases");
+    return restoreSuccessful;
   }
 
 //czekaj na dokonczenie transakcji
@@ -144,68 +162,75 @@ class IAPService extends ChangeNotifier{
     }
   }
 
+  Set<String> processedPurchases = {};
 
-  // Funkcja do obsługi aktualizacji zakupów.
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((purchaseDetails) async {
-      print("_listenToPurchaseUpdated true");
-      isLoading = true;
-      switch (purchaseDetails.status) {
-        case PurchaseStatus.purchased:
-        case PurchaseStatus.restored:
-        // Weryfikacja zakupu przed dostarczeniem produktu
-          bool isValid = _verifyPurchase(purchaseDetails);
-          if (isValid) {
-            print("Zakup zweryfikowany i dostarczony");
-            setPurchased(true, purchaseDetails);
-          } else {
-            // Obsługa nieudanej weryfikacji
-            print("Weryfikacja zakupu nieudana");
-            setPurchaseStatusMessage(purchaseDetails.error!.message);
-            isLoading = false;
-          }
-          break;
-        case PurchaseStatus.error:
-          print("Błąd zakupu: ${purchaseDetails.error?.message}");
-          setPurchaseStatusMessage(purchaseDetails.error!.message);
-          isLoading = false;
-          break;
-        case PurchaseStatus.pending:
-          print("Zakup oczekujący, oczekiwanie na potwierdzenie...");
-          bool isCompleted = await waitForPurchaseCompletion(purchaseDetails, Duration(minutes: 5));
-          if (isCompleted) {
-            try {
-              // Ukończenie zakupu
-              await InAppPurchase.instance.completePurchase(purchaseDetails);
-              bool isValid = _verifyPurchase(purchaseDetails);
-              if (isValid) {
-                print("Zakup zweryfikowany i dostarczony");
-                setPurchased(true, purchaseDetails);
-                break;
-              } else {
-                print("Weryfikacja zakupu nieudana");
-                setPurchaseStatusMessage(purchaseDetails.error!.message);
-                isLoading = false;
-              }
-            } catch (e) {
-              print("Błąd podczas finalizowania zakupu: $e");
+      String? purchaseID = purchaseDetails.purchaseID;
+      print("processedpurchases: $processedPurchases" );
+      if (purchaseID != null && !processedPurchases.contains(purchaseID)) {
+        processedPurchases.add(purchaseID); // Dodaj identyfikator zakupu do zbioru
+        print("purchaseDetails: ${purchaseDetails.status}");
+        print("_listenToPurchaseUpdated true");
+        isLoading = true;
+        switch (purchaseDetails.status) {
+          case PurchaseStatus.purchased:
+          case PurchaseStatus.restored:
+          // Weryfikacja zakupu przed dostarczeniem produktu
+            bool isValid = _verifyPurchase(purchaseDetails);
+            if (isValid) {
+              print("Zakup zweryfikowany i dostarczony");
+              setPurchased(true, purchaseDetails);
+            } else {
+              // Obsługa nieudanej weryfikacji
+              print("Weryfikacja zakupu nieudana");
               setPurchaseStatusMessage(purchaseDetails.error!.message);
               isLoading = false;
             }
-          } else {
-            print("Zakup nie został zakończony w odpowiednim czasie");// tu chyba trzeba dorobic ręcznie tekst?
+            break;
+          case PurchaseStatus.error:
+            print("Błąd zakupu: ${purchaseDetails.error?.message}");
+            setPurchaseStatusMessage(purchaseDetails.error!.message);
+            isLoading = false;
+            break;
+          case PurchaseStatus.pending:
+            print("Zakup oczekujący, oczekiwanie na potwierdzenie...");
+            bool isCompleted = await waitForPurchaseCompletion(purchaseDetails, Duration(minutes: 5));
+            if (isCompleted) {
+              try {
+                // Ukończenie zakupu
+                await InAppPurchase.instance.completePurchase(purchaseDetails);
+                bool isValid = _verifyPurchase(purchaseDetails);
+                if (isValid) {
+                  print("Zakup zweryfikowany i dostarczony");
+                  setPurchased(true, purchaseDetails);
+                  break;
+                } else {
+                  print("Weryfikacja zakupu nieudana");
+                  setPurchaseStatusMessage(purchaseDetails.error!.message);
+                  isLoading = false;
+                }
+              } catch (e) {
+                print("Błąd podczas finalizowania zakupu: $e");
+                setPurchaseStatusMessage(purchaseDetails.error!.message);
+                isLoading = false;
+              }
+            } else {
+              print("Zakup nie został zakończony w odpowiednim czasie");// tu chyba trzeba dorobic ręcznie tekst?
+              setPurchaseStatusMessage(purchaseDetails.status.toString());
+              isLoading = false;
+            }
+            break;
+          default:
+            print("Nieobsłużony status zakupu: ${purchaseDetails.status}");
             setPurchaseStatusMessage(purchaseDetails.status.toString());
             isLoading = false;
-          }
-          break;
-        default:
-          print("Nieobsłużony status zakupu: ${purchaseDetails.status}");
-          setPurchaseStatusMessage(purchaseDetails.status.toString());
-          isLoading = false;
-          break;
-      }
-    });
-  }
+            break;
+        }
+      }});
+    }
+
+
 
   bool _verifyPurchase(PurchaseDetails purchaseDetails) {
     // Pobranie i parsowanie danych zakupu

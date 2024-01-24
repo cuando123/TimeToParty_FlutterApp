@@ -801,13 +801,13 @@ class AnimatedAlertDialog {
       builder: (context) {
         Widget title = billingResponseTitles[billingResponse] ?? defaultTitle;
         Widget description = billingResponseDescriptions[billingResponse] ?? defaultDescription;
-        print("BillingResponse: ${billingResponse}");
+        print("show dialog: BillingResponse: $billingResponse");
         if (!billingResponseTitles.containsKey(billingResponse)) {
           description = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               translatedText(context, 'billing_response_error', 16, Palette().menudark, textAlign: TextAlign.center),
-              letsText(context, ' ${billingResponse}', 16, Palette().menudark),
+              letsText(context, ' $billingResponse', 16, Palette().menudark),
             ],
           );
         }

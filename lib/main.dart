@@ -70,7 +70,7 @@ Future<void> main() async {
   await translationProvider.loadWords();
   await translationProvider.loadTranslations();
 
-  IAPService iapService = IAPService(InAppPurchase.instance);
+  IAPService iapService = IAPService(InAppPurchase.instance, translationProvider);
 
   //probably to be unused
   //GamesServicesController? gamesServicesController;

@@ -98,14 +98,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
     );
   }
 
-  void showSuccessAlertDialog(BuildContext context) {
-    // Implementacja AlertDialog o sukcesie
-  }
-
-  void showErrorAlertDialog(BuildContext context, String error) {
-    // Implementacja AlertDialog o błędzie
-  }
-
   @override
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
@@ -269,9 +261,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                             textAlign: TextAlign.center),
                       ),
                       TextButton(
-                        onPressed: () async {
+                        onPressed: () {
                           audioController.playSfx(SfxType.buttonBackExit);
-                          await _iapService.restorePurchases();
+                          if (_iapService.isLoading == false) {
+                            if (isOnline) {
+                              print('PRODUCT IDS: $productIds');
+                              _iapService.initializePurchaseStream();
+                              _iapService.initStoreInfo(productIds);
+                              _iapService.restorePurchases();
+                            } else {
+                              _iapService.setPurchaseStatusMessage('NoInternetConnection');
+                            }
+                          }
                         },
                         child: translatedText(context, 'restore_purchases', 14, Palette().white,
                             textAlign: TextAlign.center),

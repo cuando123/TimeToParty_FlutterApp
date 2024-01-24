@@ -1,8 +1,10 @@
 
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/play_session/extensions.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
+import '../in_app_purchase/cards_advertisement_screen.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../play_session/alerts_and_dialogs.dart';
@@ -28,16 +31,58 @@ class CustomAppDrawer extends StatefulWidget {
 
 class CustomAppDrawerState extends State<CustomAppDrawer> {
   late IAPService _iapService;
+  bool _alertShown = false;
+  bool isOnline = false;
+
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   @override
-  void initState() {
-    super.initState();
-    _iapService = Provider.of<IAPService>(context, listen: false);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+      _iapService = Provider.of<IAPService>(context, listen: true);
+      _setupConnectivityListener();
+    }
+
+  Future<void> _setupConnectivityListener() async {
+    // Sprawdzenie początkowego stanu połączenia
+    var initialResult = await _connectivity.checkConnectivity();
+    bool isConnected = initialResult != ConnectivityResult.none;
+    safeSetState(() {
+      isOnline = isConnected;
+    });
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      isConnected = result != ConnectivityResult.none;
+      print('isConnected: $isConnected');
+      safeSetState(() {
+        isOnline = isConnected;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    _alertShown = false;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final audioController = context.read<AudioController>();
+    return Consumer<IAPService>(
+        builder: (context, iapService, child) {
+          if (!_alertShown && iapService.purchaseStatusMessage.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Wyświetlenie odpowiedniego AlertDialog
+              print("CONSUMER: ${iapService.purchaseStatusMessage}");
+              AnimatedAlertDialog.showPurchaseDialogs(context, iapService.purchaseStatusMessage);
+              iapService.resetPurchaseStatusMessage(); // Resetowanie wiadomości po wyświetleniu alertu
+              _alertShown = true; // Ustawienie flagi, że alert został pokazany
+            });
+          } else {
+            _alertShown = false;
+          }
     return Stack(
       children: [
         Drawer(
@@ -181,10 +226,20 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                         return Material(
                           child: InkWell(
                             borderRadius: BorderRadius.circular(4),
-                            onTap: () async {
+                            onTap: () {
                               audioController.playSfx(SfxType.buttonBackExit);
-                              await Future.delayed(Duration(milliseconds: 150));
-                              await _iapService.restorePurchases();
+                              Future.delayed(Duration(milliseconds: 150));
+                              print("RESTORE IS LOADING: ${_iapService.isLoading}, ISONLINE: $isOnline");
+                              if (_iapService.isLoading == false) {
+                                if (isOnline) {
+                                  print('PRODUCT IDS: $productIds');
+                                  _iapService.initializePurchaseStream();
+                                  _iapService.initStoreInfo(productIds);
+                                  _iapService.restorePurchases();
+                                } else {
+                                  _iapService.setPurchaseStatusMessage('NoInternetConnection');
+                                }
+                              }
                             },
                             child: ListTile(
                               leading: Icon(
@@ -270,7 +325,24 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
           ),
         ),
         GlobalLoadingIndicator(),
-      ],
+        Consumer<IAPService>(
+          builder: (context, iapService, child) {
+            if (iapService.isLoading) {
+              return _loadingOverlay();
+            } else {
+              return SizedBox.shrink();
+            }
+          },
+        ),],
+    );},);
+  }
+
+  Widget _loadingOverlay() {
+    return Container(
+      color: Colors.black.withOpacity(0.5), // Przyciemnione tło
+      child: Center(
+        child: CircularProgressIndicator(color: Palette().pink),
+      ),
     );
   }
 
