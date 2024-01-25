@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_lifecycle/TranslationProvider.dart';
 import '../models/purchase_state.dart';
@@ -28,6 +29,9 @@ class IAPService extends ChangeNotifier{
   bool _isAvailable = false;
   final List<ProductDetails> _products = [];
   IAPService(InAppPurchase instance, this.translationProvider);
+  var purchaseState = PurchaseState();
+  final Future<SharedPreferences> instanceFuture =
+  SharedPreferences.getInstance();
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,24 +49,44 @@ class IAPService extends ChangeNotifier{
     notifyListeners(); // informuje obserwatorów o zmianie
   }
 
-  void setPurchased(bool value, PurchaseDetails purchaseDetails) {
-    _isPurchased = value;
-    var purchaseState = PurchaseState(); // Ustawienie stanu zakupu w klasie tamtej do translations providera only
-    purchaseState.isPurchased = true;
-    notifyListeners();
-    if (_purchaseStatusMessage != "PurchaseRestored" && _purchaseStatusMessage != '') {
-      setPurchaseStatusMessage("PurchaseSuccess");
-    }
-    isLoading = false;
-    translationProvider.loadWords();
-    if (purchaseDetails.productID == "timetoparty.fullversion.test"){
-      FirebaseFirestore.instance.collection('purchases').add({
-      //  'user_id': userId,
-      //  'details': purchaseDetails,
-        // Możesz dodać więcej szczegółów związanych z zakupem
-      });
-    //oraz wywolanie callbacku np do wyswietlenia alertdialoga
+  Future<void> savePurchaseState(bool isPurchased) async {
+    final prefs = await instanceFuture;
+    await prefs.setBool('isPurchased', isPurchased);
   }
+
+  Future<bool> getPurchaseState() async {
+    final prefs = await instanceFuture;
+    return prefs.getBool('isPurchased') ?? false;
+  }
+
+
+  void setPurchased(bool isPurchased,bool isMainMenu) {
+    if (!isPurchased){
+      _isPurchased = false;
+      purchaseState.isPurchased = false;
+      notifyListeners();
+      //setPurchaseStatusMessage("BillingResponse.itemNotOwned");
+      translationProvider.loadWords();
+      savePurchaseState(false);
+    } else {
+      _isPurchased = true;
+      purchaseState.isPurchased = true;  // Ustawienie stanu zakupu w klasie tamtej do translations providera only
+      notifyListeners();
+      if(!isMainMenu){
+      if (_purchaseStatusMessage != "PurchaseRestored" && _purchaseStatusMessage != '') {
+        setPurchaseStatusMessage("PurchaseSuccess");
+      }}
+      isLoading = false;
+      translationProvider.loadWords();
+      savePurchaseState(true);
+      /*if (purchaseDetails.productID == "timetoparty.fullversion.test") {
+        FirebaseFirestore.instance.collection('purchases').add({
+          //  'user_id': userId,
+          //  'details': purchaseDetails,
+          // Możesz dodać więcej szczegółów związanych z zakupem
+        });
+      }*/
+    }
   }
 
   void initializePurchaseStream() {
@@ -180,7 +204,7 @@ class IAPService extends ChangeNotifier{
             bool isValid = _verifyPurchase(purchaseDetails);
             if (isValid) {
               print("Zakup zweryfikowany i dostarczony");
-              setPurchased(true, purchaseDetails);
+              setPurchased(true,false);
             } else {
               // Obsługa nieudanej weryfikacji
               print("Weryfikacja zakupu nieudana");
@@ -203,7 +227,7 @@ class IAPService extends ChangeNotifier{
                 bool isValid = _verifyPurchase(purchaseDetails);
                 if (isValid) {
                   print("Zakup zweryfikowany i dostarczony");
-                  setPurchased(true, purchaseDetails);
+                  setPurchased(true,false);
                   break;
                 } else {
                   print("Weryfikacja zakupu nieudana");
@@ -289,4 +313,46 @@ class IAPService extends ChangeNotifier{
   void dispose() {
     _subscription.cancel();
   }
+/*
+  Future<bool> verifyPurchaseOnline() async {
+    bool isAvailable = await InAppPurchase.instance.isAvailable();
+    if (!isAvailable) {
+      print("Sklep nie jest dostępny");
+      return false;
+    }
+
+    bool restoreSuccessful = false;
+    try {
+      await InAppPurchase.instance.restorePurchases();
+      // Ustawienie timeout dla operacji przywracania
+      final completer = Completer<bool>();
+      var subscription = _inAppPurchase.purchaseStream.listen((purchaseDetailsList) {
+        for (var purchase in purchaseDetailsList) {
+          if (purchase.status == PurchaseStatus.restored || purchase.status == PurchaseStatus.purchased) {
+            if (!_verifyPurchase(purchase)) {
+              // Niepowodzenie weryfikacji jednego z zakupów
+              completer.complete(false);
+            }
+          }
+        }
+        // Wszystkie zakupy zostały pomyślnie zweryfikowane
+        restoreSuccessful = true;
+        completer.complete(true);
+      });
+
+      // Czekanie na zakończenie operacji przywracania
+      restoreSuccessful = await completer.future.timeout(Duration(seconds: 30), onTimeout: () {
+        print("Timeout - operacja przywracania zakupów nie została zakończona w odpowiednim czasie");
+        return false;
+      });
+
+      subscription.cancel();
+      return restoreSuccessful;
+    } catch (e) {
+      print("Wystąpił błąd podczas weryfikacji zakupów online: $e");
+      return false;
+    }
+  }
+*/
+
 }

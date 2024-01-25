@@ -839,7 +839,11 @@ class AnimatedAlertDialog {
                     text: 'OK',
                     onPressed: () async {
                       audioController.playSfx(SfxType.buttonBackExit);
-                      Navigator.of(context).pop();
+                      if (billingResponse == "PurchaseSuccess" || billingResponse == "PurchaseRestored"){
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      } else {
+                        Navigator.of(context).pop();
+                      }
                     },
                     backgroundColor: Palette().pink,
                     foregroundColor: Palette().white,

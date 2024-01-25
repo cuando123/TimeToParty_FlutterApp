@@ -65,6 +65,7 @@ class GlobalLoading {
   }
 
   void _connectionProblemDialog(BuildContext context) {
+    final audioController = Provider.of<AudioController>(context, listen: false);
     showDialog(
       context: context,
       builder: (context) {
@@ -100,7 +101,6 @@ class GlobalLoading {
                         fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
-                    final audioController = context.watch<AudioController>();
                     audioController.playSfx(SfxType.buttonBackExit);
                     Navigator.of(context).pop();
                   },

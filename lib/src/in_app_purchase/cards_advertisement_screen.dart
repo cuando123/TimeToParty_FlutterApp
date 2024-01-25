@@ -262,6 +262,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                       ),
                       TextButton(
                         onPressed: () {
+                          _alertShown = false;
                           audioController.playSfx(SfxType.buttonBackExit);
                           if (_iapService.isLoading == false) {
                             if (isOnline) {

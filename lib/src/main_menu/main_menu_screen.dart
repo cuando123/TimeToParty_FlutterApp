@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
@@ -44,6 +45,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+    _checkPurchaseStatus();
     //if ACCOUNT = FREE
     try {
       if (!_nativeAdLoaded) {
@@ -83,6 +85,23 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   }
 
+  Future<void> _checkPurchaseStatus() async {
+    IAPService iapService = context.read<IAPService>();
+    bool isPurchasedLocally = await iapService.getPurchaseState();
+    /*
+    if (isOnline) {
+      bool isPurchaseValidOnline = await iapService.verifyPurchaseOnline();
+      if (isPurchasedLocally != isPurchaseValidOnline) {
+        iapService.setPurchased(isPurchaseValidOnline, true);
+        print ('isPurchaseValidOnline : $isPurchaseValidOnline');
+      }
+    } else {
+      iapService.setPurchased(isPurchasedLocally, true);
+      print('Ustawilem: $isPurchasedLocally');
+    }*/
+    iapService.setPurchased(isPurchasedLocally, true);
+  }
+
   void _setupConnectivityListener() {
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
       bool isConnected = result != ConnectivityResult.none;
@@ -93,6 +112,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         context.read<AdMobService>().onConnectionChanged(isConnected);
       }
       if (isConnected) {
+        //_checkPurchaseStatus();
         _firebaseService
             .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
         print("ISONLINE: $isConnected");
@@ -155,14 +175,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     TeamScore.resetAllScores();
-    return Consumer<IAPService>(
-        builder: (context, iapService, child) {
-      if (iapService.purchaseStatusMessage == "PurchaseRestored") {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          AnimatedAlertDialog.showPurchaseDialogs(context, iapService.purchaseStatusMessage);
-          iapService.resetPurchaseStatusMessage();
-        });
-      }
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -299,5 +311,5 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         ),
       ),
     );
-  },);
-}}
+  }
+}
