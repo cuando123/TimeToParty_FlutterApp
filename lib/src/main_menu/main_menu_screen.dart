@@ -269,7 +269,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
-                    Consumer<FirebaseService>(
+                    /*Consumer<FirebaseService>(
                       builder: (context, firebaseService, child) {
                         //print('FIREBASE WIDGET z CONSUMERA: $uidUserLoaded');
                         return Text(
@@ -277,7 +277,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                           style: TextStyle(color: Colors.white),
                         );
                       },
-                    ),
+                    ),*/
                     // Dodaj tutaj pozostałe widgety
                   ],
                 ),

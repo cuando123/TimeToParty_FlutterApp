@@ -7,7 +7,6 @@ import 'package:game_template/main.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/extensions.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
@@ -35,7 +34,7 @@ const List<String> productIds =<String>[
   'timetoparty.fullversion.test'
 ];
 
-class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
+class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with SingleTickerProviderStateMixin{
   bool _alertShown = false;
   late IAPService _iapService;
   bool isOnline = false;
@@ -44,6 +43,43 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   bool _isInitialized = false;
+
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimationLine1;
+  late Animation<double> _scaleAnimationLine2;
+  late Animation<double> _scaleAnimationLine3;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat();
+
+    _scaleAnimationLine1 = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
+    ]).animate(_animationController);
+
+    _scaleAnimationLine2 = TweenSequence<double>([
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.4),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.45),
+    ]).animate(_animationController);
+
+    _scaleAnimationLine3 = TweenSequence<double>([
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.6),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.25),
+    ]).animate(_animationController);
+  }
 
   @override
   void didChangeDependencies() {
@@ -86,6 +122,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
   void dispose() {
     _connectivitySubscription?.cancel();
     _alertShown = false; // Resetowanie flagi przy opuszczaniu ekranu
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -167,7 +204,14 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                                 audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogMoreFun(context);
                               },
-                              child: Row(
+                              child:
+                              AnimatedBuilder(
+                                animation: _scaleAnimationLine1,
+                                builder: (context, child) => Transform.scale(
+                                  scale: _scaleAnimationLine1.value,
+                                  child: child,
+                                ),
+                                child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -181,36 +225,48 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                                   ResponsiveSizing.responsiveWidthGap(context, 10),
                                   Icon(Icons.arrow_back, color: Colors.white),
                                 ],
-                              ),
+                              ),),
                             ),
                             TextButton(
                               onPressed: () {
                                 audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogMoreRandomEvents(context);
                               },
-                              child: Row(
+                              child: AnimatedBuilder(
+                                animation: _scaleAnimationLine2,
+                                builder: (context, child) => Transform.scale(
+                                  scale: _scaleAnimationLine2.value,
+                                  child: child,
+                                ),
+                                child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SvgPicture.asset(
-                                    'assets/time_to_party_assets/banner_random_icon_advert.svg',
-                                    height: ResponsiveSizing.scaleHeight(context, 24),
-                                    width: ResponsiveSizing.scaleWidth(context, 24),
+                                    'assets/time_to_party_assets/no_ads_icon.svg',
+                                    height: ResponsiveSizing.scaleHeight(context, 34),
+                                    width: ResponsiveSizing.scaleWidth(context, 34),
                                   ),
                                   ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  translatedText(context, 'more_random_events', 14, Palette().white,
+                                  translatedText(context, 'no_ads', 14, Palette().white,
                                       textAlign: TextAlign.center),
                                   ResponsiveSizing.responsiveWidthGap(context, 10),
                                   Icon(Icons.arrow_back, color: Colors.white),
                                 ],
-                              ),
+                              ),),
                             ),
                             TextButton(
                               onPressed: () {
                                 audioController.playSfx(SfxType.buttonBackExit);
                                 showDialogLongerGameplay(context);
                               },
-                              child: Row(
+                              child: AnimatedBuilder(
+                                animation: _scaleAnimationLine3,
+                                builder: (context, child) => Transform.scale(
+                                  scale: _scaleAnimationLine3.value,
+                                  child: child,
+                                ),
+                                child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -225,7 +281,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                                   ResponsiveSizing.responsiveWidthGap(context, 10),
                                   Icon(Icons.arrow_back, color: Colors.white),
                                 ],
-                              ),
+                              ),),
                             ),
                           ],
                         ),
@@ -317,6 +373,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+        Center(child:
+              SvgPicture.asset(
+                'assets/time_to_party_assets/instruction_cards_linear_2.svg',
+                height: ResponsiveSizing.scaleHeight(context, 75)
+              )),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'more_fun_description', 16, Palette().menudark, textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
@@ -351,7 +413,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(context, 'more_random_events', 18, Palette().pink, textAlign: TextAlign.center),
+          title: translatedText(context, 'no_ads', 18, Palette().pink, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,7 +422,14 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-              translatedText(context, 'more_random_events_description', 16, Palette().menudark,
+              Center(child:
+              SvgPicture.asset(
+                'assets/time_to_party_assets/no_ads_icon.svg',
+                height: ResponsiveSizing.scaleHeight(context, 74),
+                width: ResponsiveSizing.scaleWidth(context, 74),
+              )),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+              translatedText(context, 'no_ads_description', 16, Palette().menudark,
                   textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
@@ -404,6 +473,14 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> {
               Center(
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
+              ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+              Center(child:
+              SvgPicture.asset(
+                'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                height: ResponsiveSizing.scaleHeight(context, 74),
+                width: ResponsiveSizing.scaleWidth(context, 74),
+                color: Colors.black,
+              )),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'longer_and_more_interesting_gameplay_description', 16, Palette().menudark,
                   textAlign: TextAlign.center),

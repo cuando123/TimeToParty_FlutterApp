@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
                 ],
                 child: Builder(builder: (context) {
                   final palette = context.watch<Palette>();
-                  return MaterialApp.router(
+                  return MaterialApp.router(debugShowCheckedModeBanner: false,
                     title: 'Time To Party',
                     theme: ThemeData.from(
                       colorScheme: ColorScheme.fromSeed(
