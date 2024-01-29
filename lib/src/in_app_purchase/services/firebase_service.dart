@@ -69,7 +69,7 @@ class FirebaseService extends ChangeNotifier {
       if (!userDoc.exists) {
         UserInformations newUser = UserInformations()
           ..userID = user.uid
-          ..isPurchased = false
+          ..purchaseStatus = "free"
           ..createdUserDate = DateTime.now();
 
         await _firestore?.collection('users').doc(user.uid).set(newUser.toJson());
@@ -83,22 +83,30 @@ class FirebaseService extends ChangeNotifier {
   Future<void> setPurchasedFlag() async {
     if (isConnected) {
       // Logika, gdy aplikacja jest w trybie offline
-     // print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
+     print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
       return;
     }
 
     User? user = _auth?.currentUser;
-    if (user == null) {
-    //  print('Użytkownik nie jest zalogowany.');
+    if (user == null) {print('Użytkownik nie jest zalogowany.');
       return;
     }
 
     try {
       DocumentReference userDocRef = _firestore?.collection('users').doc(user.uid) as DocumentReference<Object?>;
       await userDocRef.update({'isPurchased': true});
-     // print('Flaga isPurchased została ustawiona na true.');
+      print('Flaga isPurchased została ustawiona na true.');
     } catch (e) {
-     // print('Błąd podczas ustawiania flagi isPurchased: $e');
+      print('Błąd podczas ustawiania flagi isPurchased: $e');
+    }
+  }
+
+  Future<void> updateUserInformations(UserInformations userInfo) async {
+    try {
+      await _firestore?.collection('users').doc(userInfo.userID).set(userInfo.toJson(), SetOptions(merge: true));
+      print('Informacje o użytkowniku zaktualizowane w Firebase');
+    } catch (e) {
+      print('Błąd podczas aktualizacji informacji użytkownika: $e');
     }
   }
 

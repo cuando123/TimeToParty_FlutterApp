@@ -16,6 +16,7 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
+import '../in_app_purchase/models/global_stopwatch.dart';
 import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
@@ -269,7 +270,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
-                    /*Consumer<FirebaseService>(
+                    Consumer<FirebaseService>(
                       builder: (context, firebaseService, child) {
                         //print('FIREBASE WIDGET z CONSUMERA: $uidUserLoaded');
                         return Text(
@@ -277,7 +278,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                           style: TextStyle(color: Colors.white),
                         );
                       },
-                    ),*/
+                    ),
                     // Dodaj tutaj pozostałe widgety
                   ],
                 ),
