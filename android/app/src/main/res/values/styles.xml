@@ -19,4 +19,11 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">?android:colorBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_white</item>
+        <item name="postSplashScreenTheme">@android:style/Theme.Light.NoTitleBar</item>
+    </style>
+
 </resources>

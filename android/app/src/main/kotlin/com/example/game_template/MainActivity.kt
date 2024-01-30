@@ -10,6 +10,8 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryPurchasesParams
 import android.os.Bundle
 import com.android.billingclient.api.BillingResult
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 
 class MainActivity: FlutterActivity() {
 
@@ -17,7 +19,9 @@ class MainActivity: FlutterActivity() {
     private lateinit var billingClient: BillingClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        //setContentView(R.layout.main_activity)
         setupBillingClient()
     }
 
