@@ -24,7 +24,7 @@ import 'src/player_progress/persistence/local_storage_player_progress_persistenc
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 
 final globalLoading = GlobalLoading();
-final userInfo = UserInformations();
+ UserInformations userInfo = UserInformations();
 
 Future<void> main() async {
   if (kReleaseMode) {

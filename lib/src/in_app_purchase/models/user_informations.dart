@@ -34,4 +34,20 @@ class UserInformations {
     'howManyTimesRunApp': howManyTimesRunApp,
     'howManyTimesRunInstertitialAd': howManyTimesRunInstertitialAd,
   };
+
+  static UserInformations fromJson(Map<String, dynamic> json) {
+    return UserInformations()
+      ..userID = json['userID'] as String?
+      ..purchaseStatus = json['purchaseStatus'] as String?
+      ..orderID = json['purchaseID'] as String?
+      ..createdUserDate = json['createdUserDate'] != null ? DateTime.parse(json['createdUserDate'] as String) : null
+      ..purchaseDate = json['purchaseDate'] != null ? DateTime.parse(json['purchaseDate'] as String) : null
+      ..productID = json['productID'] as String?
+      ..finalSpendTimeOnGame = json['finalSpendTimeOnGame'] as int?
+      ..lastOneSpendTimeOnGame = json['lastOneSpendTimeOnGame'] as int?
+      ..lastHowManyFieldReached = json['lastHowManyFieldReached'] as int? ?? 0
+      ..howManyTimesFinishedGame = json['howManyTimesFinishedGame'] as int?
+      ..howManyTimesRunApp = json['howManyTimesRunApp'] as int?
+      ..howManyTimesRunInstertitialAd = json['howManyTimesRunInstertitialAd'] as int?;
+  }
 }

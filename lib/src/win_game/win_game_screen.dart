@@ -43,7 +43,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
   final Connectivity _connectivity = Connectivity();
-  late final FirebaseService _firebaseService;
+  late FirebaseService _firebaseService;
 
   @override
   void initState() {
