@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
@@ -16,12 +16,10 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
-import '../in_app_purchase/models/global_stopwatch.dart';
 import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
 import '../level_selection/level_selection_screen.dart';
-import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
 import '../style/palette.dart';
 
@@ -46,6 +44,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+    userInfo.lastHowManyFieldReached = 0; // Resetowanie wartości pol do firebase
     _checkPurchaseStatus();
     //if ACCOUNT = FREE
     try {
@@ -100,7 +99,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       iapService.setPurchased(isPurchasedLocally, true);
       print('Ustawilem: $isPurchasedLocally');
     }*/
-    iapService.setPurchased(isPurchasedLocally, true);
+    await iapService.setPurchased(isPurchasedLocally, true);
   }
 
   void _setupConnectivityListener() {

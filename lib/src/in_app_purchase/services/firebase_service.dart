@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../../main.dart';
 import '../models/user_informations.dart';
 
 class FirebaseService extends ChangeNotifier {
@@ -80,27 +81,6 @@ class FirebaseService extends ChangeNotifier {
     }
   }
 
-  Future<void> setPurchasedFlag() async {
-    if (isConnected) {
-      // Logika, gdy aplikacja jest w trybie offline
-     print("Próba ustawienia flagi zakupu w trybie offline - nieudana.");
-      return;
-    }
-
-    User? user = _auth?.currentUser;
-    if (user == null) {print('Użytkownik nie jest zalogowany.');
-      return;
-    }
-
-    try {
-      DocumentReference userDocRef = _firestore?.collection('users').doc(user.uid) as DocumentReference<Object?>;
-      await userDocRef.update({'isPurchased': true});
-      print('Flaga isPurchased została ustawiona na true.');
-    } catch (e) {
-      print('Błąd podczas ustawiania flagi isPurchased: $e');
-    }
-  }
-
   Future<void> updateUserInformations(UserInformations userInfo) async {
     try {
       await _firestore?.collection('users').doc(userInfo.userID).set(userInfo.toJson(), SetOptions(merge: true));
@@ -110,5 +90,68 @@ class FirebaseService extends ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>?> getUserData(String? userId) async {
+    if (userId == null) return null;
+
+    try {
+      DocumentSnapshot userDoc = (await _firestore?.collection('users').doc(userId).get()) as DocumentSnapshot<Object?>;
+      return userDoc.exists ? userDoc.data() as Map<String, dynamic>? : null;
+    } catch (e) {
+      print('Błąd podczas pobierania danych użytkownika: $e');
+      return null;
+    }
+  }
+
+// Zakładając, że masz metodę w FirebaseService, która pobiera dane użytkownika:
+  Future<void> updateAndSaveUserSessionInfo() async {
+    try {
+      var userData = await getUserData(userInfo.userID);
+      if (userData != null) {
+        userInfo.howManyTimesRunApp = (userData['howManyTimesRunApp'] as int?) ?? 0;
+      } else {
+        userInfo.howManyTimesRunApp = 0;
+      }
+
+      userInfo.howManyTimesRunApp = (userInfo.howManyTimesRunApp ?? 0) + 1; //inkrementacja z warunkiem null?
+
+      await updateUserInformations(userInfo);
+    } catch (e) {
+      print("Błąd podczas aktualizacji liczby uruchomień aplikacji: $e");
+    }
+  }
+
+  Future<void> updateHowManyTimesFinishedGame() async {
+    try {
+      var userData = await getUserData(userInfo.userID);
+      if (userData != null) {
+        userInfo.howManyTimesFinishedGame = (userData['howManyTimesFinishedGame'] as int?) ?? 0;
+      } else {
+        userInfo.howManyTimesFinishedGame = 0;
+      }
+
+      userInfo.howManyTimesFinishedGame = (userInfo.howManyTimesFinishedGame ?? 0) + 1;
+
+      await updateUserInformations(userInfo);
+    } catch (e) {
+      print("Błąd podczas aktualizacji liczby zakończeń gry: $e");
+    }
+  }
+
+  Future<void> updateHowManyTimesRunInterstitialAd() async {
+    try {
+      var userData = await getUserData(userInfo.userID);
+      if (userData != null) {
+        userInfo.howManyTimesRunInstertitialAd = (userData['howManyTimesRunInstertitialAd'] as int?) ?? 0;
+      } else {
+        userInfo.howManyTimesRunInstertitialAd = 0;
+      }
+
+      userInfo.howManyTimesRunInstertitialAd = (userInfo.howManyTimesRunInstertitialAd ?? 0) + 1;
+
+      await updateUserInformations(userInfo);
+    } catch (e) {
+      print("Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
+    }
+  }
 // Dodatkowe funkcje, które będą robiły różne rzeczy w Firebase po zakupie, mogą być tutaj zaimplementowane.
 }

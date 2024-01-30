@@ -14,6 +14,7 @@ import 'package:game_template/src/play_session/main_board/ripple_effect_pionka.d
 import 'package:game_template/src/play_session/main_board/triple_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../../main.dart';
 import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
@@ -669,7 +670,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       }
     }
     await Future.delayed(Duration(milliseconds: 500));
-
+    userInfo.lastHowManyFieldReached = flagSteps[flagIndex];//TO_DO test co on tu wstawi
     if (flagSteps[flagIndex] > 19){
       pionekZaBurta[currentTeamIndex] = true;
       currentFieldName = 'field_start';

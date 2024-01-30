@@ -15,6 +15,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
+import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -35,7 +36,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
   final Connectivity _connectivity = Connectivity();
-
+  late final FirebaseService _firebaseService;
   List<TextEditingController> controllers = [];
   bool _duringCelebration = false;
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -413,6 +414,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                         settingsController.toggleMusicOn();
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
+                                                      await _firebaseService.updateHowManyTimesRunInterstitialAd();
                                                     } else {
                                                       navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }

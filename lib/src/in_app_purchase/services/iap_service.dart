@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../main.dart';
 import '../../app_lifecycle/TranslationProvider.dart';
 import '../models/purchase_state.dart';
 import '../models/user_informations.dart';
@@ -34,7 +35,6 @@ class IAPService extends ChangeNotifier{
   var purchaseState = PurchaseState();
   final Future<SharedPreferences> instanceFuture =
   SharedPreferences.getInstance();
-  UserInformations userInfo = UserInformations();
   PurchaseDetails? _purchaseDetails;
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

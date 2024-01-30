@@ -17,6 +17,7 @@ import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/services/ad_mob_service.dart';
+import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../style/palette.dart';
 
@@ -42,11 +43,13 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
   final Connectivity _connectivity = Connectivity();
+  late final FirebaseService _firebaseService;
 
   @override
   void initState() {
     super.initState();
     //if ACCOUNT = FREE
+    _firebaseService.updateHowManyTimesFinishedGame();
     _nativeAd = NativeAd(
         adUnitId: context.read<AdMobService>().nativeAdUnitId!,
         factoryId: 'listTile',

@@ -14,6 +14,7 @@ import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
 import '../../in_app_purchase/services/ad_mob_service.dart';
+import '../../in_app_purchase/services/firebase_service.dart';
 import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';
 import '../alerts_and_dialogs.dart';
@@ -54,6 +55,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
+  late final FirebaseService _firebaseService;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
@@ -577,8 +579,9 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     // Powyższe spowoduje że animacja punktów będzie dobrze wyglądała gdy czas się skończy
     _timeUpAnimationController.forward().then((value) => {
-    if (isInterstitialAdLoaded && !isPurchased)
-      Provider.of<AdMobService>(context, listen: false).showInterstitialAd()
+    if (isInterstitialAdLoaded && !isPurchased){
+      Provider.of<AdMobService>(context, listen: false).showInterstitialAd(),
+     _firebaseService.updateHowManyTimesRunInterstitialAd()}
     else
       {
         if (widget.currentField[0] == 'field_star_blue_dark')
@@ -751,6 +754,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+        await _firebaseService.updateHowManyTimesRunInterstitialAd();
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(
@@ -778,6 +782,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+        await _firebaseService.updateHowManyTimesRunInterstitialAd();
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(

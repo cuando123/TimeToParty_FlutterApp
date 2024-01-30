@@ -7,6 +7,7 @@ import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:game_template/src/app_lifecycle/app_lifecycle.dart';
 import 'package:game_template/src/audio/audio_controller.dart';
 import 'package:game_template/src/in_app_purchase/cards_advertisement_screen.dart';
+import 'package:game_template/src/in_app_purchase/models/global_stopwatch.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/main_menu/main_menu_screen.dart';
@@ -22,7 +23,31 @@ import 'package:game_template/src/style/snack_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class MyApp extends StatelessWidget {
+import 'main.dart';
+
+class MyApp extends StatefulWidget {
+  final PlayerProgressPersistence playerProgressPersistence;
+  final SettingsPersistence settingsPersistence;
+  //final GamesServicesController? gamesServicesController;
+  final FirebaseService firebaseService;
+  final IAPService iapService;
+
+  const MyApp({
+    super.key,
+    required this.playerProgressPersistence,
+    required this.settingsPersistence,
+    required this.iapService,
+    //required this.gamesServicesController,
+    required this.firebaseService,
+  });
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final Future initFuture = Future.wait([]);
+
   static final _router = GoRouter(routes: [
     GoRoute(path: '/', builder: (context, state) => const MainMenuScreen(key: Key('main menu')), routes: [
       GoRoute(
@@ -59,26 +84,41 @@ class MyApp extends StatelessWidget {
     ]),
   ]);
 
-  final PlayerProgressPersistence playerProgressPersistence;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    widget.firebaseService.updateAndSaveUserSessionInfo(); // Pobranie i aktualizacja liczby uruchomień
+    GlobalStopwatch.start(); // Rozpoczęcie pomiaru czasu sesji
+  }
 
-  final SettingsPersistence settingsPersistence;
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    GlobalStopwatch.stop(); // Zatrzymanie pomiaru czasu sesji
+    int lastSessionTime = GlobalStopwatch.getElapsedTime(); // Pobranie czasu sesji
 
-  //final GamesServicesController? gamesServicesController;
+    // Aktualizacja czasu spędzonego w grze
+    userInfo.finalSpendTimeOnGame = (userInfo.finalSpendTimeOnGame ?? 0) + lastSessionTime;
+    userInfo.lastOneSpendTimeOnGame = lastSessionTime;
+    widget.firebaseService.updateUserInformations(userInfo); // Zapisanie zmian do Firebase
 
-  final FirebaseService firebaseService;
+    super.dispose();
+  }
 
-  final IAPService iapService;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // Tutaj aktualizujesz userInfo
+      int lastSessionTime = GlobalStopwatch.getElapsedTime();
+      userInfo.lastOneSpendTimeOnGame = lastSessionTime;
 
-  final Future initFuture = Future.wait([]);
-
-  MyApp({
-    super.key,
-    required this.playerProgressPersistence,
-    required this.settingsPersistence,
-    required this.iapService,
-    //required this.gamesServicesController,
-    required this.firebaseService,
-  });
+      // Wywołanie metody zapisywania do Firebase
+      widget.firebaseService.updateUserInformations(userInfo);
+    } else if (state == AppLifecycleState.resumed) {
+      GlobalStopwatch.start();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +131,7 @@ class MyApp extends StatelessWidget {
                 providers: [
                   ChangeNotifierProvider(
                     create: (context) {
-                      var progress = PlayerProgress(playerProgressPersistence);
+                      var progress = PlayerProgress(widget.playerProgressPersistence);
                       progress.getLatestFromStore();
                       return progress;
                     },
@@ -100,11 +140,11 @@ class MyApp extends StatelessWidget {
                     create: (_) => NotificationsManager(context),
                   ),
                   //Provider<GamesServicesController?>.value(value: gamesServicesController),
-                  ChangeNotifierProvider<IAPService>.value(value: iapService),
+                  ChangeNotifierProvider<IAPService>.value(value: widget.iapService),
                   ChangeNotifierProvider<SettingsController>(
                     lazy: false,
                     create: (context) => SettingsController(
-                      persistence: settingsPersistence,
+                      persistence: widget.settingsPersistence,
                     )..loadStateFromPersistence(),
                   ),
                   ProxyProvider2<
@@ -125,7 +165,7 @@ class MyApp extends StatelessWidget {
                   Provider(
                     create: (context) => Palette(),
                   ),
-                  ChangeNotifierProvider<FirebaseService>(create: (context) => firebaseService),
+                  ChangeNotifierProvider<FirebaseService>(create: (context) => widget.firebaseService),
                 ],
                 child: Builder(builder: (context) {
                   final palette = context.watch<Palette>();
