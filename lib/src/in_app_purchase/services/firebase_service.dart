@@ -116,49 +116,31 @@ class FirebaseService extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>?> getUserData(String? userId) async { // to sie nie wykonalo nigdy ?
-    if (userId == null) return null;
-
-    try {
-      DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(userId).get() as Future<DocumentSnapshot<Object?>>);
-      return userDoc.exists ? userDoc.data() as Map<String, dynamic>? : null;
-    } catch (e) {
-      print('FirebaseService - Błąd podczas pobierania danych użytkownika: $e');
-      return null;
-    }
-  }
-
   Future<void> updateAndSaveUserSessionInfo() async {
     try {
-      if (userInfo != null) {
-        userInfo!.howManyTimesRunApp = (userInfo!.howManyTimesRunApp ?? 0) + 1;
-        await updateUserInformations(userInfo!);
-      }
-    } catch (e) {
+      userInfo.howManyTimesRunApp = (userInfo.howManyTimesRunApp ?? 0) + 1;
+      await updateUserInformations(userInfo);
+        } catch (e) {
       //print("Błąd podczas aktualizacji liczby uruchomień aplikacji: $e");
     }
   }
 
   Future<void> updateHowManyTimesFinishedGame() async {
     try {
-      if (userInfo != null) {
-        userInfo!.howManyTimesFinishedGame = (userInfo!.howManyTimesFinishedGame ?? 0) + 1;
-        print('FirebaseService - updateHowManyTimesFinishedGame: ${userInfo!.howManyTimesFinishedGame}');
-        await updateUserInformations(userInfo!);
-      }
-    } catch (e) {
+      userInfo.howManyTimesFinishedGame = (userInfo.howManyTimesFinishedGame ?? 0) + 1;
+      print('FirebaseService - updateHowManyTimesFinishedGame: ${userInfo.howManyTimesFinishedGame}');
+      await updateUserInformations(userInfo);
+        } catch (e) {
       print("FirebaseService - Błąd podczas aktualizacji liczby zakończeń gry: $e");
     }
   }
 
   Future<void> updateHowManyTimesRunInterstitialAd() async {
     try {
-      if (userInfo != null) {
-        userInfo!.howManyTimesRunInstertitialAd = (userInfo!.howManyTimesRunInstertitialAd ?? 0) + 1;
-        print('FirebaseService - howManyTimesRunInstertitialAd: ${userInfo!.howManyTimesRunInstertitialAd}');
-        await updateUserInformations(userInfo!);
-      }
-    } catch (e) {
+      userInfo.howManyTimesRunInstertitialAd = (userInfo.howManyTimesRunInstertitialAd ?? 0) + 1;
+      print('FirebaseService - howManyTimesRunInstertitialAd: ${userInfo.howManyTimesRunInstertitialAd}');
+      await updateUserInformations(userInfo);
+        } catch (e) {
       print("FirebaseService -Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
     }
   }

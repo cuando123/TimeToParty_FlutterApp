@@ -89,7 +89,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    widget.firebaseService.updateAndSaveUserSessionInfo(); // Pobranie i aktualizacja liczby uruchomień
     GlobalStopwatch.start(); // Rozpoczęcie pomiaru czasu sesji
   }
 
