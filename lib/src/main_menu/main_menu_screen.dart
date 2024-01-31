@@ -44,7 +44,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    userInfo.lastHowManyFieldReached = 0; // Resetowanie wartości pol do firebase
+    userInfo.lastHowManyFieldReached = ''; // Resetowanie wartości pol do firebase
     _checkPurchaseStatus();
     //if ACCOUNT = FREE
     try {
@@ -68,7 +68,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     } catch (e) {
       print('Wystąpił błąd podczas tworzenia reklamy: $e');
     }
-    _firebaseService = FirebaseService(isConnected: isOnline);
+    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
 
     _animationController = AnimationController(
       duration: Duration(seconds: 3),

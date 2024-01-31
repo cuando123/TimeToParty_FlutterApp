@@ -19,6 +19,7 @@ import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
+import '../../in_app_purchase/services/firebase_service.dart';
 import '../../in_app_purchase/services/iap_service.dart';
 import '../../style/palette.dart';
 import '../../style/stars_animation.dart';
@@ -65,10 +66,11 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   late List<String> mutableTeamNames;
   late List<Color> mutableTeamColors;
   late List<bool> pionekZaBurta;
-
+  late FirebaseService _firebaseService;
   @override
   void initState() {
     super.initState();
+    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     mutableTeamNames = List<String>.from(widget.teamNames);
     mutableTeamColors = List<Color>.from(widget.teamColors);
     pionekZaBurta = List.filled(mutableTeamColors.length, false);
@@ -635,6 +637,20 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     super.dispose();
   }
 
+  String createFlagStepsString(List<int> flagSteps) {
+    StringBuffer sb = StringBuffer();
+
+    for (int i = 0; i < flagSteps.length; i++) {
+      // Dodajemy informacje dla każdej drużyny
+      sb.write('dr${i + 1}: ${flagSteps[i]}');
+      if (i < flagSteps.length - 1) {
+        sb.write(', ');
+      }
+    }
+
+    return sb.toString();
+  }
+
   //funkcja przesuniecia pionka, kroki
   Future<void> moveFlag(BuildContext context, int steps, int flagIndex, double stepSize) async {
     print('Steps: $steps, flagIndex: $flagIndex, flagSteps[]: $flagSteps');
@@ -670,7 +686,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
       }
     }
     await Future.delayed(Duration(milliseconds: 500));
-    userInfo.lastHowManyFieldReached = flagSteps[flagIndex];//TO_DO test co on tu wstawi
+
+
+    userInfo.lastHowManyFieldReached = createFlagStepsString(flagSteps);//tu wstawi zawsze ostatni wykonany pionek
     if (flagSteps[flagIndex] > 19){
       pionekZaBurta[currentTeamIndex] = true;
       currentFieldName = 'field_start';
@@ -683,6 +701,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         ));
         print("Wszystkie pionki na meciee!");
       } else {
+        _firebaseService.updateHowManyTimesFinishedGame();
       AnimatedAlertDialog.showEndGameDialog(
           context,
           currentTeamIndex,

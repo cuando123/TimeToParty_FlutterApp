@@ -55,7 +55,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   NativeAd? _nativeAd;
   bool _nativeAdLoaded = false;
-  late final FirebaseService _firebaseService;
+  late FirebaseService _firebaseService;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
@@ -96,6 +96,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   @override
   void initState() {
     super.initState();
+    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     isPurchased = Provider.of<IAPService>(context, listen: false).isPurchased;
     isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
     _nativeAd = NativeAd(

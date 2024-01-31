@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import '../../../main.dart';
 import '../models/user_informations.dart';
@@ -34,6 +35,7 @@ class FirebaseService extends ChangeNotifier {
   Future<void> refreshCurrentUser() async {
     try {
       await _auth?.currentUser?.reload();
+      print('FirebaseService - refreshCurrentUser done');
       notifyListeners();
     } catch (e) {
       //print("Błąd podczas odświeżania danych użytkownika: $e");
@@ -42,23 +44,28 @@ class FirebaseService extends ChangeNotifier {
 
   Future<void> signInAnonymouslyAndSaveUID() async {
     if (isConnected) {
-      //print("Próba logowania w trybie offline - nieudana.");
+      print("FirebaseService - Próba logowania w trybie offline - nieudana.");
       return;
     }
 
     User? user = _auth?.currentUser;
 
     if (user == null) {
+      userInfo
+        .userID = user?.uid;
       try {
         UserCredential? userCredential = await _auth?.signInAnonymously();
         user = userCredential?.user;
-        //print("Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
+        print("FirebaseService - Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
       } catch (e) {
-        //print("Błąd podczas logowania anonimowego: $e");
+        print("FirebaseService - Błąd podczas logowania anonimowego: $e");
         return;
       }
     } else {
-      //print("Użytkownik jest już zalogowany z UID: ${user.uid}");
+      userInfo
+          .userID = user?.uid;
+      print("FirebaseService - Użytkownik jest już zalogowany z UID: ${userInfo
+          .userID}");
     }
 
     if (user != null) {
@@ -67,12 +74,11 @@ class FirebaseService extends ChangeNotifier {
         userInfo
           ..userID = user.uid
           ..purchaseStatus = "free"
-          ..createdUserDate = DateTime.now();
-
+          ..createdUserDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
         await _firestore?.collection('users').doc(user.uid).set(userInfo.toJson());
-        //print('UID zapisany w Firestore');
+        print('FirebaseService - UID zapisany w Firestore');
       } else {
-        //print('Dokument użytkownika już istnieje w Firestore');
+        print('FirebaseService -Dokument użytkownika już istnieje w Firestore');
       }
 
       await loadCurrentUserInformations(); // Ładowanie informacji o aktualnym użytkowniku
@@ -82,7 +88,9 @@ class FirebaseService extends ChangeNotifier {
   Future<void> loadCurrentUserInformations() async {
     User? user = _auth?.currentUser;
     if (user != null) {
+      print('FirebaseService - loadCurrentUserInformations done: user: $user');
       userInfo = (await getUserInformations(user.uid))!;
+      print('FirebaseService - loadCurrentUserInformations - getUserInformations: ${userInfo.createdUserDate}, ${userInfo.purchaseStatus}, ${userInfo.finalSpendTimeOnGame}, ${userInfo.howManyTimesFinishedGame}, ${userInfo.howManyTimesRunApp}, ${userInfo.howManyTimesRunInstertitialAd}, ${userInfo.lastHowManyFieldReached}, ${userInfo.lastOneSpendTimeOnGame},  ${userInfo.userID}, ${userInfo.purchaseDate}, ${userInfo.orderID}');
       notifyListeners();
     }
   }
@@ -94,7 +102,7 @@ class FirebaseService extends ChangeNotifier {
         return UserInformations.fromJson(userDoc.data() as Map<String, dynamic>);
       }
     } catch (e) {
-      //print('Błąd podczas pobierania informacji o użytkowniku: $e');
+      print('FirebaseService - Błąd podczas pobierania informacji o użytkowniku: $e');
     }
     return null;
   }
@@ -102,20 +110,20 @@ class FirebaseService extends ChangeNotifier {
   Future<void> updateUserInformations(UserInformations userInfo) async {
     try {
       await _firestore?.collection('users').doc(userInfo.userID).set(userInfo.toJson(), SetOptions(merge: true));
-      //print('Informacje o użytkowniku zaktualizowane w Firebase');
+      print('FirebaseService - updateUserInformations Informacje o użytkowniku ${userInfo.userID} zaktualizowane w Firebase');
     } catch (e) {
-      //print('Błąd podczas aktualizacji informacji użytkownika: $e');
+      print('FirebaseService - Błąd podczas aktualizacji informacji użytkownika: $e');
     }
   }
 
-  Future<Map<String, dynamic>?> getUserData(String? userId) async {
+  Future<Map<String, dynamic>?> getUserData(String? userId) async { // to sie nie wykonalo nigdy ?
     if (userId == null) return null;
 
     try {
       DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(userId).get() as Future<DocumentSnapshot<Object?>>);
       return userDoc.exists ? userDoc.data() as Map<String, dynamic>? : null;
     } catch (e) {
-      //print('Błąd podczas pobierania danych użytkownika: $e');
+      print('FirebaseService - Błąd podczas pobierania danych użytkownika: $e');
       return null;
     }
   }
@@ -135,10 +143,11 @@ class FirebaseService extends ChangeNotifier {
     try {
       if (userInfo != null) {
         userInfo!.howManyTimesFinishedGame = (userInfo!.howManyTimesFinishedGame ?? 0) + 1;
+        print('FirebaseService - updateHowManyTimesFinishedGame: ${userInfo!.howManyTimesFinishedGame}');
         await updateUserInformations(userInfo!);
       }
     } catch (e) {
-      //print("Błąd podczas aktualizacji liczby zakończeń gry: $e");
+      print("FirebaseService - Błąd podczas aktualizacji liczby zakończeń gry: $e");
     }
   }
 
@@ -146,10 +155,11 @@ class FirebaseService extends ChangeNotifier {
     try {
       if (userInfo != null) {
         userInfo!.howManyTimesRunInstertitialAd = (userInfo!.howManyTimesRunInstertitialAd ?? 0) + 1;
+        print('FirebaseService - howManyTimesRunInstertitialAd: ${userInfo!.howManyTimesRunInstertitialAd}');
         await updateUserInformations(userInfo!);
       }
     } catch (e) {
-      //print("Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
+      print("FirebaseService -Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
     }
   }
 

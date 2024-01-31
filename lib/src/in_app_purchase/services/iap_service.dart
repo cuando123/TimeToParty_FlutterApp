@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../main.dart';
@@ -86,7 +87,9 @@ class IAPService extends ChangeNotifier{
       userInfo
         ..purchaseStatus = "purchased"
         ..orderID = _purchaseDetails?.purchaseID
-        ..purchaseDate = _purchaseDetails?.transactionDate != null ? DateTime.parse(_purchaseDetails!.transactionDate!) : null
+        ..purchaseDate = _purchaseDetails?.transactionDate != null
+            ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
+            : null
         ..productID = _purchaseDetails?.productID;
       await _firebaseService.updateUserInformations(userInfo);
     }
@@ -167,6 +170,8 @@ class IAPService extends ChangeNotifier{
       print("Koniec procesu przywracania zakupów");
     }
     print("koniec wywolania restorePurchases");
+    //TO_DO tu zapisywac do firebase info ze jest 'restored'
+
     return restoreSuccessful;
   }
 

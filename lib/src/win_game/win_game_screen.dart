@@ -43,13 +43,11 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
   final Connectivity _connectivity = Connectivity();
-  late FirebaseService _firebaseService;
 
   @override
   void initState() {
     super.initState();
     //if ACCOUNT = FREE
-    _firebaseService.updateHowManyTimesFinishedGame();
     _nativeAd = NativeAd(
         adUnitId: context.read<AdMobService>().nativeAdUnitId!,
         factoryId: 'listTile',

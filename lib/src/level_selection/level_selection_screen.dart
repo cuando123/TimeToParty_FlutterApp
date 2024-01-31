@@ -36,7 +36,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = false;
   final Connectivity _connectivity = Connectivity();
-  late final FirebaseService _firebaseService;
+  late FirebaseService _firebaseService;
   List<TextEditingController> controllers = [];
   bool _duringCelebration = false;
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -71,6 +71,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   void initState() {
     super.initState();
     //if ACCOUNT = FREE
+    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     _nativeAd = NativeAd(
         adUnitId: context.read<AdMobService>().nativeAdUnitId!,
         factoryId: 'listTile',
@@ -414,7 +415,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                         settingsController.toggleMusicOn();
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
-                                                      await _firebaseService.updateHowManyTimesRunInterstitialAd();
+                                                      _firebaseService.updateHowManyTimesRunInterstitialAd();
                                                     } else {
                                                       navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }

@@ -21,6 +21,7 @@ import 'package:game_template/src/style/my_transition.dart';
 import 'package:game_template/src/style/palette.dart';
 import 'package:game_template/src/style/snack_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'main.dart';
@@ -101,6 +102,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // Aktualizacja czasu spędzonego w grze
     userInfo.finalSpendTimeOnGame = (userInfo.finalSpendTimeOnGame ?? 0) + lastSessionTime;
     userInfo.lastOneSpendTimeOnGame = lastSessionTime;
+    userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+    print('DISPOSE ALL: ${userInfo.lastPlayDate }');
     widget.firebaseService.updateUserInformations(userInfo); // Zapisanie zmian do Firebase
 
     super.dispose();
@@ -110,12 +113,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       // Tutaj aktualizujesz userInfo
+      GlobalStopwatch.stop();
       int lastSessionTime = GlobalStopwatch.getElapsedTime();
       userInfo.lastOneSpendTimeOnGame = lastSessionTime;
 
       // Wywołanie metody zapisywania do Firebase
+      userInfo.finalSpendTimeOnGame = (userInfo.finalSpendTimeOnGame ?? 0) + lastSessionTime;
+      userInfo.lastOneSpendTimeOnGame = lastSessionTime;
+      userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+      print('DIDCHANGEAPPLIFECYCLESTATE ALL: ${userInfo.lastPlayDate }');
       widget.firebaseService.updateUserInformations(userInfo);
     } else if (state == AppLifecycleState.resumed) {
+      GlobalStopwatch.reset();
       GlobalStopwatch.start();
     }
   }
