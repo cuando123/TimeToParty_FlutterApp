@@ -146,7 +146,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     },
                   ),
                   Provider(
-                    create: (_) => NotificationsManager(context),
+                    create: (_) => NotificationsManager(context, widget.firebaseService),
                   ),
                   //Provider<GamesServicesController?>.value(value: gamesServicesController),
                   ChangeNotifierProvider<IAPService>.value(value: widget.iapService),

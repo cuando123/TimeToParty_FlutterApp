@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../main.dart';
 import '../app_lifecycle/translated_text.dart';
+import '../in_app_purchase/services/firebase_service.dart';
 
 class NotificationsManager {
   BuildContext context;
@@ -11,13 +15,24 @@ class NotificationsManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  final FirebaseService _firebaseService;
+
   Future<void> cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  NotificationsManager(this.context) {
+  NotificationsManager(this.context, this._firebaseService) {
     tz.initializeTimeZones();
     initializeNotifications();
+  }
+
+  Future<void> onSelectNotification(NotificationResponse? response) async {
+    //TO_DO do przetestowania
+    print('payload $response');
+    if (response?.payload != null && response!.payload!.isNotEmpty) {
+      userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+      await _firebaseService.updateUserInformations(userInfo); // Ta operacja jest asynchroniczna, ale funkcja zwraca void
+    }
   }
 
   Future<void> initializeNotifications() async {
@@ -25,9 +40,10 @@ class NotificationsManager {
     AndroidInitializationSettings('@mipmap/ic_launcher');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+    InitializationSettings(android: initializationSettingsAndroid, );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (details) =>
+        onSelectNotification(details.payload as NotificationResponse?));
   }
 
   Future<void> scheduleWeeklyNotification() async {

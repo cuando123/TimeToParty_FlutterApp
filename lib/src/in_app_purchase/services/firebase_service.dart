@@ -90,7 +90,7 @@ class FirebaseService extends ChangeNotifier {
     if (user != null) {
       print('FirebaseService - loadCurrentUserInformations done: user: $user');
       userInfo = (await getUserInformations(user.uid))!;
-      print('FirebaseService - loadCurrentUserInformations - getUserInformations: ${userInfo.createdUserDate}, ${userInfo.purchaseStatus}, ${userInfo.finalSpendTimeOnGame}, ${userInfo.howManyTimesFinishedGame}, ${userInfo.howManyTimesRunApp}, ${userInfo.howManyTimesRunInstertitialAd}, ${userInfo.lastHowManyFieldReached}, ${userInfo.lastOneSpendTimeOnGame},  ${userInfo.userID}, ${userInfo.purchaseDate}, ${userInfo.orderID}');
+      print('FirebaseService - loadCurrentUserInformations - getUserInformations: ${userInfo.createdUserDate}, ${userInfo.purchaseStatus}, ${userInfo.finalSpendTimeOnGame}, ${userInfo.howManyTimesFinishedGame}, ${userInfo.howManyTimesRunApp}, ${userInfo.howManyTimesRunInstertitialAd}, ${userInfo.lastHowManyFieldReached}, ${userInfo.lastOneSpendTimeOnGame},  ${userInfo.userID}, ${userInfo.purchaseDate}, ${userInfo.purchaseID}');
       notifyListeners();
     }
   }

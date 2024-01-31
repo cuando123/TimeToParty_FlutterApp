@@ -9,7 +9,7 @@ class UserInformations {
 
   String? userID;
   String? purchaseStatus; //purchased, restored, free, cracked
-  String? orderID;
+  String? purchaseID;
   String? createdUserDate;
   String? purchaseDate;
   String? productID;
@@ -20,12 +20,12 @@ class UserInformations {
   int? howManyTimesRunApp; //jak wiele razy aplikacja została uruchomiona przez danego użytkownika - pobierane z firebase i inkrementowane
   int? howManyTimesRunInstertitialAd; //jak wiele razy odpaliła się reklama instertial - pobierane z firebase i inkrementowane
   String? lastPlayDate;
-  String? lastNotificationShown;
+  String? lastNotificationClicked;
 
   Map<String, dynamic> toJson() => {
     'userID': userID,
     'purchaseStatus': purchaseStatus,
-    'purchaseID': orderID,
+    'purchaseID': purchaseID,
     'createdUserDate': createdUserDate,
     'purchaseDate': purchaseDate,
     'productID': productID,
@@ -36,14 +36,14 @@ class UserInformations {
     'howManyTimesRunApp': howManyTimesRunApp,
     'howManyTimesRunInstertitialAd': howManyTimesRunInstertitialAd,
     'lastPlayDate': lastPlayDate,
-    'lastNotificationShown': lastNotificationShown,
+    'lastNotificationClicked': lastNotificationClicked,
   };
 
   static UserInformations fromJson(Map<String, dynamic> json) {
     return UserInformations()
       ..userID = json['userID'] as String?
       ..purchaseStatus = json['purchaseStatus'] as String?
-      ..orderID = json['purchaseID'] as String?
+      ..purchaseID = json['purchaseID'] as String?
       ..createdUserDate = json['createdUserDate'] as String?
       ..purchaseDate = json['purchaseDate']as String?
       ..productID = json['productID'] as String?
@@ -54,6 +54,6 @@ class UserInformations {
       ..howManyTimesRunApp = json['howManyTimesRunApp'] as int?
       ..howManyTimesRunInstertitialAd = json['howManyTimesRunInstertitialAd'] as int?
       ..lastPlayDate = json['lastPlayDate'] as String?
-      ..lastNotificationShown = json['lastNotificationShown'] as String?;
+      ..lastNotificationClicked = json['lastNotificationClicked'] as String?;
   }
 }

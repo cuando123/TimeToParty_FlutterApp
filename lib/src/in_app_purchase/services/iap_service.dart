@@ -86,7 +86,7 @@ class IAPService extends ChangeNotifier{
       await savePurchaseState(true);
       userInfo
         ..purchaseStatus = "purchased"
-        ..orderID = _purchaseDetails?.purchaseID
+        ..purchaseID = _purchaseDetails?.purchaseID
         ..purchaseDate = _purchaseDetails?.transactionDate != null
             ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
             : null
@@ -166,11 +166,14 @@ class IAPService extends ChangeNotifier{
       }
       if (restoreSuccessful){
         setPurchaseStatusMessage("PurchaseRestored");
+        userInfo
+          ..purchaseStatus = "restored"
+          ..purchaseID = _purchaseDetails?.purchaseID;
+        await _firebaseService.updateUserInformations(userInfo);
       }
       print("Koniec procesu przywracania zakupów");
     }
     print("koniec wywolania restorePurchases");
-    //TO_DO tu zapisywac do firebase info ze jest 'restored'
 
     return restoreSuccessful;
   }

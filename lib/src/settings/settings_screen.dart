@@ -11,6 +11,7 @@ import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../customAppBar/customAppBar.dart';
+import '../in_app_purchase/services/firebase_service.dart';
 import '../notifications/notifications_manager.dart';
 import '../play_session/alerts_and_dialogs.dart';
 import '../play_session/custom_style_buttons.dart';
@@ -34,10 +35,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String musicTitle = '';
   String allRightsReserved = '';
   String vibrations = '';
+  late FirebaseService _firebaseService;
 
   @override
   void initState() {
     super.initState();
+    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       title = getTranslatedString(context, 'settings_notifications');
       allSoundsTitle = getTranslatedString(context, 'settings_all_sounds');
@@ -183,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   String translatedBody = getTranslatedString(context, 'weekly_notification_down');
                   tz.initializeTimeZones();
                   NotificationsManager notificationsManager =
-                  NotificationsManager(context);
+                  NotificationsManager(context, _firebaseService);
                   WidgetsFlutterBinding.ensureInitialized();
                   await notificationsManager.initializeNotifications();
                   await notificationsManager.showNotificationNow(translatedTitle, translatedBody);
