@@ -91,7 +91,10 @@ class IAPService extends ChangeNotifier{
             ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
             : null
         ..productID = _purchaseDetails?.productID;
-      await _firebaseService.updateUserInformations(userInfo);
+      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseStatus', userInfo.purchaseStatus);
+      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseID', userInfo.purchaseID);
+      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseDate', userInfo.purchaseDate);
+      await _firebaseService.updateUserInformations(userInfo.userID, 'productID', userInfo.productID);
     }
   }
 
@@ -169,7 +172,8 @@ class IAPService extends ChangeNotifier{
         userInfo
           ..purchaseStatus = "restored"
           ..purchaseID = _purchaseDetails?.purchaseID;
-        await _firebaseService.updateUserInformations(userInfo);
+        await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseID', userInfo.purchaseID);
+        await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseStatus', userInfo.purchaseStatus);
       }
       print("Koniec procesu przywracania zakupów");
     }

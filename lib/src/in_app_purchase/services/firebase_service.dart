@@ -95,7 +95,7 @@ class FirebaseService extends ChangeNotifier {
     }
   }
 
-  Future<UserInformations?> getUserInformations(String userId) async {
+  Future<UserInformations?> getUserInformations(String? userId) async {
     try {
       DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(userId).get() as Future<DocumentSnapshot<Object?>>);
       if (userDoc.exists) {
@@ -107,20 +107,21 @@ class FirebaseService extends ChangeNotifier {
     return null;
   }
 
-  Future<void> updateUserInformations(UserInformations userInfo) async {
+  Future<void> updateUserInformations(String? userId, String fieldName, dynamic value) async {
     try {
-      await _firestore?.collection('users').doc(userInfo.userID).set(userInfo.toJson(), SetOptions(merge: true));
-      print('FirebaseService - updateUserInformations Informacje o użytkowniku ${userInfo.userID} zaktualizowane w Firebase');
+      await _firestore?.collection('users').doc(userId).update({fieldName: value});
+      print('FirebaseService - updateSpecificField Pole $fieldName użytkownika $userId zaktualizowane w Firebase');
     } catch (e) {
-      print('FirebaseService - Błąd podczas aktualizacji informacji użytkownika: $e');
+      print('FirebaseService - Błąd podczas aktualizacji pola $fieldName użytkownika: $e');
     }
   }
+
 
   Future<void> updateAndSaveUserSessionInfo() async {
     try {
       userInfo.howManyTimesRunApp = (userInfo.howManyTimesRunApp ?? 0) + 1;
-      await updateUserInformations(userInfo);
-        } catch (e) {
+      await updateUserInformations(userInfo.userID, 'howManyTimesRunApp', userInfo.howManyTimesRunApp);
+    } catch (e) {
       //print("Błąd podczas aktualizacji liczby uruchomień aplikacji: $e");
     }
   }
@@ -129,7 +130,7 @@ class FirebaseService extends ChangeNotifier {
     try {
       userInfo.howManyTimesFinishedGame = (userInfo.howManyTimesFinishedGame ?? 0) + 1;
       print('FirebaseService - updateHowManyTimesFinishedGame: ${userInfo.howManyTimesFinishedGame}');
-      await updateUserInformations(userInfo);
+      await updateUserInformations(userInfo.userID, 'howManyTimesFinishedGame', userInfo.howManyTimesFinishedGame);
         } catch (e) {
       print("FirebaseService - Błąd podczas aktualizacji liczby zakończeń gry: $e");
     }
@@ -139,7 +140,7 @@ class FirebaseService extends ChangeNotifier {
     try {
       userInfo.howManyTimesRunInstertitialAd = (userInfo.howManyTimesRunInstertitialAd ?? 0) + 1;
       print('FirebaseService - howManyTimesRunInstertitialAd: ${userInfo.howManyTimesRunInstertitialAd}');
-      await updateUserInformations(userInfo);
+      await updateUserInformations(userInfo.userID, 'howManyTimesRunInstertitialAd', userInfo.howManyTimesRunInstertitialAd);
         } catch (e) {
       print("FirebaseService -Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
     }

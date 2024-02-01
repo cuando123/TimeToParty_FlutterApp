@@ -30,8 +30,8 @@ class NotificationsManager {
     //TO_DO do przetestowania
     print('payload $response');
     if (response?.payload != null && response!.payload!.isNotEmpty) {
-      userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
-      await _firebaseService.updateUserInformations(userInfo); // Ta operacja jest asynchroniczna, ale funkcja zwraca void
+      userInfo.lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+      await _firebaseService.updateUserInformations(userInfo.userID, 'lastNotificationClicked', userInfo.lastNotificationClicked);
     }
   }
 
@@ -42,8 +42,9 @@ class NotificationsManager {
     final InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid, );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (details) =>
-        onSelectNotification(details.payload as NotificationResponse?));
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification);
+    //(details) =>
+    //         onSelectNotification(details.payload as NotificationResponse?));
   }
 
   Future<void> scheduleWeeklyNotification() async {
@@ -79,8 +80,8 @@ class NotificationsManager {
   Future<void> showNotificationNow(String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-        'weekly_notification_channel',
-        'Weekly Notifications',
+        'immediate_notification_channel', // Może być potrzebne utworzenie nowego kanału dla tego typu powiadomień
+        'Immediate Notifications',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: true);
@@ -89,10 +90,12 @@ class NotificationsManager {
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      0,
+      0, // Unikalne ID notyfikacji
       title,
       body,
       platformChannelSpecifics,
+      payload: 'UniquePayloadValue', // Tutaj dodajesz payload
     );
   }
+
 }

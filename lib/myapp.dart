@@ -103,8 +103,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     userInfo.lastOneSpendTimeOnGame = lastSessionTime;
     userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
     print('DISPOSE ALL: ${userInfo.lastPlayDate }');
-    widget.firebaseService.updateUserInformations(userInfo); // Zapisanie zmian do Firebase
-
+    widget.firebaseService.updateUserInformations(userInfo.userID, 'finalSpendTimeOnGame', userInfo.finalSpendTimeOnGame);
+    widget.firebaseService.updateUserInformations(userInfo.userID, 'lastOneSpendTimeOnGame', userInfo.lastOneSpendTimeOnGame);
+    widget.firebaseService.updateUserInformations(userInfo.userID, 'lastPlayDate', userInfo.lastPlayDate);
     super.dispose();
   }
 
@@ -121,7 +122,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       userInfo.lastOneSpendTimeOnGame = lastSessionTime;
       userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
       print('DIDCHANGEAPPLIFECYCLESTATE ALL: ${userInfo.lastPlayDate }');
-      widget.firebaseService.updateUserInformations(userInfo);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'finalSpendTimeOnGame', userInfo.finalSpendTimeOnGame);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'howManyTimesFinishedGame', userInfo.howManyTimesFinishedGame);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'howManyTimesRunInstertitialAd', userInfo.howManyTimesRunInstertitialAd);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastHowManyFieldReached', userInfo.lastHowManyFieldReached);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastOneSpendTimeOnGame', userInfo.lastOneSpendTimeOnGame);
+      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastPlayDate', userInfo.lastPlayDate);
     } else if (state == AppLifecycleState.resumed) {
       GlobalStopwatch.reset();
       GlobalStopwatch.start();
