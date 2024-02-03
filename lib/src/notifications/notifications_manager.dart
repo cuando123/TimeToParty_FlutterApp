@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -30,8 +31,9 @@ class NotificationsManager {
     //TO_DO do przetestowania
     print('payload $response');
     if (response?.payload != null && response!.payload!.isNotEmpty) {
-      userInfo.lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
-      await _firebaseService.updateUserInformations(userInfo.userID, 'lastNotificationClicked', userInfo.lastNotificationClicked);
+      var lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+      await SharedPreferencesHelper.setLastNotificationClicked(lastNotificationClicked);
+      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
     }
   }
 

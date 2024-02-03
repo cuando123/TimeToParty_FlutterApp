@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../audio/audio_controller.dart';
 import '../../audio/sounds.dart';
+import '../../in_app_purchase/models/shared_preferences_helper.dart';
 import '../../in_app_purchase/services/ad_mob_service.dart';
 import '../../in_app_purchase/services/firebase_service.dart';
 import '../../in_app_purchase/services/iap_service.dart';
@@ -582,6 +583,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _timeUpAnimationController.forward().then((value) => {
     if (isInterstitialAdLoaded && !isPurchased){
       Provider.of<AdMobService>(context, listen: false).showInterstitialAd(),
+     SharedPreferencesHelper.setHowManyTimesRunInterstitialAd(),
      _firebaseService.updateHowManyTimesRunInterstitialAd()}
     else
       {
@@ -755,6 +757,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+        await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
         await _firebaseService.updateHowManyTimesRunInterstitialAd();
       } else {
         Navigator.of(context).pop('response');
@@ -783,6 +786,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
+        await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
         await _firebaseService.updateHowManyTimesRunInterstitialAd();
       } else {
         Navigator.of(context).pop('response');

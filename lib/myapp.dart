@@ -8,6 +8,7 @@ import 'package:game_template/src/app_lifecycle/app_lifecycle.dart';
 import 'package:game_template/src/audio/audio_controller.dart';
 import 'package:game_template/src/in_app_purchase/cards_advertisement_screen.dart';
 import 'package:game_template/src/in_app_purchase/models/global_stopwatch.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/main_menu/main_menu_screen.dart';
@@ -90,6 +91,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     GlobalStopwatch.start(); // Rozpoczęcie pomiaru czasu sesji
+    SharedPreferencesHelper.setHowManyTimesRunApp();
+    print("MyApp received FirebaseService instance hashCode: ${widget.firebaseService.hashCode}");
   }
 
   @override
@@ -98,14 +101,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     GlobalStopwatch.stop(); // Zatrzymanie pomiaru czasu sesji
     int lastSessionTime = GlobalStopwatch.getElapsedTime(); // Pobranie czasu sesji
 
-    // Aktualizacja czasu spędzonego w grze
-    userInfo.finalSpendTimeOnGame = (userInfo.finalSpendTimeOnGame ?? 0) + lastSessionTime;
-    userInfo.lastOneSpendTimeOnGame = lastSessionTime;
-    userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
-    print('DISPOSE ALL: ${userInfo.lastPlayDate }');
-    widget.firebaseService.updateUserInformations(userInfo.userID, 'finalSpendTimeOnGame', userInfo.finalSpendTimeOnGame);
-    widget.firebaseService.updateUserInformations(userInfo.userID, 'lastOneSpendTimeOnGame', userInfo.lastOneSpendTimeOnGame);
-    widget.firebaseService.updateUserInformations(userInfo.userID, 'lastPlayDate', userInfo.lastPlayDate);
+    SharedPreferencesHelper.setFinalSpendTimeOnGame(lastSessionTime);
+    SharedPreferencesHelper.setLastOneSpendTimeOnGame(lastSessionTime);
+    SharedPreferencesHelper.setLastPlayDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'finalSpendTimeOnGame', SharedPreferencesHelper.getFinalSpendTimeOnGame());
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastOneSpendTimeOnGame', SharedPreferencesHelper.getLastOneSpendTimeOnGame());
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastPlayDate', SharedPreferencesHelper.getLastPlayDate());
+
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastHowManyFieldReached', SharedPreferencesHelper.getLastHowManyFieldReached());
     super.dispose();
   }
 
@@ -115,19 +122,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // Tutaj aktualizujesz userInfo
       GlobalStopwatch.stop();
       int lastSessionTime = GlobalStopwatch.getElapsedTime();
-      userInfo.lastOneSpendTimeOnGame = lastSessionTime;
+      SharedPreferencesHelper.setFinalSpendTimeOnGame(lastSessionTime);
+      SharedPreferencesHelper.setLastOneSpendTimeOnGame(lastSessionTime);
+      SharedPreferencesHelper.setLastPlayDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
 
-      // Wywołanie metody zapisywania do Firebase
-      userInfo.finalSpendTimeOnGame = (userInfo.finalSpendTimeOnGame ?? 0) + lastSessionTime;
-      userInfo.lastOneSpendTimeOnGame = lastSessionTime;
-      userInfo.lastPlayDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
-      print('DIDCHANGEAPPLIFECYCLESTATE ALL: ${userInfo.lastPlayDate }');
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'finalSpendTimeOnGame', userInfo.finalSpendTimeOnGame);
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'howManyTimesFinishedGame', userInfo.howManyTimesFinishedGame);
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'howManyTimesRunInstertitialAd', userInfo.howManyTimesRunInstertitialAd);
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastHowManyFieldReached', userInfo.lastHowManyFieldReached);
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastOneSpendTimeOnGame', userInfo.lastOneSpendTimeOnGame);
-      widget.firebaseService.updateUserInformations(userInfo.userID, 'lastPlayDate', userInfo.lastPlayDate);
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'finalSpendTimeOnGame', SharedPreferencesHelper.getFinalSpendTimeOnGame());
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastOneSpendTimeOnGame', SharedPreferencesHelper.getLastOneSpendTimeOnGame());
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastPlayDate', SharedPreferencesHelper.getLastPlayDate());
+
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastHowManyFieldReached', SharedPreferencesHelper.getLastHowManyFieldReached());
     } else if (state == AppLifecycleState.resumed) {
       GlobalStopwatch.reset();
       GlobalStopwatch.start();
@@ -154,7 +160,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     create: (_) => NotificationsManager(context, widget.firebaseService),
                   ),
                   //Provider<GamesServicesController?>.value(value: gamesServicesController),
+                  //IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
                   ChangeNotifierProvider<IAPService>.value(value: widget.iapService),
+                  //ChangeNotifierProvider<IAPService>.value(value: widget.iapService),
                   ChangeNotifierProvider<SettingsController>(
                     lazy: false,
                     create: (context) => SettingsController(

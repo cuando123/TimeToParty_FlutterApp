@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
+import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/extensions.dart';
@@ -38,6 +39,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
   bool _alertShown = false;
   late IAPService _iapService;
   bool isOnline = false;
+  late FirebaseService _firebaseService;
 
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
@@ -85,6 +87,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
+      _firebaseService = Provider.of<FirebaseService>(context, listen: false);
       _iapService = Provider.of<IAPService>(context, listen: true);
       print("IS LOADING CARD ADS: ${_iapService.isLoading}");
       _setupConnectivityListener();
@@ -292,14 +295,18 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                         onPressed: () {
                           _alertShown = false; // Resetowanie flagi przed nowym zakupem
                           audioController.playSfx(SfxType.buttonBackExit);
-                          if (_iapService.isLoading == false) {
-                            if (isOnline) {
-                              _iapService.buyProduct(productIds);
-                            } else {
-                              _iapService.setPurchaseStatusMessage('NoInternetConnection');
-                            }
+                          if (_firebaseService.currentUser?.uid == null){
+                            _iapService.setPurchaseStatusMessage('BillingResponse.serviceUnavailable');
                           } else {
-                            _iapService.setPurchaseStatusMessage('BillingResponse.pending');
+                            if (_iapService.isLoading == false) {
+                              if (isOnline) {
+                                _iapService.buyProduct(productIds);
+                              } else {
+                                _iapService.setPurchaseStatusMessage('NoInternetConnection');
+                              }
+                            } else {
+                              _iapService.setPurchaseStatusMessage('BillingResponse.pending');
+                            }
                           }
                         },
                         backgroundColor: Palette().pink,

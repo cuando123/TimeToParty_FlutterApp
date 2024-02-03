@@ -6,11 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../main.dart';
 import '../../app_lifecycle/TranslationProvider.dart';
 import '../models/purchase_state.dart';
+import '../models/shared_preferences_helper.dart';
 import '../models/user_informations.dart';
 import 'firebase_service.dart';
 
@@ -32,10 +34,10 @@ class IAPService extends ChangeNotifier{
   bool _subscriptionInitialized = false;
   bool _isAvailable = false;
   final List<ProductDetails> _products = [];
-  IAPService(InAppPurchase instance, this.translationProvider, this._firebaseService);
+  IAPService(InAppPurchase instance, this.translationProvider, this._firebaseService){
+    print("IAPService received FirebaseService instance hashCode: ${_firebaseService.hashCode}");
+  }
   var purchaseState = PurchaseState();
-  final Future<SharedPreferences> instanceFuture =
-  SharedPreferences.getInstance();
   PurchaseDetails? _purchaseDetails;
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,18 +55,6 @@ class IAPService extends ChangeNotifier{
     _isLoading = value;
     notifyListeners(); // informuje obserwatorów o zmianie
   }
-
-  Future<void> savePurchaseState(bool isPurchased) async {
-    final prefs = await instanceFuture;
-    await prefs.setBool('isPurchased', isPurchased);
-  }
-
-  Future<bool> getPurchaseState() async {
-    final prefs = await instanceFuture;
-    return prefs.getBool('isPurchased') ?? false;
-  }
-
-
   Future<void> setPurchased(bool isPurchased,bool isMainMenu) async {
     if (!isPurchased){
       _isPurchased = false;
@@ -72,29 +62,36 @@ class IAPService extends ChangeNotifier{
       notifyListeners();
       //setPurchaseStatusMessage("BillingResponse.itemNotOwned");
       await translationProvider.loadWords();
-      await savePurchaseState(false);
+      await SharedPreferencesHelper.savePurchaseState(false);
     } else {
       _isPurchased = true;
       purchaseState.isPurchased = true;  // Ustawienie stanu zakupu w klasie tamtej do translations providera only
       notifyListeners();
-      if(!isMainMenu){
-      if (_purchaseStatusMessage != "PurchaseRestored" && _purchaseStatusMessage != '') {
+      if(!isMainMenu){ // w main menu sprawdzam w przypadku offline czy dac uzytkownikowi dostep na podstawie sharedPreferences
+      if (_purchaseStatusMessage != "PurchaseRestored") {
         setPurchaseStatusMessage("PurchaseSuccess");
-      }}
+        await SharedPreferencesHelper.setPurchaseStatus("purchased");
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "purchased");
+        print("zaladowalem purchased do firebase");
+      } else {
+        await SharedPreferencesHelper.setPurchaseStatus("restored");
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
+      }
+      }
       isLoading = false;
       await translationProvider.loadWords();
-      await savePurchaseState(true);
-      userInfo
-        ..purchaseStatus = "purchased"
-        ..purchaseID = _purchaseDetails?.purchaseID
-        ..purchaseDate = _purchaseDetails?.transactionDate != null
-            ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
-            : null
-        ..productID = _purchaseDetails?.productID;
-      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseStatus', userInfo.purchaseStatus);
-      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseID', userInfo.purchaseID);
-      await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseDate', userInfo.purchaseDate);
-      await _firebaseService.updateUserInformations(userInfo.userID, 'productID', userInfo.productID);
+      await SharedPreferencesHelper.savePurchaseState(true);
+      await SharedPreferencesHelper.setPurchaseID(_purchaseDetails?.purchaseID);
+      print("PurchaseDetails.transactiondate: ${_purchaseDetails?.transactionDate}");
+      await SharedPreferencesHelper.setPurchaseDate(_purchaseDetails?.transactionDate != null
+          ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
+          : null);
+      await SharedPreferencesHelper.setProductID(_purchaseDetails?.productID);
+      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
+      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseDate', _purchaseDetails?.transactionDate != null
+          ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
+          : null);
+      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'productID', _purchaseDetails?.productID);
     }
   }
 
@@ -169,11 +166,11 @@ class IAPService extends ChangeNotifier{
       }
       if (restoreSuccessful){
         setPurchaseStatusMessage("PurchaseRestored");
-        userInfo
-          ..purchaseStatus = "restored"
-          ..purchaseID = _purchaseDetails?.purchaseID;
-        await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseID', userInfo.purchaseID);
-        await _firebaseService.updateUserInformations(userInfo.userID, 'purchaseStatus', userInfo.purchaseStatus);
+        await SharedPreferencesHelper.setPurchaseID(_purchaseDetails?.purchaseID);
+        await SharedPreferencesHelper.setPurchaseStatus("restored");
+
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
       }
       print("Koniec procesu przywracania zakupów");
     }
@@ -296,7 +293,7 @@ class IAPService extends ChangeNotifier{
       return true;
     } else {
       print("Tokeny zakupu nie są zgodne.");
-      userInfo.purchaseStatus = "cracked";
+      SharedPreferencesHelper.setPurchaseStatus("cracked");
       return false;
     }
   }

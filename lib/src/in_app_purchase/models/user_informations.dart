@@ -1,3 +1,4 @@
+/*
 class UserInformations {
   static final UserInformations _instance = UserInformations._internal();
 
@@ -57,3 +58,4 @@ class UserInformations {
       ..lastNotificationClicked = json['lastNotificationClicked'] as String?;
   }
 }
+*/

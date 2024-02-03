@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -415,7 +416,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                         settingsController.toggleMusicOn();
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
-                                                      _firebaseService.updateHowManyTimesRunInterstitialAd();
+                                                      await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
+                                                      await _firebaseService.updateHowManyTimesRunInterstitialAd();
                                                     } else {
                                                       navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }

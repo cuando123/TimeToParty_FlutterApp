@@ -16,6 +16,7 @@ import '../audio/sounds.dart';
 import '../customAppBar/customAppBar_notitle.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
+import '../in_app_purchase/models/shared_preferences_helper.dart';
 import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../instruction_dialog/instruction_dialog.dart';
@@ -44,7 +45,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    userInfo.lastHowManyFieldReached = ''; // Resetowanie wartości pol do firebase
+    SharedPreferencesHelper.setLastHowManyFieldReached('');
     _checkPurchaseStatus();
     //if ACCOUNT = FREE
     try {
@@ -87,7 +88,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   Future<void> _checkPurchaseStatus() async {
     IAPService iapService = context.read<IAPService>();
-    bool isPurchasedLocally = await iapService.getPurchaseState();
+    bool isPurchasedLocally = await SharedPreferencesHelper.getPurchaseState();
     /*
     if (isOnline) {
       bool isPurchaseValidOnline = await iapService.verifyPurchaseOnline();
@@ -115,7 +116,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         //_checkPurchaseStatus();
         _firebaseService
             .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
-        _firebaseService.getUserInformations(userInfo.userID);
         _firebaseService.updateAndSaveUserSessionInfo(); //TO_DO test -  Pobranie i aktualizacja liczby uruchomień i tworzenie pustych userow w firebase
         print("ISONLINE: $isConnected");
         print("${_firebaseService.currentUser}");

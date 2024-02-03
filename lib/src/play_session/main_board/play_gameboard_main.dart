@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/card_screens/play_gameboard_card.dart';
 import 'package:game_template/src/play_session/extensions.dart';
@@ -66,11 +67,9 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
   late List<String> mutableTeamNames;
   late List<Color> mutableTeamColors;
   late List<bool> pionekZaBurta;
-  late FirebaseService _firebaseService;
   @override
   void initState() {
     super.initState();
-    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     mutableTeamNames = List<String>.from(widget.teamNames);
     mutableTeamColors = List<Color>.from(widget.teamColors);
     pionekZaBurta = List.filled(mutableTeamColors.length, false);
@@ -687,8 +686,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     }
     await Future.delayed(Duration(milliseconds: 500));
 
-
-    userInfo.lastHowManyFieldReached = createFlagStepsString(flagSteps);//tu wstawi zawsze ostatni wykonany pionek
+    await SharedPreferencesHelper.setLastHowManyFieldReached(createFlagStepsString(flagSteps));
     if (flagSteps[flagIndex] > 19){
       pionekZaBurta[currentTeamIndex] = true;
       currentFieldName = 'field_start';
@@ -701,7 +699,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         ));
         print("Wszystkie pionki na meciee!");
       } else {
-        _firebaseService.updateHowManyTimesFinishedGame();
+        await SharedPreferencesHelper.setHowManyTimesFinishedGame();
       AnimatedAlertDialog.showEndGameDialog(
           context,
           currentTeamIndex,

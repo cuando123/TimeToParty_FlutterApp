@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:intl/intl.dart';
-
-import '../../../main.dart';
-import '../models/user_informations.dart';
 
 class FirebaseService extends ChangeNotifier {
   FirebaseAuth? _auth;
   FirebaseFirestore? _firestore;
   bool isConnected;
+//TO_DO skonfigurowac reguly dla zapisu/odczytu danych z firebase
 
   FirebaseService({this.isConnected = false}) {
     if (!isConnected) {
       _auth = FirebaseAuth.instance;
       _firestore = FirebaseFirestore.instance;
     }
+    print("FirebaseService instance hashCode: $hashCode");
   }
 
   void updateConnectionStatusIfConnected() {
@@ -51,8 +51,7 @@ class FirebaseService extends ChangeNotifier {
     User? user = _auth?.currentUser;
 
     if (user == null) {
-      userInfo
-        .userID = user?.uid;
+      await SharedPreferencesHelper.setUserID(user?.uid);
       try {
         UserCredential? userCredential = await _auth?.signInAnonymously();
         user = userCredential?.user;
@@ -62,49 +61,28 @@ class FirebaseService extends ChangeNotifier {
         return;
       }
     } else {
-      userInfo
-          .userID = user?.uid;
-      print("FirebaseService - Użytkownik jest już zalogowany z UID: ${userInfo
-          .userID}");
+      await SharedPreferencesHelper.setUserID(user.uid);
+      print("FirebaseService - Użytkownik jest już zalogowany z UID: ${SharedPreferencesHelper.getUserID()}");
     }
 
     if (user != null) {
       DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(user.uid).get() as Future<DocumentSnapshot<Object?>>);
       if (!userDoc.exists) {
-        userInfo
-          ..userID = user.uid
-          ..purchaseStatus = "free"
-          ..createdUserDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
-        await _firestore?.collection('users').doc(user.uid).set(userInfo.toJson());
+        await SharedPreferencesHelper.setUserID(user.uid);
+        await SharedPreferencesHelper.setPurchaseStatus("free");
+        await SharedPreferencesHelper.setCreatedUserDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+        Map<String, dynamic> toJson() => {
+          'userID': SharedPreferencesHelper.getUserID(),
+          'purchaseStatus': SharedPreferencesHelper.getPurchaseStatus(),
+          'createdUserDate': SharedPreferencesHelper.getCreatedUserDate(),
+        };
+        await _firestore?.collection('users').doc(user.uid).set(toJson()); //toJson stąd
         print('FirebaseService - UID zapisany w Firestore');
       } else {
         print('FirebaseService -Dokument użytkownika już istnieje w Firestore');
       }
 
-      await loadCurrentUserInformations(); // Ładowanie informacji o aktualnym użytkowniku
     }
-  }
-
-  Future<void> loadCurrentUserInformations() async {
-    User? user = _auth?.currentUser;
-    if (user != null) {
-      print('FirebaseService - loadCurrentUserInformations done: user: $user');
-      userInfo = (await getUserInformations(user.uid))!;
-      print('FirebaseService - loadCurrentUserInformations - getUserInformations: ${userInfo.createdUserDate}, ${userInfo.purchaseStatus}, ${userInfo.finalSpendTimeOnGame}, ${userInfo.howManyTimesFinishedGame}, ${userInfo.howManyTimesRunApp}, ${userInfo.howManyTimesRunInstertitialAd}, ${userInfo.lastHowManyFieldReached}, ${userInfo.lastOneSpendTimeOnGame},  ${userInfo.userID}, ${userInfo.purchaseDate}, ${userInfo.purchaseID}');
-      notifyListeners();
-    }
-  }
-
-  Future<UserInformations?> getUserInformations(String? userId) async {
-    try {
-      DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(userId).get() as Future<DocumentSnapshot<Object?>>);
-      if (userDoc.exists) {
-        return UserInformations.fromJson(userDoc.data() as Map<String, dynamic>);
-      }
-    } catch (e) {
-      print('FirebaseService - Błąd podczas pobierania informacji o użytkowniku: $e');
-    }
-    return null;
   }
 
   Future<void> updateUserInformations(String? userId, String fieldName, dynamic value) async {
@@ -119,8 +97,7 @@ class FirebaseService extends ChangeNotifier {
 
   Future<void> updateAndSaveUserSessionInfo() async {
     try {
-      userInfo.howManyTimesRunApp = (userInfo.howManyTimesRunApp ?? 0) + 1;
-      await updateUserInformations(userInfo.userID, 'howManyTimesRunApp', userInfo.howManyTimesRunApp);
+      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
     } catch (e) {
       //print("Błąd podczas aktualizacji liczby uruchomień aplikacji: $e");
     }
@@ -128,9 +105,8 @@ class FirebaseService extends ChangeNotifier {
 
   Future<void> updateHowManyTimesFinishedGame() async {
     try {
-      userInfo.howManyTimesFinishedGame = (userInfo.howManyTimesFinishedGame ?? 0) + 1;
-      print('FirebaseService - updateHowManyTimesFinishedGame: ${userInfo.howManyTimesFinishedGame}');
-      await updateUserInformations(userInfo.userID, 'howManyTimesFinishedGame', userInfo.howManyTimesFinishedGame);
+      print('FirebaseService - updateHowManyTimesFinishedGame: ${SharedPreferencesHelper.getHowManyTimesFinishedGame()}');
+      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
         } catch (e) {
       print("FirebaseService - Błąd podczas aktualizacji liczby zakończeń gry: $e");
     }
@@ -138,9 +114,8 @@ class FirebaseService extends ChangeNotifier {
 
   Future<void> updateHowManyTimesRunInterstitialAd() async {
     try {
-      userInfo.howManyTimesRunInstertitialAd = (userInfo.howManyTimesRunInstertitialAd ?? 0) + 1;
-      print('FirebaseService - howManyTimesRunInstertitialAd: ${userInfo.howManyTimesRunInstertitialAd}');
-      await updateUserInformations(userInfo.userID, 'howManyTimesRunInstertitialAd', userInfo.howManyTimesRunInstertitialAd);
+      print('FirebaseService - howManyTimesRunInstertitialAd: ${SharedPreferencesHelper.getHowManyTimesRunInterstitialAd()}');
+      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
         } catch (e) {
       print("FirebaseService -Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
     }

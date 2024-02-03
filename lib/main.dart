@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_template/src/app_lifecycle/loading_status.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/in_app_purchase/models/user_informations.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
@@ -24,7 +25,6 @@ import 'src/player_progress/persistence/local_storage_player_progress_persistenc
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 
 final globalLoading = GlobalLoading();
- UserInformations userInfo = UserInformations();
 
 Future<void> main() async {
   if (kReleaseMode) {
@@ -70,7 +70,7 @@ Future<void> main() async {
   final translationProvider = TranslationProvider.fromDeviceLanguage();
   await translationProvider.loadWords();
   await translationProvider.loadTranslations();
-
+  await SharedPreferencesHelper.init();
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
 
   //probably to be unused
