@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:game_template/src/app_lifecycle/loading_status.dart';
 import 'package:game_template/src/drawer/global_loading.dart';
 import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
-import 'package:game_template/src/in_app_purchase/models/user_informations.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';

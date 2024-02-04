@@ -13,7 +13,6 @@ import '../../../main.dart';
 import '../../app_lifecycle/TranslationProvider.dart';
 import '../models/purchase_state.dart';
 import '../models/shared_preferences_helper.dart';
-import '../models/user_informations.dart';
 import 'firebase_service.dart';
 
 class IAPService extends ChangeNotifier{
