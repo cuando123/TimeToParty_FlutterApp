@@ -1,9 +1,17 @@
 import 'dart:io';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class TranslationDatabase {
+  String generateKeyFromHexString(String hexString) {
+    var bytesFromHex = hex.decode(hexString);
+    var digest = sha256.convert(bytesFromHex);
+    return digest.toString().substring(0, 32);
+  }
+
   Future<Database> initDatabase() async {
     var dbPath = join(await getDatabasesPath(), "db_awesome.db");
 
@@ -11,8 +19,8 @@ class TranslationDatabase {
     List<int> bytes =
     data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(dbPath).writeAsBytes(bytes, flush: true);
-
-    return openDatabase(dbPath);
+    final key = generateKeyFromHexString("67356939266b337328307073");
+    return openDatabase(dbPath, password: key);
   }
 
   Future<Map<String, String>> getAllTranslationsForLanguage(String language) async {

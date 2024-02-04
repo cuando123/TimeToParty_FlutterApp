@@ -584,7 +584,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     if (isInterstitialAdLoaded && !isPurchased){
       Provider.of<AdMobService>(context, listen: false).showInterstitialAd(),
      SharedPreferencesHelper.setHowManyTimesRunInterstitialAd(),
-     _firebaseService.updateHowManyTimesRunInterstitialAd()}
+     _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd())}
     else
       {
         if (widget.currentField[0] == 'field_star_blue_dark')
@@ -758,7 +758,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
         await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-        await _firebaseService.updateHowManyTimesRunInterstitialAd();
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(
@@ -787,7 +787,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       if (isInterstitialAdLoaded && !isPurchased){
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
         await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-        await _firebaseService.updateHowManyTimesRunInterstitialAd();
+        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(

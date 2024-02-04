@@ -28,7 +28,7 @@ dependencies:
   url_launcher: ^6.2.2 #możliwość uruchomienia z apki linkow np. do mojej stronki itp
   share_plus: ^7.2.1 #możliwość udostępnienia aplikacji poprzez wysłanie zaproszenia lub googleplay
   flutter_local_notifications: ^16.3.0 #lokalne powiadomienia
-  sqflite: ^2.3.0 #plugin dla bazy danych SQLite
+  sqflite_sqlcipher: ^2.2.1 #plugin dla bazy danych SQLite
   timezone: ^0.9.2
   flutter_localizations: #pobranie lokalizacji aby sprawdzić kiedy wyświetlić powiadomienie
     sdk: flutter

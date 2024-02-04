@@ -94,32 +94,5 @@ class FirebaseService extends ChangeNotifier {
     }
   }
 
-
-  Future<void> updateAndSaveUserSessionInfo() async {
-    try {
-      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
-    } catch (e) {
-      //print("Błąd podczas aktualizacji liczby uruchomień aplikacji: $e");
-    }
-  }
-
-  Future<void> updateHowManyTimesFinishedGame() async {
-    try {
-      print('FirebaseService - updateHowManyTimesFinishedGame: ${SharedPreferencesHelper.getHowManyTimesFinishedGame()}');
-      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
-        } catch (e) {
-      print("FirebaseService - Błąd podczas aktualizacji liczby zakończeń gry: $e");
-    }
-  }
-
-  Future<void> updateHowManyTimesRunInterstitialAd() async {
-    try {
-      print('FirebaseService - howManyTimesRunInstertitialAd: ${SharedPreferencesHelper.getHowManyTimesRunInterstitialAd()}');
-      await updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
-        } catch (e) {
-      print("FirebaseService -Błąd podczas aktualizacji liczby wyświetleń reklam interstycjalnych: $e");
-    }
-  }
-
 // Tutaj można dodać inne metody związane z Firebase.
 }
