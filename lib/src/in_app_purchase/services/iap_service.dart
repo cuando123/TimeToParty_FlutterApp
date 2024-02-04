@@ -70,27 +70,22 @@ class IAPService extends ChangeNotifier{
       if (_purchaseStatusMessage != "PurchaseRestored") {
         setPurchaseStatusMessage("PurchaseSuccess");
         await SharedPreferencesHelper.setPurchaseStatus("purchased");
-        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "purchased");
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseStatus', "purchased");
         print("zaladowalem purchased do firebase");
       } else {
         await SharedPreferencesHelper.setPurchaseStatus("restored");
-        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
       }
       }
       isLoading = false;
       await translationProvider.loadWords();
       await SharedPreferencesHelper.savePurchaseState(true);
       await SharedPreferencesHelper.setPurchaseID(_purchaseDetails?.purchaseID);
-      print("PurchaseDetails.transactiondate: ${_purchaseDetails?.transactionDate}");
-      await SharedPreferencesHelper.setPurchaseDate(_purchaseDetails?.transactionDate != null
-          ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
-          : null);
+      await SharedPreferencesHelper.setPurchaseDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
       await SharedPreferencesHelper.setProductID(_purchaseDetails?.productID);
-      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
-      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseDate', _purchaseDetails?.transactionDate != null
-          ? DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.parse(_purchaseDetails!.transactionDate!))
-          : null);
-      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'productID', _purchaseDetails?.productID);
+      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
+      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseDate', DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'productID', _purchaseDetails?.productID);
     }
   }
 
@@ -168,8 +163,8 @@ class IAPService extends ChangeNotifier{
         await SharedPreferencesHelper.setPurchaseID(_purchaseDetails?.purchaseID);
         await SharedPreferencesHelper.setPurchaseStatus("restored");
 
-        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
-        await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseStatus', "restored");
       }
       print("Koniec procesu przywracania zakupów");
     }

@@ -83,9 +83,12 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                   Expanded(
                     child: Scrollbar(
                         thumbVisibility: true,trackVisibility: true,
-                        thickness: -6.0,
+                        thickness: 6.0,
                         radius: Radius.circular(10),
-                        child: ListView(
+                        child: Container(padding: EdgeInsets.all(1),
+                          child:
+                        ListView(
+                            padding: const EdgeInsets.only(right: 12.0),
                       children: [
                         translatedText(
                             context, 'game_introduction', 24, Palette().pink),
@@ -226,7 +229,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                           },
                         ),
                       ],
-                    ),),
+                    ),),),
                   ), // Dodaj swoją linię SVG tutaj
                 ],
               ),
@@ -234,9 +237,10 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
             actionsPadding: EdgeInsets.symmetric(
                 horizontal: 20), // Zmniejsz obramowanie przycisków
             actions: [
-              Expanded(
-                child: Center(
-                  heightFactor: 1.5,
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 20),
                   child:
                   CustomStyledButton(
                     icon: null,

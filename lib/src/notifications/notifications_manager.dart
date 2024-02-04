@@ -33,7 +33,7 @@ class NotificationsManager {
     if (response?.payload != null && response!.payload!.isNotEmpty) {
       var lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
       await SharedPreferencesHelper.setLastNotificationClicked(lastNotificationClicked);
-      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
+      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
     }
   }
 

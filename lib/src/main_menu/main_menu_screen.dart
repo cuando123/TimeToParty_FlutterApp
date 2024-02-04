@@ -103,8 +103,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     await iapService.setPurchased(isPurchasedLocally, true);
   }
 
-  void _setupConnectivityListener() {
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+  void _setupConnectivityListener() async {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) async {
       bool isConnected = result != ConnectivityResult.none;
       setState(() {
         isOnline = isConnected;
@@ -116,7 +116,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         //_checkPurchaseStatus();
         _firebaseService
             .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
-        _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp().toString());
         print("ISONLINE: $isConnected");
         print("${_firebaseService.currentUser}");
       }

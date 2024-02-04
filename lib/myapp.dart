@@ -99,46 +99,49 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     GlobalStopwatch.stop(); // Zatrzymanie pomiaru czasu sesji
-    int lastSessionTime = GlobalStopwatch.getElapsedTime(); // Pobranie czasu sesji
-
-    SharedPreferencesHelper.setFinalSpendTimeOnGame(lastSessionTime);
-    SharedPreferencesHelper.setLastOneSpendTimeOnGame(lastSessionTime);
-    SharedPreferencesHelper.setLastPlayDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
-
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'finalSpendTimeOnGame', SharedPreferencesHelper.getFinalSpendTimeOnGame());
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastOneSpendTimeOnGame', SharedPreferencesHelper.getLastOneSpendTimeOnGame());
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastPlayDate', SharedPreferencesHelper.getLastPlayDate());
-
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
-    widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastHowManyFieldReached', SharedPreferencesHelper.getLastHowManyFieldReached());
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // Tutaj aktualizujesz userInfo
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       GlobalStopwatch.stop();
-      int lastSessionTime = GlobalStopwatch.getElapsedTime();
-      SharedPreferencesHelper.setFinalSpendTimeOnGame(lastSessionTime);
-      SharedPreferencesHelper.setLastOneSpendTimeOnGame(lastSessionTime);
-      SharedPreferencesHelper.setLastPlayDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
-
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'finalSpendTimeOnGame', SharedPreferencesHelper.getFinalSpendTimeOnGame());
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastOneSpendTimeOnGame', SharedPreferencesHelper.getLastOneSpendTimeOnGame());
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastPlayDate', SharedPreferencesHelper.getLastPlayDate());
-
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp());
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesFinishedGame', SharedPreferencesHelper.getHowManyTimesFinishedGame());
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
-      widget.firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'lastHowManyFieldReached', SharedPreferencesHelper.getLastHowManyFieldReached());
+      Future.microtask(() async {
+        await _saveDataAsync();
+      });
     } else if (state == AppLifecycleState.resumed) {
       GlobalStopwatch.reset();
       GlobalStopwatch.start();
     }
   }
+
+  Future<void> _saveDataAsync() async {
+    int lastSessionTime = GlobalStopwatch.getElapsedTime();
+    await SharedPreferencesHelper.setFinalSpendTimeOnGame(lastSessionTime);
+    await SharedPreferencesHelper.setLastOneSpendTimeOnGame(lastSessionTime);
+    await SharedPreferencesHelper.setLastPlayDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+
+    String? userId = await SharedPreferencesHelper.getUserID();
+    int? finalSpendTimeOnGame = await SharedPreferencesHelper.getFinalSpendTimeOnGame();
+    int? lastOneSpendTimeOnGame = await SharedPreferencesHelper.getLastOneSpendTimeOnGame();
+    String? lastPlayDate = await SharedPreferencesHelper.getLastPlayDate();
+    int? howManyTimesRunApp = await SharedPreferencesHelper.getHowManyTimesRunApp();
+    int? howManyTimesFinishedGame = await SharedPreferencesHelper.getHowManyTimesFinishedGame();
+    int? howManyTimesRunInterstitialAd = await SharedPreferencesHelper.getHowManyTimesRunInterstitialAd();
+    String? lastHowManyFieldReached = await SharedPreferencesHelper.getLastHowManyFieldReached();
+
+    // Teraz możemy bezpiecznie używać toString(), ponieważ mamy już rozwiązane wartości
+    if(userId != null){ // Upewnij się, że userId nie jest null przed aktualizacją
+      if(finalSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'finalSpendTimeOnGame', finalSpendTimeOnGame.toString());
+      if(lastOneSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'lastOneSpendTimeOnGame', lastOneSpendTimeOnGame.toString());
+      if(lastPlayDate != null) await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate);
+      if(howManyTimesRunApp != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunApp', howManyTimesRunApp.toString());
+      if(howManyTimesFinishedGame != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesFinishedGame', howManyTimesFinishedGame.toString());
+      if(howManyTimesRunInterstitialAd != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunInstertitialAd', howManyTimesRunInterstitialAd.toString());
+      if(lastHowManyFieldReached != null) await widget.firebaseService.updateUserInformations(userId, 'lastHowManyFieldReached', lastHowManyFieldReached);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

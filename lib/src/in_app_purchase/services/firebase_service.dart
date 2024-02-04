@@ -49,41 +49,35 @@ class FirebaseService extends ChangeNotifier {
     }
 
     User? user = _auth?.currentUser;
-
     if (user == null) {
-      await SharedPreferencesHelper.setUserID(user?.uid);
-      try {
-        UserCredential? userCredential = await _auth?.signInAnonymously();
-        user = userCredential?.user;
-        print("FirebaseService - Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
-      } catch (e) {
-        print("FirebaseService - Błąd podczas logowania anonimowego: $e");
-        return;
-      }
-    } else {
-      await SharedPreferencesHelper.setUserID(user.uid);
-      print("FirebaseService - Użytkownik jest już zalogowany z UID: ${SharedPreferencesHelper.getUserID()}");
+      UserCredential? userCredential = await _auth?.signInAnonymously();
+      user = userCredential?.user;
+      print("FirebaseService - Zalogowano anonimowo jako użytkownik o UID: ${user?.uid}");
     }
 
     if (user != null) {
-      DocumentSnapshot userDoc = await (_firestore?.collection('users').doc(user.uid).get() as Future<DocumentSnapshot<Object?>>);
+      await SharedPreferencesHelper.setUserID(user.uid);
+      print("FirebaseService - Użytkownik jest już zalogowany z UID: ${user.uid}");
+
+      DocumentSnapshot userDoc = (await _firestore?.collection('users').doc(user.uid).get()) as DocumentSnapshot<Object?>;
       if (!userDoc.exists) {
-        await SharedPreferencesHelper.setUserID(user.uid);
+        String currentDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
         await SharedPreferencesHelper.setPurchaseStatus("free");
-        await SharedPreferencesHelper.setCreatedUserDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
-        Map<String, dynamic> toJson() => {
-          'userID': SharedPreferencesHelper.getUserID(),
-          'purchaseStatus': SharedPreferencesHelper.getPurchaseStatus(),
-          'createdUserDate': SharedPreferencesHelper.getCreatedUserDate(),
+        await SharedPreferencesHelper.setCreatedUserDate(currentDate);
+
+        Map<String, dynamic> userData = {
+          'userID': user.uid, // Bezpośrednio używamy UID
+          'purchaseStatus': "free",
+          'createdUserDate': currentDate,
         };
-        await _firestore?.collection('users').doc(user.uid).set(toJson()); //toJson stąd
+        await _firestore?.collection('users').doc(user.uid).set(userData);
         print('FirebaseService - UID zapisany w Firestore');
       } else {
-        print('FirebaseService -Dokument użytkownika już istnieje w Firestore');
+        print('FirebaseService - Dokument użytkownika już istnieje w Firestore');
       }
-
     }
   }
+
 
   Future<void> updateUserInformations(String? userId, String fieldName, dynamic value) async {
     try {

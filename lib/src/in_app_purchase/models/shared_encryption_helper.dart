@@ -21,21 +21,48 @@ class EncryptionHelper {
   static final iv = encrypt.IV.fromLength(16); // Generuje losowy IV
 
   // Metoda do szyfrowania tekstu
-  static String encryptText(String text) {
-    final key = generateKeyFromHexString(); // Wykorzystuje wewnętrzny _hexString do generowania klucza
-    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
-    final encrypted = encrypter.encrypt(text, iv: iv);
-    return '${iv.base64}:${encrypted.base64}'; // Zwraca zaszyfrowany tekst z IV
+  static String? encryptText(String? text) {
+    // Sprawdź, czy tekst jest pusty lub null
+    if (text == null || text.isEmpty) {
+      print("Provided text is empty or null, returning null.");
+      return '';
+    }
+    try {
+      final key = generateKeyFromHexString(); // Wykorzystuje wewnętrzny _hexString do generowania klucza
+      final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
+      final encrypted = encrypter.encrypt(text, iv: iv);
+      return '${iv.base64}:${encrypted.base64}'; // Zwraca zaszyfrowany tekst z IV
+    } catch (e) {
+      print("Encryption error: $e");
+      return "Encryption error: $e"; // Lub zwróć null, jeśli wolisz
+    }
   }
 
   // Metoda do deszyfrowania tekstu
-  static String decryptText(String encryptedTextWithIv) {
-    final parts = encryptedTextWithIv.split(':'); // Dzieli zaszyfrowany tekst na IV i sam tekst
-    final iv = encrypt.IV.fromBase64(parts[0]); // Odtwarza IV
-    final encryptedText = parts[1]; // Otrzymuje zaszyfrowany tekst
-    final key = generateKeyFromHexString(); // Ponownie używa wewnętrznego _hexString do generowania klucza
-    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
-    final decrypted = encrypter.decrypt(encrypt.Encrypted.fromBase64(encryptedText), iv: iv);
-    return decrypted; // Zwraca odszyfrowany tekst
+  static String? decryptText(String? encryptedTextWithIv) {
+    if (encryptedTextWithIv == null || encryptedTextWithIv.isEmpty) {
+      print("Provided encrypted text is empty or null, returning null.");
+      return '';
+    }
+
+    final parts = encryptedTextWithIv.split(':');
+    if (parts.length != 2) {
+      print("encryptedTextWithIv: $encryptedTextWithIv");
+      print("Provided encrypted text is in an incorrect format, returning null. ${parts.length}");
+      return '';
+    }
+
+    try {
+      final iv = encrypt.IV.fromBase64(parts[0]); // Odtwarza IV
+      final encryptedText = parts[1]; // Otrzymuje zaszyfrowany tekst
+      final key = generateKeyFromHexString(); // Ponownie używa wewnętrznego _hexString do generowania klucza
+      final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+      final decrypted = encrypter.decrypt(encrypt.Encrypted.fromBase64(encryptedText), iv: iv);
+      return decrypted; // Zwraca odszyfrowany tekst
+    } catch (e) {
+      print("Decryption error: $e");
+      return "Decryption error: $e";
+    }
   }
+
 }

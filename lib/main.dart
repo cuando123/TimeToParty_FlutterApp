@@ -17,6 +17,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'myapp.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
@@ -24,6 +25,11 @@ import 'src/player_progress/persistence/local_storage_player_progress_persistenc
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 
 final globalLoading = GlobalLoading();
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Jeśli chcesz wykonać jakieś działania, gdy powiadomienie przyjdzie w tle
+  print("Handling a background message: ${message.messageId}");
+}
 
 Future<void> main() async {
   if (kReleaseMode) {
@@ -71,7 +77,9 @@ Future<void> main() async {
   await translationProvider.loadTranslations();
   await SharedPreferencesHelper.init();
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
-
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  String? token = await FirebaseMessaging.instance.getToken();
+  print("Firebase Messaging Token: $token");
   //probably to be unused
   //GamesServicesController? gamesServicesController;
   runApp(

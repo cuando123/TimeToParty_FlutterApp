@@ -13,11 +13,12 @@ class SharedPreferencesHelper {
   // Zapisywanie String
   static Future<void> setString(String key, String? value) async {
     final prefs = await _instance;
-    if (value != null) {
+    if (value != null && value.isNotEmpty) { // Sprawdź, czy wartość nie jest pusta
       final encryptedValue = EncryptionHelper.encryptText(value);
-      await prefs.setString(key, encryptedValue);
+      await prefs.setString(key, encryptedValue!);
     } else {
-      await prefs.remove(key); // Usuwamy klucz, jeśli wartość jest nullem
+      final encryptedValue = EncryptionHelper.encryptText(""); // Szyfruj pusty ciąg
+      await prefs.setString(key, encryptedValue!);
     }
   }
 
@@ -25,7 +26,17 @@ class SharedPreferencesHelper {
   static Future<String?> getString(String key) async {
     final prefs = await _instance;
     final encryptedValue = prefs.getString(key);
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+    // Upewnij się, że encryptedValue nie jest null przed próbą deszyfrowania
+    if (encryptedValue == null || encryptedValue.isEmpty) {
+      print("No value found for key $key, returning null.");
+      return '';
+    }
+
+    String? decryptedValue = EncryptionHelper.decryptText(encryptedValue);
+    if (decryptedValue == null) {
+      print("Decryption returned null for key $key, indicating an error or empty input.");
+    }
+    return decryptedValue;
   }
 
   // Zapisywanie bool
@@ -37,7 +48,14 @@ class SharedPreferencesHelper {
   // Odczytywanie bool
   static Future<bool?> getBool(String key) async {
     final stringValue = await getString(key);
-    return stringValue != null ? stringValue.toLowerCase() == 'true' : null;
+    // Upewnij się, że stringValue nie jest null przed próbą konwersji
+    if (stringValue == null) {
+      print("No value found for key $key, returning null.");
+      return null;
+    }
+
+    // Bezpiecznie konwertuj odczytaną wartość na bool
+    return stringValue.toLowerCase() == 'true';
   }
 
   // Zapisywanie int
@@ -49,10 +67,21 @@ class SharedPreferencesHelper {
   // Odczytywanie int
   static Future<int?> getInt(String key) async {
     final stringValue = await getString(key);
-    return stringValue != null ? int.tryParse(stringValue) : null;
+    if (stringValue == null) {
+      print("No value found for key $key, returning null.");
+      return null;
+    }
+
+    // Bezpiecznie próbuj konwertować odczytaną wartość na int
+    final intValue = int.tryParse(stringValue);
+    if(intValue == null) {
+      print("Could not convert value to int for key $key.");
+      return null;
+    }
+    return intValue;
   }
 
-  // Przykład zastosowania dla jednej z metod
+  // Zapisywanie danych
   static Future<void> savePurchaseState(bool isPurchased) async {
     await setBool('isPurchased', isPurchased);
   }
@@ -61,8 +90,6 @@ class SharedPreferencesHelper {
     return await getBool('isPurchased') ?? false;
   }
 
-
-  // Zapisywanie danych
   static Future<void> setUserID(String? value) async {
     final stringValue = value ?? '';
     await setString('userID', stringValue);
@@ -94,9 +121,11 @@ class SharedPreferencesHelper {
   }
 
   static Future<void> setFinalSpendTimeOnGame(int? newValue) async {
-    final intValue = newValue ?? 0;
+    final int? oldValue = await getInt('finalSpendTimeOnGame');
+    final intValue = (oldValue ?? 0) + (newValue ?? 0);
     await setInt('finalSpendTimeOnGame', intValue);
   }
+
 
   static Future<void> setLastOneSpendTimeOnGame(int? value) async {
     final intValue = value ?? 0;
@@ -135,68 +164,59 @@ class SharedPreferencesHelper {
     await setString('lastNotificationClicked', stringValue);
   }
   // Odczytywanie danych
-  static String? getUserID() {
-    final encryptedValue = _prefs?.getString('userID');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getUserID() async{
+    return await getString('userID');
   }
 
-  static String? getPurchaseStatus() {
-    final encryptedValue = _prefs?.getString('purchaseStatus');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getPurchaseStatus() async {
+    return await getString('purchaseStatus');
   }
 
-  static String? getPurchaseID() {
-    final encryptedValue = _prefs?.getString('purchaseID');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getPurchaseID() async {
+    return await getString('purchaseID');
   }
 
-  static String? getCreatedUserDate() {
-    final encryptedValue = _prefs?.getString('createdUserDate');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getCreatedUserDate() async {
+    return await getString('createdUserDate');
   }
 
-  static String? getPurchaseDate() {
-    final encryptedValue = _prefs?.getString('purchaseDate');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getPurchaseDate() async {
+    return await getString('purchaseDate');
   }
 
-  static String? getProductID() {
-    final encryptedValue = _prefs?.getString('productID');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getProductID() async {
+    return await getString('productID');
   }
 
-  static int? getFinalSpendTimeOnGame() {
-    return _prefs?.getInt('finalSpendTimeOnGame');
+  static Future<int?> getFinalSpendTimeOnGame() async {
+    return getInt('finalSpendTimeOnGame');
   }
 
-  static int? getLastOneSpendTimeOnGame() {
-    return _prefs?.getInt('lastOneSpendTimeOnGame');
+  static Future<int?> getLastOneSpendTimeOnGame() async {
+    return getInt('lastOneSpendTimeOnGame');
   }
 
-  static String? getLastHowManyFieldReached() {
-    final encryptedValue = _prefs?.getString('lastHowManyFieldReached');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getLastHowManyFieldReached() async {
+    return await getString('lastHowManyFieldReached');
   }
 
-  static int? getHowManyTimesFinishedGame() {
-    return _prefs?.getInt('howManyTimesFinishedGame');
+  static Future<int?> getHowManyTimesFinishedGame() async {
+    return getInt('howManyTimesFinishedGame');
   }
 
-  static int? getHowManyTimesRunApp() {
-    return _prefs?.getInt('howManyTimesRunApp');
+  static Future<int?> getHowManyTimesRunApp() async {
+    return getInt('howManyTimesRunApp');
   }
 
-  static int? getHowManyTimesRunInterstitialAd() {
-    return _prefs?.getInt('howManyTimesRunInterstitialAd');
+  static Future<int?> getHowManyTimesRunInterstitialAd() async {
+    return getInt('howManyTimesRunInterstitialAd');
   }
 
-  static String? getLastPlayDate() {
-    final encryptedValue = _prefs?.getString('lastPlayDate');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getLastPlayDate() async {
+    return await getString('lastPlayDate');
   }
 
-  static String? getLastNotificationClicked() {
-    final encryptedValue = _prefs?.getString('lastNotificationClicked');
-    return encryptedValue != null ? EncryptionHelper.decryptText(encryptedValue) : null;
+  static Future<String?> getLastNotificationClicked() async {
+    return await getString('lastNotificationClicked');
   }
 }

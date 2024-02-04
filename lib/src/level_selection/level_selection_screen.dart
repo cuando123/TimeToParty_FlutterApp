@@ -417,7 +417,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
                                                       await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-                                                      await _firebaseService.updateUserInformations(SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+                                                      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
                                                     } else {
                                                       navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }
