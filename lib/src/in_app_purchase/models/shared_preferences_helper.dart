@@ -163,7 +163,16 @@ class SharedPreferencesHelper {
     final stringValue = value ?? '';
     await setString('lastNotificationClicked', stringValue);
   }
+
+  static Future<void> setFirebaseMessagingToken(String value) async {
+    await setString('firebaseMessagingToken', value);
+  }
+
   // Odczytywanie danych
+  static Future<String?> getFirebaseMessagingToken() async {
+    return await getString('firebaseMessagingToken');
+  }
+
   static Future<String?> getUserID() async{
     return await getString('userID');
   }

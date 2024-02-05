@@ -116,8 +116,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
         //_checkPurchaseStatus();
         _firebaseService
             .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
-        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunApp', SharedPreferencesHelper.getHowManyTimesRunApp().toString());
-        print("ISONLINE: $isConnected");
         print("${_firebaseService.currentUser}");
       }
     });

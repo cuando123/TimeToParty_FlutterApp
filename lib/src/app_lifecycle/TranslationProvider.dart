@@ -73,4 +73,9 @@ class TranslationProvider extends ChangeNotifier {
   String getWord(String key) {
     return _cachedWords[key] ?? '';
   }
+
+  String getLanguagePrefix() {
+    return _currentLanguage.split('_').first;
+  }
+
 }

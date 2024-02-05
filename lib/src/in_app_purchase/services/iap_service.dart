@@ -82,9 +82,10 @@ class IAPService extends ChangeNotifier{
       await SharedPreferencesHelper.savePurchaseState(true);
       await SharedPreferencesHelper.setPurchaseID(_purchaseDetails?.purchaseID);
       await SharedPreferencesHelper.setPurchaseDate(DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+      String? purchaseDate = await SharedPreferencesHelper.getPurchaseDate();
       await SharedPreferencesHelper.setProductID(_purchaseDetails?.productID);
       await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseID', _purchaseDetails?.purchaseID);
-      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseDate', DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now()));
+      if(purchaseDate != null) await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'purchaseDate', purchaseDate.toString());
       await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'productID', _purchaseDetails?.productID);
     }
   }

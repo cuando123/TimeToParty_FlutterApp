@@ -3,14 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../app_lifecycle/TranslationProvider.dart';
 
 class FirebaseService extends ChangeNotifier {
   FirebaseAuth? _auth;
   FirebaseFirestore? _firestore;
+  TranslationProvider? translationProvider;
   bool isConnected;
 //TO_DO skonfigurowac reguly dla zapisu/odczytu danych z firebase
 
-  FirebaseService({this.isConnected = false}) {
+  FirebaseService({this.isConnected = false, this.translationProvider}) {
     if (!isConnected) {
       _auth = FirebaseAuth.instance;
       _firestore = FirebaseFirestore.instance;
@@ -58,17 +62,19 @@ class FirebaseService extends ChangeNotifier {
     if (user != null) {
       await SharedPreferencesHelper.setUserID(user.uid);
       print("FirebaseService - Użytkownik jest już zalogowany z UID: ${user.uid}");
-
       DocumentSnapshot userDoc = (await _firestore?.collection('users').doc(user.uid).get()) as DocumentSnapshot<Object?>;
       if (!userDoc.exists) {
         String currentDate = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
         await SharedPreferencesHelper.setPurchaseStatus("free");
         await SharedPreferencesHelper.setCreatedUserDate(currentDate);
+        String? firebaseMessagingToken = await SharedPreferencesHelper.getFirebaseMessagingToken();
 
         Map<String, dynamic> userData = {
           'userID': user.uid, // Bezpośrednio używamy UID
           'purchaseStatus': "free",
           'createdUserDate': currentDate,
+          'fireMessToken': firebaseMessagingToken,
+          'languageFromDevice': translationProvider?.getLanguagePrefix(),
         };
         await _firestore?.collection('users').doc(user.uid).set(userData);
         print('FirebaseService - UID zapisany w Firestore');

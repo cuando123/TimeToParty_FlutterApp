@@ -18,6 +18,8 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'myapp.dart';
 import 'src/app_lifecycle/TranslationProvider.dart';
@@ -29,6 +31,23 @@ final globalLoading = GlobalLoading();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Jeśli chcesz wykonać jakieś działania, gdy powiadomienie przyjdzie w tle
   print("Handling a background message: ${message.messageId}");
+}
+
+
+void _handleMessage(RemoteMessage message) {
+  // Sprawdź, czy powiadomienie zawiera dane, które wskazują na konieczność przekierowania
+  // lub wykonania innej akcji
+    String url = 'https://frydoapps.com/contact-apps';
+    _launchURL(url);
+  // Tutaj możesz dodać więcej logiki, np. wyświetlenie dialogu, jeśli aplikacja jest aktywna
+}
+
+Future<void> _launchURL(String url) async {
+  if (await canLaunchUrlString(url)) {
+    await launchUrlString(url, mode: LaunchMode.externalApplication);
+  } else {
+    print('Could not launch $url');
+  }
 }
 
 Future<void> main() async {
@@ -59,28 +78,41 @@ Future<void> main() async {
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     );
   });
-
+  // Inicjalizacja TranslationProvider i innych usług
+  final translationProvider = TranslationProvider.fromDeviceLanguage();
+  await translationProvider.loadWords();
+  await translationProvider.loadTranslations();
   // Sprawdzenie połączenia internetowego
   var connectivityResult = await Connectivity().checkConnectivity();
   FirebaseService firebaseService = connectivityResult != ConnectivityResult.none
-      ? FirebaseService()
-      : FirebaseService(isConnected: false);
+      ? FirebaseService(translationProvider: translationProvider)
+      : FirebaseService(isConnected: false, translationProvider: translationProvider);
 
   final initAdFuture = MobileAds.instance.initialize();
   AdMobService adMobService = AdMobService(initAdFuture);
   RequestConfiguration configuration = RequestConfiguration(testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]);
   await MobileAds.instance.updateRequestConfiguration(configuration);
 
-  // Inicjalizacja TranslationProvider i innych usług
-  final translationProvider = TranslationProvider.fromDeviceLanguage();
-  await translationProvider.loadWords();
-  await translationProvider.loadTranslations();
+
   await SharedPreferencesHelper.init();
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Obsługa przypadku, gdy aplikacja jest uruchamiana przez dotknięcie powiadomienia
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
   String? token = await FirebaseMessaging.instance.getToken();
-  print("Firebase Messaging Token: $token");
-  //probably to be unused
+  print("TOKEN: $token");
+  await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
+  FirebaseMessaging.onMessage.listen((message) {
+    _handleMessage(message);
+  });
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    _handleMessage(message);
+  });
+
   //GamesServicesController? gamesServicesController;
   runApp(
       MultiProvider(
@@ -114,6 +146,7 @@ Future<void> main() async {
           iapService: iapService,
           //gamesServicesController: gamesServicesController,
           firebaseService: firebaseService,
+          translationProvider: translationProvider,
         ),
       ),
   );

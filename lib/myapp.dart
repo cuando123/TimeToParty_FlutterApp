@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:game_template/src/Language_selector_screen/language_selector.dart';
 import 'package:game_template/src/Loading_screen/loading_screen.dart';
 import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
+import 'package:game_template/src/app_lifecycle/TranslationProvider.dart';
 import 'package:game_template/src/app_lifecycle/app_lifecycle.dart';
 import 'package:game_template/src/audio/audio_controller.dart';
 import 'package:game_template/src/in_app_purchase/cards_advertisement_screen.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatefulWidget {
   //final GamesServicesController? gamesServicesController;
   final FirebaseService firebaseService;
   final IAPService iapService;
+  final TranslationProvider translationProvider;
 
   const MyApp({
     super.key,
@@ -41,6 +43,7 @@ class MyApp extends StatefulWidget {
     required this.iapService,
     //required this.gamesServicesController,
     required this.firebaseService,
+    required this.translationProvider,
   });
 
   @override
@@ -134,7 +137,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if(userId != null){ // Upewnij się, że userId nie jest null przed aktualizacją
       if(finalSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'finalSpendTimeOnGame', finalSpendTimeOnGame.toString());
       if(lastOneSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'lastOneSpendTimeOnGame', lastOneSpendTimeOnGame.toString());
-      if(lastPlayDate != null) await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate);
+      if(lastPlayDate != null) await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate.toString());
       if(howManyTimesRunApp != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunApp', howManyTimesRunApp.toString());
       if(howManyTimesFinishedGame != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesFinishedGame', howManyTimesFinishedGame.toString());
       if(howManyTimesRunInterstitialAd != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunInstertitialAd', howManyTimesRunInterstitialAd.toString());
