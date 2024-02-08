@@ -26,9 +26,9 @@ class GlobalLoading {
 
     try {
       final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Polityka prywatności");
+      _openPdfViewer(context, file, "Privacy policy");
     } catch (e) {
-      print('Błąd: $e');
+      print('Error: $e');
       _connectionProblemDialog(context);
     }
 
@@ -43,7 +43,7 @@ class GlobalLoading {
     const fileName = 'EndUserLicenseAgreement_EULA.pdf';
     try {
       final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Umowa licencyjna EULA");
+      _openPdfViewer(context, file, "End-User License Agreement (EULA)");
     } catch (e) {
       _connectionProblemDialog(context);
     }

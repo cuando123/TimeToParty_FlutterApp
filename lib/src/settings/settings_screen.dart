@@ -178,6 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   decoration: TextDecoration.underline,decorationColor: Color(0xFFFFFFFF),
                 ),
               ),),
+            /*
             ElevatedButton(
               onPressed: () async {
                 audioController.playSfx(SfxType.buttonBackExit);
@@ -194,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }
               },
               child: Text("Testuj notyfikacje"),
-            ),
+            ),*/
           ],
         ),),),),
         rectangularMenuArea: Text(

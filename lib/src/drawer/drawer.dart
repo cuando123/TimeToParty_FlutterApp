@@ -252,7 +252,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
         getTranslatedString(context, 'lets_play_time_to_party');
 
     await Share.share(
-        '${message}https://play.google.com/store/apps/details?id=NAZWA_TWOJEJ_APLIKACJI',
+        '${message}https://play.google.com/store/apps/details?id=com.frydoapps.timetoparty',
         subject: subject);
   }
 
@@ -304,8 +304,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              letsText(
-                  context, 'Jesteś premium!', 20, Palette().white)
+              translatedText(context, "you_are_premium", 20, Palette().white)
             ],
           ),
         ),

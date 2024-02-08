@@ -49,6 +49,8 @@ dependencies:
   connectivity_plus: ^5.0.2 #sprawdzanie czy jest internet
   encrypt: ^5.0.3
   crypto: ^3.0.3
+  in_app_review: ^2.0.8
+  flutter_rating_bar: ^4.0.1
 
   # If you don't need one of the following dependencies,
   # delete the relevant line below, and get rid of any Dart code

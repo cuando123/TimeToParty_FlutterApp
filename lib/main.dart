@@ -33,7 +33,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
-
 void _handleMessage(RemoteMessage message) {
   // Sprawdź, czy powiadomienie zawiera dane, które wskazują na konieczność przekierowania
   // lub wykonania innej akcji
@@ -84,6 +83,7 @@ Future<void> main() async {
   await translationProvider.loadTranslations();
   // Sprawdzenie połączenia internetowego
   var connectivityResult = await Connectivity().checkConnectivity();
+
   FirebaseService firebaseService = connectivityResult != ConnectivityResult.none
       ? FirebaseService(translationProvider: translationProvider)
       : FirebaseService(isConnected: false, translationProvider: translationProvider);
@@ -93,24 +93,28 @@ Future<void> main() async {
   RequestConfiguration configuration = RequestConfiguration(testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]);
   await MobileAds.instance.updateRequestConfiguration(configuration);
 
-
   await SharedPreferencesHelper.init();
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Obsługa przypadku, gdy aplikacja jest uruchamiana przez dotknięcie powiadomienia
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    _handleMessage(initialMessage);
-  }
-  String? token = await FirebaseMessaging.instance.getToken();
-  print("TOKEN: $token");
-  await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
-  FirebaseMessaging.onMessage.listen((message) {
-    _handleMessage(message);
-  });
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    _handleMessage(message);
+  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
+    // Jeśli internet stanie się dostępny, inicjalizuj Firebase Messaging i inne usługi
+    if (result != ConnectivityResult.none) {
+      RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        _handleMessage(initialMessage);
+      }
+      String? token = await FirebaseMessaging.instance.getToken();
+      print("TOKEN: $token");
+      await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
+      FirebaseMessaging.onMessage.listen((message) {
+        _handleMessage(message);
+      });
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        _handleMessage(message);
+      });
+    }
   });
 
   //GamesServicesController? gamesServicesController;
