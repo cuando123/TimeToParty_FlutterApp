@@ -83,7 +83,7 @@ Future<void> main() async {
   await translationProvider.loadTranslations();
   // Sprawdzenie połączenia internetowego
   var connectivityResult = await Connectivity().checkConnectivity();
-
+  bool isConnected = connectivityResult != ConnectivityResult.none;
   FirebaseService firebaseService = connectivityResult != ConnectivityResult.none
       ? FirebaseService(translationProvider: translationProvider)
       : FirebaseService(isConnected: false, translationProvider: translationProvider);
@@ -97,26 +97,21 @@ Future<void> main() async {
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Obsługa przypadku, gdy aplikacja jest uruchamiana przez dotknięcie powiadomienia
-  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
-    // Jeśli internet stanie się dostępny, inicjalizuj Firebase Messaging i inne usługi
-    if (result != ConnectivityResult.none) {
-      RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-      if (initialMessage != null) {
-        _handleMessage(initialMessage);
-      }
-      String? token = await FirebaseMessaging.instance.getToken();
-      print("TOKEN: $token");
-      await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
-      FirebaseMessaging.onMessage.listen((message) {
-        _handleMessage(message);
-      });
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        _handleMessage(message);
-      });
-    }
+  if (isConnected){
+  String? token = await FirebaseMessaging.instance.getToken();
+  print("TOKEN: $token");
+  await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
+  }
+  FirebaseMessaging.onMessage.listen((message) {
+    _handleMessage(message);
   });
-
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    _handleMessage(message);
+  });
   //GamesServicesController? gamesServicesController;
   runApp(
       MultiProvider(

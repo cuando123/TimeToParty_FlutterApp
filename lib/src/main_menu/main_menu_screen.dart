@@ -103,7 +103,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     await iapService.setPurchased(isPurchasedLocally, true);
   }
 
-  void _setupConnectivityListener() async {
+  Future<void> _setupConnectivityListener() async {
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) async {
       bool isConnected = result != ConnectivityResult.none;
       setState(() {
