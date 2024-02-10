@@ -24,9 +24,9 @@ class _PulsatingTextState extends State<PulsatingText> with SingleTickerProvider
   void initState() {
     super.initState();
     _pulseController = AnimationController(
-      duration: const Duration(seconds: 4), // Całkowity czas trwania cyklu animacji
+      duration: const Duration(seconds: 4),
       vsync: this,
-    )..repeat(); // Powtarza animację w nieskończoność
+    )..repeat();
 
     // Inicjalizacja animacji pulsowania używając TweenSequence
     _pulseAnimation = TweenSequence<double>([
@@ -51,7 +51,7 @@ class _PulsatingTextState extends State<PulsatingText> with SingleTickerProvider
       animation: _pulseAnimation,
       builder: (context, child) => Transform.scale(
         scale: _pulseAnimation.value,
-        alignment: Alignment.center, // Zapewnia skalowanie wokół środka widgetu
+        alignment: Alignment.center,
         child: Text(
           widget.text,
           style: widget.textStyle.copyWith(fontSize: widget.size),

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class StarsAnimation extends StatefulWidget {
   const StarsAnimation({super.key});
@@ -18,7 +17,6 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
   late final List<Animation<double>> _animations = [];
   late Random random = Random();
 
-  // Add your Stars image paths here
   List<String> StarsImages = [
     'assets/time_to_party_assets/blue_star.svg',
     'assets/time_to_party_assets/black_star.svg',
@@ -30,9 +28,10 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 5; i++) { // Create 5 Starss
+    for (int i = 0; i < 5; i++) {
+      // Create 5 Starss
       var controller = AnimationController(
-        duration: Duration(seconds: 1+i), // each Stars will have slightly longer duration
+        duration: Duration(seconds: 1 + i), // each Stars will have slightly longer duration
         vsync: this,
       )..forward();
       _controllers.add(controller);
@@ -59,17 +58,19 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
             builder: (context, child) {
               return Transform.translate(
                   offset: Offset(
-                    startPos * MediaQuery.of(context).size.width + (MediaQuery.of(context).size.width / 4) * sin(animation.value * 2 * pi),
+                    startPos * MediaQuery.of(context).size.width +
+                        (MediaQuery.of(context).size.width / 4) * sin(animation.value * 2 * pi),
                     -animation.value * MediaQuery.of(context).size.height,
                   ),
                   child: Transform.rotate(
                     angle: sin(animation.value * 2 * pi) / 4,
                     child: child,
-                  )
-              );
+                  ));
             },
-            child: SvgPicture.asset(StarsImages[idx % StarsImages.length],
-              height: ResponsiveSizing.scaleHeight(context, 56),),
+            child: SvgPicture.asset(
+              StarsImages[idx % StarsImages.length],
+              height: ResponsiveSizing.scaleHeight(context, 56),
+            ),
           ),
         );
       }).toList(),

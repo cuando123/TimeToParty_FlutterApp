@@ -188,7 +188,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SystemUiMode.manual,
             overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
           );
-          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
+          AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',
+              widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
           return false; // return false to prevent the pop operation
         }, // Zablokowanie możliwości cofnięcia
         child: Stack(
@@ -239,10 +240,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   child: Text(
                     cardDescription,
                     style: TextStyle(
-                      fontStyle: FontStyle.italic, // Ustawienie tekstu na kursywę
-                      fontFamily: 'HindMadurai', // Ustawienie czcionki na Hind Madurai
-                      color: Colors.white, // Ustawienie koloru tekstu na biały
-                      fontSize: 15, // Możesz dostosować rozmiar czcionki zgodnie z potrzebami
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'HindMadurai',
+                      color: Colors.white,
+                      fontSize: 15,
                     ),
                   )),
             ),
@@ -281,7 +282,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 alignment: Alignment(0.0, 0.7), // Wyśrodkuj poziomo
                 child: FractionallySizedBox(
                   widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
-                  child:  translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
+                  child: translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
                       textAlign: TextAlign.center),
                 ),
               ),
@@ -291,13 +292,13 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 ExplodeEffect(
                   particleConfiguration: ParticleConfiguration(
                     shape: CircleShape(),
-                    size: Size(3,3),
+                    size: Size(3, 3),
                     color: SingleParticleColor(color: Colors.white54.withAlpha(50)),
                   ),
                   effectConfiguration: EffectConfiguration(
                     particlesPerEmit: 1,
                     emitDuration: 200,
-                    minAngle: 0,maxBeginScale: 1,maxEndScale: 2,minBeginScale: 1,minEndScale: 1,
+                    minAngle: 0, maxBeginScale: 1, maxEndScale: 2, minBeginScale: 1, minEndScale: 1,
                     maxAngle: 360, // Pełen zakres kątów dla efektu eksplozji
                     minDuration: 4000,
                     maxDuration: 7000,
@@ -322,7 +323,6 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                   audioController.playSfx(SfxType.button_infos);
                   AnimatedAlertDialog.showCardDescriptionDialog(
                       context, widget.selectedCardIndex, AlertOrigin.otherScreen);
-                  //_showMyDialog(context); // Wywołanie funkcji wyświetlającej AlertDialog
                 },
                 child: Align(
                   alignment: Alignment(0.0, 0.55),
@@ -349,8 +349,8 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               ),
             ),
             // Karta
-    Align(
-    alignment: Alignment(0.0, 0.15),
+            Align(
+              alignment: Alignment(0.0, 0.15),
               child: SlideTransition(
                 position: _positionAnimation,
                 child: Transform.rotate(
@@ -371,7 +371,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                       },
                       child: Container(
                         width: ResponsiveSizing.scaleWidth(context, 135),
-                        height: ResponsiveSizing.scaleHeight(context, 250),//250 tablet, 290samsung?
+                        height: ResponsiveSizing.scaleHeight(context, 250), //250 tablet, 290samsung?
                         color: Colors.transparent,
                         child: _getCardContent(widget.selectedCardIndex),
                       ),
@@ -390,9 +390,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     // Sprawdzanie czy cardIndex istnieje w mapie cardTypeImagePaths
     if (cardTypeImagePaths.containsKey(cardIndex)) {
       return SvgPicture.asset(cardTypeImagePaths[cardIndex]!, fit: BoxFit.contain);
-      // Użycie !, ponieważ jesteśmy pewni, że klucz istnieje
     }
-    // Jeśli cardIndex nie istnieje w mapie, zwróć domyślny tekst
     return Text('Kliknij mnie!');
   }
 
@@ -426,15 +424,14 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   };
 
   Future<void> _showStackedCardCrousel(BuildContext context, Function(String) onCardSelected) async {
-    print('Szerokosc ekranu: ${MediaQuery.of(context).size.width}');
-    print('Wysokosc ekranu: ${ MediaQuery.of(context).size.height}');
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return WillPopScope(
           onWillPop: () async {
-            AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
+            AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '',
+                widget.currentTeamName as List<String>, widget.teamColor as List<Color>, false);
             return false; // return false to prevent the pop operation
           },
           child: Dialog(
@@ -456,36 +453,40 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                     SizedBox(height: 30),
                     AnimatedHandArrow(),
                     SizedBox(height: 20),
-                     FanCarouselImageSlider(
-                        imagesLink: cardTypesToSelect,
-                        slideViewportFraction: MediaQuery.of(context).size.width >= 600 ? 0.38 : 0.42,
-                        isAssets: true,
-                        autoPlay: false,
-                        sliderDuration: Duration(milliseconds: 200),
-                       sliderHeight: MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.height >= 800 ? MediaQuery.of(context).size.height * 0.4 : MediaQuery.of(context).size.height >= 780 ? 260 : MediaQuery.of(context).size.height * 0.4,
-                       sliderWidth: MediaQuery.of(context).size.width,
-                        imageRadius: 20,
-                        indicatorActiveColor: Palette().pink,
-                        initalPageIndex: 0,
-                        onImageTaps: [
-                          (index) {
-                            onCardSelected(cardFieldNames[index] ?? 'default_field');
-                          },
-                          (index) {
-                            onCardSelected(cardFieldNames[index] ?? 'default_field');
-                          },
-                          (index) {
-                            onCardSelected(cardFieldNames[index] ?? 'default_field');
-                          },
-                          (index) {
-                            onCardSelected(cardFieldNames[index] ?? 'default_field');
-                          },
-                          (index) {
-                            onCardSelected(cardFieldNames[index] ?? 'default_field');
-                          },
-                        ],
-                      ),
-
+                    FanCarouselImageSlider(
+                      imagesLink: cardTypesToSelect,
+                      slideViewportFraction: MediaQuery.of(context).size.width >= 600 ? 0.38 : 0.42,
+                      isAssets: true,
+                      autoPlay: false,
+                      sliderDuration: Duration(milliseconds: 200),
+                      sliderHeight:
+                          MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.height >= 800
+                              ? MediaQuery.of(context).size.height * 0.4
+                              : MediaQuery.of(context).size.height >= 780
+                                  ? 260
+                                  : MediaQuery.of(context).size.height * 0.4,
+                      sliderWidth: MediaQuery.of(context).size.width,
+                      imageRadius: 20,
+                      indicatorActiveColor: Palette().pink,
+                      initalPageIndex: 0,
+                      onImageTaps: [
+                        (index) {
+                          onCardSelected(cardFieldNames[index] ?? 'default_field');
+                        },
+                        (index) {
+                          onCardSelected(cardFieldNames[index] ?? 'default_field');
+                        },
+                        (index) {
+                          onCardSelected(cardFieldNames[index] ?? 'default_field');
+                        },
+                        (index) {
+                          onCardSelected(cardFieldNames[index] ?? 'default_field');
+                        },
+                        (index) {
+                          onCardSelected(cardFieldNames[index] ?? 'default_field');
+                        },
+                      ],
+                    ),
                     SizedBox(height: 30),
                     AnimatedQuestionMark(),
                     SizedBox(height: 90)

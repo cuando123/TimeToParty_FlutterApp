@@ -31,11 +31,9 @@ class CardAdvertisementScreen extends StatefulWidget {
   _CardAdvertisementScreenState createState() => _CardAdvertisementScreenState();
 }
 
-const List<String> productIds =<String>[
-  'timetoparty.fullversion.test'
-];
+const List<String> productIds = <String>['timetoparty.fullversion.test'];
 
-class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with SingleTickerProviderStateMixin{
+class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with SingleTickerProviderStateMixin {
   bool _alertShown = false;
   late IAPService _iapService;
   bool isOnline = false;
@@ -89,7 +87,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
     if (!_isInitialized) {
       _firebaseService = Provider.of<FirebaseService>(context, listen: false);
       _iapService = Provider.of<IAPService>(context, listen: true);
-      print("IS LOADING CARD ADS: ${_iapService.isLoading}");
+      //print("IS LOADING CARD ADS: ${_iapService.isLoading}");
       _setupConnectivityListener();
       _iapService.initializePurchaseStream();
       _isInitialized = true;
@@ -97,7 +95,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
     }
   }
 
-    void _setupConnectivityListener() async {
+  void _setupConnectivityListener() async {
     // Sprawdzenie początkowego stanu połączenia
     var initialResult = await _connectivity.checkConnectivity();
     bool isConnected = initialResult != ConnectivityResult.none;
@@ -110,7 +108,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
     // Ustawienie listenera na zmiany stanu połączenia
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
       isConnected = result != ConnectivityResult.none;
-      print('isConnected: $isConnected');
+      //print('isConnected: $isConnected');
       safeSetState(() {
         isOnline = isConnected;
       });
@@ -119,7 +117,6 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
       }
     });
   }
-
 
   @override
   void dispose() {
@@ -142,11 +139,11 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     return WillPopScope(
-        onWillPop: () async {
-          audioController.playSfx(SfxType.buttonBackExit);
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          return false;
-        },
+      onWillPop: () async {
+        audioController.playSfx(SfxType.buttonBackExit);
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        return false;
+      },
       child: Consumer<IAPService>(
         builder: (context, iapService, child) {
           if (!_alertShown && iapService.purchaseStatusMessage.isNotEmpty) {
@@ -157,207 +154,218 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
               _alertShown = true; // Ustawienie flagi, że alert został pokazany
             });
           }
-      return Container(
-        decoration: BoxDecoration(
-          gradient: Palette().backgroundLoadingSessionGradient,
-        ),
-        child: Scaffold(
-          key: widget.scaffoldKey,
-          drawer: CustomAppDrawer(),
-          appBar: CustomAppBar(
-            title: translatedText(context, 'buy_now', 14, Palette().white),
-            onMenuButtonPressed: () {
-              audioController.playSfx(SfxType.buttonBackExit);
-              widget.scaffoldKey.currentState?.openDrawer();
-            },
-              onBackButtonPressed:(){
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-          ),
-          body: Stack(
-              children: <Widget>[
-          ListView(
-            children: [Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
-              child: Stack(children: [
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+          return Container(
+            decoration: BoxDecoration(
+              gradient: Palette().backgroundLoadingSessionGradient,
+            ),
+            child: Scaffold(
+              key: widget.scaffoldKey,
+              drawer: CustomAppDrawer(),
+              appBar: CustomAppBar(
+                title: translatedText(context, 'buy_now', 14, Palette().white),
+                onMenuButtonPressed: () {
+                  audioController.playSfx(SfxType.buttonBackExit);
+                  widget.scaffoldKey.currentState?.openDrawer();
+                },
+                onBackButtonPressed: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+              ),
+              body: Stack(
+                children: <Widget>[
+                  ListView(
                     children: [
-                      ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-                      translatedText(context, 'exclusive_adventure', 18, Palette().pink, textAlign: TextAlign.center),
-                      SvgPicture.asset(
-                        'assets/time_to_party_assets/banner_cards_advert.svg',
-                        //width: ResponsiveSizing.responsiveWidthWithCondition(context, 160, 260, 400),
-                        height: ResponsiveSizing.responsiveHeightWithCondition(context, 125, 210, 650),
-                      ),
-                      translatedText(context, 'buy_unlimited_version', 20, Palette().white, textAlign: TextAlign.center),
-                      ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-                      SvgPicture.asset('assets/time_to_party_assets/banner_cards_advert_linear.svg',
-                          width: ResponsiveSizing.scaleWidth(context, 77),
-                          height: ResponsiveSizing.scaleHeight(context, 40)),
-                      translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
-                          textAlign: TextAlign.center),
-                      Center(
-                        child: Column(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                audioController.playSfx(SfxType.buttonBackExit);
-                                showDialogMoreFun(context);
-                              },
-                              child:
-                              AnimatedBuilder(
-                                animation: _scaleAnimationLine1,
-                                builder: (context, child) => Transform.scale(
-                                  scale: _scaleAnimationLine1.value,
-                                  child: child,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
+                        child: Stack(children: [
+                          Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+                                translatedText(context, 'exclusive_adventure', 18, Palette().pink,
+                                    textAlign: TextAlign.center),
+                                SvgPicture.asset(
+                                  'assets/time_to_party_assets/banner_cards_advert.svg',
+                                  //width: ResponsiveSizing.responsiveWidthWithCondition(context, 160, 260, 400),
+                                  height: ResponsiveSizing.responsiveHeightWithCondition(context, 125, 210, 650),
                                 ),
-                                child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Image.asset(
-                                    'assets/time_to_party_assets/banner_baloon_icon_advert.png',
-                                    height: ResponsiveSizing.scaleHeight(context, 29),
-                                    width: ResponsiveSizing.scaleHeight(context, 24),
+                                translatedText(context, 'buy_unlimited_version', 20, Palette().white,
+                                    textAlign: TextAlign.center),
+                                ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
+                                SvgPicture.asset('assets/time_to_party_assets/banner_cards_advert_linear.svg',
+                                    width: ResponsiveSizing.scaleWidth(context, 77),
+                                    height: ResponsiveSizing.scaleHeight(context, 40)),
+                                translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
+                                    textAlign: TextAlign.center),
+                                Center(
+                                  child: Column(
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          audioController.playSfx(SfxType.buttonBackExit);
+                                          showDialogMoreFun(context);
+                                        },
+                                        child: AnimatedBuilder(
+                                          animation: _scaleAnimationLine1,
+                                          builder: (context, child) => Transform.scale(
+                                            scale: _scaleAnimationLine1.value,
+                                            child: child,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Image.asset(
+                                                'assets/time_to_party_assets/banner_baloon_icon_advert.png',
+                                                height: ResponsiveSizing.scaleHeight(context, 29),
+                                                width: ResponsiveSizing.scaleHeight(context, 24),
+                                              ),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              translatedText(context, 'more_fun', 14, Palette().white,
+                                                  textAlign: TextAlign.center),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              Icon(Icons.arrow_back, color: Colors.white),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          audioController.playSfx(SfxType.buttonBackExit);
+                                          showDialogMoreRandomEvents(context);
+                                        },
+                                        child: AnimatedBuilder(
+                                          animation: _scaleAnimationLine2,
+                                          builder: (context, child) => Transform.scale(
+                                            scale: _scaleAnimationLine2.value,
+                                            child: child,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/time_to_party_assets/no_ads_icon.svg',
+                                                height: ResponsiveSizing.scaleHeight(context, 34),
+                                                width: ResponsiveSizing.scaleWidth(context, 34),
+                                              ),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              translatedText(context, 'no_ads', 14, Palette().white,
+                                                  textAlign: TextAlign.center),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              Icon(Icons.arrow_back, color: Colors.white),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          audioController.playSfx(SfxType.buttonBackExit);
+                                          showDialogLongerGameplay(context);
+                                        },
+                                        child: AnimatedBuilder(
+                                          animation: _scaleAnimationLine3,
+                                          builder: (context, child) => Transform.scale(
+                                            scale: _scaleAnimationLine3.value,
+                                            child: child,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                                                height: ResponsiveSizing.scaleHeight(context, 24),
+                                                width: ResponsiveSizing.scaleWidth(context, 24),
+                                              ),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              translatedText(
+                                                  context, 'longer_and_more_interesting_gameplay', 14, Palette().white,
+                                                  textAlign: TextAlign.center),
+                                              ResponsiveSizing.responsiveWidthGap(context, 10),
+                                              Icon(Icons.arrow_back, color: Colors.white),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  translatedText(context, 'more_fun', 14, Palette().white, textAlign: TextAlign.center),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  Icon(Icons.arrow_back, color: Colors.white),
-                                ],
-                              ),),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                audioController.playSfx(SfxType.buttonBackExit);
-                                showDialogMoreRandomEvents(context);
-                              },
-                              child: AnimatedBuilder(
-                                animation: _scaleAnimationLine2,
-                                builder: (context, child) => Transform.scale(
-                                  scale: _scaleAnimationLine2.value,
-                                  child: child,
                                 ),
-                                child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/time_to_party_assets/no_ads_icon.svg',
-                                    height: ResponsiveSizing.scaleHeight(context, 34),
-                                    width: ResponsiveSizing.scaleWidth(context, 34),
-                                  ),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  translatedText(context, 'no_ads', 14, Palette().white,
+                                CustomStyledButton(
+                                  icon: null,
+                                  text: getTranslatedString(context, 'pay_once'),
+                                  onPressed: () {
+                                    _alertShown = false; // Resetowanie flagi przed nowym zakupem
+                                    audioController.playSfx(SfxType.buttonBackExit);
+                                    if (_firebaseService.currentUser?.uid == null) {
+                                      _iapService.setPurchaseStatusMessage('BillingResponse.serviceUnavailable');
+                                    } else {
+                                      if (_iapService.isLoading == false) {
+                                        if (isOnline) {
+                                          _iapService.buyProduct(productIds);
+                                        } else {
+                                          _iapService.setPurchaseStatusMessage('NoInternetConnection');
+                                        }
+                                      } else {
+                                        _iapService.setPurchaseStatusMessage('BillingResponse.pending');
+                                      }
+                                    }
+                                  },
+                                  backgroundColor: Palette().pink,
+                                  foregroundColor: Palette().white,
+                                  width: 200,
+                                  height: 45,
+                                  fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    audioController.playSfx(SfxType.buttonBackExit);
+                                    await globalLoading.privacy_policy_function(context);
+                                  },
+                                  child: translatedText(
+                                      context, 'privacy_policy_and_personal_data', 14, Palette().white,
                                       textAlign: TextAlign.center),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  Icon(Icons.arrow_back, color: Colors.white),
-                                ],
-                              ),),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                audioController.playSfx(SfxType.buttonBackExit);
-                                showDialogLongerGameplay(context);
-                              },
-                              child: AnimatedBuilder(
-                                animation: _scaleAnimationLine3,
-                                builder: (context, child) => Transform.scale(
-                                  scale: _scaleAnimationLine3.value,
-                                  child: child,
                                 ),
-                                child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/time_to_party_assets/banner_timer_icon_advert.svg',
-                                    height: ResponsiveSizing.scaleHeight(context, 24),
-                                    width: ResponsiveSizing.scaleWidth(context, 24),
-                                  ),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  translatedText(context, 'longer_and_more_interesting_gameplay', 14, Palette().white,
+                                TextButton(
+                                  onPressed: () {
+                                    _alertShown = false;
+                                    audioController.playSfx(SfxType.buttonBackExit);
+                                    if (_iapService.isLoading == false) {
+                                      if (isOnline) {
+                                        //print('PRODUCT IDS: $productIds');
+                                        _iapService.restorePurchases();
+                                      } else {
+                                        _iapService.setPurchaseStatusMessage('NoInternetConnection');
+                                      }
+                                    }
+                                  },
+                                  child: translatedText(context, 'restore_purchases', 14, Palette().white,
                                       textAlign: TextAlign.center),
-                                  ResponsiveSizing.responsiveWidthGap(context, 10),
-                                  Icon(Icons.arrow_back, color: Colors.white),
-                                ],
-                              ),),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      CustomStyledButton(
-                        icon: null,
-                        text: getTranslatedString(context, 'pay_once'),
-                        onPressed: () {
-                          _alertShown = false; // Resetowanie flagi przed nowym zakupem
-                          audioController.playSfx(SfxType.buttonBackExit);
-                          if (_firebaseService.currentUser?.uid == null){
-                            _iapService.setPurchaseStatusMessage('BillingResponse.serviceUnavailable');
-                          } else {
-                            if (_iapService.isLoading == false) {
-                              if (isOnline) {
-                                _iapService.buyProduct(productIds);
-                              } else {
-                                _iapService.setPurchaseStatusMessage('NoInternetConnection');
-                              }
-                            } else {
-                              _iapService.setPurchaseStatusMessage('BillingResponse.pending');
-                            }
-                          }
-                        },
-                        backgroundColor: Palette().pink,
-                        foregroundColor: Palette().white,
-                        width: 200,
-                        height: 45,
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          audioController.playSfx(SfxType.buttonBackExit);
-                          await globalLoading.privacy_policy_function(context);
-                        },
-                        child: translatedText(context, 'privacy_policy_and_personal_data', 14, Palette().white,
-                            textAlign: TextAlign.center),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          _alertShown = false;
-                          audioController.playSfx(SfxType.buttonBackExit);
-                          if (_iapService.isLoading == false) {
-                            if (isOnline) {
-                              print('PRODUCT IDS: $productIds');
-                              _iapService.restorePurchases();
-                            } else {
-                              _iapService.setPurchaseStatusMessage('NoInternetConnection');
-                            }
-                          }
-                        },
-                        child: translatedText(context, 'restore_purchases', 14, Palette().white,
-                            textAlign: TextAlign.center),
+                          ),
+                        ]),
                       ),
                     ],
                   ),
-                ),
-              ]),
-            ),],
-          ),
-                Consumer<IAPService>(
-                  builder: (context, iapService, child) {
-                    if (iapService.isLoading) {
-                      return _loadingOverlay();
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  },
-                ),
-              ],
-          ),
-        ),
-      );},),
+                  Consumer<IAPService>(
+                    builder: (context, iapService, child) {
+                      if (iapService.isLoading) {
+                        return _loadingOverlay();
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -380,11 +388,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-        Center(child:
-              SvgPicture.asset(
-                'assets/time_to_party_assets/instruction_cards_linear_2.svg',
-                height: ResponsiveSizing.scaleHeight(context, 75)
-              )),
+              Center(
+                  child: SvgPicture.asset('assets/time_to_party_assets/instruction_cards_linear_2.svg',
+                      height: ResponsiveSizing.scaleHeight(context, 75))),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'more_fun_description', 16, Palette().menudark, textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
@@ -429,15 +435,14 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-              Center(child:
-              SvgPicture.asset(
+              Center(
+                  child: SvgPicture.asset(
                 'assets/time_to_party_assets/no_ads_icon.svg',
                 height: ResponsiveSizing.scaleHeight(context, 74),
                 width: ResponsiveSizing.scaleWidth(context, 74),
               )),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-              translatedText(context, 'no_ads_description', 16, Palette().menudark,
-                  textAlign: TextAlign.center),
+              translatedText(context, 'no_ads_description', 16, Palette().menudark, textAlign: TextAlign.center),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
                 child: CustomStyledButton(
@@ -481,8 +486,8 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-              Center(child:
-              SvgPicture.asset(
+              Center(
+                  child: SvgPicture.asset(
                 'assets/time_to_party_assets/banner_timer_icon_advert.svg',
                 height: ResponsiveSizing.scaleHeight(context, 74),
                 width: ResponsiveSizing.scaleWidth(context, 74),

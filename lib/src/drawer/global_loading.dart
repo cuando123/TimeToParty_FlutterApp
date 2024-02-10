@@ -1,15 +1,12 @@
+import 'dart:io' as io;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io' as io;
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
 import '../app_lifecycle/loading_status.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -20,8 +17,7 @@ import '../style/palette.dart';
 class GlobalLoading {
   Future<void> privacy_policy_function(BuildContext context) async {
     Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
-    const url =
-        'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
+    const url = 'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
     const fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
 
     try {
@@ -38,8 +34,7 @@ class GlobalLoading {
   Future<void> eula_function(BuildContext context) async {
     Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
 
-    const url =
-        'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
+    const url = 'https://frydoapps.com/wp-content/uploads/2023/04/EndUserLicenseAgreement_EULA.pdf';
     const fileName = 'EndUserLicenseAgreement_EULA.pdf';
     try {
       final file = await downloadAndCachePdf(url, fileName);
@@ -74,16 +69,13 @@ class GlobalLoading {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: translatedText(
-              context, 'download_error_network', 16, Palette().menudark,
-              textAlign: TextAlign.center),
+          title: translatedText(context, 'download_error_network', 16, Palette().menudark, textAlign: TextAlign.center),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset(
-                    'assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
               ),
               SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               Center(
@@ -94,11 +86,10 @@ class GlobalLoading {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                        MediaQuery.of(context).size.height * 0.05),
-                    textStyle: TextStyle(
-                        fontFamily: 'HindMadurai',
-                        fontSize: ResponsiveSizing.scaleHeight(context, 20)),
+                    minimumSize:
+                        Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.05),
+                    textStyle:
+                        TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveSizing.scaleHeight(context, 20)),
                   ),
                   onPressed: () {
                     audioController.playSfx(SfxType.buttonBackExit);

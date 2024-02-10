@@ -51,11 +51,12 @@ class _DrawingScreenState extends State<DrawingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await     SystemChrome.setEnabledSystemUIMode(
+        await SystemChrome.setEnabledSystemUIMode(
           SystemUiMode.manual,
           overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
         );
-        AnimatedAlertDialog.showExitGameDialog(context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors, false);
+        AnimatedAlertDialog.showExitGameDialog(
+            context, hasShownAlertDialog, '', widget.teamNames, widget.teamColors, false);
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(

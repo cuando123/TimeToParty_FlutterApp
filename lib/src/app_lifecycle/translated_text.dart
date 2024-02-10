@@ -16,7 +16,6 @@ Widget wordText(BuildContext context, String wordKey, double fontSize, Color tex
   return Consumer<TranslationProvider>(
     builder: (context, translationProvider, child) {
       String word = translationProvider.getWord(wordKey);
-      //print("wordText: word: $word");
       List<String> words = word.split(';'); // Dzielenie tekstu na słowa
 
       List<Widget> textWidgets = []; // Lista widgetów tekstowych
@@ -55,13 +54,10 @@ Widget wordText(BuildContext context, String wordKey, double fontSize, Color tex
   );
 }
 
-
 List<String> getWordsList(BuildContext context, String wordKey) {
   TranslationProvider translationProvider = Provider.of<TranslationProvider>(context, listen: false);
   String word = translationProvider.getWord(wordKey);
- // print('getWordsList, word: $word');
-  List<String> words = word.split(';'); // Dzielenie tekstu na słowa
- // print('getWordsList: $words');
+  List<String> words = word.split(';');
   return words;
 }
 

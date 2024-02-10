@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,10 +16,9 @@ import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
 import 'package:game_template/src/level_selection/team_provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'myapp.dart';
@@ -30,18 +30,18 @@ final globalLoading = GlobalLoading();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Jeśli chcesz wykonać jakieś działania, gdy powiadomienie przyjdzie w tle
-  print("Handling a background message: ${message.messageId}");
+  //print("Handling a background message: ${message.messageId}");
 }
 
-void _handleMessage(RemoteMessage message) {
-  // Sprawdź, czy powiadomienie zawiera dane, które wskazują na konieczność przekierowania
-  // lub wykonania innej akcji
-    String url = 'https://frydoapps.com/contact-apps';
-    _launchURL(url);
-  // Tutaj możesz dodać więcej logiki, np. wyświetlenie dialogu, jeśli aplikacja jest aktywna
-}
-
-Future<void> _launchURL(String url) async {
+Future<void> _handleMessage(
+  RemoteMessage message,
+  FirebaseService firebaseService,
+) async {
+  String url = 'https://frydoapps.com/contact-apps';
+  var lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
+  await SharedPreferencesHelper.setLastNotificationClicked(lastNotificationClicked);
+  await firebaseService.updateUserInformations(
+      await SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
   if (await canLaunchUrlString(url)) {
     await launchUrlString(url, mode: LaunchMode.externalApplication);
   } else {
@@ -62,11 +62,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Ustawienie Crashlytics
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  // Inicjalizacja innych potrzebnych usług
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -77,11 +75,11 @@ Future<void> main() async {
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     );
   });
-  // Inicjalizacja TranslationProvider i innych usług
+
   final translationProvider = TranslationProvider.fromDeviceLanguage();
   await translationProvider.loadWords();
   await translationProvider.loadTranslations();
-  // Sprawdzenie połączenia internetowego
+
   var connectivityResult = await Connectivity().checkConnectivity();
   bool isConnected = connectivityResult != ConnectivityResult.none;
   FirebaseService firebaseService = connectivityResult != ConnectivityResult.none
@@ -90,63 +88,62 @@ Future<void> main() async {
 
   final initAdFuture = MobileAds.instance.initialize();
   AdMobService adMobService = AdMobService(initAdFuture);
-  RequestConfiguration configuration = RequestConfiguration(testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]);
+  RequestConfiguration configuration =
+      RequestConfiguration(testDeviceIds: <String>["F8D4B943818617C80D522DA32ED12984"]);
   await MobileAds.instance.updateRequestConfiguration(configuration);
 
   await SharedPreferencesHelper.init();
   IAPService iapService = IAPService(InAppPurchase.instance, translationProvider, firebaseService);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  if (isConnected){
-  String? token = await FirebaseMessaging.instance.getToken();
-  print("TOKEN: $token");
-  await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    _handleMessage(initialMessage);
+  if (isConnected) {
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      await _handleMessage(initialMessage, firebaseService);
+    }
   }
-  }
-  FirebaseMessaging.onMessage.listen((message) {
+  /*FirebaseMessaging.onMessage.listen((message) { to ma sens tylko jakby dodal jeszcze alert w aplikacji czy cos takiego? - to dziala live i trzebaby zakodowac jaki alert np. od danej "message"
+    print("onMessage: zadzialalem");
     _handleMessage(message);
-  });
+  });*/
   FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    _handleMessage(message);
+    _handleMessage(message, firebaseService);
   });
   //GamesServicesController? gamesServicesController;
   runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<FirebaseService>(
-            create: (context) => firebaseService,
-          ),
-          ChangeNotifierProvider<AdMobService>(
-            create: (context) => adMobService,
-          ),
-          ChangeNotifierProvider<TranslationProvider>(
-            create: (context) => translationProvider,
-          ),
-          ChangeNotifierProvider<TeamProvider>(
-            create: (context) {
-              final provider = TeamProvider();
-              provider.initializeTeams(context, 2);
-              return provider;
-            },
-          ),
-          ChangeNotifierProvider<LoadingStatus>(
-            create: (_) => LoadingStatus(),
-          ),
-          ChangeNotifierProvider<IAPService>(
-            create: (context) => iapService,
-          ),
-        ],
-        child: MyApp(
-          settingsPersistence: LocalStorageSettingsPersistence(),
-          playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-          iapService: iapService,
-          //gamesServicesController: gamesServicesController,
-          firebaseService: firebaseService,
-          translationProvider: translationProvider,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FirebaseService>(
+          create: (context) => firebaseService,
         ),
+        ChangeNotifierProvider<AdMobService>(
+          create: (context) => adMobService,
+        ),
+        ChangeNotifierProvider<TranslationProvider>(
+          create: (context) => translationProvider,
+        ),
+        ChangeNotifierProvider<TeamProvider>(
+          create: (context) {
+            final provider = TeamProvider();
+            provider.initializeTeams(context, 2);
+            return provider;
+          },
+        ),
+        ChangeNotifierProvider<LoadingStatus>(
+          create: (_) => LoadingStatus(),
+        ),
+        ChangeNotifierProvider<IAPService>(
+          create: (context) => iapService,
+        ),
+      ],
+      child: MyApp(
+        settingsPersistence: LocalStorageSettingsPersistence(),
+        playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
+        iapService: iapService,
+        //gamesServicesController: gamesServicesController,
+        firebaseService: firebaseService,
+        translationProvider: translationProvider,
       ),
+    ),
   );
 }

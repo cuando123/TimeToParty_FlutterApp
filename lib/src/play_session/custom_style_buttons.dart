@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class CustomStyledButton extends StatelessWidget {
   final String? svgAsset;
@@ -25,14 +24,14 @@ class CustomStyledButton extends StatelessWidget {
     required this.onPressed,
     required this.backgroundColor,
     required this.foregroundColor,
-    this.width = 200, // Domyślna szerokość
-    this.height = 45, // Domyślna wysokość
-    this.fontSize = 20, // Domyślny rozmiar czcionki
+    this.width = 200,
+    this.height = 45,
+    this.fontSize = 20,
   });
 
   @override
   Widget build(context) {
-    double iconSize = ResponsiveSizing.scaleHeight(context, 32); // Poprawiona linia
+    double iconSize = ResponsiveSizing.scaleHeight(context, 32);
     double imageSize = ResponsiveSizing.scaleHeight(context, 28);
 
     Widget leadingWidget;
@@ -59,14 +58,13 @@ class CustomStyledButton extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       style: ElevatedButton.styleFrom(
-        foregroundColor: foregroundColor, backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        minimumSize: Size(
-            ResponsiveSizing.scaleWidth(context, width),
-            ResponsiveSizing.responsiveHeightWithCondition(context, 50, height, 650)
-        ),
+        minimumSize: Size(ResponsiveSizing.scaleWidth(context, width),
+            ResponsiveSizing.responsiveHeightWithCondition(context, 50, height, 650)),
       ),
       onPressed: onPressed,
     );

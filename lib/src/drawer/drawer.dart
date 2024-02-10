@@ -1,13 +1,9 @@
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../main.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -27,7 +23,6 @@ class CustomAppDrawer extends StatefulWidget {
 }
 
 class CustomAppDrawerState extends State<CustomAppDrawer> {
-
   @override
   void dispose() {
     super.dispose();
@@ -57,8 +52,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                       }
                     },
                   ),
-                  ResponsiveSizing.responsiveWidthGapWithCondition(
-                      context, 1, 30, 650),
+                  ResponsiveSizing.responsiveWidthGapWithCondition(context, 1, 30, 650),
                   Divider(
                     color: Palette().white,
                   ),
@@ -72,7 +66,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           showDialog<void>(
                             context: context,
                             builder: (context) {
-                              return InstructionDialog(isGameOpened: false,);
+                              return InstructionDialog(
+                                isGameOpened: false,
+                              );
                             },
                           );
                         });
@@ -82,8 +78,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.question_mark,
                           color: Palette().white,
                         ),
-                        title: translatedText(
-                            context, 'game_rules', 14, Palette().white),
+                        title: translatedText(context, 'game_rules', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -99,12 +94,10 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                             Icons.privacy_tip,
                             color: Palette().white,
                           ),
-                          title: translatedText(
-                              context, 'privacy_policy', 14, Palette().white),
+                          title: translatedText(context, 'privacy_policy', 14, Palette().white),
                           onTap: () async {
                             audioController.playSfx(SfxType.buttonBackExit);
-                            await globalLoading
-                                .privacy_policy_function(context);
+                            await globalLoading.privacy_policy_function(context);
                           }),
                     ),
                   ),
@@ -121,8 +114,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.zoom_in,
                           color: Palette().white,
                         ),
-                        title: translatedText(context,
-                            'end_user_license_agreement', 14, Palette().white),
+                        title: translatedText(context, 'end_user_license_agreement', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -133,7 +125,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: ()  {
+                      onTap: () {
                         audioController.playSfx(SfxType.buttonBackExit);
                         Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/language_selector');
@@ -143,8 +135,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.language,
                           color: Palette().white,
                         ),
-                        title: translatedText(
-                            context, 'select_language', 14, Palette().white),
+                        title: translatedText(context, 'select_language', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -152,7 +143,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: ()  {
+                      onTap: () {
                         audioController.playSfx(SfxType.buttonBackExit);
                         Future.delayed(Duration(milliseconds: 150));
                         GoRouter.of(context).go('/settings');
@@ -162,8 +153,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.settings,
                           color: Palette().white,
                         ),
-                        title: translatedText(
-                            context, 'settings', 14, Palette().white),
+                        title: translatedText(context, 'settings', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -184,8 +174,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.edit,
                           color: Palette().white,
                         ),
-                        title: translatedText(
-                            context, 'contact_us', 14, Palette().white),
+                        title: translatedText(context, 'contact_us', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -193,7 +182,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                   Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: ()  {
+                      onTap: () {
                         audioController.playSfx(SfxType.buttonBackExit);
                         Future.delayed(Duration(milliseconds: 150));
                         _shareContent(context);
@@ -203,8 +192,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.share,
                           color: Palette().white,
                         ),
-                        title: translatedText(
-                            context, 'share', 14, Palette().white),
+                        title: translatedText(context, 'share', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -222,8 +210,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                           Icons.star,
                           color: Palette().white,
                         ),
-                        title: translatedText(context, 'rate_us_google_play',
-                            14, Palette().white),
+                        title: translatedText(context, 'rate_us_google_play', 14, Palette().white),
                       ),
                     ),
                   ),
@@ -246,13 +233,10 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
   }
 
   Future<void> _shareContent(BuildContext context) async {
-    String message =
-        getTranslatedString(context, 'look_what_we_played_notification');
-    String subject =
-        getTranslatedString(context, 'lets_play_time_to_party');
+    String message = getTranslatedString(context, 'look_what_we_played_notification');
+    String subject = getTranslatedString(context, 'lets_play_time_to_party');
 
-    await Share.share(
-        '${message}https://play.google.com/store/apps/details?id=com.frydoapps.timetoparty',
+    await Share.share('${message}https://play.google.com/store/apps/details?id=com.frydoapps.timetoparty',
         subject: subject);
   }
 
@@ -260,10 +244,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
     final audioController = context.read<AudioController>();
     return Material(
       child: Container(
-        height: ResponsiveSizing.responsiveHeightWithCondition(
-            context, 40, 96, 650),
-        margin: ResponsiveSizing.responsiveMarginWithCondition(
-            context, 50, 64, 650),
+        height: ResponsiveSizing.responsiveHeightWithCondition(context, 40, 96, 650),
+        margin: ResponsiveSizing.responsiveMarginWithCondition(context, 50, 64, 650),
         decoration: BoxDecoration(),
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
@@ -276,16 +258,12 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/time_to_party_assets/premium_cards_icon.svg', // Podmień na ścieżkę do swojego obrazka SVG
-                height: ResponsiveSizing.scaleWidth(
-                    context, 43), // Dostosuj wysokość obrazka
-                width: ResponsiveSizing.scaleWidth(
-                    context, 43), // Dostosuj szerokość obrazka
+                'assets/time_to_party_assets/premium_cards_icon.svg',
+                height: ResponsiveSizing.scaleWidth(context, 43),
+                width: ResponsiveSizing.scaleWidth(context, 43),
               ),
-              ResponsiveSizing.responsiveWidthGap(context,
-                  10), // Odstęp między obrazkiem a tekstem
-              translatedText(
-                  context, 'premium_cards', 20, Palette().white),
+              ResponsiveSizing.responsiveWidthGap(context, 10),
+              translatedText(context, 'premium_cards', 20, Palette().white),
             ],
           ),
         ),
@@ -296,21 +274,14 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
   Widget buildDrawerPremiumContent(BuildContext context) {
     return Material(
       child: Container(
-        height: ResponsiveSizing.responsiveHeightWithCondition(
-            context, 40, 96, 650),
-        margin: ResponsiveSizing.responsiveMarginWithCondition(
-            context, 50, 64, 650),
+        height: ResponsiveSizing.responsiveHeightWithCondition(context, 40, 96, 650),
+        margin: ResponsiveSizing.responsiveMarginWithCondition(context, 50, 64, 650),
         decoration: BoxDecoration(),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              translatedText(context, "you_are_premium", 20, Palette().white)
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [translatedText(context, "you_are_premium", 20, Palette().white)],
         ),
+      ),
     );
   }
-
-  }
-
-
+}

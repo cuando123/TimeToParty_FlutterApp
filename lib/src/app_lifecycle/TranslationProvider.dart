@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../in_app_purchase/models/purchase_state.dart';
 import 'translation_database.dart';
 

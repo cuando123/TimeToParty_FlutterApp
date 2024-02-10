@@ -7,10 +7,7 @@ class PionekWithRipple extends StatelessWidget {
 
   double screenWidth;
 
-  PionekWithRipple(
-      {super.key, required this.assetPath,
-        required this.animation,
-        required this.screenWidth});
+  PionekWithRipple({super.key, required this.assetPath, required this.animation, required this.screenWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +15,8 @@ class PionekWithRipple extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        SvgPicture.asset(assetPath,
-            width: screenWidth / 15.09, height: screenWidth / 15.09),
-        Positioned(
-            left: -50,
-            top: -50,
-            right: -50,
-            bottom: -50,
-            child: RippleEffect(animation: animation)),
+        SvgPicture.asset(assetPath, width: screenWidth / 15.09, height: screenWidth / 15.09),
+        Positioned(left: -50, top: -50, right: -50, bottom: -50, child: RippleEffect(animation: animation)),
       ],
     );
   }
@@ -46,14 +37,11 @@ class RippleEffect extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              width: 20 +
-                  (animation.value *
-                      100), // zakładając, że początkowa wielkość pionka to 50
+              width: 20 + (animation.value * 100), // zakładając, że początkowa wielkość pionka to 50
               height: 20 + (animation.value * 100),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.yellow.withOpacity(1 -
-                    animation.value), // zakładając, że pionek jest niebieski
+                color: Colors.yellow.withOpacity(1 - animation.value),
               ),
             )
           ],

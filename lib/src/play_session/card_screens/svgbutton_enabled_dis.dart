@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../app_lifecycle/responsive_sizing.dart';
-import '../../app_lifecycle/translated_text.dart';
 
 class SvgButton extends StatefulWidget {
   final VoidCallback onPressed;
-  final String assetName; // Ścieżka do pliku SVG
+  final String assetName;
 
-  const SvgButton({super.key, 
+  const SvgButton({
+    super.key,
     required this.onPressed,
     required this.assetName,
   });
@@ -48,8 +48,9 @@ class _SvgButtonState extends State<SvgButton> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if(mounted) {
-        _controller.forward();}
+        if (mounted) {
+          _controller.forward();
+        }
         widget.onPressed();
       },
       child: ScaleTransition(

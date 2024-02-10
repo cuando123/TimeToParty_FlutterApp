@@ -40,21 +40,11 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
           children: <Widget>[
             SlotMachine(
               rollItems: const [
-                RollItem(
-                    index: 0,
-                    child: Text('asd')),
-                RollItem(
-                    index: 1,
-                    child: Text('asd')),
-                RollItem(
-                    index: 2,
-                    child: Text('asd')),
-                RollItem(
-                    index: 3,
-                    child: Text('asd')),
-                RollItem(
-                    index: 4,
-                    child: Text('asd')),
+                RollItem(index: 0, child: Text('asd')),
+                RollItem(index: 1, child: Text('asd')),
+                RollItem(index: 2, child: Text('asd')),
+                RollItem(index: 3, child: Text('asd')),
+                RollItem(index: 4, child: Text('asd')),
               ],
               onCreated: (controller) {
                 _controller = controller;
@@ -71,25 +61,19 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
                   SizedBox(
                     width: 72,
                     height: 44,
-                    child: TextButton(
-                        child: Text('STOP'),
-                        onPressed: () => onButtonTap(index: 0)),
+                    child: TextButton(child: Text('STOP'), onPressed: () => onButtonTap(index: 0)),
                   ),
                   SizedBox(width: 8),
                   SizedBox(
                     width: 72,
                     height: 44,
-                    child: TextButton(
-                        child: Text('STOP'),
-                        onPressed: () => onButtonTap(index: 1)),
+                    child: TextButton(child: Text('STOP'), onPressed: () => onButtonTap(index: 1)),
                   ),
                   SizedBox(width: 8),
                   SizedBox(
                     width: 72,
                     height: 44,
-                    child: TextButton(
-                        child: Text('STOP'),
-                        onPressed: () => onButtonTap(index: 2)),
+                    child: TextButton(child: Text('STOP'), onPressed: () => onButtonTap(index: 2)),
                   ),
                 ],
               ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:game_template/src/Language_selector_screen/language_selector.dart';
@@ -25,8 +24,6 @@ import 'package:game_template/src/style/snack_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'main.dart';
 
 class MyApp extends StatefulWidget {
   final PlayerProgressPersistence playerProgressPersistence;
@@ -95,13 +92,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     GlobalStopwatch.start(); // Rozpoczęcie pomiaru czasu sesji
     SharedPreferencesHelper.setHowManyTimesRunApp();
-    print("MyApp received FirebaseService instance hashCode: ${widget.firebaseService.hashCode}");
+    //print("MyApp received FirebaseService instance hashCode: ${widget.firebaseService.hashCode}");
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    GlobalStopwatch.stop(); // Zatrzymanie pomiaru czasu sesji
+    GlobalStopwatch.stop();
     super.dispose();
   }
 
@@ -134,17 +131,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     String? lastHowManyFieldReached = await SharedPreferencesHelper.getLastHowManyFieldReached();
 
     // Teraz możemy bezpiecznie używać toString(), ponieważ mamy już rozwiązane wartości
-    if(userId != null){ // Upewnij się, że userId nie jest null przed aktualizacją
-      if(finalSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'finalSpendTimeOnGame', finalSpendTimeOnGame.toString());
-      if(lastOneSpendTimeOnGame != null) await widget.firebaseService.updateUserInformations(userId, 'lastOneSpendTimeOnGame', lastOneSpendTimeOnGame.toString());
-      if(lastPlayDate != null) await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate.toString());
-      if(howManyTimesRunApp != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunApp', howManyTimesRunApp.toString());
-      if(howManyTimesFinishedGame != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesFinishedGame', howManyTimesFinishedGame.toString());
-      if(howManyTimesRunInterstitialAd != null) await widget.firebaseService.updateUserInformations(userId, 'howManyTimesRunInstertitialAd', howManyTimesRunInterstitialAd.toString());
-      if(lastHowManyFieldReached != null) await widget.firebaseService.updateUserInformations(userId, 'lastHowManyFieldReached', lastHowManyFieldReached);
+    if (userId != null) {
+      // Upewnij się, że userId nie jest null przed aktualizacją
+      if (finalSpendTimeOnGame != null)
+        await widget.firebaseService
+            .updateUserInformations(userId, 'finalSpendTimeOnGame', finalSpendTimeOnGame.toString());
+      if (lastOneSpendTimeOnGame != null)
+        await widget.firebaseService
+            .updateUserInformations(userId, 'lastOneSpendTimeOnGame', lastOneSpendTimeOnGame.toString());
+      if (lastPlayDate != null)
+        await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate.toString());
+      if (howManyTimesRunApp != null)
+        await widget.firebaseService
+            .updateUserInformations(userId, 'howManyTimesRunApp', howManyTimesRunApp.toString());
+      if (howManyTimesFinishedGame != null)
+        await widget.firebaseService
+            .updateUserInformations(userId, 'howManyTimesFinishedGame', howManyTimesFinishedGame.toString());
+      if (howManyTimesRunInterstitialAd != null)
+        await widget.firebaseService
+            .updateUserInformations(userId, 'howManyTimesRunInstertitialAd', howManyTimesRunInterstitialAd.toString());
+      if (lastHowManyFieldReached != null)
+        await widget.firebaseService.updateUserInformations(userId, 'lastHowManyFieldReached', lastHowManyFieldReached);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +206,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ],
                 child: Builder(builder: (context) {
                   final palette = context.watch<Palette>();
-                  return MaterialApp.router(debugShowCheckedModeBanner: false,
+                  return MaterialApp.router(
+                    debugShowCheckedModeBanner: false,
                     title: 'Time To Party',
                     theme: ThemeData.from(
                       colorScheme: ColorScheme.fromSeed(
@@ -221,12 +231,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       GlobalCupertinoLocalizations.delegate,
                     ],
                     supportedLocales: const [
-                      Locale('en', 'EN'), // Angielski
-                      Locale('de', 'DE'), // Niemiecki
-                      Locale('it', 'IT'), // Włoski
-                      Locale('es', 'ES'), // Hiszpański
-                      Locale('pl', 'PL'), // Polski
-                      Locale('fr', 'FR'), // Francuski
+                      Locale('en', 'EN'),
+                      Locale('de', 'DE'),
+                      Locale('it', 'IT'),
+                      Locale('es', 'ES'),
+                      Locale('pl', 'PL'),
+                      Locale('fr', 'FR'),
                     ],
                   );
                 }),

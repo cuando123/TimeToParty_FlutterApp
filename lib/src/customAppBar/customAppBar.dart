@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 
@@ -38,8 +37,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(
-          color: Color(0xFFE5E5E5), // Kolor linii
-          height: 1.0, // Grubość linii
+          color: Color(0xFFE5E5E5),
+          height: 1.0,
           width: double.infinity, // Rozciągnięcie linii na całą szerokość
         ),
       ),

@@ -13,11 +13,4 @@ class SecureStorageService {
   Future<String?> getTransactionToken() async {
     return await _storage.read(key: _transactionTokenKey);
   }
-  /*
-  SecureStorageService secureStorageService = SecureStorageService();
-
-  Future<String?> _printSecure() async {
-    String? token = await secureStorageService.getTransactionToken();
-    return token;
-  }'*/
 }

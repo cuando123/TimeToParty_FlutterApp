@@ -11,13 +11,11 @@ class AdMobService extends ChangeNotifier {
   RewardedAd? _rewardedAd;
   bool _isBannerAdLoaded = false;
   bool _isInterstitialAdLoaded = false;
-  //bool _isRewardedAdLoaded = false;
   bool isInterstitialAdShowed = false;
 
   AdMobService(this.initialization) {
     _setupBannerAd();
     _setupInterstitialAd();
-   // _setupRewardedAd();
   }
 
   late Function onInterstitialClosed;
@@ -28,10 +26,8 @@ class AdMobService extends ChangeNotifier {
 
   void onConnectionChanged(bool isConnected) {
     if (isConnected) {
-      // Połączenie z internetem przywrócone, próbujemy załadować reklamy
       reloadAd();
     } else {
-      // Połączenie z internetem utracone
       _handleLostConnection();
     }
   }
@@ -39,7 +35,6 @@ class AdMobService extends ChangeNotifier {
   void _handleLostConnection() {
     _isBannerAdLoaded = false;
     _isInterstitialAdLoaded = false;
-   // _isRewardedAdLoaded = false;
     _bannerAd.dispose();
     _interstitialAd?.dispose();
     _rewardedAd?.dispose();
@@ -52,12 +47,10 @@ class AdMobService extends ChangeNotifier {
     _rewardedAd?.dispose();
     _setupBannerAd();
     _setupInterstitialAd();
-    //_setupRewardedAd();
   }
 
   bool get isBannerAdLoaded => _isBannerAdLoaded;
   bool get isInterstitialAdLoaded => _isInterstitialAdLoaded;
-  //bool get isRewardedAdLoaded => _isRewardedAdLoaded;
 
   String? get bannerAdUnitId {
     if (kReleaseMode) {
@@ -87,28 +80,10 @@ class AdMobService extends ChangeNotifier {
         return "ios-value-of-app-id-from-admob-test";
       } else {
         return "ca-app-pub-3940256099942544/8691691433";
-        //return "ca-app-pub-3940256099942544/1033173712";
       }
     }
   }
-/*
-  String? get rewardAdUnitId {
-    if (kReleaseMode) {
-      if (Platform.isIOS) {
-        return "ios-value-of-app-id-from-admob-production";
-      } else {
-        return "android-value-of-app-id-from-admob-production";
-      }
-    } else {
-      if (Platform.isIOS) {
-        return "ios-value-of-app-id-from-admob-test";
-      } else {
-        return "ca-app-pub-3940256099942544/8691691433";
-        //return "ca-app-pub-3940256099942544/1033173712";
-      }
-    }
-  }
-*/
+
   String? get nativeAdUnitId {
     if (kReleaseMode) {
       if (Platform.isIOS) {
@@ -120,12 +95,11 @@ class AdMobService extends ChangeNotifier {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-test";
       } else {
-        return "ca-app-pub-3940256099942544/2247696110";  //testowa natywna image
-         // "ca-app-pub-3940256099942544/1044960115"; //testowa natywna video
-        //moja natywna ca-app-pub-8821222111683401/7028254802
+        return "ca-app-pub-3940256099942544/2247696110";
       }
     }
   }
+
   void _setupBannerAd() {
     _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId ?? '',
@@ -143,7 +117,7 @@ class AdMobService extends ChangeNotifier {
           notifyListeners();
           // Ustawienie timera do ponownego próbowania załadowania
           Timer(Duration(seconds: 30), () {
-            _setupBannerAd(); // Ponowne próby ładowania
+            _setupBannerAd();
           });
         },
         onAdOpened: (ad) => print('Ad opened.'),
@@ -155,6 +129,7 @@ class AdMobService extends ChangeNotifier {
       ),
     )..load();
   }
+
   // Metoda do uzyskania bannerAd dla widgetu
   BannerAd get bannerAd => _bannerAd;
 
@@ -177,7 +152,6 @@ class AdMobService extends ChangeNotifier {
       ),
     );
   }
-
 
   void showInterstitialAd() {
     final interstitialAd = _interstitialAd;
@@ -207,47 +181,7 @@ class AdMobService extends ChangeNotifier {
       //print('Interstitial ad is not ready yet.');
     }
   }
-/*
-  void _setupRewardedAd(){
-    RewardedAd.load(
-        adUnitId: rewardAdUnitId ?? "",
-        request: AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-            onAdLoaded:(ad){
-              _rewardedAd = ad;
-              _isRewardedAdLoaded = true;
-              notifyListeners();
-            },
-            onAdFailedToLoad: (ad){
-              _rewardedAd = null;
-              _isRewardedAdLoaded = false;
-              notifyListeners();
-            }));
-  }
 
-  void _showRewardedAd(){
-    if (_rewardedAd != null){
-      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (RewardedAd ad){
-          ad.dispose();
-          _setupRewardedAd();
-        },
-        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error){
-          ad.dispose();
-          _setupRewardedAd();
-      }
-      );
-      _rewardedAd!.show(onUserEarnedReward: (
-      RewardedAd, RewardItem reward
-      ){ //eg increase decisions, increase points and so on
-        /*
-        final newBankValue = widget.account.bank + 2;
-        FirebaseFirestore.instance.collection('users').doc(widget.account.uid).update({'data': newBankValue});
-        */
-      });
-    }
-  }
-*/
   @override
   void dispose() {
     _bannerAd.dispose();

@@ -31,7 +31,7 @@ class TripleButton extends StatelessWidget {
         border: Border.all(
           color: Color(0xFF5E0EAD),
           width: 2.0,
-        ), // Dodaj podwójną białą obwódkę
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withOpacity(0.3),
@@ -62,7 +62,7 @@ class TripleButton extends StatelessWidget {
             });
           }),
           _buildButtonIcon(context, Icons.highlight, () {
-            _controller.forward(from: 0); // Obsłuż tapnięcie w prawy przycisk
+            _controller.forward(from: 0);
           }),
         ],
       ),
@@ -73,7 +73,7 @@ class TripleButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final audioController = context.read<AudioController>();
-        if (icon == Icons.info_outlined){
+        if (icon == Icons.info_outlined) {
           audioController.playSfx(SfxType.button_infos);
         } else {
           audioController.playSfx(SfxType.buttonBackExit);

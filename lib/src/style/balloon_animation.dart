@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
+
 import '../app_lifecycle/responsive_sizing.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class BalloonAnimation extends StatefulWidget {
   const BalloonAnimation({super.key});
@@ -16,7 +16,6 @@ class _BalloonAnimationState extends State<BalloonAnimation> with TickerProvider
   late final List<Animation<double>> _animations = [];
   late Random random = Random();
 
-  // Add your balloon image paths here
   List<String> balloonImages = [
     'assets/time_to_party_assets/balloons/balloon_blue.png',
     'assets/time_to_party_assets/balloons/balloon_green.png',

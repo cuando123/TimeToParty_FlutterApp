@@ -25,60 +25,55 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          final audioController = context.read<AudioController>();
-          audioController.playSfx(SfxType.buttonBackExit);
-          GoRouter.of(context).go('/');
-          return false;
-        },
-        child:
-    Container(
-      decoration: BoxDecoration(
-        gradient: Palette().backgroundLoadingSessionGradient,
-      ),
-      child: Scaffold(
-        drawer: CustomAppDrawer(),
-        key: scaffoldKey,
-        appBar: CustomAppBar(
-          title: translatedText(context,'select_language', 14, Palette().white),
-          onMenuButtonPressed: () {
-            final audioController = context.read<AudioController>();
-            audioController.playSfx(SfxType.buttonBackExit);
-            scaffoldKey.currentState?.openDrawer();
-          },
+      onWillPop: () async {
+        final audioController = context.read<AudioController>();
+        audioController.playSfx(SfxType.buttonBackExit);
+        GoRouter.of(context).go('/');
+        return false;
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: Palette().backgroundLoadingSessionGradient,
         ),
-        body:
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-          10.0, 10.0, 10.0, 2.0),
-    child: Column(
-          children: [
-            LogoWidget_notitle(),
-            translatedText(context, 'language_change_notification', 14, Palette().white, textAlign: TextAlign.center),
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 3,
-                children: [
-                  languageButton(context, 'English',
-                      'assets/time_to_party_assets/flags/united_kingdom.svg', 'EN_en'),
-                  languageButton(context, 'Deutsch',
-                      'assets/time_to_party_assets/flags/germany.svg', 'DE_de'),
-                  languageButton(context, 'Italiano',
-                      'assets/time_to_party_assets/flags/italy.svg', 'IT_it'),
-                  languageButton(context, 'Español',
-                      'assets/time_to_party_assets/flags/spain.svg', 'ES_es'),
-                  languageButton(context,
-                      'Polski', 'assets/time_to_party_assets/flags/poland.svg', 'PL_pl'),
-                  languageButton(context, 'Français',
-                      'assets/time_to_party_assets/flags/france.svg', 'FR_fr'),
-                ],
-              ),
+        child: Scaffold(
+          drawer: CustomAppDrawer(),
+          key: scaffoldKey,
+          appBar: CustomAppBar(
+            title: translatedText(context, 'select_language', 14, Palette().white),
+            onMenuButtonPressed: () {
+              final audioController = context.read<AudioController>();
+              audioController.playSfx(SfxType.buttonBackExit);
+              scaffoldKey.currentState?.openDrawer();
+            },
+          ),
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
+            child: Column(
+              children: [
+                LogoWidget_notitle(),
+                translatedText(context, 'language_change_notification', 14, Palette().white,
+                    textAlign: TextAlign.center),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    childAspectRatio: 3,
+                    children: [
+                      languageButton(
+                          context, 'English', 'assets/time_to_party_assets/flags/united_kingdom.svg', 'EN_en'),
+                      languageButton(context, 'Deutsch', 'assets/time_to_party_assets/flags/germany.svg', 'DE_de'),
+                      languageButton(context, 'Italiano', 'assets/time_to_party_assets/flags/italy.svg', 'IT_it'),
+                      languageButton(context, 'Español', 'assets/time_to_party_assets/flags/spain.svg', 'ES_es'),
+                      languageButton(context, 'Polski', 'assets/time_to_party_assets/flags/poland.svg', 'PL_pl'),
+                      languageButton(context, 'Français', 'assets/time_to_party_assets/flags/france.svg', 'FR_fr'),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],),
+          ),
         ),
-      ),),
+      ),
     );
   }
 
@@ -92,8 +87,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         text: language,
         onPressed: () async {
           audioController.playSfx(SfxType.buttonBackExit);
-          await Provider.of<TranslationProvider>(context, listen: false)
-              .changeLanguage(langPrefix);
+          await Provider.of<TranslationProvider>(context, listen: false).changeLanguage(langPrefix);
           Navigator.of(context).popUntil((route) => route.isFirst);
           scaffoldKey.currentState?.openEndDrawer();
           showLanguageChangedSnackbar(context);
@@ -107,14 +101,11 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     );
   }
 
-
   void showLanguageChangedSnackbar(BuildContext context) {
     final snackBar = SnackBar(
-      content: translatedText(context,'language_changed', 14, Palette().white, textAlign: TextAlign.center),
+      content: translatedText(context, 'language_changed', 14, Palette().white, textAlign: TextAlign.center),
       duration: Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
-
-

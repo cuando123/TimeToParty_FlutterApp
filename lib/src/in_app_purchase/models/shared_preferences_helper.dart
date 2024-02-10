@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'shared_encryption_helper.dart'; // Załóżmy, że ścieżka do EncryptionHelper jest poprawna
+import 'shared_encryption_helper.dart';
 
 class SharedPreferencesHelper {
   static SharedPreferences? _prefs;
@@ -13,7 +13,8 @@ class SharedPreferencesHelper {
   // Zapisywanie String
   static Future<void> setString(String key, String? value) async {
     final prefs = await _instance;
-    if (value != null && value.isNotEmpty) { // Sprawdź, czy wartość nie jest pusta
+    if (value != null && value.isNotEmpty) {
+      // Sprawdź, czy wartość nie jest pusta
       final encryptedValue = EncryptionHelper.encryptText(value);
       await prefs.setString(key, encryptedValue!);
     } else {
@@ -28,13 +29,12 @@ class SharedPreferencesHelper {
     final encryptedValue = prefs.getString(key);
     // Upewnij się, że encryptedValue nie jest null przed próbą deszyfrowania
     if (encryptedValue == null || encryptedValue.isEmpty) {
-      print("No value found for key $key, returning null.");
       return '';
     }
 
     String? decryptedValue = EncryptionHelper.decryptText(encryptedValue);
     if (decryptedValue == null) {
-      print("Decryption returned null for key $key, indicating an error or empty input.");
+     // print("Decryption returned null for key $key, indicating an error or empty input.");
     }
     return decryptedValue;
   }
@@ -50,7 +50,7 @@ class SharedPreferencesHelper {
     final stringValue = await getString(key);
     // Upewnij się, że stringValue nie jest null przed próbą konwersji
     if (stringValue == null) {
-      print("No value found for key $key, returning null.");
+      //print("No value found for key $key, returning null.");
       return null;
     }
 
@@ -74,8 +74,8 @@ class SharedPreferencesHelper {
 
     // Bezpiecznie próbuj konwertować odczytaną wartość na int
     final intValue = int.tryParse(stringValue);
-    if(intValue == null) {
-      print("Could not convert value to int for key $key.");
+    if (intValue == null) {
+      //print("Could not convert value to int for key $key.");
       return null;
     }
     return intValue;
@@ -126,7 +126,6 @@ class SharedPreferencesHelper {
     await setInt('finalSpendTimeOnGame', intValue);
   }
 
-
   static Future<void> setLastOneSpendTimeOnGame(int? value) async {
     final intValue = value ?? 0;
     await setInt('lastOneSpendTimeOnGame', intValue);
@@ -173,7 +172,7 @@ class SharedPreferencesHelper {
     return await getString('firebaseMessagingToken');
   }
 
-  static Future<String?> getUserID() async{
+  static Future<String?> getUserID() async {
     return await getString('userID');
   }
 

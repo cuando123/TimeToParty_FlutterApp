@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +6,7 @@ import 'settings.dart';
 void showCustomNameDialog(BuildContext context) {
   showGeneralDialog(
       context: context,
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          CustomNameDialog(animation: animation));
+      pageBuilder: (context, animation, secondaryAnimation) => CustomNameDialog(animation: animation));
 }
 
 class CustomNameDialog extends StatefulWidget {

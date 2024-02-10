@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:game_template/src/drawer/drawer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
@@ -19,10 +18,9 @@ import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'settings.dart';
 
-class SettingsScreen extends StatefulWidget  {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.scaffoldKey});
   final GlobalKey<ScaffoldState> scaffoldKey;
-
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -35,12 +33,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String musicTitle = '';
   String allRightsReserved = '';
   String vibrations = '';
-  late FirebaseService _firebaseService;
 
   @override
   void initState() {
     super.initState();
-    _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       title = getTranslatedString(context, 'settings_notifications');
       allSoundsTitle = getTranslatedString(context, 'settings_all_sounds');
@@ -58,127 +54,126 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
     return WillPopScope(
-        onWillPop: () async {
-          audioController.playSfx(SfxType.buttonBackExit);
-          GoRouter.of(context).go('/');
-          return false;
-        },
-        child:
-     Container(
-      decoration: BoxDecoration(
-    gradient: Palette().backgroundLoadingSessionGradient,
-    ),
-      child: Scaffold(
-      key: widget.scaffoldKey,
-      drawer: CustomAppDrawer(),
-      appBar: CustomAppBar(
-        title: translatedText(context,'settings', 14, Palette().white),
-        onMenuButtonPressed: () {
-          audioController.playSfx(SfxType.buttonBackExit);
-          widget.scaffoldKey.currentState?.openDrawer();
-        },
-      ),
-
-    body: ResponsiveScreen(
-    squarishMainArea: Theme(
-    data: Theme.of(context).copyWith(
-    scrollbarTheme: ScrollbarThemeData(
-    thumbColor: MaterialStateProperty.all(Palette().white),
-    ),
-    ),
-    child: Scrollbar(
-    thumbVisibility: true,
-    trackVisibility: true,
-    thickness: -6.0,
-    radius: Radius.circular(10),
-    child: Padding(
-      padding: EdgeInsets.only(left: 10, right: 10),
-      child:
-      ListView(
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomStyledButton(
-                  icon: Icons.language,
-                  text: getTranslatedString(context, 'select_language'),
-                  onPressed: () async {
-                    audioController.playSfx(SfxType.buttonBackExit);
-                    await Future.delayed(Duration(milliseconds: 150));
-                    GoRouter.of(context).go('/language_selector');
-                  },
-                  backgroundColor: Colors.white,
-                  foregroundColor: Palette().pink,
-                  width: 200,
-                  height: 45,
-                  fontSize: ResponsiveSizing.scaleHeight(context, 20),
-                ),
-              ],
-            ),
-
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            TogglesControl(
-              valueNotifier: settingsController.notificationsEnabled,
-              onToggle: () {
-                // Pobierz instancję NotificationsManager z kontekstu
-                final notificationsManager =
-                    Provider.of<NotificationsManager>(context, listen: false);
-                // Przekazujemy instancję NotificationsManager do metody toggleNotifications
-                settingsController.toggleNotifications(notificationsManager);
-              },
-              title: title,
-              iconOn: Icons.notifications,
-              iconOff: Icons.notifications_off,
-            ),
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            TogglesControl(
-              valueNotifier: settingsController.muted,
-              onToggle: settingsController.toggleMuted,
-              title: allSoundsTitle,
-              iconOn: Icons.volume_up,
-              iconOff: Icons.volume_off,
-            ),
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            TogglesControl(
-              valueNotifier: settings.soundsOn,
-              onToggle: settingsController.toggleSoundsOn,
-              title: soundEffectsTitle,
-              iconOn: Icons.graphic_eq,
-              iconOff: Icons.volume_off,
-            ),
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            TogglesControl(
-              valueNotifier: settings.musicOn,
-              onToggle: settingsController.toggleMusicOn,
-              title: musicTitle,
-              iconOn: Icons.music_note,
-              iconOff: Icons.music_off,
-            ),
-            ResponsiveSizing.responsiveHeightGap(context, 10),
-            TogglesControl(
-              valueNotifier: settingsController.vibrationsEnabled,
-              onToggle: settingsController.toggleVibrations ,
-              title: vibrations,
-              iconOn: Icons.vibration,
-              iconOff: Icons.close,
-            ),
-            SizedBox(height: 20),
-            translatedText(context,'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
-            TextButton(onPressed: () async {
+      onWillPop: () async {
+        audioController.playSfx(SfxType.buttonBackExit);
+        GoRouter.of(context).go('/');
+        return false;
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: Palette().backgroundLoadingSessionGradient,
+        ),
+        child: Scaffold(
+          key: widget.scaffoldKey,
+          drawer: CustomAppDrawer(),
+          appBar: CustomAppBar(
+            title: translatedText(context, 'settings', 14, Palette().white),
+            onMenuButtonPressed: () {
               audioController.playSfx(SfxType.buttonBackExit);
-            await Future.delayed(Duration(milliseconds: 150));
-            AnimatedAlertDialog.showExitDialog(context);
+              widget.scaffoldKey.currentState?.openDrawer();
             },
-              child: Text(
-                'https://frydoapps.com/contact-apps',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFFFFFFFF),
-                  fontFamily: 'HindMadurai',
-                  fontSize: 14,
-                  decoration: TextDecoration.underline,decorationColor: Color(0xFFFFFFFF),
+          ),
+          body: ResponsiveScreen(
+            squarishMainArea: Theme(
+              data: Theme.of(context).copyWith(
+                scrollbarTheme: ScrollbarThemeData(
+                  thumbColor: MaterialStateProperty.all(Palette().white),
                 ),
-              ),),
-            /*
+              ),
+              child: Scrollbar(
+                thumbVisibility: true,
+                trackVisibility: true,
+                thickness: -6.0,
+                radius: Radius.circular(10),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: ListView(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomStyledButton(
+                            icon: Icons.language,
+                            text: getTranslatedString(context, 'select_language'),
+                            onPressed: () async {
+                              audioController.playSfx(SfxType.buttonBackExit);
+                              await Future.delayed(Duration(milliseconds: 150));
+                              GoRouter.of(context).go('/language_selector');
+                            },
+                            backgroundColor: Colors.white,
+                            foregroundColor: Palette().pink,
+                            width: 200,
+                            height: 45,
+                            fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                          ),
+                        ],
+                      ),
+                      ResponsiveSizing.responsiveHeightGap(context, 10),
+                      TogglesControl(
+                        valueNotifier: settingsController.notificationsEnabled,
+                        onToggle: () {
+                          // Pobierz instancję NotificationsManager z kontekstu
+                          final notificationsManager = Provider.of<NotificationsManager>(context, listen: false);
+                          // Przekazujemy instancję NotificationsManager do metody toggleNotifications
+                          settingsController.toggleNotifications(notificationsManager);
+                        },
+                        title: title,
+                        iconOn: Icons.notifications,
+                        iconOff: Icons.notifications_off,
+                      ),
+                      ResponsiveSizing.responsiveHeightGap(context, 10),
+                      TogglesControl(
+                        valueNotifier: settingsController.muted,
+                        onToggle: settingsController.toggleMuted,
+                        title: allSoundsTitle,
+                        iconOn: Icons.volume_up,
+                        iconOff: Icons.volume_off,
+                      ),
+                      ResponsiveSizing.responsiveHeightGap(context, 10),
+                      TogglesControl(
+                        valueNotifier: settings.soundsOn,
+                        onToggle: settingsController.toggleSoundsOn,
+                        title: soundEffectsTitle,
+                        iconOn: Icons.graphic_eq,
+                        iconOff: Icons.volume_off,
+                      ),
+                      ResponsiveSizing.responsiveHeightGap(context, 10),
+                      TogglesControl(
+                        valueNotifier: settings.musicOn,
+                        onToggle: settingsController.toggleMusicOn,
+                        title: musicTitle,
+                        iconOn: Icons.music_note,
+                        iconOff: Icons.music_off,
+                      ),
+                      ResponsiveSizing.responsiveHeightGap(context, 10),
+                      TogglesControl(
+                        valueNotifier: settingsController.vibrationsEnabled,
+                        onToggle: settingsController.toggleVibrations,
+                        title: vibrations,
+                        iconOn: Icons.vibration,
+                        iconOff: Icons.close,
+                      ),
+                      SizedBox(height: 20),
+                      translatedText(context, 'game_help_address', 12, Palette().white, textAlign: TextAlign.center),
+                      TextButton(
+                        onPressed: () async {
+                          audioController.playSfx(SfxType.buttonBackExit);
+                          await Future.delayed(Duration(milliseconds: 150));
+                          AnimatedAlertDialog.showExitDialog(context);
+                        },
+                        child: Text(
+                          'https://frydoapps.com/contact-apps',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontFamily: 'HindMadurai',
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Color(0xFFFFFFFF),
+                          ),
+                        ),
+                      ),
+                      /*
             ElevatedButton(
               onPressed: () async {
                 audioController.playSfx(SfxType.buttonBackExit);
@@ -196,17 +191,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
               child: Text("Testuj notyfikacje"),
             ),*/
-          ],
-        ),),),),
-        rectangularMenuArea: Text(
-            textAlign: TextAlign.center,
-            'Time To Party® ©${DateTime.now().year} Frydo Poland. $allRightsReserved',
-            style: TextStyle(
-              color: Color(0xFFFFFFFF),
-              fontFamily: 'HindMadurai',
-              fontSize: 10,
-            )),
-      ),),),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            rectangularMenuArea: Text(
+                textAlign: TextAlign.center,
+                'Time To Party® ©${DateTime.now().year} Frydo Poland. $allRightsReserved',
+                style: TextStyle(
+                  color: Color(0xFFFFFFFF),
+                  fontFamily: 'HindMadurai',
+                  fontSize: 10,
+                )),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -218,7 +218,8 @@ class TogglesControl extends StatelessWidget {
   final IconData iconOn;
   final IconData iconOff;
 
-  const TogglesControl({super.key, 
+  const TogglesControl({
+    super.key,
     required this.valueNotifier,
     required this.onToggle,
     required this.title,
@@ -230,96 +231,95 @@ class TogglesControl extends StatelessWidget {
   Widget build(BuildContext context) {
     final audioController = context.watch<AudioController>();
     return ValueListenableBuilder<bool>(
-        valueListenable: valueNotifier,
-        builder: (context, muted, child) => Container(
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: Color(0xFFCB48EF),
-                      fontFamily: 'HindMadurai',
-                      fontSize: 16,
-                    ),
+      valueListenable: valueNotifier,
+      builder: (context, muted, child) => Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Color(0xFFCB48EF),
+                    fontFamily: 'HindMadurai',
+                    fontSize: 16,
                   ),
-                  IconButton(
-                    onPressed: () {
-                      audioController.playSfx(SfxType.buttonBackExit);
-                      onToggle();
-                    },
-                    icon: Icon(muted ? iconOn : iconOff,
-                        color: muted ? Color(0xFFCB48EF) : Colors.grey),
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  audioController.playSfx(SfxType.buttonBackExit);
-    onToggle();
-    },
-                child: Transform.scale(
-                  scale: 1.0,
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 200),
-                    child: muted
-                        ? Container(
-                            key: Key('off'),
-                            width: 48,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Color(0xFFCB48EF),
-                            ),
-                            child: Align(
-                              alignment: Alignment(0.7, 0),
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            key: Key('on'),
-                            width: 48,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.grey,
-                            ),
-                            child: Align(
-                              alignment: Alignment(-0.7, 0),
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    audioController.playSfx(SfxType.buttonBackExit);
+                    onToggle();
+                  },
+                  icon: Icon(muted ? iconOn : iconOff, color: muted ? Color(0xFFCB48EF) : Colors.grey),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () {
+                audioController.playSfx(SfxType.buttonBackExit);
+                onToggle();
+              },
+              child: Transform.scale(
+                scale: 1.0,
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                  child: muted
+                      ? Container(
+                          key: Key('off'),
+                          width: 48,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Color(0xFFCB48EF),
+                          ),
+                          child: Align(
+                            alignment: Alignment(0.7, 0),
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
                               ),
                             ),
                           ),
-                    transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
+                        )
+                      : Container(
+                          key: Key('on'),
+                          width: 48,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.grey,
+                          ),
+                          child: Align(
+                            alignment: Alignment(-0.7, 0),
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                  transitionBuilder: (child, animation) => ScaleTransition(
+                    scale: animation,
+                    child: child,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
@@ -384,14 +384,11 @@ class CustomRectangularSliderTrackShape extends SliderTrackShape {
     Offset? secondaryOffset,
   }) {
     final double trackHeight = sliderTheme.trackHeight!;
-    final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
     final double trackLeft = offset.dx;
     final double trackWidth = parentBox.size.width;
-    final double activeTrackWidth = thumbCenter.dx -
-        trackLeft -
-        sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width /
-            2;
+    final double activeTrackWidth =
+        thumbCenter.dx - trackLeft - sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width / 2;
 
     final RRect leftTrack = RRect.fromLTRBR(
       trackLeft,
@@ -408,10 +405,8 @@ class CustomRectangularSliderTrackShape extends SliderTrackShape {
       borderRadius,
     );
 
-    context.canvas.drawRRect(leftTrack,
-        Paint()..color = sliderTheme.activeTrackColor ?? Colors.black);
-    context.canvas.drawRRect(rightTrack,
-        Paint()..color = sliderTheme.inactiveTrackColor ?? Colors.black);
+    context.canvas.drawRRect(leftTrack, Paint()..color = sliderTheme.activeTrackColor ?? Colors.black);
+    context.canvas.drawRRect(rightTrack, Paint()..color = sliderTheme.inactiveTrackColor ?? Colors.black);
   }
 
   @override
@@ -422,12 +417,10 @@ class CustomRectangularSliderTrackShape extends SliderTrackShape {
     bool isDiscrete = false,
     Offset offset = Offset.zero,
   }) {
-    final double thumbWidth =
-        sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
+    final double thumbWidth = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
     final double trackHeight = sliderTheme.trackHeight!;
     final double trackLeft = offset.dx + thumbWidth / 2;
-    final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
     final double trackWidth = parentBox.size.width - thumbWidth;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }

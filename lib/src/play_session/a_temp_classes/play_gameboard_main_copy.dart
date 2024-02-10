@@ -60,8 +60,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       ),
       child: Scaffold(
         appBar: AppBar(
-          title:
-          Row(
+          title: Row(
             children: [
               Text("${getCurrentTeamName()} - wasza kolej!"),
               Container(
@@ -148,7 +147,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                               child: Column(
                                 children: [
                                   Text('Wylosowana wartość: $selectedValue'),
-                                  translatedText(context,'game_rules', 20, Palette().white),
+                                  translatedText(context, 'game_rules', 20, Palette().white),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
@@ -165,7 +164,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
 
                                             moveFlag(selectedValue, currentFlagIndex,
                                                 screenWidth * 0.02768 - 4 + screenWidth * 0.1436);
-
                                           });
                                         });
                                       },
@@ -225,38 +223,40 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               LayoutBuilder(
-                              builder: (context, constraints) {
-                          // Oblicz liczbę kolumn na podstawie szerokości ekranu
-                          int count = percentageScreen < 40 ? 4 : 2;  // Załóżmy, że chcemy dwie kolumny na szerokich ekranach, a na węższych - tylko jedną.
-                          print('screen widsth: ${constraints.maxWidth}');
-                        return GridView.count(
-                        shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: count,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 10,
-                          children: <Widget>[
-                            CardAnimation(),
-                            // SvgPicture.asset(
-                            //   'assets/time_to_party_assets/card_star_green.svg',
-                            //   fit: BoxFit.contain,
-                            // ),
-                            SvgPicture.asset(
-                              'assets/time_to_party_assets/card_star_blue_light.svg',
-                              fit: BoxFit.contain,
-                            ),
-                            SvgPicture.asset(
-                              'assets/time_to_party_assets/card_star_yellow.svg',
-                              fit: BoxFit.contain,
-                            ),
-                            SvgPicture.asset(
-                              'assets/time_to_party_assets/card_star_pink.svg',
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        );
-                      },
-                      ),
+                                builder: (context, constraints) {
+                                  // Oblicz liczbę kolumn na podstawie szerokości ekranu
+                                  int count = percentageScreen < 40
+                                      ? 4
+                                      : 2; // Załóżmy, że chcemy dwie kolumny na szerokich ekranach, a na węższych - tylko jedną.
+                                  print('screen widsth: ${constraints.maxWidth}');
+                                  return GridView.count(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    crossAxisCount: count,
+                                    crossAxisSpacing: 0,
+                                    mainAxisSpacing: 10,
+                                    children: <Widget>[
+                                      CardAnimation(),
+                                      // SvgPicture.asset(
+                                      //   'assets/time_to_party_assets/card_star_green.svg',
+                                      //   fit: BoxFit.contain,
+                                      // ),
+                                      SvgPicture.asset(
+                                        'assets/time_to_party_assets/card_star_blue_light.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                      SvgPicture.asset(
+                                        'assets/time_to_party_assets/card_star_yellow.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                      SvgPicture.asset(
+                                        'assets/time_to_party_assets/card_star_pink.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                               Container(
                                 height: 2.0,
                                 decoration: BoxDecoration(
@@ -270,16 +270,12 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  minimumSize: Size(
-                                      ResponsiveSizing.scaleWidth(context, 220),
-                                      ResponsiveSizing.responsiveHeightWithCondition(
-                                          context, 51, 45, 650)),
+                                  minimumSize: Size(ResponsiveSizing.scaleWidth(context, 220),
+                                      ResponsiveSizing.responsiveHeightWithCondition(context, 51, 45, 650)),
                                   //textStyle: TextStyle(fontFamily: 'HindMadurai', fontSize: ResponsiveText.scaleHeight(context, 20)),
                                 ),
-                                icon: Icon(Icons.play_circle_rounded,
-                                    size: ResponsiveSizing.scaleHeight(context, 32)),
-                                onPressed: () {
-                                },
+                                icon: Icon(Icons.play_circle_rounded, size: ResponsiveSizing.scaleHeight(context, 32)),
+                                onPressed: () {},
                                 label: Text('Zakręć kołem'),
                               ),
                             ],
@@ -409,29 +405,38 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           }).map((flag) {
             return AnimatedPositioned(
               duration: Duration(seconds: 1),
-                bottom: (teamColors.length == 2 || teamColors.length == 3)
-                    ? flagPositions[index].dy + 20
-                    : teamColors.length == 4
-                    ? flagPositions[index].dy + 10 + (index ~/ 2) * 25
-                    : (teamColors.length == 5 || teamColors.length == 6)
-                    ? flagPositions[index].dy + 10 + (index ~/ 3) * 25
-                    : flagPositions[index].dy + 10 + (index ~/ 3) * 25, // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
+              bottom: (teamColors.length == 2 || teamColors.length == 3)
+                  ? flagPositions[index].dy + 20
+                  : teamColors.length == 4
+                      ? flagPositions[index].dy + 10 + (index ~/ 2) * 25
+                      : (teamColors.length == 5 || teamColors.length == 6)
+                          ? flagPositions[index].dy + 10 + (index ~/ 3) * 25
+                          : flagPositions[index].dy +
+                              10 +
+                              (index ~/ 3) * 25, // ustalanie pozycji flagi gora/dol w zaleznosci od ilosci flag
               left: (teamColors.length == 2 || teamColors.length == 4)
                   ? flagPositions[index].dx + (index % 2) * 25 + 5
                   : (teamColors.length == 5 || teamColors.length == 6 || teamColors.length == 3)
-                  ? flagPositions[index].dx + (index % 3) * 25-8
-                  : flagPositions[index].dx + (index % 3) * 25-8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
+                      ? flagPositions[index].dx + (index % 3) * 25 - 8
+                      : flagPositions[index].dx +
+                          (index % 3) * 25 -
+                          8, // ustalanie pozycji flag lewo/prawo w zaleznosci od ilosci flag
               child: Transform.rotate(
-                angle:
-                (teamColors.length == 4)
+                angle: (teamColors.length == 4)
                     ? ((index % 2 == 0) ? -10 : 15) * (3.14 / 180)
-                    : ((index % 3 == 0) ? -10 : (index % 3 == 2) ? 15 : 0) * (3.14 / 180), //obroty flag dopasowane od ilosci
+                    : ((index % 3 == 0)
+                            ? -10
+                            : (index % 3 == 2)
+                                ? 15
+                                : 0) *
+                        (3.14 / 180), //obroty flag dopasowane od ilosci
                 child: Transform(
-                  transform: Matrix4.identity()..scale(
-                      (teamColors.length == 4) ? ((index == 0 || index == 2) ? -1.0 : 1.0) // odbicia flag ustalone od ilosci
-                          : ((index == 0 || index == 3) ? -1.0 : 1.0),
-                      1.0
-                  ),
+                  transform: Matrix4.identity()
+                    ..scale(
+                        (teamColors.length == 4)
+                            ? ((index == 0 || index == 2) ? -1.0 : 1.0) // odbicia flag ustalone od ilosci
+                            : ((index == 0 || index == 3) ? -1.0 : 1.0),
+                        1.0),
                   alignment: Alignment.center,
                   child: SvgPicture.asset(
                     flag,
@@ -555,7 +560,6 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       currentFlagIndex = (currentFlagIndex + 1) % widget.teamColors.length;
     });
     currentTeamIndex = currentFlagIndex;
-
   }
 
   String getCurrentTeamName() {
@@ -567,10 +571,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   }
 }
 
-
 class CardAnimation extends StatefulWidget {
   const CardAnimation({super.key});
-
 
   @override
   _CardAnimationState createState() => _CardAnimationState();
@@ -657,4 +659,3 @@ class _CardAnimationState extends State<CardAnimation> with SingleTickerProvider
     );
   }
 }
-

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBarNoTitle extends StatelessWidget
-    implements PreferredSizeWidget {
+class CustomAppBarNoTitle extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBackButtonPressed;
   final VoidCallback? onMenuButtonPressed;
 
-  const CustomAppBarNoTitle(
-      {super.key, required this.title,
-      this.onBackButtonPressed,
-      this.onMenuButtonPressed});
+  const CustomAppBarNoTitle({super.key, required this.title, this.onBackButtonPressed, this.onMenuButtonPressed});
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);

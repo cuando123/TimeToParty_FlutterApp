@@ -14,7 +14,6 @@ class _InstantTooltipState extends State<InstantTooltip> {
   OverlayEntry? _overlayEntry;
   final GlobalKey _tooltipKey = GlobalKey();
 
-
   @override
   void dispose() {
     _overlayEntry?.remove();
@@ -51,7 +50,7 @@ class _InstantTooltipState extends State<InstantTooltip> {
 
     var screen = MediaQuery.of(context).size;
 
-    double tooltipWidth = 150;  // dostosowane wartości
+    double tooltipWidth = 150; // dostosowane wartości
     double tooltipHeight = 100;
 
     var left = offset.dx - tooltipWidth / 2;
@@ -61,40 +60,37 @@ class _InstantTooltipState extends State<InstantTooltip> {
     var top = offset.dy - tooltipHeight;
     if (top < 0) top = offset.dy + size.height;
 
-    _overlayEntry = OverlayEntry(
-        builder: (context) {
-          final tooltipRenderBox = _tooltipKey.currentContext?.findRenderObject() as RenderBox?;
-          final tooltipWidth = tooltipRenderBox?.size.width ?? 150;
+    _overlayEntry = OverlayEntry(builder: (context) {
+      final tooltipRenderBox = _tooltipKey.currentContext?.findRenderObject() as RenderBox?;
+      final tooltipWidth = tooltipRenderBox?.size.width ?? 150;
 
-          var left = offset.dx - tooltipWidth / 2;
-          const edgeMargin = 25.0; // Dodatkowy margines dla lewej i prawej krawędzi ekranu
+      var left = offset.dx - tooltipWidth / 2;
+      const edgeMargin = 25.0; // Dodatkowy margines dla lewej i prawej krawędzi ekranu
 
-          if (left < edgeMargin) left = edgeMargin;
-          if (left + tooltipWidth > screen.width - edgeMargin) left = screen.width - tooltipWidth - edgeMargin;
+      if (left < edgeMargin) left = edgeMargin;
+      if (left + tooltipWidth > screen.width - edgeMargin) left = screen.width - tooltipWidth - edgeMargin;
 
-          return Positioned(
-            left: left,
-            top: top,
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                key: _tooltipKey,
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-                  ],
-                ),
-                child: Text(formatMessage(widget.message),
-                  style: TextStyle(fontSize: 14, fontFamily: 'HindMadurai'),
-                ),
-              ),
+      return Positioned(
+        left: left,
+        top: top,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            key: _tooltipKey,
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
             ),
-          );
-        }
-    );
+            child: Text(
+              formatMessage(widget.message),
+              style: TextStyle(fontSize: 14, fontFamily: 'HindMadurai'),
+            ),
+          ),
+        ),
+      );
+    });
 
     Overlay.of(context).insert(_overlayEntry!);
   }

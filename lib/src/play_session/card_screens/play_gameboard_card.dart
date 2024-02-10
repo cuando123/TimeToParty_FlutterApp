@@ -190,23 +190,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _initializeCards();
     // Ustaw callback
     Provider.of<AdMobService>(context, listen: false).setOnInterstitialClosed(() {
-      if (widget.currentField[0] == 'field_star_blue_dark')
-      {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed);}
-      else
-      {
-        if (isAlertOpened)
-        {
+      if (widget.currentField[0] == 'field_star_blue_dark') {
+        AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed);
+      } else {
+        if (isAlertOpened) {
           Navigator.of(context).pop();
-      Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(
-      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+          Navigator.of(context).pop('response');
+          AnimatedAlertDialog.showPointsDialog(
+              context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
+        } else
+          Navigator.of(context).pop('response');
+        AnimatedAlertDialog.showPointsDialog(
+            context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
       }
-      else
-      Navigator.of(context).pop('response');
-      AnimatedAlertDialog.showPointsDialog(
-      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors);
-      }
-      print("Reklama interstitial została zamknięta");
+      //print("Reklama interstitial została zamknięta");
     });
   }
 
@@ -242,7 +239,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       // Użyj istniejącej logiki do wybrania odpowiedniego słowa z listy
       currentWordOrKey = wordsList.isNotEmpty ? wordsList[currentWordIndex] : "";
     }
-    print('currentWordOrKey: $currentWordOrKey, currentWordIndex: $currentWordIndex, tablica: ${wordsList[currentWordIndex]}');
+    //print('currentWordOrKey: $currentWordOrKey, currentWordIndex: $currentWordIndex, tablica: ${wordsList[currentWordIndex]}');
   }
 
   void _onButtonXPressed() {
@@ -368,7 +365,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       });
     } else {
       // Wyświetlenie alert dialog, nie zmieniaj selectedImageType
-      AnimatedAlertDialog.showAnimatedDialog(context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false, true);
+      AnimatedAlertDialog.showAnimatedDialog(
+          context, 'cannot_skip_card', SfxType.buzzer_sound, 1, 20, false, false, true);
     }
 
     // Odblokuj przycisk po 800 milisekundach
@@ -530,20 +528,19 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (!mounted) return;
       safeSetState(() {
-
         if (!Provider.of<AdMobService>(context, listen: false).isInterstitialAdShowed) {
           if (remainingTime > 0) {
-                    final audioController = context.read<AudioController>();
-                    if(remainingTime <= 5){
-                      audioController.playSfx(SfxType.heartbeat);
-                    } else {
-                      audioController.playSfx(SfxType.clock_effect);
-                    }
-                    remainingTime--;
-                  } else {
-                    _showTimeUpAnimation();
-                    _timer?.cancel();
-                  }
+            final audioController = context.read<AudioController>();
+            if (remainingTime <= 5) {
+              audioController.playSfx(SfxType.heartbeat);
+            } else {
+              audioController.playSfx(SfxType.clock_effect);
+            }
+            remainingTime--;
+          } else {
+            _showTimeUpAnimation();
+            _timer?.cancel();
+          }
         }
       });
     });
@@ -551,9 +548,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   void handleRollSlotMachineResult(String result) {
     safeSetState(() {
-      print('mam cie kolego xd $result');
-
-      // Podziel tekst przy każdym wystąpieniu średnika
       List<String> parts = result.split(';');
 
       if (parts.length >= 2) {
@@ -561,12 +555,10 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         String numberString = parts[1];
         int number = int.tryParse(numberString.trim()) ?? 0;
 
-        print('Znaleziona liczba: $number');
+        //print('Znaleziona liczba: $number');
 
         initialTime = remainingTime = number * 2;
         _startTimer();
-      } else {
-        print('Nie znaleziono odpowiedniego formatu danych');
       }
     });
   }
@@ -580,34 +572,37 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     }
     // Powyższe spowoduje że animacja punktów będzie dobrze wyglądała gdy czas się skończy
     _timeUpAnimationController.forward().then((value) async => {
-    if (isInterstitialAdLoaded && !isPurchased){
-      Provider.of<AdMobService>(context, listen: false).showInterstitialAd(),
-     SharedPreferencesHelper.setHowManyTimesRunInterstitialAd(),
-     _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd())}
-    else
-      {
-        if (widget.currentField[0] == 'field_star_blue_dark')
-          {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
-        else
-          {
-            if (isAlertOpened)
-              {
-                Navigator.of(context).pop(),
-                Navigator.of(context).pop('response'),
-                AnimatedAlertDialog.showPointsDialog(
-                    context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
-              }
-            else
-              Navigator.of(context).pop('response'),
-            AnimatedAlertDialog.showPointsDialog(
-                context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
-          }
-      },});
+          if (isInterstitialAdLoaded && !isPurchased)
+            {
+              Provider.of<AdMobService>(context, listen: false).showInterstitialAd(),
+              SharedPreferencesHelper.setHowManyTimesRunInterstitialAd(),
+              _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(),
+                  'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd())
+            }
+          else
+            {
+              if (widget.currentField[0] == 'field_star_blue_dark')
+                {AnimatedAlertDialog.showAnimatedDialogFinishedTask(context, _onButtonXPressed, _onButtonTickPressed)}
+              else
+                {
+                  if (isAlertOpened)
+                    {
+                      Navigator.of(context).pop(),
+                      Navigator.of(context).pop('response'),
+                      AnimatedAlertDialog.showPointsDialog(
+                          context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+                    }
+                  else
+                    Navigator.of(context).pop('response'),
+                  AnimatedAlertDialog.showPointsDialog(
+                      context, starsColors, widget.currentField[0], widget.teamNames, widget.teamColors),
+                }
+            },
+        });
   }
 
 // ustalenie konkretnego czasu dla danej karty
   void _setTimerDuration() {
-    //TO_DO do ustalenia konkretne czasy dla danych kart
     String cardType = widget.currentField[0];
     switch (cardType) {
       case "field_sheet":
@@ -629,7 +624,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         remainingTime = 30;
         break;
       default:
-        remainingTime = 50; // Domyślny czas, jeśli cardType nie pasuje do żadnego przypadku
+        remainingTime = 50;
         break;
     }
   }
@@ -711,13 +706,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         break;
       case 'field_star_green':
         cardType =
-            'draw_movie'; //problem jest taki ze idzie lista, która definiowana jest z jednego pola np.: field_star_green
-        // i wtedy generuje się np: field_star_green79 - i on na tej podstawie pobiera metodą: buildFortuneItemsList -> i tu dostaniemy listę słów,
-        // wziętych po separatorach ';' i zamienioną na listę Stringów i następnie ta lista jest przekazywana..
-        // w przypadku tej karty, musiałbym to robić w zupełnie inny sposób albo wysyłać 3 listy
-        //możnaby zrobić tak: jeżeli cardType (ustawiony tu przeze mnie) np. jako ==draw.
-        // to spróbować zrobić przekazanie 3 list:
-        //getWordsList(context, generateCardTypeWithNumber('draw_movie')); - trzebaby zrobić to na sztywno, albo specjalną metode dla tej jednej karty?
+            'draw_movie';
         break;
       case 'field_star_yellow':
         cardType = 'compare_question';
@@ -754,10 +743,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       starsColors[currentCardIndex] = Colors.red;
       await Future.delayed(Duration(milliseconds: 200));
 
-      if (isInterstitialAdLoaded && !isPurchased){
+      if (isInterstitialAdLoaded && !isPurchased) {
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
         await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(),
+            'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(
@@ -783,10 +773,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       starsColors[currentCardIndex] = Colors.green;
       await Future.delayed(Duration(milliseconds: 200));
 
-      if (isInterstitialAdLoaded && !isPurchased){
+      if (isInterstitialAdLoaded && !isPurchased) {
         Provider.of<AdMobService>(context, listen: false).showInterstitialAd();
         await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+        await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(),
+            'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
       } else {
         Navigator.of(context).pop('response');
         AnimatedAlertDialog.showPointsDialog(
@@ -1019,7 +1010,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   )),
                 ],
               ),
-              //SizedBox(height: 10),
               Text(
                   '${getTranslatedString(context, 'card')} ${currentCardIndex + 1} ${getTranslatedString(context, 'z_of_di_de_von_sur')} $totalCards',
                   style: TextStyle(color: Palette().white, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai')),
@@ -1038,7 +1028,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                   SvgButton(
                                     assetName: skipCount > 0
                                         ? 'assets/time_to_party_assets/cards_screens/button_drop.svg'
-                                        : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.svg', // zmień na ścieżkę do szarego przycisku
+                                        : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.svg',
                                     onPressed: _onSkipButtonPressed,
                                   ),
                                   Positioned(
@@ -1071,7 +1061,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                 ],
                               )
                             : Container(),
-                        //SizedBox(width: 10),
                         SvgButton(
                           assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
                           onPressed: _onButtonXPressed,
@@ -1269,7 +1258,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
               Shadow(
                 offset: Offset(1.0, 4.0),
                 blurRadius: 15.0,
-                color: Color.fromARGB(255, 0, 0, 0), // Kolor cienia, w tym przypadku czarny
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ],
           ),
@@ -1281,7 +1270,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             padding: const EdgeInsets.only(left: 10.0),
             child: SvgPicture.asset(
               currentImagePath,
-              height: 30.0, // Możesz dostosować wysokość według potrzeb
+              height: 30.0,
               fit: BoxFit.contain,
             ),
           ),
@@ -1289,7 +1278,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
       }
       displayWidgets.add(
         Row(
-          mainAxisSize: MainAxisSize.min, // Dopasowuje wielkość wiersza do zawartości
+          mainAxisSize: MainAxisSize.min,
           children: rowItems,
         ),
       );

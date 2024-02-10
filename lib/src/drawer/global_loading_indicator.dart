@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
 import '../app_lifecycle/loading_status.dart';
 import '../style/palette.dart';
 

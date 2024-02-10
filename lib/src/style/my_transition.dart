@@ -42,7 +42,7 @@ class _MySlideTransition extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlideTransition(
       position: Tween<Offset>(
-        begin: const Offset(1, 0), // You can adjust these as needed
+        begin: const Offset(1, 0),
         end: Offset.zero,
       ).animate(animation),
       child: child,

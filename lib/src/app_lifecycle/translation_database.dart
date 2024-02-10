@@ -44,7 +44,7 @@ class TranslationDatabase {
 
     final maps = await database.query(
       'Cards',
-      columns: ['Key', 'words'], // pobieramy kolumny "Key" oraz "words"
+      columns: ['Key', 'words'],
       where: isPurchased ? 'language = ?' : 'language = ? AND IsPurchased = "No"',
       whereArgs: [language],
     );
@@ -54,40 +54,6 @@ class TranslationDatabase {
       wordsMap[row['Key'] as String] = row['words'] as String;
     }
 
-   // print('Pobrano ${maps.length} rekordów dla języka $language, isPurchased: $isPurchased');
-  //  await saveMapToFileAndSendEmail(wordsMap);
-
     return wordsMap;
   }
-/*
-  Future<void> saveMapToFileAndSendEmail(Map<String, String> wordsMap) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/wordsMap.txt');
-    String content = wordsMap.entries.map((e) => '${e.key}: ${e.value}').join('\n');
-    await file.writeAsString(content);
-    print('Mapa słów zapisana do pliku: ${file.path}');
-
-    String username = 'dawid.lubomski95@gmail.com'; // Użyj swojego adresu e-mail
-    String password = 'tudscaaihjaeslaz'; // Użyj swojego hasła
-
-    final smtpServer = gmail(username, password); // Tworzenie serwera SMTP dla Gmail
-
-    // Tworzenie wiadomości e-mail
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.add('dawid.lubomski95@gmail.com') // Adres e-mail odbiorcy
-      ..subject = 'Twoja mapa słów :: ${DateTime.now()}'
-      ..text = 'Załączona jest twoja mapa słów.'
-      ..attachments = [FileAttachment(file)]; // Załącz plik
-
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
-      print('Message not sent.');
-      for (var p in e.problems) {
-        print('Problem: ${p.code}: ${p.msg}');
-      }
-    }
-  }*/
 }

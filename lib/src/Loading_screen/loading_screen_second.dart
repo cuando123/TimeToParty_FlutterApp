@@ -32,8 +32,7 @@ class _LoadingScreenSecondState extends State<LoadingScreenSecond> {
           context,
           MaterialPageRoute(
             builder: (context) => PlayGameboard(
-              teamNames: widget
-                  .teamNames,
+              teamNames: widget.teamNames,
               teamColors: widget.teamColors,
             ),
           ),
@@ -64,7 +63,7 @@ class _LoadingScreenSecondState extends State<LoadingScreenSecond> {
       child: LoaderWidgetSecond(countdown: countdown),
     );
   }
-  }
+}
 
 class LoaderWidgetSecond extends StatelessWidget {
   final int countdown;
@@ -87,7 +86,7 @@ class LoaderWidgetSecond extends StatelessWidget {
               CircularProgressIndicator(color: Palette().pink),
               SizedBox(height: 50.0),
               translatedText(context, 'game_will_start_in', 16, Palette().bluegrey),
-              letsText(context,'$countdown', 16, Palette().bluegrey),
+              letsText(context, '$countdown', 16, Palette().bluegrey),
             ],
           ),
         ),

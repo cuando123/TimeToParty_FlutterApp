@@ -1,22 +1,8 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-/// Shows a confetti (celebratory) animation: paper snippings falling down.
-///
-/// The widget fills the available space (like [SizedBox.expand] would).
-///
-/// When [isStopped] is `true`, the animation will not run. This is useful
-/// when the widget is not visible yet, for example. Provide [colors]
-/// to make the animation look good in context.
-///
-/// This is a partial port of this CodePen by Hemn Chawroka:
-/// https://codepen.io/iprodev/pen/azpWBr
 class Confetti extends StatefulWidget {
   static const _defaultColors = [
     Color(0xffd10841),
@@ -29,19 +15,18 @@ class Confetti extends StatefulWidget {
 
   final List<Color> colors;
 
-  final Widget child; // Dodaj to
+  final Widget child;
 
   const Confetti({
     this.colors = _defaultColors,
     this.isStopped = false,
-    required this.child, // Dodaj to
+    required this.child,
     super.key,
   });
 
   @override
   State<Confetti> createState() => _ConfettiState();
 }
-
 
 class ConfettiPainter extends CustomPainter {
   final defaultPaint = Paint();
@@ -56,8 +41,7 @@ class ConfettiPainter extends CustomPainter {
 
   final UnmodifiableListView<Color> colors;
 
-  ConfettiPainter(
-      {required Listenable animation, required Iterable<Color> colors})
+  ConfettiPainter({required Listenable animation, required Iterable<Color> colors})
       : colors = UnmodifiableListView(colors),
         super(repaint: animation);
 
@@ -94,8 +78,7 @@ class ConfettiPainter extends CustomPainter {
   }
 }
 
-class _ConfettiState extends State<Confetti>
-    with SingleTickerProviderStateMixin {
+class _ConfettiState extends State<Confetti> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -114,7 +97,6 @@ class _ConfettiState extends State<Confetti>
       ],
     );
   }
-
 
   @override
   void didUpdateWidget(covariant Confetti oldWidget) {

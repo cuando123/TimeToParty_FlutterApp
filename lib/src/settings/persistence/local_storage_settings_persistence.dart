@@ -2,17 +2,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settings_persistence.dart';
 
-/// An implementation of [SettingsPersistence] that uses
-/// `package:shared_preferences`.
 class LocalStorageSettingsPersistence extends SettingsPersistence {
-  final Future<SharedPreferences> instanceFuture =
-      SharedPreferences.getInstance();
+  final Future<SharedPreferences> instanceFuture = SharedPreferences.getInstance();
 
   @override
   Future<bool> getNotificationsOn() async {
     final prefs = await instanceFuture;
     return prefs.getBool('notificationsOn') ?? true;
   }
+
   @override
   Future<void> saveNotificationsOn(bool value) async {
     final prefs = await instanceFuture;

@@ -1,29 +1,20 @@
 import 'dart:collection';
 import 'dart:math';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-
 import '../settings/settings.dart';
 import 'songs.dart';
 import 'sounds.dart';
 
 class AudioController {
   static final _log = Logger('AudioController');
-
   final AudioPlayer _musicPlayer;
-
   final List<AudioPlayer> _sfxPlayers;
-
   int _currentSfxPlayer = 0;
-
   final Queue<Song> _playlist;
-
   final Random _random = Random();
-
   SettingsController? _settings;
-
   ValueNotifier<AppLifecycleState>? _lifecycleNotifier;
 
   void setMusicVolume(double volume) {
@@ -50,7 +41,6 @@ class AudioController {
 
   void attachSettings(SettingsController settingsController) {
     if (_settings == settingsController) {
-      // Already attached to this instance. Nothing to do.
       return;
     }
 
@@ -63,7 +53,6 @@ class AudioController {
 
     _settings = settingsController;
 
-    // Add handlers to the new settings controller
     settingsController.muted.addListener(_mutedHandler);
     settingsController.musicOn.addListener(_musicOnHandler);
     settingsController.soundsOn.addListener(_soundsOnHandler);
@@ -82,7 +71,6 @@ class AudioController {
     }
   }
 
-  /// Preloads all sound effects.
   Future<void> initialize() async {
     await AudioCache.instance.loadAll(SfxType.values
         .expand(soundTypeToFilename)
@@ -126,10 +114,8 @@ class AudioController {
         }
         break;
       case AppLifecycleState.inactive:
-        // No need to react to this state change.
         break;
       case AppLifecycleState.hidden:
-      // No need to react to this state change.
         break;
     }
   }

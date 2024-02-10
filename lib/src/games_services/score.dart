@@ -20,10 +20,12 @@ class TeamScore {
 
   static TeamScore getTeamScore(String teamName, Color teamColor) {
     String identifier = _createTeamIdentifier(teamName, teamColor);
-    return _teamScores.putIfAbsent(identifier, () => TeamScore(
-      teamName: teamName,
-      teamColor: teamColor,
-    ));
+    return _teamScores.putIfAbsent(
+        identifier,
+        () => TeamScore(
+              teamName: teamName,
+              teamColor: teamColor,
+            ));
   }
 
   static void updateTeamScore(TeamScore teamScore) {
@@ -49,7 +51,6 @@ class TeamScore {
 
     _teamScores[identifier] = currentScore;
   }
-
 
   static void resetAllScores() {
     _teamScores.clear();

@@ -21,6 +21,7 @@ class InstructionDialog extends StatefulWidget {
   @override
   _InstructionDialogState createState() => _InstructionDialogState();
 }
+
 class _InstructionDialogState extends State<InstructionDialog> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimationLeftButton;
@@ -33,22 +34,10 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
       vsync: this,
     )..repeat();
     _scaleAnimationLeftButton = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.1),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: Tween<double>(begin: 1.1, end: 1.0),
-          weight: 0.05
-      ),
-      TweenSequenceItem(
-          tween: ConstantTween<double>(1.0),
-          weight: 0.85
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.1), weight: 0.05),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
   }
 
@@ -62,187 +51,149 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                 color: Color(0xFFCB48EF),
                 fontSize: ResponsiveSizing.scaleHeight(context, 24),
               ),
-              bodyLarge:
-                  TextStyle(fontSize: ResponsiveSizing.scaleHeight(context, 16)),
+              bodyLarge: TextStyle(fontSize: ResponsiveSizing.scaleHeight(context, 16)),
             ),
       ),
       child: Builder(
         builder: (context) {
           return AlertDialog(
-            title: Center(
-                child: translatedText(context, 'game_rules', 24, Palette().pink,
-                    textAlign: TextAlign.center)),
+            title:
+                Center(child: translatedText(context, 'game_rules', 24, Palette().pink, textAlign: TextAlign.center)),
             content: SizedBox(
               width: double.maxFinite,
               child: Column(
                 children: [
-                  SvgPicture.asset(
-                      'assets/time_to_party_assets/line_instruction_screen.svg'),
-                  SizedBox(
-                      height: ResponsiveSizing.scaleHeight(context, 16)), // gap
+                  SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  SizedBox(height: ResponsiveSizing.scaleHeight(context, 16)), // gap
                   Expanded(
                     child: Scrollbar(
-                        thumbVisibility: true,trackVisibility: true,
-                        thickness: 6.0,
-                        radius: Radius.circular(10),
-                        child: Container(padding: EdgeInsets.all(1),
-                          child:
-                        ListView(
-                            padding: const EdgeInsets.only(right: 12.0),
-                      children: [
-                        translatedText(
-                            context, 'game_introduction', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_general',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        SvgPicture.asset(
-                            'assets/time_to_party_assets/cards_instruction_linear.svg'),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(
-                            context, 'game_purpose', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_players_teams',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(
-                            context, 'teams_and_roles', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_colors_flags',
-                            16, Palette().menudark),
-                        SvgPicture.asset(
-                            'assets/time_to_party_assets/instruction_flags_field.svg'),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(
-                            context, 'mechanics', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_random_team',
-                            16, Palette().menudark),
-                        translatedText(context, 'instruction_dialog_main_generals',
-                            16, Palette().menudark),
-                        translatedText(context, 'instruction_dialog_screen',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'scoring', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_skip_words',
-                            16, Palette().menudark),
-                        translatedText(context, 'instruction_dialog_mistakes',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        SvgPicture.asset(
-                            'assets/time_to_party_assets/instruction_cards_linear_2.svg'),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_device',
-                            16, Palette().menudark),
-                        translatedText(context, 'instruction_dialog_words_forms',
-                            16, Palette().menudark),
-                       ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
+                      thumbVisibility: true,
+                      trackVisibility: true,
+                      thickness: 6.0,
+                      radius: Radius.circular(10),
+                      child: Container(
+                        padding: EdgeInsets.all(1),
+                        child: ListView(
+                          padding: const EdgeInsets.only(right: 12.0),
                           children: [
-                            translatedText(
-                                context, 'taboo_words', 24, Palette().pink),
+                            translatedText(context, 'game_introduction', 24, Palette().pink),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_taboo.svg'),
+                            translatedText(context, 'instruction_dialog_general', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            SvgPicture.asset('assets/time_to_party_assets/cards_instruction_linear.svg'),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'game_purpose', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_players_teams', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'teams_and_roles', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_colors_flags', 16, Palette().menudark),
+                            SvgPicture.asset('assets/time_to_party_assets/instruction_flags_field.svg'),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'mechanics', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_random_team', 16, Palette().menudark),
+                            translatedText(context, 'instruction_dialog_main_generals', 16, Palette().menudark),
+                            translatedText(context, 'instruction_dialog_screen', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'scoring', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_skip_words', 16, Palette().menudark),
+                            translatedText(context, 'instruction_dialog_mistakes', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            SvgPicture.asset('assets/time_to_party_assets/instruction_cards_linear_2.svg'),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_device', 16, Palette().menudark),
+                            translatedText(context, 'instruction_dialog_words_forms', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'taboo_words', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_taboo.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_taboo_fields', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'rymes', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_rymes', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'pantomime', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_pantomime', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'alphabet', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_letters.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_20_words', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'famous_people', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_famous_people', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            Row(
+                              children: [
+                                translatedText(context, 'checkbox', 24, Palette().pink),
+                                ResponsiveSizing.responsiveWidthGap(context, 10),
+                                SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg'),
+                              ],
+                            ),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_choice', 16, Palette().menudark),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'summary', 24, Palette().pink),
+                            ResponsiveSizing.responsiveWidthGap(context, 10),
+                            translatedText(context, 'instruction_dialog_have_fun', 16, Palette().menudark),
+                            Consumer<IAPService?>(
+                              builder: (context, purchaseController, child) {
+                                if (purchaseController!.isPurchased) {
+                                  return Container(); // Zawartość dla użytkowników, którzy dokonali zakupu
+                                } else {
+                                  return buildFreeContent(context); // Zawartość dla użytkowników bez zakupu
+                                }
+                              },
+                            ),
                           ],
                         ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_taboo_fields',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'rymes', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_sheet.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_rymes',
-                            16, Palette().menudark),
-                         ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'pantomime', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_pantomime.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_pantomime',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'alphabet', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_letters.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_20_words',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'famous_people', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_microphone.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_famous_people',
-                            16, Palette().menudark),                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        Row(
-                          children: [
-                            translatedText(
-                                context, 'checkbox', 24, Palette().pink),
-                            ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset(
-                                'assets/time_to_party_assets/field_arrows.svg'),
-                          ],
-                        ),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_choice',
-                            16, Palette().menudark),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'summary', 24, Palette().pink),
-                        ResponsiveSizing.responsiveWidthGap(context, 10),
-                        translatedText(context, 'instruction_dialog_have_fun',
-                            16, Palette().menudark),
-                        Consumer<IAPService?>(
-                          builder: (context, purchaseController, child) {
-                            if (purchaseController!.isPurchased) {
-                              return Container(); // Zawartość dla użytkowników, którzy dokonali zakupu
-                            } else {
-                              return buildFreeContent(context); // Zawartość dla użytkowników bez zakupu
-                            }
-                          },
-                        ),
-                      ],
-                    ),),),
-                  ), // Dodaj swoją linię SVG tutaj
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            actionsPadding: EdgeInsets.symmetric(
-                horizontal: 20), // Zmniejsz obramowanie przycisków
+            actionsPadding: EdgeInsets.symmetric(horizontal: 20), // Zmniejsz obramowanie przycisków
             actions: [
               Align(
                 alignment: Alignment.center,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 20),
-                  child:
-                  CustomStyledButton(
+                  child: CustomStyledButton(
                     icon: null,
                     text: 'OK',
                     onPressed: () {
@@ -269,37 +220,32 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
     return Column(
       children: [
         ResponsiveSizing.responsiveWidthGap(context, 10),
-        translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
-            textAlign: TextAlign.center),
+        translatedText(context, 'discover_the_full_potential', 18, Palette().pink, textAlign: TextAlign.center),
         AnimatedBuilder(
           animation: _scaleAnimationLeftButton,
           builder: (context, child) => Transform.scale(
             scale: _scaleAnimationLeftButton.value,
             child: child,
-          ), child:
-        Padding(
-            padding: EdgeInsets.all(20),child:
-        TripleButtonWin(
-          svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
-          onPressed: ()  {
-            Future.delayed(Duration(milliseconds: 150));
-            if(widget.isGameOpened){
-              AnimatedAlertDialog.showExitGameDialog(
-                  context,
-                  false,
-                  '',
-                  [], // Pusta lista Stringów
-                  [], // Pusta lista Colorów
-                  true
-              );
-
-            } else {
-              GoRouter.of(context).push('/card_advertisement');
-            }
-          },
-        )
-        )
-          ,
+          ),
+          child: Padding(
+              padding: EdgeInsets.all(20),
+              child: TripleButtonWin(
+                svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+                onPressed: () {
+                  Future.delayed(Duration(milliseconds: 150));
+                  if (widget.isGameOpened) {
+                    AnimatedAlertDialog.showExitGameDialog(
+                        context,
+                        false,
+                        '',
+                        [],
+                        [],
+                        true);
+                  } else {
+                    GoRouter.of(context).push('/card_advertisement');
+                  }
+                },
+              )),
         ),
         ResponsiveSizing.responsiveWidthGap(context, 10),
         translatedText(context, 'buy_unlimited_version', 20, Palette().pink, textAlign: TextAlign.center),
@@ -312,5 +258,4 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
     _animationController.dispose();
     super.dispose();
   }
-
 }

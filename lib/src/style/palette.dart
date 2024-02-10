@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../app_lifecycle/responsive_sizing.dart';
-import '../app_lifecycle/translated_text.dart';
 
 class Palette {
   Color get pen => const Color(0xff1d75fb);

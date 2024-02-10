@@ -66,7 +66,7 @@ class AnimatedAlertDialog {
           });
         }
         return WillPopScope(
-          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          onWillPop: () async => false,
           child: Center(child: dialogContent),
         );
       },
@@ -139,7 +139,6 @@ class AnimatedAlertDialog {
                       if (isPurchasePurpose == false) {
                         final audioController = context.read<AudioController>();
                         audioController.playSfx(SfxType.buttonBackExit);
-                        //Navigator.of(context).popUntil((route) => route.isFirst);
                         await Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => WinGameScreen(
                             teamNames: teamNames,
@@ -202,7 +201,7 @@ class AnimatedAlertDialog {
 
     int currentRound = TeamScore.getRoundNumber(teamNames[0], teamColors[0]);
     double totalScore = TeamScore.getTeamScore(teamNames[0], teamColors[0]).getTotalScore();
-    print('Round: ${currentRound - 1}, Total Score for ${teamNames[0]}: $totalScore');
+    //print('Round: ${currentRound - 1}, Total Score for ${teamNames[0]}: $totalScore');
 
     showGeneralDialog(
       context: context,
@@ -391,7 +390,7 @@ class AnimatedAlertDialog {
       builder: (context) {
         final audioController = context.watch<AudioController>();
         return WillPopScope(
-          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          onWillPop: () async => false,
           child: AlertDialog(
             backgroundColor: Palette().white,
             shape: RoundedRectangleBorder(
@@ -456,7 +455,7 @@ class AnimatedAlertDialog {
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (buildContext, animation, secondaryAnimation) {
         return WillPopScope(
-          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          onWillPop: () async => false,
           child: Center(
             child: AlertDialog(
               backgroundColor: Palette().white,
@@ -522,7 +521,7 @@ class AnimatedAlertDialog {
               translatedText(context, 'compare_questions_result_ok', 20, Palette().pink, textAlign: TextAlign.center));
           dialogContent.add(SizedBox(height: 20));
           dialogContent.add(Center(
-            child: Text('${getTranslatedString(context, 'answer')}: ${selectedTextPerson1}',
+            child: Text('${getTranslatedString(context, 'answer')}: $selectedTextPerson1',
                 style: TextStyle(
                     color: Palette().bluegrey, fontWeight: FontWeight.normal, fontFamily: 'HindMadurai', fontSize: 16),
                 textAlign: TextAlign.center),
@@ -538,7 +537,7 @@ class AnimatedAlertDialog {
                 Image.asset('assets/time_to_party_assets/activities/man.png', height: 120),
                 SizedBox(height: 10),
                 Text(
-                  '${getTranslatedString(context, 'answer')} 1: ${selectedTextPerson1}',
+                  '${getTranslatedString(context, 'answer')} 1: $selectedTextPerson1',
                   style: TextStyle(
                     color: Palette().bluegrey,
                     fontWeight: FontWeight.normal,
@@ -556,7 +555,7 @@ class AnimatedAlertDialog {
               children: [
                 Image.asset('assets/time_to_party_assets/activities/woman.png', height: 120),
                 SizedBox(height: 10),
-                Text('${getTranslatedString(context, 'answer')} 2: ${selectedTextPerson2}',
+                Text('${getTranslatedString(context, 'answer')} 2: $selectedTextPerson2',
                     style: TextStyle(
                         color: Palette().bluegrey,
                         fontWeight: FontWeight.normal,
@@ -568,10 +567,10 @@ class AnimatedAlertDialog {
           );
         }
         return WillPopScope(
-          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          onWillPop: () async => false,
           child: Center(
             child: AlertDialog(
-              backgroundColor: Palette().white, // Upewnij się, że klasa Palette jest dostępna
+              backgroundColor: Palette().white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -676,7 +675,12 @@ class AnimatedAlertDialog {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          title: letsText(context, "${getTranslatedString(context, "your_opinion_we_noticed_that")} $userRating ${getTranslatedString(context, "your_opinion_stars")}", 18, Palette().pink, textAlign: TextAlign.center),
+                          title: letsText(
+                              context,
+                              "${getTranslatedString(context, "your_opinion_we_noticed_that")} $userRating ${getTranslatedString(context, "your_opinion_stars")}",
+                              18,
+                              Palette().pink,
+                              textAlign: TextAlign.center),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -684,11 +688,10 @@ class AnimatedAlertDialog {
                               Center(
                                 child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
                               ),
-                              //Text('Jak podoba Ci się nasza aplikacja?'),
                               ResponsiveSizing.responsiveHeightGap(context, 10),
-                              translatedText(context, "your_opinion_matters_description", 16, Palette().menudark, textAlign: TextAlign.center),
+                              translatedText(context, "your_opinion_matters_description", 16, Palette().menudark,
+                                  textAlign: TextAlign.center),
                               // textAlign: TextAlign.center,
-
                             ],
                           ),
                           actions: <Widget>[
@@ -722,7 +725,7 @@ class AnimatedAlertDialog {
                       },
                     );
                   }
-                  Navigator.of(context).pop(); // Zamknij dialog
+                  Navigator.of(context).pop();
                 },
                 backgroundColor: Palette().pink,
                 foregroundColor: Palette().white,
@@ -934,7 +937,7 @@ class AnimatedAlertDialog {
 
         final audioController = context.watch<AudioController>();
         return WillPopScope(
-          onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+          onWillPop: () async => false,
           child: AlertDialog(
             backgroundColor: Palette().white,
             shape: RoundedRectangleBorder(
@@ -1047,8 +1050,8 @@ class _PointsAnimationDialogState extends State<PointsAnimationDialog> with Tick
 
   void _startAnimations() async {
     // Scale up the stars for both colors at the beginning
-    _greenStarController.forward();
-    _redStarController.forward();
+    await _greenStarController.forward();
+    await _redStarController.forward();
 
     for (var i = 0; i < widget.greenPoints; i++) {
       await Future.delayed(Duration(milliseconds: 100));
@@ -1141,19 +1144,19 @@ class _StarPoints extends StatelessWidget {
         ),
         child: IconTheme(
           data: IconThemeData(
-            size: 22, // Dostosuj rozmiar gwiazdki
-            color: color, // Kolor gwiazdki
+            size: 22,
+            color: color,
           ),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.star_rounded), // Używamy ikony gwiazdki
+              Icon(Icons.star_rounded),
               Transform.translate(
                 offset: Offset(0, 1),
                 child: Text(
                   '$points',
                   style: TextStyle(
-                    fontSize: 8, // Dostosuj rozmiar tekstu dla czytelności
+                    fontSize: 8,
                     color: Palette().white,
                     fontWeight: FontWeight.bold,
                   ),

@@ -2,19 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../../main.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../in_app_purchase/services/firebase_service.dart';
 
 class NotificationsManager {
   BuildContext context;
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   final FirebaseService _firebaseService;
 
@@ -28,46 +25,37 @@ class NotificationsManager {
   }
 
   Future<void> onSelectNotification(NotificationResponse? response) async {
-    //TO_DO do przetestowania
-    print('payload $response');
     if (response?.payload != null && response!.payload!.isNotEmpty) {
       var lastNotificationClicked = DateFormat('yyyy-MM-dd – HH:mm').format(DateTime.now());
       await SharedPreferencesHelper.setLastNotificationClicked(lastNotificationClicked);
-      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
+      await _firebaseService.updateUserInformations(
+          await SharedPreferencesHelper.getUserID(), 'lastNotificationClicked', lastNotificationClicked);
     }
   }
 
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid, );
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification);
-    //(details) =>
-    //         onSelectNotification(details.payload as NotificationResponse?));
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: onSelectNotification);
   }
 
   Future<void> scheduleWeeklyNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'weekly_notification_channel', 'Weekly Notifications',
-        importance: Importance.max,
-        priority: Priority.high,
-        showWhen: false);
+        importance: Importance.max, priority: Priority.high, showWhen: false);
 
-    var platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        getTranslatedString(context, 'weekly_notification_up'),
-        getTranslatedString(context, 'weekly_notification_down'),
-        _nextInstanceOfMonday1900(),
-        platformChannelSpecifics,
+    await flutterLocalNotificationsPlugin.zonedSchedule(0, getTranslatedString(context, 'weekly_notification_up'),
+        getTranslatedString(context, 'weekly_notification_down'), _nextInstanceOfMonday1900(), platformChannelSpecifics,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
   }
 
@@ -79,17 +67,16 @@ class NotificationsManager {
     }
     return scheduledDate;
   }
+
   Future<void> showNotificationNow(String title, String body) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'immediate_notification_channel', // Może być potrzebne utworzenie nowego kanału dla tego typu powiadomień
         'Immediate Notifications',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: true);
 
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       0, // Unikalne ID notyfikacji
@@ -99,5 +86,4 @@ class NotificationsManager {
       payload: 'UniquePayloadValue', // Tutaj dodajesz payload
     );
   }
-
 }

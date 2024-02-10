@@ -85,7 +85,6 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    // Twoje istniejące ustawienia UI i layout...
     return LayoutBuilder(
       builder: (context, constraints) {
         return AspectRatio(
@@ -108,7 +107,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
                       colors: [
                         Color(0xFF5E0EAD),
                         Palette().pink,
-                      ], // Przykładowe kolory gradientu
+                      ],
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -160,7 +159,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
                               offset: Offset(0, -10),
                               child: Transform.scale(
                                 scaleX: 0.75,
-                                scaleY: 0.65, // zmniejsza wielkość o połowę
+                                scaleY: 0.65,
                                 child: TriangleIndicator(
                                   color: Palette().borderSpinningWheel,
                                 ),
@@ -170,7 +169,7 @@ class _MyFortuneWheelState extends State<MyFortuneWheel> with SingleTickerProvid
                               offset: Offset(0, -10),
                               child: Transform.scale(
                                 scaleX: 0.6,
-                                scaleY: 0.5, // zmniejsza wielkość o połowę
+                                scaleY: 0.5,
                                 child: TriangleIndicator(
                                   color: Color(0xFFFFC344),
                                 ),

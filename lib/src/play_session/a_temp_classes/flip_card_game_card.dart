@@ -13,7 +13,6 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     throw UnimplementedError();
   }
-
 }
 
 class FlipCard extends StatefulWidget {
@@ -27,16 +26,13 @@ class FlipCard extends StatefulWidget {
   _FlipCardState createState() => _FlipCardState();
 }
 
-
-class _FlipCardState extends State<FlipCard>
-    with SingleTickerProviderStateMixin {
+class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
     if (widget.isFlipped) {
       _controller.value = 0.5; // jeśli karta ma być odwrócona
     }
@@ -58,18 +54,16 @@ class _FlipCardState extends State<FlipCard>
           child: Stack(
             children: [
               Container(
-                child: isFaceUp
-                    ? SvgPicture.asset(widget.card.assetPath1)
-                    : SvgPicture.asset(widget.card.assetPath2),
+                child: isFaceUp ? SvgPicture.asset(widget.card.assetPath1) : SvgPicture.asset(widget.card.assetPath2),
               ),
               if (widget.showGlow) ...[
                 Container(
                   width: 100,
-                  height: 100,  // Ustawiłem też wysokość, aby widoczny był efekt
+                  height: 100, // Ustawiłem też wysokość, aby widoczny był efekt
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
-                      center: Alignment.center,  // Rozpoczęcie gradientu ze środka
-                      radius: 0.7,  // Określa "rozciągnięcie" gradientu, 0.5 to połowa szerokości i wysokości
+                      center: Alignment.center, // Rozpoczęcie gradientu ze środka
+                      radius: 0.7, // Określa "rozciągnięcie" gradientu, 0.5 to połowa szerokości i wysokości
                       colors: const [Colors.white, Colors.transparent],
                       stops: const [0.1, 1.0],
                     ),
@@ -82,7 +76,6 @@ class _FlipCardState extends State<FlipCard>
       },
     );
   }
-
 
   @override
   void didUpdateWidget(covariant FlipCard oldWidget) {

@@ -85,7 +85,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
             });
           },
           onAdFailedToLoad: (ad, error) {
-            print("ERROR AD: $ad error: $error");
+            //print("ERROR AD: $ad error: $error");
             ad.dispose();
           },
         ))
@@ -135,7 +135,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
           ),
         ),
       );
-      print("Reklama interstitial została zamknięta");
+      //print("Reklama interstitial została zamknięta");
     });
   }
 
@@ -191,7 +191,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -408,7 +407,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
 
                                                   if (iapService.isPurchased) {
                                                     // Zawartość dla użytkowników, którzy dokonali zakupu
-                                                    navigateToLoadingScreen(context, teamProvider.teamNames);
+                                                    await navigateToLoadingScreen(context, teamProvider.teamNames);
                                                   } else {
                                                     // Zawartość dla użytkowników bez zakupu
                                                     if (isInterstitialAdLoaded) {
@@ -417,9 +416,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
                                                       await SharedPreferencesHelper.setHowManyTimesRunInterstitialAd();
-                                                      await _firebaseService.updateUserInformations(await SharedPreferencesHelper.getUserID(), 'howManyTimesRunInstertitialAd', SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
+                                                      await _firebaseService.updateUserInformations(
+                                                          await SharedPreferencesHelper.getUserID(),
+                                                          'howManyTimesRunInstertitialAd',
+                                                          SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
                                                     } else {
-                                                      navigateToLoadingScreen(context, teamProvider.teamNames);
+                                                      await navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }
                                                   }
                                                 } else {
@@ -473,7 +475,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                         ),
                         Consumer<IAPService>(
                           builder: (context, purchaseController, child) {
-                            print("ADDD: isOnline: $isOnline, Adloaded: $_nativeAdLoaded");
+                            //print("ADDD: isOnline: $isOnline, Adloaded: $_nativeAdLoaded");
                             if (purchaseController.isPurchased) {
                               return SizedBox.shrink();
                             } else {
@@ -504,7 +506,5 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
         );
       },
     );
-
   }
-
 }

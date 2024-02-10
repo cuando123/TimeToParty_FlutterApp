@@ -9,16 +9,14 @@ class TeamProvider with ChangeNotifier {
 
   void initializeTeams(BuildContext context, int numberOfTeams) {
     teams = getTranslatedString(context, 'x_teams');
-    teamNames =
-    List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
+    teamNames = List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
     hasUserInput = List<bool>.generate(numberOfTeams, (index) => false);
     notifyListeners();
   }
 
   void updateTeams(BuildContext context, int numberOfTeams) {
     teams = getTranslatedString(context, 'x_teams');
-    teamNames =
-    List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
+    teamNames = List<String>.generate(numberOfTeams, (index) => '$teams ${index + 1}');
     hasUserInput = List<bool>.generate(numberOfTeams, (index) => false);
     notifyListeners();
   }

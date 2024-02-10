@@ -17,7 +17,6 @@ import '../customAppBar/customAppBar.dart';
 import '../drawer/drawer.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/services/ad_mob_service.dart';
-import '../in_app_purchase/services/firebase_service.dart';
 import '../in_app_purchase/services/iap_service.dart';
 import '../style/palette.dart';
 
@@ -68,7 +67,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
-    )..repeat(); // Powtarza animację w nieskończoność
+    )..repeat();
 
     _scaleAnimationLeftButton = TweenSequence<double>([
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
@@ -100,9 +99,10 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
       setState(() {
         isOnline = isConnected;
       });
-        context.read<AdMobService>().onConnectionChanged(isConnected);
+      context.read<AdMobService>().onConnectionChanged(isConnected);
     });
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -127,9 +127,9 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
         //
       },
     )..sort((a, b) => b['score'].compareTo(a['score']) as int);
-    print('sortedTeams: $sortedTeams, sortedTeamslength: ${sortedTeams.length}');
+    // print('sortedTeams: $sortedTeams, sortedTeamslength: ${sortedTeams.length}');
     return WillPopScope(
-      onWillPop: () async => false, // Zablokowanie możliwości cofnięcia
+      onWillPop: () async => false,
       child: Container(
         decoration: BoxDecoration(
           gradient: Palette().backgroundLoadingSessionGradient,
@@ -155,29 +155,20 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                   height: ResponsiveSizing.scaleHeight(context, 150)),
               Padding(
                   padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
-              /*  if (adsControllerAvailable && !adsRemoved) ...[
-                const Expanded(
-                  child: Center(
-                    child: SizedBox.shrink()
-                  ),
-                ),
-              ],*/
-
               Expanded(
                 flex: 3,
                 child: Container(
                   margin: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                        color: Colors.deepPurpleAccent.withOpacity(0.3), width: 1), // Rozowa linia obramowania
+                    border: Border.all(color: Colors.deepPurpleAccent.withOpacity(0.3), width: 1),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       stops: const [0.001, 1.0],
                       colors: [
-                        Palette().pink.withOpacity(0.2), // Rozpoczyna się od rozowego
-                        Colors.transparent, // Przechodzi w przezroczystość
+                        Palette().pink.withOpacity(0.2),
+                        Colors.transparent,
                       ],
                     ),
                     boxShadow: [
@@ -185,13 +176,13 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                         color: Colors.deepPurpleAccent.withOpacity(0.1),
                         spreadRadius: 2,
                         blurRadius: 4,
-                        offset: Offset(-2, -2), // Cień wewnętrzny górny-lewy
+                        offset: Offset(-2, -2),
                       ),
                       BoxShadow(
                         color: Colors.deepPurpleAccent.withOpacity(0.1),
                         spreadRadius: 2,
                         blurRadius: 4,
-                        offset: Offset(2, 2), // Cień wewnętrzny dolny-prawy
+                        offset: Offset(2, 2),
                       ),
                     ],
                   ),
@@ -282,7 +273,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                       ),
                                       Spacer(),
                                       Expanded(
-                                        flex: 3, // Ustal proporcje dla punktów
+                                        flex: 3,
                                         child: Stack(
                                           alignment: Alignment.center,
                                           children: [
@@ -307,7 +298,6 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                           ],
                                         ),
                                       ),
-                                      // Zastępuje ostatni SizedBox
                                     ],
                                   ),
                                 );
@@ -332,8 +322,6 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(width: 10),
-
-                          // Pierwszy przycisk (widoczny zawsze)
                           Flexible(
                             child: AnimatedBuilder(
                               animation: _scaleAnimationLeftButton,
@@ -363,13 +351,13 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                         svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
                                         onPressed: () {
                                           setState(() {
-                                            isOnline = false; //do ukrycia reklamy przez goroute bo wyrzucalo AdWidget is no longer available in widget tree
+                                            isOnline =
+                                                false; //do ukrycia reklamy przez goroute bo wyrzucalo AdWidget is no longer available in widget tree
                                           });
                                           if (mounted) {
                                             GoRouter.of(context).push('/card_advertisement');
                                           }
                                         },
-
                                       ),
                                     ),
                                   ),
@@ -378,10 +366,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                               return SizedBox.shrink();
                             },
                           ),
-
                           SizedBox(width: 10),
-
-                          // Trzeci przycisk (widoczny zawsze)
                           Flexible(
                             child: AnimatedBuilder(
                               animation: _scaleAnimationRightButton,
@@ -397,7 +382,6 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                               ),
                             ),
                           ),
-
                           SizedBox(width: 10),
                         ],
                       ),

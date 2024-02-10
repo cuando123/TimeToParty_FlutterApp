@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 import '../app_lifecycle/translated_text.dart';
 import '../audio/audio_controller.dart';
@@ -50,9 +49,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
     //if ACCOUNT = FREE
     try {
       if (!_nativeAdLoaded) {
-        _nativeAd = NativeAd(adUnitId: context
-            .read<AdMobService>()
-            .nativeAdUnitId!, factoryId: 'listTile', request: AdRequest(),
+        _nativeAd = NativeAd(
+            adUnitId: context.read<AdMobService>().nativeAdUnitId!,
+            factoryId: 'listTile',
+            request: AdRequest(),
             listener: NativeAdListener(
               onAdLoaded: (ad) {
                 setState(() {
@@ -67,15 +67,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
           ..load();
       }
     } catch (e) {
-      print('Wystąpił błąd podczas tworzenia reklamy: $e');
+      //print('Wystąpił błąd podczas tworzenia reklamy: $e');
     }
     _firebaseService = Provider.of<FirebaseService>(context, listen: false);
 
     _animationController = AnimationController(
       duration: Duration(seconds: 3),
       vsync: this,
-    )
-      ..repeat(); // Powtarza animację w nieskończoność
+    )..repeat();
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.1), weight: 0.05),
@@ -83,7 +82,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       TweenSequenceItem(tween: Tween<double>(begin: 1.1, end: 1.0), weight: 0.05),
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 0.85),
     ]).animate(_animationController);
-
   }
 
   Future<void> _checkPurchaseStatus() async {
@@ -109,13 +107,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
       setState(() {
         isOnline = isConnected;
       });
-      if(!_nativeAdLoaded) {
+      if (!_nativeAdLoaded) {
         context.read<AdMobService>().onConnectionChanged(isConnected);
       }
       if (isConnected) {
-        //_checkPurchaseStatus();
-        _firebaseService
-            .updateConnectionStatusIfConnected(); // _firebaseService.signInAnonymouslyAndSaveUID(); to sie wykona ale poczeka na isConnected
+        _firebaseService.updateConnectionStatusIfConnected();
         print("${_firebaseService.currentUser}");
       }
     });
@@ -170,7 +166,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-
     final audioController = context.watch<AudioController>();
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -222,11 +217,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     ResponsiveSizing.responsiveHeightGapWithCondition(context, 5, 10, 650),
                     AnimatedBuilder(
                       animation: _scaleAnimation,
-                      builder: (context, child) =>
-                          Transform.scale(
-                            scale: _scaleAnimation.value,
-                            child: child,
-                          ),
+                      builder: (context, child) => Transform.scale(
+                        scale: _scaleAnimation.value,
+                        child: child,
+                      ),
                       child: CustomStyledButton(
                         icon: Icons.play_arrow_rounded,
                         text: getTranslatedString(context, 'play_now'),
@@ -269,6 +263,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                       height: 45,
                       fontSize: ResponsiveSizing.scaleHeight(context, 20),
                     ),
+                    /*
                     Consumer<FirebaseService>(
                       builder: (context, firebaseService, child) {
                         //print('FIREBASE WIDGET z CONSUMERA: $uidUserLoaded');
@@ -277,8 +272,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                           style: TextStyle(color: Colors.white),
                         );
                       },
-                    ),
-                    // Dodaj tutaj pozostałe widgety
+                    ),*/
                   ],
                 ),
               ),

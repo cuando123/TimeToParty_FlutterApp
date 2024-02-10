@@ -57,8 +57,8 @@ class TripleButtonWin extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(10),
-          splashColor: Colors.white.withOpacity(0.5), // Kolor falowania
-          highlightColor: Colors.pinkAccent.withOpacity(0.5), // Kolor podczas wciśnięcia
+          splashColor: Colors.white.withOpacity(0.5),
+          highlightColor: Colors.pinkAccent.withOpacity(0.5),
           child: Center(
             child: _buildButtonContent(),
           ),
@@ -75,7 +75,7 @@ class TripleButtonWin extends StatelessWidget {
     } else if (iconData != null) {
       return Icon(iconData, color: Colors.white, size: 32);
     } else {
-      return SizedBox.shrink(); // Jeśli wszystkie są null, nie pokazuj niczego
+      return SizedBox.shrink();
     }
   }
 }

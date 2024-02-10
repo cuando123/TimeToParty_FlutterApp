@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roll_slot_machine/roll_slot_machine.dart';
@@ -62,7 +61,7 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
     _pulseAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1000),
-    )..repeat(reverse: true); // Powtarzaj animację w kierunku przeciwnym
+    )..repeat(reverse: true);
 
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(
@@ -116,12 +115,12 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                   duration: Duration(milliseconds: 300),
                   child: !isDrawButtonVisible && isConfirmButtonVisible // Warunek na wyświetlenie CustomPaint
                       ? CustomPaint(
-                    painter: ShadowPainter(),
-                    child: Container(),
-                  )
+                          painter: ShadowPainter(),
+                          child: Container(),
+                        )
                       : Container(
-                    color: Colors.black.withOpacity(0.8),
-                  ),
+                          color: Colors.black.withOpacity(0.8),
+                        ),
                 ),
               ),
             if (isDrawButtonVisible)
@@ -130,8 +129,8 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                 child: ScaleTransition(
                   scale: _pulseAnimation,
                   child: CustomStyledButton(
-                    icon: Icons.play_arrow_rounded, // Tutaj możesz wybrać odpowiednią ikonę
-                    text: getTranslatedString(context, 'randomize'), // Tekst przycisku
+                    icon: Icons.play_arrow_rounded,
+                    text: getTranslatedString(context, 'randomize'),
                     onPressed: () {
                       setState(() {
                         isDrawButtonVisible = false;
@@ -150,14 +149,16 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                           _shadowOpacity = 0.7;
                         });
                       });
-                    },backgroundColor: Palette().pink, foregroundColor: Palette().white,
+                    },
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
                   ),
                 ),
               ),
             Visibility(
               visible: isConfirmButtonVisible,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 40.0), // Dodaje padding na dole
+                padding: const EdgeInsets.only(bottom: 40.0),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: ScaleTransition(
@@ -167,7 +168,9 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
                       text: getTranslatedString(context, 'start_the_task'),
                       onPressed: () {
                         Navigator.of(context).pop(getText());
-                      },backgroundColor: Palette().pink, foregroundColor: Palette().white,
+                      },
+                      backgroundColor: Palette().pink,
+                      foregroundColor: Palette().white,
                     ),
                   ),
                 ),
@@ -180,7 +183,8 @@ class _RollSlotMachineState extends State<RollSlotMachine> with SingleTickerProv
   }
 
   String getText() {
-    final String x = '${emojiList1.elementAt(_rollSlotController.currentIndex)};${emojiList2.elementAt(_rollSlotController1.currentIndex)};${emojiList3.elementAt(_rollSlotController2.currentIndex)}';
+    final String x =
+        '${emojiList1.elementAt(_rollSlotController.currentIndex)};${emojiList2.elementAt(_rollSlotController1.currentIndex)};${emojiList3.elementAt(_rollSlotController2.currentIndex)}';
     return x;
   }
 }
@@ -232,7 +236,6 @@ class BuildItem extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(.2), offset: Offset(5, 5)),
-          //BoxShadow(color: Colors.deepPurple.withOpacity(.2), offset: Offset(-5, -5)),
         ],
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.deepPurple, width: 3),
@@ -256,7 +259,6 @@ class BuildItem extends StatelessWidget {
     // Sprawdź, czy dla danego kodu istnieje obrazek
     if (codeToImagePath.containsKey(code)) {
       String imagePath = codeToImagePath[code]!;
-      // Jeśli obrazek istnieje, zwróć go
       return Image.asset(
         imagePath,
         key: Key(code),
@@ -293,16 +295,15 @@ class ShadowPainter extends CustomPainter {
     // Dodanie gradientu
     var gradient = LinearGradient(
       colors: [
-        Colors.white.withOpacity(0.8), // Jasny kolor na końcach
-        Colors.white.withOpacity(0.4),           // Przezroczystość w środku
-        Colors.white.withOpacity(0.8), // Jasny kolor na końcach
+        Colors.white.withOpacity(0.8),
+        Colors.white.withOpacity(0.4),
+        Colors.white.withOpacity(0.8),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     );
 
-    var gradientPaint = Paint()
-      ..shader = gradient.createShader(barRect);
+    var gradientPaint = Paint()..shader = gradient.createShader(barRect);
 
     canvas.drawRect(barRect, gradientPaint);
   }
@@ -312,10 +313,3 @@ class ShadowPainter extends CustomPainter {
     return false;
   }
 }
-
-
-
-
-
-
-

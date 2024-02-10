@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
-import '../app_lifecycle/translated_text.dart';
 import '../play_session/main_board/play_gameboard_main.dart';
 import '../style/palette.dart';
 
@@ -16,7 +15,6 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +34,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-     return LoaderWidget();
+    return LoaderWidget();
   }
 }
 
@@ -45,7 +43,6 @@ class LoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       decoration: BoxDecoration(
         gradient: Palette().backgroundLoadingSessionGradient,
@@ -53,7 +50,7 @@ class LoaderWidget extends StatelessWidget {
       child: Align(
         alignment: Alignment(0, -0.4),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Zmieniamy na 'min'
+          mainAxisSize: MainAxisSize.min,
           children: [
             LogoWidget(),
             ResponsiveSizing.responsiveHeightGap(context, 20),
