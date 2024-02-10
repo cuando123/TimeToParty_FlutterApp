@@ -167,10 +167,18 @@ class SharedPreferencesHelper {
     await setString('firebaseMessagingToken', value);
   }
 
+  static Future<void> setLanguageFromDevice(String value) async {
+    await setString('languageFromDevice', value);
+  }
+
   // Odczytywanie danych
   static Future<String?> getFirebaseMessagingToken() async {
     return await getString('firebaseMessagingToken');
   }
+
+  static Future<String?> getLanguageFromDevice() async {
+    return await getString('languageFromDevice');
+    }
 
   static Future<String?> getUserID() async {
     return await getString('userID');

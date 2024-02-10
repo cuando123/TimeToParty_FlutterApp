@@ -76,7 +76,7 @@ Future<void> main() async {
     );
   });
 
-  final translationProvider = TranslationProvider.fromDeviceLanguage();
+  final translationProvider = await TranslationProvider.create();
   await translationProvider.loadWords();
   await translationProvider.loadTranslations();
 

@@ -129,29 +129,40 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     int? howManyTimesFinishedGame = await SharedPreferencesHelper.getHowManyTimesFinishedGame();
     int? howManyTimesRunInterstitialAd = await SharedPreferencesHelper.getHowManyTimesRunInterstitialAd();
     String? lastHowManyFieldReached = await SharedPreferencesHelper.getLastHowManyFieldReached();
+    String? languageFromDevice = await  SharedPreferencesHelper.getLanguageFromDevice();
 
     // Teraz możemy bezpiecznie używać toString(), ponieważ mamy już rozwiązane wartości
     if (userId != null) {
       // Upewnij się, że userId nie jest null przed aktualizacją
-      if (finalSpendTimeOnGame != null)
+      if (finalSpendTimeOnGame != null) {
         await widget.firebaseService
             .updateUserInformations(userId, 'finalSpendTimeOnGame', finalSpendTimeOnGame.toString());
-      if (lastOneSpendTimeOnGame != null)
+      }
+      if (lastOneSpendTimeOnGame != null) {
         await widget.firebaseService
             .updateUserInformations(userId, 'lastOneSpendTimeOnGame', lastOneSpendTimeOnGame.toString());
-      if (lastPlayDate != null)
+      }
+      if (lastPlayDate != null) {
         await widget.firebaseService.updateUserInformations(userId, 'lastPlayDate', lastPlayDate.toString());
-      if (howManyTimesRunApp != null)
+      }
+      if (howManyTimesRunApp != null) {
         await widget.firebaseService
             .updateUserInformations(userId, 'howManyTimesRunApp', howManyTimesRunApp.toString());
-      if (howManyTimesFinishedGame != null)
+      }
+      if (howManyTimesFinishedGame != null) {
         await widget.firebaseService
             .updateUserInformations(userId, 'howManyTimesFinishedGame', howManyTimesFinishedGame.toString());
-      if (howManyTimesRunInterstitialAd != null)
+      }
+      if (howManyTimesRunInterstitialAd != null) {
         await widget.firebaseService
             .updateUserInformations(userId, 'howManyTimesRunInstertitialAd', howManyTimesRunInterstitialAd.toString());
-      if (lastHowManyFieldReached != null)
+      }
+      if (lastHowManyFieldReached != null) {
         await widget.firebaseService.updateUserInformations(userId, 'lastHowManyFieldReached', lastHowManyFieldReached);
+      }
+      if (lastHowManyFieldReached != null) {
+        await widget.firebaseService.updateUserInformations(userId, 'languageFromDevice', languageFromDevice);
+      }
     }
   }
 

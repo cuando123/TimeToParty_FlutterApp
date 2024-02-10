@@ -76,7 +76,6 @@ class FirebaseService extends ChangeNotifier {
           'purchaseStatus': "free",
           'createdUserDate': currentDate,
           'fireMessToken': firebaseMessagingToken,
-          'languageFromDevice': translationProvider?.getLanguagePrefix(),
         };
         await _firestore?.collection('users').doc(user.uid).set(userData);
         //print('FirebaseService - UID zapisany w Firestore');

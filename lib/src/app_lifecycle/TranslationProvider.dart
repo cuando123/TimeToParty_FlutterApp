@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import '../in_app_purchase/models/purchase_state.dart';
 import 'translation_database.dart';
 
@@ -7,35 +8,44 @@ class TranslationProvider extends ChangeNotifier {
   String _currentLanguage;
   Map<String, String> _cachedTranslations = {};
   Map<String, String> _cachedWords = {};
-  TranslationProvider(this._currentLanguage);
+  TranslationProvider._privateConstructor(this._currentLanguage);
 
-  factory TranslationProvider.fromDeviceLanguage() {
-    final String deviceLanguage = WidgetsBinding.instance.window.locale.toLanguageTag();
-    String currentLanguage;
-    switch (deviceLanguage) {
-      case 'en-EN':
-        currentLanguage = 'EN_en';
-        break;
-      case 'de-DE':
-        currentLanguage = 'DE_de';
-        break;
-      case 'it-IT':
-        currentLanguage = 'IT_it';
-        break;
-      case 'es-ES':
-        currentLanguage = 'ES_es';
-        break;
-      case 'pl-PL':
-        currentLanguage = 'PL_pl';
-        break;
-      case 'fr-FR':
-        currentLanguage = 'FR_fr';
-        break;
-      default:
-        currentLanguage = 'EN_en'; // Domyślnie angielski
-        break;
+  static Future<TranslationProvider> create() async {
+    String? savedLanguage = await SharedPreferencesHelper.getLanguageFromDevice();
+    String currentLanguage = savedLanguage ?? 'EN_en';
+    if (savedLanguage != null && savedLanguage.isNotEmpty) {
+      currentLanguage = savedLanguage;
+    } else {
+      final String deviceLanguage = WidgetsBinding.instance.window.locale.toLanguageTag();
+      switch (deviceLanguage) {
+        case 'en-EN':
+          currentLanguage = 'EN_en';
+          break;
+        case 'de-DE':
+          currentLanguage = 'DE_de';
+          break;
+        case 'it-IT':
+          currentLanguage = 'IT_it';
+          break;
+        case 'es-ES':
+          currentLanguage = 'ES_es';
+          break;
+        case 'pl-PL':
+          currentLanguage = 'PL_pl';
+          break;
+        case 'fr-FR':
+          currentLanguage = 'FR_fr';
+          break;
+        default:
+          currentLanguage = 'EN_en';
+          break;
+      }
+      await SharedPreferencesHelper.setLanguageFromDevice(currentLanguage);
     }
-    return TranslationProvider(currentLanguage);
+    final provider = TranslationProvider._privateConstructor(currentLanguage);
+    await provider.loadTranslations();
+    await provider.loadWords();
+    return provider;
   }
 
   final TranslationDatabase _translationDatabase = TranslationDatabase();
@@ -44,6 +54,7 @@ class TranslationProvider extends ChangeNotifier {
 
   Future<void> changeLanguage(String languageKey) async {
     _currentLanguage = languageKey;
+    await SharedPreferencesHelper.setLanguageFromDevice(languageKey);
     await loadTranslations();
     await loadWords();
     notifyListeners();
