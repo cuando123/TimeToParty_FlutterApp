@@ -57,7 +57,7 @@ class AdMobService extends ChangeNotifier {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-production";
       } else {
-        return "android-value-of-app-id-from-admob-production"; //TO_DO do updejtu finalne wersje produkcyjnych IDkow
+        return "ca-app-pub-8821222111683401/3743955228";
       }
     } else {
       if (Platform.isIOS) {
@@ -73,7 +73,7 @@ class AdMobService extends ChangeNotifier {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-production";
       } else {
-        return "android-value-of-app-id-from-admob-production"; //TO_DO do updejtu finalne wersje produkcyjnych IDkow
+        return "ca-app-pub-8821222111683401/6613661142";
       }
     } else {
       if (Platform.isIOS) {
@@ -89,7 +89,7 @@ class AdMobService extends ChangeNotifier {
       if (Platform.isIOS) {
         return "ios-value-of-app-id-from-admob-production";
       } else {
-        return "android-value-of-app-id-from-admob-production";
+        return "ca-app-pub-8821222111683401/7028254802";
       }
     } else {
       if (Platform.isIOS) {

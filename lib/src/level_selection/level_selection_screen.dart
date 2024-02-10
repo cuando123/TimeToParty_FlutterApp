@@ -42,6 +42,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   bool _duringCelebration = false;
   static final scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Color> teamColors;
+  late AudioController audioController;
   int numberOfTeams = 2;
   List<Color> availableColors = [
     Color(0xFF00A2AC),
@@ -71,6 +72,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   @override
   void initState() {
     super.initState();
+    audioController = context.read<AudioController>();
     //if ACCOUNT = FREE
     _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     _nativeAd = NativeAd(
@@ -213,7 +215,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
             if (!FocusScope.of(context).hasPrimaryFocus) {
               FocusScope.of(context).requestFocus(FocusNode());
             }
-            final audioController = context.read<AudioController>();
             audioController.playSfx(SfxType.buttonBackExit);
           },
           child: Container(
@@ -226,7 +227,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
               appBar: CustomAppBar(
                 title: translatedText(context, 'enter_team_names', 14, Palette().white),
                 onMenuButtonPressed: () {
-                  final audioController = context.read<AudioController>();
                   audioController.playSfx(SfxType.buttonBackExit);
                   scaffoldKey.currentState?.openDrawer();
                 },
@@ -289,7 +289,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                       teamColors = _initializeColors(numberOfTeams);
                                                       teamProvider.updateTeams(context, numberOfTeams);
                                                     });
-                                                    final audioController = context.read<AudioController>();
                                                     audioController.playSfx(SfxType.buttonBackExit);
                                                   },
                                             child: Icon(Icons.add),
@@ -314,7 +313,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     teamColors = _initializeColors(numberOfTeams);
                                                     teamProvider.updateTeams(context, numberOfTeams);
                                                   });
-                                                  final audioController = context.read<AudioController>();
                                                   audioController.playSfx(SfxType.buttonBackExit);
                                                 },
                                           child: Icon(Icons.remove),
@@ -344,7 +342,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                       fontWeight: FontWeight.bold,
                                                     ),
                                                     onTap: () {
-                                                      final audioController = context.read<AudioController>();
                                                       audioController.playSfx(SfxType.buttonBackExit);
                                                       if (!teamProvider.hasUserInput[index]) {
                                                         teamProvider.updateTeamName(index, '');
@@ -364,17 +361,26 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   ),
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: 5.0),
-                                                child: Container(
-                                                  width: 50,
-                                                  height: 50.0,
-                                                  decoration: BoxDecoration(
-                                                    color: teamColors[index],
-                                                    borderRadius: BorderRadius.circular(8.0),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  audioController.playSfx(SfxType.buttonBackExit);
+                                                  setState(() {
+                                                    List<Color> shuffledColors = List.from(availableColors)..shuffle();
+                                                    teamColors = shuffledColors.sublist(0, numberOfTeams);
+                                                  });
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(left: 5.0),
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50.0,
+                                                    decoration: BoxDecoration(
+                                                      color: teamColors[index],
+                                                      borderRadius: BorderRadius.circular(8.0),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                              )
                                             ],
                                           ),
                                         );
@@ -401,7 +407,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   // Opcjonalne: Czekaj krótką chwilę na zamknięcie klawiatury
                                                   await Future.delayed(Duration(milliseconds: 300));
 
-                                                  final audioController = context.read<AudioController>();
                                                   audioController.playSfx(SfxType.buttonAccept);
                                                   _toggleCelebration();
 
@@ -454,7 +459,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     MediaQuery.of(context).size.height * 0.05),
                                               ),
                                               onPressed: () {
-                                                final audioController = context.read<AudioController>();
                                                 audioController.playSfx(SfxType.buttonBackExit);
                                                 setState(() {
                                                   List<Color> shuffledColors = List.from(availableColors)..shuffle();

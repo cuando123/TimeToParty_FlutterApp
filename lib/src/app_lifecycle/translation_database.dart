@@ -22,7 +22,6 @@ class TranslationDatabase {
     data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(dbPath).writeAsBytes(bytes, flush: true);
     final key = generateKeyFromHexString(EncryptionHelper.hexString);
-    print("DB KEY: $key");
     return openDatabase(dbPath, password: key);
   }
 

@@ -12,7 +12,6 @@ class FirebaseService extends ChangeNotifier {
   FirebaseFirestore? _firestore;
   TranslationProvider? translationProvider;
   bool isConnected;
-//TO_DO skonfigurowac reguly dla zapisu/odczytu danych z firebase
 
   FirebaseService({this.isConnected = false, this.translationProvider}) {
     if (!isConnected) {
@@ -69,7 +68,6 @@ class FirebaseService extends ChangeNotifier {
         await SharedPreferencesHelper.setPurchaseStatus("free");
         await SharedPreferencesHelper.setCreatedUserDate(currentDate);
         String? token = await FirebaseMessaging.instance.getToken();
-        print("TOKEN: $token");
         await SharedPreferencesHelper.setFirebaseMessagingToken(token!);
         String? firebaseMessagingToken = await SharedPreferencesHelper.getFirebaseMessagingToken();
 
