@@ -464,7 +464,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           textFromRollSlotMachine = returnedValue as String;
           // Po zakończeniu działania Roll Slot Machine
           widget.onRollSlotMachineResult(textFromRollSlotMachine);
-         // print('Text $textFromRollSlotMachine');
+          // print('Text $textFromRollSlotMachine');
         });
       }
     });
@@ -610,7 +610,6 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   int selectedValue = -1; // Początkowa wartość, wskazująca, że nic nie jest wybrane
 
   Widget buildYellowCard() {
-    print('szerokosc: ${MediaQuery.of(context).size.width}');
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: widget.offsetX),
       duration: Duration(milliseconds: 250),
@@ -720,7 +719,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             children: [
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
-                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 85, 100, 650)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, ResponsiveSizing.scaleHeight(context, 85), ResponsiveSizing.scaleHeight(context, 90), 650)),
                               Expanded(
                                 child: Container(
                                   padding: padding,
@@ -744,7 +743,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                                     style: TextStyle(
                                                         fontFamily: 'HindMadurai',
                                                         color: Colors.white,
-                                                        fontSize: word.length > 15 ? 20 : 22),
+                                                        fontSize: word.length > ResponsiveSizing.scaleHeight(context, 15) ? ResponsiveSizing.scaleHeight(context, 20) : ResponsiveSizing.scaleHeight(context, 22)),
                                                     softWrap: true,
                                                   ))
                                               .toList(),
@@ -754,7 +753,7 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                   ),
                                 ),
                               ),
-                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, 90, 100, 650)),
+                              SizedBox(height: ResponsiveSizing.responsiveHeightWithCondition(context, ResponsiveSizing.scaleHeight(context, 90), ResponsiveSizing.scaleHeight(context, 100), 650)),
                               buildStarsRow(cardData.totalCards, cardData.starsColors),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 20)),
                             ],
@@ -859,19 +858,19 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [wordText(context, word, 24, Colors.white, index: 0)],
+                                  children: [wordText(context, word, ResponsiveSizing.scaleHeight(context, 24), Colors.white, index: 0)],
                                 ),
                               ),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
-                              wordText(context, word, 20, Colors.white, index: 1),
+                              wordText(context, word, ResponsiveSizing.scaleHeight(context, 20), Colors.white, index: 1),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
-                              wordText(context, word, 20, Colors.white, index: 2),
+                              wordText(context, word, ResponsiveSizing.scaleHeight(context, 20), Colors.white, index: 2),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
-                              wordText(context, word, 20, Colors.white, index: 3),
+                              wordText(context, word, ResponsiveSizing.scaleHeight(context, 20), Colors.white, index: 3),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
-                              wordText(context, word, 20, Colors.white, index: 4),
+                              wordText(context, word, ResponsiveSizing.scaleHeight(context, 20), Colors.white, index: 4),
                               SizedBox(height: ResponsiveSizing.scaleHeight(context, 5)),
-                              wordText(context, word, 20, Colors.white, index: 5),
+                              wordText(context, word, ResponsiveSizing.scaleHeight(context, 20), Colors.white, index: 5),
                               Expanded(
                                 child: SizedBox(
                                     height: ResponsiveSizing.responsiveHeightWithCondition(context, 1, 10, 650)),
@@ -939,11 +938,14 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   Widget buildImageWidget(ImageType? imageType) {
     switch (imageType) {
       case ImageType.declined:
-        return Image.asset('assets/time_to_party_assets/cards_screens/button_declined.png');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_declined.png',
+            height: ResponsiveSizing.scaleWidth(context, 60));
       case ImageType.approved:
-        return Image.asset('assets/time_to_party_assets/cards_screens/button_approved.png');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_approved.png',
+            height: ResponsiveSizing.scaleWidth(context, 60));
       case ImageType.skipped:
-        return Image.asset('assets/time_to_party_assets/cards_screens/button_drop.png');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_drop.png',
+            height: ResponsiveSizing.scaleWidth(context, 60));
       case ImageType.empty:
       default:
         return SizedBox(); // Pusty widget dla 'empty' lub 'null'

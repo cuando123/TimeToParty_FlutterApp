@@ -270,8 +270,8 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                             scale: _scaleAnimationLine3.value,
                                             child: child,
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          child: Wrap(
+                                            alignment: WrapAlignment.center,
                                             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Image.asset(
@@ -296,6 +296,7 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                   icon: null,
                                   text: getTranslatedString(context, 'pay_once'),
                                   onPressed: () {
+
                                     _alertShown = false; // Resetowanie flagi przed nowym zakupem
                                     audioController.playSfx(SfxType.buttonBackExit);
                                     if (_firebaseService.currentUser?.uid == null) {

@@ -317,18 +317,18 @@ class IAPService extends ChangeNotifier {
         final productDetails = _products.firstWhere(
           (product) => product.id == productId,
         );
-
         if (productDetails != null) {
           final PurchaseParam purchaseParam = PurchaseParam(
             productDetails: productDetails,
           );
           _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
         } else {
-          //print("Nie znaleziono szczegółów produktu dla ID: $productId");
+           print("Nie znaleziono szczegółów produktu dla ID: $productId");
           isLoading = false; // Kończy ładowanie jeśli nie znaleziono produktu
         }
       }
     } catch (e) {
+      setPurchaseStatusMessage('BillingResponse.serviceUnavailable');
       //print("error $e");
       isLoading = false; // Kończy ładowanie w przypadku błędu
     }

@@ -38,7 +38,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   final Connectivity _connectivity = Connectivity();
   late FirebaseService _firebaseService;
   List<TextEditingController> controllers = [];
-  bool _duringCelebration = false;
   static final scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Color> teamColors;
   late AudioController audioController;
@@ -51,12 +50,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
     Color(0xFFFFD335),
     Color(0xFF1C1AAA)
   ];
-
-  void _toggleCelebration() {
-    setState(() {
-      _duringCelebration = !_duringCelebration;
-    });
-  }
 
   List<Color> _initializeColors(int numberOfTeams) {
     List<Color> shuffledColors = List.from(availableColors)..shuffle();
@@ -136,7 +129,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
           ),
         ),
       );
-      //print("Reklama interstitial została zamknięta");
+      print("Reklama interstitial została zamknięta");
     });
   }
 
@@ -276,8 +269,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(5),
                                               ),
-                                              minimumSize: Size(MediaQuery.of(context).size.width * 0.05,
-                                                  MediaQuery.of(context).size.height * 0.05),
+                                              minimumSize: Size(ResponsiveSizing.scaleWidth(context, 50),
+                                                  ResponsiveSizing.responsiveHeightWithCondition(context, 50, 55, 650)),
                                             ),
                                             onPressed: numberOfTeams >= availableColors.length
                                                 ? null
@@ -301,8 +294,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(5),
                                             ),
-                                            minimumSize: Size(MediaQuery.of(context).size.width * 0.05,
-                                                MediaQuery.of(context).size.height * 0.05),
+                                            minimumSize: Size(ResponsiveSizing.scaleWidth(context, 50),
+                                                ResponsiveSizing.responsiveHeightWithCondition(context, 50, 55, 650)),
                                           ),
                                           onPressed: numberOfTeams <= 2
                                               ? null
@@ -402,20 +395,16 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                 if (_areTeamNamesValid()) {
                                                   // Usuwa fokus z bieżącego pola tekstowego, co powinno zamknąć klawiaturę
                                                   FocusScope.of(context).requestFocus(FocusNode());
-
                                                   // Opcjonalne: Czekaj krótką chwilę na zamknięcie klawiatury
                                                   await Future.delayed(Duration(milliseconds: 300));
 
-                                                  audioController.playSfx(SfxType.buttonAccept);
-                                                  _toggleCelebration();
-
                                                   if (iapService.isPurchased) {
-                                                    // Zawartość dla użytkowników, którzy dokonali zakupu
+                                                    audioController.playSfx(SfxType.buttonAccept);
                                                     await navigateToLoadingScreen(context, teamProvider.teamNames);
                                                   } else {
                                                     // Zawartość dla użytkowników bez zakupu
                                                     if (isInterstitialAdLoaded) {
-                                                      if (settings.musicOn.value) {
+                                                      if (settings.musicOn.value == true) {
                                                         settingsController.toggleMusicOn();
                                                       }
                                                       context.read<AdMobService>().showInterstitialAd();
@@ -425,7 +414,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                           'howManyTimesRunInstertitialAd',
                                                           SharedPreferencesHelper.getHowManyTimesRunInterstitialAd());
                                                     } else {
-                                                      await navigateToLoadingScreen(context, teamProvider.teamNames);
+                                                      navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }
                                                   }
                                                 } else {
@@ -436,7 +425,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                               backgroundColor: Palette().pink,
                                               foregroundColor: Palette().white,
                                               width: 190,
-                                              height: 45,
+                                              height: 55,
                                               fontSize: ResponsiveSizing.scaleHeight(context, 20),
                                             ),
                                           ),
@@ -454,8 +443,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(5),
                                                 ),
-                                                minimumSize: Size(MediaQuery.of(context).size.width * 0.05,
-                                                    MediaQuery.of(context).size.height * 0.05),
+                                                minimumSize: Size(ResponsiveSizing.scaleWidth(context, 50),
+                                                    ResponsiveSizing.responsiveHeightWithCondition(context, 50, 55, 650)),
                                               ),
                                               onPressed: () {
                                                 audioController.playSfx(SfxType.buttonBackExit);

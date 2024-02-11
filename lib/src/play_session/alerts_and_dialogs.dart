@@ -638,7 +638,7 @@ class AnimatedAlertDialog {
               // textAlign: TextAlign.center,
               ResponsiveSizing.responsiveHeightGap(context, 10),
               Center(
-                child: RatingBar.builder(
+                child: RatingBar.builder(itemSize: ResponsiveSizing.scaleWidth(context, 30),
                   initialRating: 5,
                   minRating: 1,
                   direction: Axis.horizontal,
@@ -763,9 +763,9 @@ class AnimatedAlertDialog {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.asset('assets/time_to_party_assets/trophy_cup.png'),
+              Image.asset('assets/time_to_party_assets/trophy_cup.png', height: ResponsiveSizing.scaleHeight(context, 50)),
               translatedText(context, 'congratulations', 20, Palette().pink, textAlign: TextAlign.center),
-              Image.asset('assets/time_to_party_assets/trophy_cup.png'),
+              Image.asset('assets/time_to_party_assets/trophy_cup.png', height: ResponsiveSizing.scaleHeight(context, 50)),
             ],
           ),
           content: Column(
@@ -779,7 +779,7 @@ class AnimatedAlertDialog {
                   Palette().pink,
                   textAlign: TextAlign.center),
               Center(
-                child: Image.asset('assets/time_to_party_assets/finish_flag.png', width: 50),
+                child: Image.asset('assets/time_to_party_assets/finish_flag.png', height: ResponsiveSizing.scaleHeight(context, 50)),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               letsText(context, getTranslatedString(context, 'do_you_want_cancel_turn'), 16, Palette().menudark,

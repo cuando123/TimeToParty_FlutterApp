@@ -113,6 +113,19 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    TextStyle columnTitleStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Palette().white,
+      fontSize: ResponsiveSizing.scaleHeight(context, 14),
+      shadows: [
+        Shadow(
+          offset: Offset(1.0, 1.0),
+          blurRadius: 3.0,
+          color: Colors.black.withOpacity(0.5), // Cień dla tekstu
+        ),
+      ],
+    );
+
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final audioController = context.watch<AudioController>();
     // Sortowanie drużyn według wyników
@@ -153,7 +166,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
               Image.asset('assets/time_to_party_assets/win_screen/team_ranking_win.png',
                   height: ResponsiveSizing.scaleHeight(context, 150)),
               Padding(
-                  padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', 28, Palette().white)),
+                  padding: EdgeInsets.all(5.0), child: translatedText(context, 'team_rankings', ResponsiveSizing.scaleHeight(context, 28), Palette().white)),
               Expanded(
                 flex: 3,
                 child: Container(
@@ -188,25 +201,25 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12.0),
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(width: 10),
                             Expanded(
-                              child: Text(getTranslatedString(context, 'color').toUpperCase(), style: columnTitleStyle),
+                              child: Text(getTranslatedString(context, 'color').toUpperCase(), style: columnTitleStyle, softWrap: false),
                             ),
                             Expanded(
                               child:
-                                  Text(getTranslatedString(context, 'x_teams').toUpperCase(), style: columnTitleStyle),
+                                  Text(getTranslatedString(context, 'x_teams').toUpperCase(), style: columnTitleStyle, softWrap: false),
                             ),
                             Expanded(
                               child: Text(getTranslatedString(context, 'round').toUpperCase(),
-                                  textAlign: TextAlign.center, style: columnTitleStyle),
+                                  textAlign: TextAlign.center, style: columnTitleStyle, softWrap: false),
                             ),
                             Expanded(
                               child: Text(getTranslatedString(context, 'points').toUpperCase(),
-                                  textAlign: TextAlign.center, style: columnTitleStyle),
+                                  textAlign: TextAlign.center, style: columnTitleStyle, softWrap: false),
                             ),
                           ],
                         ),
@@ -417,19 +430,6 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
       ),
     );
   }
-
-  TextStyle columnTitleStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    color: Palette().white,
-    fontSize: 14,
-    shadows: [
-      Shadow(
-        offset: Offset(1.0, 1.0),
-        blurRadius: 3.0,
-        color: Colors.black.withOpacity(0.5), // Cień dla tekstu
-      ),
-    ],
-  );
 
   @override
   void dispose() {

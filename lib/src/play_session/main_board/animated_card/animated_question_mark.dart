@@ -91,7 +91,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
   Widget buildGridItem(String assetPath, String textKey, BuildContext context) {
     return Column(
       children: [
-        Image.asset(assetPath),
+        Image.asset(assetPath, width: ResponsiveSizing.scaleWidth(context, 80)),
         SizedBox(
           width: ResponsiveSizing.scaleWidth(context, 110), // Ustaw stałą wysokość
           child: translatedText(context, textKey, 15, Colors.white, textAlign: TextAlign.center),

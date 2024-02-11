@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
 import 'package:game_template/src/play_session/extensions.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -99,22 +100,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
     _firebaseService = Provider.of<FirebaseService>(context, listen: false);
     isPurchased = Provider.of<IAPService>(context, listen: false).isPurchased;
     isInterstitialAdLoaded = Provider.of<AdMobService>(context, listen: false).isInterstitialAdLoaded;
-    _nativeAd = NativeAd(
-        adUnitId: context.read<AdMobService>().nativeAdUnitId!,
-        factoryId: 'listTile',
-        request: AdRequest(),
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            setState(() {
-              _nativeAdLoaded = true;
-              isOnline = true;
-            });
-          },
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          },
-        ))
-      ..load();
     _setTimerDuration();
     initialTime = remainingTime;
     _slideAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -848,7 +833,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         return false;
       },
       child: Scaffold(
-        body: Container(
+        body: Container(padding: EdgeInsets.only(top: 20),
           decoration: BoxDecoration(
             gradient: Palette().backgroundLoadingSessionGradient,
           ),
@@ -917,18 +902,18 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                   ],
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 10)),
               ..._displayCurrentField(),
-              SizedBox(height: 15.0),
-              Stack(
+              SizedBox(height: ResponsiveSizing.scaleHeight(context, 15)),
+             Stack(
                 alignment: Alignment.center,
                 children: [
                   widget.currentField[0] != 'field_star_yellow'
                       ? SizedBox(
-                          height: 60,
+                          height: ResponsiveSizing.scaleWidth(context, 60),
                           child: remainingTime > 0
                               ? CircleAvatar(
-                                  radius: 30,
+                                  radius: ResponsiveSizing.scaleWidth(context, 30),
                                   backgroundColor: Colors.transparent,
                                   child: SizedBox.expand(
                                     child: CustomPaint(
@@ -946,20 +931,20 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                         opacity: _timeUpFadeOutAnimation,
                                         child: Text(
                                           getTranslatedString(context, 'times_up'),
-                                          style: TextStyle(fontSize: 20, color: Colors.white),
+                                          style: TextStyle(fontSize: ResponsiveSizing.scaleWidth(context, 20), color: Colors.white),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                         )
-                      : Container(child: SizedBox(height: 15.0)),
+                      : Container(child: SizedBox(height: ResponsiveSizing.scaleWidth(context, 15))),
                   Positioned(
-                    top: 15, // Pozycjonowanie tekstu w centrum SizedBox
+                    top: ResponsiveSizing.scaleWidth(context, 15), // Pozycjonowanie tekstu w centrum SizedBox
                     child: remainingTime > 0
                         ? Text(
                             '$remainingTime',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: TextStyle(color: Colors.white, fontSize: ResponsiveSizing.scaleWidth(context, 20)),
                           )
                         : Container(),
                   ),
@@ -1112,31 +1097,6 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                       },
                       text: getTranslatedString(context, 'continue'),
                     ),
-              Consumer<IAPService>(
-                builder: (context, purchaseController, child) {
-                  if (purchaseController.isPurchased) {
-                    return SizedBox.shrink();
-                  } else {
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Consumer<AdMobService>(
-                        builder: (context, adMobService, child) {
-                          if (isOnline && _nativeAdLoaded) {
-                            return Container(
-                              color: Colors.white,
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: AdWidget(ad: _nativeAd!),
-                            );
-                          } else {
-                            return SizedBox.shrink();
-                          }
-                        },
-                      ),
-                    );
-                  }
-                },
-              ),
             ],
           ),
         ),
@@ -1183,7 +1143,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     for (Color color in widget.teamColors) {
       String flagAsset = getFlagAssetFromColor(color);
-      displayWidgets.add(Image.asset(flagAsset));
+      displayWidgets.add(Image.asset(flagAsset, height: ResponsiveSizing.scaleHeight(context, 20),));
       displayWidgets.add(SizedBox(height: 20.0));
     }
 
@@ -1251,7 +1211,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
           currentTitle,
           style: TextStyle(
             fontFamily: 'HindMadurai',
-            fontSize: 30.0,
+            fontSize: ResponsiveSizing.scaleHeight(context, 30),
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: const [
@@ -1270,7 +1230,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
             padding: const EdgeInsets.only(left: 10.0),
             child: Image.asset(
               currentImagePath,
-              height: 30.0,
+              height: ResponsiveSizing.scaleHeight(context, 30),
               fit: BoxFit.contain,
             ),
           ),

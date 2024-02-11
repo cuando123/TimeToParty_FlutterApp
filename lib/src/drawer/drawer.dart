@@ -254,8 +254,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
             await Future.delayed(Duration(milliseconds: 150));
             await GoRouter.of(context).push('/card_advertisement');
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Wrap(
+            alignment: WrapAlignment.center,crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Image.asset(
                 'assets/time_to_party_assets/premium_cards_icon.png',

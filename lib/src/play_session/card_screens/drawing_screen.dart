@@ -59,7 +59,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
         return false; // return false to prevent the pop operation
       }, // Zablokowanie możliwości cofnięcia
       child: Scaffold(
-        body: Container(
+        body: Container(padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             gradient: Palette().backgroundLoadingSessionGradient,
           ),
@@ -351,7 +351,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
 
     for (int i = 0; i < teamColors.length; i++) {
       String flagAsset = getFlagAssetFromColor(teamColors[i]);
-      teamWidgets.add(Image.asset(flagAsset));
+      teamWidgets.add(Image.asset(flagAsset, height: ResponsiveSizing.scaleHeight(context, 20)));
       teamWidgets.add(SizedBox(width: 10.0));
       teamWidgets.add(SizedBox(height: 20.0));
 

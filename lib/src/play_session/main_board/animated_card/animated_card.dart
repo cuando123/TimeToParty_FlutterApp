@@ -234,7 +234,6 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
 
               ),
             ),
-            //TO_DO przetestowac co sie tu stanie
             ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
@@ -282,7 +281,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
             SlideTransition(
               position: _textBottomPositionAnimation,
               child: Align(
-                alignment: Alignment(0.0, 0.7), // Wyśrodkuj poziomo
+                alignment: Alignment(0.0, 0.75), // Wyśrodkuj poziomo
                 child: FractionallySizedBox(
                   widthFactor: 0.9, // Zapewnia, że box zajmuje pełną szerokość rodzica
                   child: translatedText(context, 'pass_the_device_to_the_person', 18, Colors.white,
