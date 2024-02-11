@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/main_board/animated_card/pulsating_text.dart';
@@ -229,9 +228,13 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               position: _textTopPositionAnimation,
               child: Align(
                   alignment: Alignment(0.0, -0.7),
-                  child: SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
-                      height: 40, color: widget.teamColor)),
+                  child: Image.asset('assets/time_to_party_assets/team_icon.png',
+                      height: 40, color: widget.teamColor
+                  )
+
+              ),
             ),
+            //TO_DO przetestowac co sie tu stanie
             ResponsiveSizing.responsiveHeightGapWithCondition(context, 20, 0, 650),
             SlideTransition(
               position: _textTopPositionAnimation,
@@ -389,30 +392,30 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   Widget _getCardContent(String cardIndex) {
     // Sprawdzanie czy cardIndex istnieje w mapie cardTypeImagePaths
     if (cardTypeImagePaths.containsKey(cardIndex)) {
-      return SvgPicture.asset(cardTypeImagePaths[cardIndex]!, fit: BoxFit.contain);
+      return Image.asset(cardTypeImagePaths[cardIndex]!, fit: BoxFit.contain);
     }
     return Text('Kliknij mnie!');
   }
 
   final Map<String, String> cardTypeImagePaths = {
-    'field_arrows': 'assets/time_to_party_assets/card_arrows.svg',
-    'field_sheet': 'assets/time_to_party_assets/card_rymes.svg',
-    'field_letters': 'assets/time_to_party_assets/card_letters.svg',
-    'field_pantomime': 'assets/time_to_party_assets/card_pantomime.svg',
-    'field_microphone': 'assets/time_to_party_assets/card_microphone.svg',
-    'field_taboo': 'assets/time_to_party_assets/card_taboo.svg',
-    'field_star_blue_dark': 'assets/time_to_party_assets/card_star_blue_dark.svg',
-    'field_star_pink': 'assets/time_to_party_assets/card_star_pink.svg',
-    'field_star_green': 'assets/time_to_party_assets/card_star_green.svg',
-    'field_star_yellow': 'assets/time_to_party_assets/card_star_yellow.svg'
+    'field_arrows': 'assets/time_to_party_assets/card_arrows.png',
+    'field_sheet': 'assets/time_to_party_assets/card_rymes.png',
+    'field_letters': 'assets/time_to_party_assets/card_letters.png',
+    'field_pantomime': 'assets/time_to_party_assets/card_pantomime.png',
+    'field_microphone': 'assets/time_to_party_assets/card_microphone.png',
+    'field_taboo': 'assets/time_to_party_assets/card_taboo.png',
+    'field_star_blue_dark': 'assets/time_to_party_assets/card_star_blue_dark.png',
+    'field_star_pink': 'assets/time_to_party_assets/card_star_pink.png',
+    'field_star_green': 'assets/time_to_party_assets/card_star_green.png',
+    'field_star_yellow': 'assets/time_to_party_assets/card_star_yellow.png'
   };
 
   final List<String> cardTypesToSelect = [
-    'assets/time_to_party_assets/card_taboo.svg',
-    'assets/time_to_party_assets/card_microphone.svg',
-    'assets/time_to_party_assets/card_letters.svg',
-    'assets/time_to_party_assets/card_pantomime.svg',
-    'assets/time_to_party_assets/card_rymes.svg',
+    'assets/time_to_party_assets/card_taboo.png',
+    'assets/time_to_party_assets/card_microphone.png',
+    'assets/time_to_party_assets/card_letters.png',
+    'assets/time_to_party_assets/card_pantomime.png',
+    'assets/time_to_party_assets/card_rymes.png',
   ];
 
   Map<int, String> cardFieldNames = {

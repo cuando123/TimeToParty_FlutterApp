@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'package:draw_your_image/draw_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/app_lifecycle/translated_text.dart';
 
@@ -285,8 +284,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
     rowItems.add(
       Padding(
         padding: const EdgeInsets.only(left: 10.0),
-        child: SvgPicture.asset(
-          'assets/time_to_party_assets/cards_screens/star_green_icon_color.svg',
+        child: Image.asset(
+          'assets/time_to_party_assets/cards_screens/star_green_icon_color.png',
           height: 30.0,
           fit: BoxFit.contain,
         ),
@@ -352,7 +351,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
 
     for (int i = 0; i < teamColors.length; i++) {
       String flagAsset = getFlagAssetFromColor(teamColors[i]);
-      teamWidgets.add(SvgPicture.asset(flagAsset));
+      teamWidgets.add(Image.asset(flagAsset));
       teamWidgets.add(SizedBox(width: 10.0));
       teamWidgets.add(SizedBox(height: 20.0));
 
@@ -374,12 +373,12 @@ class _DrawingScreenState extends State<DrawingScreen> {
 
   String getFlagAssetFromColor(Color color) {
     List<String> flagAssets = [
-      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolko01B210.png',
+      'assets/time_to_party_assets/main_board/flags/kolko9400AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoF50000.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.png',
+      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.png',
     ];
     for (String flag in flagAssets) {
       String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
@@ -388,7 +387,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
         return flag;
       }
     }
-    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg';
+    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png';
   }
 }
 

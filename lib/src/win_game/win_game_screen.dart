@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/app_lifecycle/translated_text.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/win_game/triple_button_win.dart';
@@ -262,8 +261,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                         child: Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                            SvgPicture.asset(
-                                                'assets/time_to_party_assets/win_screen/field_dark_empty.svg',
+                                            Image.asset(
+                                                'assets/time_to_party_assets/win_screen/field_dark_empty.png',
                                                 height: 35,
                                                 width: 35),
                                             Text('${sortedTeams[index]['round'] - 1}',
@@ -277,8 +276,8 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                         child: Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                            SvgPicture.asset(
-                                                'assets/time_to_party_assets/win_screen/field_blue_empty.svg',
+                                            Image.asset(
+                                                'assets/time_to_party_assets/win_screen/field_blue_empty.png',
                                                 height: 35,
                                                 width: 35),
                                             Text('${sortedTeams[index]['score']}',
@@ -348,7 +347,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                                     builder: (context, child) => Transform.scale(
                                       scale: _scaleAnimationCenterButton.value,
                                       child: TripleButtonWin(
-                                        svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+                                        svgAsset: 'assets/time_to_party_assets/premium_cards_icon.png',
                                         onPressed: () {
                                           setState(() {
                                             isOnline =
@@ -398,6 +397,7 @@ class _WinGameScreenState extends State<WinGameScreen> with SingleTickerProvider
                         builder: (context, adMobService, child) {
                           if (isOnline && _nativeAdLoaded) {
                             return Container(
+                              color: Colors.white,
                               height: 50,
                               alignment: Alignment.center,
                               child: AdWidget(ad: _nativeAd!),

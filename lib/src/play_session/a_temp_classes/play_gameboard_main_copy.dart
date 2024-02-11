@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../app_lifecycle/responsive_sizing.dart';
 import '../../app_lifecycle/translated_text.dart';
 import '../../style/palette.dart';
@@ -112,8 +111,8 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                           Expanded(
                             child: LayoutBuilder(
                               builder: (context, constraints) {
-                                return SvgPicture.asset(
-                                  'assets/time_to_party_assets/card_arrows.svg',
+                                return Image.asset(
+                                  'assets/time_to_party_assets/card_arrows.png',
                                   width: constraints.maxWidth,
                                   height: constraints.maxHeight,
                                   fit: BoxFit.contain,
@@ -237,20 +236,20 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                                     mainAxisSpacing: 10,
                                     children: <Widget>[
                                       CardAnimation(),
-                                      // SvgPicture.asset(
-                                      //   'assets/time_to_party_assets/card_star_green.svg',
+                                      // Image.asset(
+                                      //   'assets/time_to_party_assets/card_star_green.png',
                                       //   fit: BoxFit.contain,
                                       // ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_blue_light.svg',
+                                      Image.asset(
+                                        'assets/time_to_party_assets/card_star_blue_light.png',
                                         fit: BoxFit.contain,
                                       ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_yellow.svg',
+                                      Image.asset(
+                                        'assets/time_to_party_assets/card_star_yellow.png',
                                         fit: BoxFit.contain,
                                       ),
-                                      SvgPicture.asset(
-                                        'assets/time_to_party_assets/card_star_pink.svg',
+                                      Image.asset(
+                                        'assets/time_to_party_assets/card_star_pink.png',
                                         fit: BoxFit.contain,
                                       ),
                                     ],
@@ -298,13 +297,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_microphone.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/card_microphone.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_rymes.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/card_rymes.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_letters.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/card_letters.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/card_pantomime.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/card_pantomime.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
       ],
     );
@@ -315,13 +314,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ResponsiveSizing.responsiveWidthGap(context, 6),
-        SvgPicture.asset('assets/time_to_party_assets/field_star_blue_light.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_star_blue_light.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_arrows.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_microphone.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_sheet.png', width: screenWidth * 0.1436),
         SizedBox(width: screenWidth * 0.02768 - 4),
       ],
     );
@@ -331,13 +330,13 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset('assets/time_to_party_assets/field_star_green.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_star_green.png', width: screenWidth * 0.1436),
         SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
-        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_letters.png', width: screenWidth * 0.1436),
         SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
-        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_pantomime.png', width: screenWidth * 0.1436),
         SizedBox(width: ((screenWidth - (screenWidth * 0.1436 * 6)) - 20) / 5),
-        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_microphone.png', width: screenWidth * 0.1436),
       ],
     );
   }
@@ -345,17 +344,17 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   Widget leftColumnVertical(double screenWidth) {
     return Column(
       children: [
-        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_sheet.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_pantomime.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_letters.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_arrows.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_sheet.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_start.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_start.png', width: screenWidth * 0.1436),
       ],
     );
   }
@@ -363,17 +362,17 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
   Widget rightColumnVertical(double screenWidth) {
     return Column(
       children: [
-        SvgPicture.asset('assets/time_to_party_assets/field_star_pink.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_star_pink.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_microphone.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_arrows.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_pantomime.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_star_yellow.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_star_yellow.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
-        SvgPicture.asset('assets/time_to_party_assets/field_letters.svg', width: screenWidth * 0.1436),
+        Image.asset('assets/time_to_party_assets/field_letters.png', width: screenWidth * 0.1436),
         SizedBox(height: screenWidth * 0.02768 - 4),
       ],
     );
@@ -387,12 +386,12 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
           int index = entry.key;
           Color color = entry.value;
           List<String> flagAssets = [
-            'assets/time_to_party_assets/main_board/flags/flag00A2AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flag01B210.svg',
-            'assets/time_to_party_assets/main_board/flags/flag9400AC.svg',
-            'assets/time_to_party_assets/main_board/flags/flagF50000.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFD335.svg',
-            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.svg',
+            'assets/time_to_party_assets/main_board/flags/flag00A2AC.png',
+            'assets/time_to_party_assets/main_board/flags/flag01B210.png',
+            'assets/time_to_party_assets/main_board/flags/flag9400AC.png',
+            'assets/time_to_party_assets/main_board/flags/flagF50000.png',
+            'assets/time_to_party_assets/main_board/flags/flagFFD335.png',
+            'assets/time_to_party_assets/main_board/flags/flagFFFFFF.png',
           ];
           return flagAssets.where((flag) {
             String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(4)}';
@@ -438,7 +437,7 @@ class _PlayGameboardState extends State<PlayGameboard> with SingleTickerProvider
                             : ((index == 0 || index == 3) ? -1.0 : 1.0),
                         1.0),
                   alignment: Alignment.center,
-                  child: SvgPicture.asset(
+                  child: Image.asset(
                     flag,
                     width: screenWidth / 13.09,
                     height: screenWidth / 13.09,
@@ -634,8 +633,8 @@ class _CardAnimationState extends State<CardAnimation> with SingleTickerProvider
                 children: [
                   Opacity(
                     opacity: isVisible ? 1.0 : 0.0,
-                    child: SvgPicture.asset(
-                      'assets/time_to_party_assets/card_microphone.svg',
+                    child: Image.asset(
+                      'assets/time_to_party_assets/card_microphone.png',
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -644,8 +643,8 @@ class _CardAnimationState extends State<CardAnimation> with SingleTickerProvider
                     child: Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(3.14),
-                      child: SvgPicture.asset(
-                        'assets/time_to_party_assets/card_pantomime.svg',
+                      child: Image.asset(
+                        'assets/time_to_party_assets/card_pantomime.png',
                         fit: BoxFit.contain,
                       ),
                     ),

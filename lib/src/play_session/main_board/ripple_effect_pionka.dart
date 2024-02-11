@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class PionekWithRipple extends StatelessWidget {
   final String assetPath;
@@ -15,7 +14,7 @@ class PionekWithRipple extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        SvgPicture.asset(assetPath, width: screenWidth / 15.09, height: screenWidth / 15.09),
+        Image.asset(assetPath, width: screenWidth / 15.09, height: screenWidth / 15.09),
         Positioned(left: -50, top: -50, right: -50, bottom: -50, child: RippleEffect(animation: animation)),
       ],
     );

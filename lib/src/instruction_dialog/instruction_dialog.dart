@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +62,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
               width: double.maxFinite,
               child: Column(
                 children: [
-                  SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                   SizedBox(height: ResponsiveSizing.scaleHeight(context, 16)), // gap
                   Expanded(
                     child: Scrollbar(
@@ -80,7 +79,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             translatedText(context, 'instruction_dialog_general', 16, Palette().menudark),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset('assets/time_to_party_assets/cards_instruction_linear.svg'),
+                            Image.asset('assets/time_to_party_assets/cards_instruction_linear.png'),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             translatedText(context, 'game_purpose', 24, Palette().pink),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -89,7 +88,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                             translatedText(context, 'teams_and_roles', 24, Palette().pink),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             translatedText(context, 'instruction_dialog_colors_flags', 16, Palette().menudark),
-                            SvgPicture.asset('assets/time_to_party_assets/instruction_flags_field.svg'),
+                            Image.asset('assets/time_to_party_assets/instruction_flags_field.png'),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             translatedText(context, 'mechanics', 24, Palette().pink),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -102,7 +101,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                             translatedText(context, 'instruction_dialog_skip_words', 16, Palette().menudark),
                             translatedText(context, 'instruction_dialog_mistakes', 16, Palette().menudark),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
-                            SvgPicture.asset('assets/time_to_party_assets/instruction_cards_linear_2.svg'),
+                            Image.asset('assets/time_to_party_assets/instruction_cards_linear_2.png'),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
                             translatedText(context, 'instruction_dialog_device', 16, Palette().menudark),
                             translatedText(context, 'instruction_dialog_words_forms', 16, Palette().menudark),
@@ -111,7 +110,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'taboo_words', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_taboo.svg'),
+                                Image.asset('assets/time_to_party_assets/field_taboo.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -121,7 +120,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'rymes', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_sheet.svg'),
+                                Image.asset('assets/time_to_party_assets/field_sheet.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -131,7 +130,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'pantomime', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_pantomime.svg'),
+                                Image.asset('assets/time_to_party_assets/field_pantomime.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -141,7 +140,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'alphabet', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_letters.svg'),
+                                Image.asset('assets/time_to_party_assets/field_letters.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -151,7 +150,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'famous_people', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_microphone.svg'),
+                                Image.asset('assets/time_to_party_assets/field_microphone.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -161,7 +160,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
                               children: [
                                 translatedText(context, 'checkbox', 24, Palette().pink),
                                 ResponsiveSizing.responsiveWidthGap(context, 10),
-                                SvgPicture.asset('assets/time_to_party_assets/field_arrows.svg'),
+                                Image.asset('assets/time_to_party_assets/field_arrows.png'),
                               ],
                             ),
                             ResponsiveSizing.responsiveWidthGap(context, 10),
@@ -230,7 +229,7 @@ class _InstructionDialogState extends State<InstructionDialog> with SingleTicker
           child: Padding(
               padding: EdgeInsets.all(20),
               child: TripleButtonWin(
-                svgAsset: 'assets/time_to_party_assets/premium_cards_icon.svg',
+                svgAsset: 'assets/time_to_party_assets/premium_cards_icon.png',
                 onPressed: () {
                   Future.delayed(Duration(milliseconds: 150));
                   if (widget.isGameOpened) {

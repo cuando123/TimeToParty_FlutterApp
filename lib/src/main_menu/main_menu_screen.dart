@@ -287,6 +287,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         builder: (context, adMobService, child) {
                           if (isOnline && _nativeAdLoaded) {
                             return Container(
+                              color: Colors.white,
                               height: 50,
                               alignment: Alignment.center,
                               child: AdWidget(ad: _nativeAd!),

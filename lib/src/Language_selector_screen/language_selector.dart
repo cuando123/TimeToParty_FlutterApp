@@ -60,12 +60,12 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                     childAspectRatio: 3,
                     children: [
                       languageButton(
-                          context, 'English', 'assets/time_to_party_assets/flags/united_kingdom.svg', 'EN_en'),
-                      languageButton(context, 'Deutsch', 'assets/time_to_party_assets/flags/germany.svg', 'DE_de'),
-                      languageButton(context, 'Italiano', 'assets/time_to_party_assets/flags/italy.svg', 'IT_it'),
-                      languageButton(context, 'Español', 'assets/time_to_party_assets/flags/spain.svg', 'ES_es'),
-                      languageButton(context, 'Polski', 'assets/time_to_party_assets/flags/poland.svg', 'PL_pl'),
-                      languageButton(context, 'Français', 'assets/time_to_party_assets/flags/france.svg', 'FR_fr'),
+                          context, 'English', 'assets/time_to_party_assets/flags/united_kingdom.png', 'EN_en'),
+                      languageButton(context, 'Deutsch', 'assets/time_to_party_assets/flags/germany.png', 'DE_de'),
+                      languageButton(context, 'Italiano', 'assets/time_to_party_assets/flags/italy.png', 'IT_it'),
+                      languageButton(context, 'Español', 'assets/time_to_party_assets/flags/spain.png', 'ES_es'),
+                      languageButton(context, 'Polski', 'assets/time_to_party_assets/flags/poland.png', 'PL_pl'),
+                      languageButton(context, 'Français', 'assets/time_to_party_assets/flags/france.png', 'FR_fr'),
                     ],
                   ),
                 ),

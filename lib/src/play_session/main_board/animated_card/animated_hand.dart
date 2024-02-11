@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/svg.dart';
 
 class AnimatedHandArrow extends StatefulWidget {
   const AnimatedHandArrow({super.key});
@@ -47,7 +46,7 @@ class _AnimatedHandArrowState extends State<AnimatedHandArrow> with SingleTicker
           ),
         );
       },
-      child: SvgPicture.asset('assets/time_to_party_assets/hand_arrow.svg', height: 50),
+      child: Image.asset('assets/time_to_party_assets/hand_arrow.png', height: 50),
     );
   }
 

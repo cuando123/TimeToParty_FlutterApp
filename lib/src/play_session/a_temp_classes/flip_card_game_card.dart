@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class GameCard extends StatelessWidget {
   final String assetPath1;
@@ -54,7 +53,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
           child: Stack(
             children: [
               Container(
-                child: isFaceUp ? SvgPicture.asset(widget.card.assetPath1) : SvgPicture.asset(widget.card.assetPath2),
+                child: isFaceUp ? Image.asset(widget.card.assetPath1) : Image.asset(widget.card.assetPath2),
               ),
               if (widget.showGlow) ...[
                 Container(

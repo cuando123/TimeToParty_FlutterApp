@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SlideWidget extends StatelessWidget {
   const SlideWidget({
@@ -67,22 +66,10 @@ class SlideWidget extends StatelessWidget {
   }
 
   Widget _buildImageWidget(String imagePath, BoxFit fitMode, bool isAssets) {
-    // Sprawdź, czy ścieżka kończy się na '.svg'
-    bool isSvg = imagePath.toLowerCase().endsWith('.svg');
-
-    if (isSvg) {
-      // Użyj SvgPicture dla plików SVG
-      return isAssets
-          ? SvgPicture.asset(imagePath, fit: fitMode)
-          : SvgPicture.network(imagePath, fit: fitMode);
-    } else {
-      // Użyj standardowego widgetu obrazu dla innych formatów
       return isAssets
           ? Image.asset(imagePath, fit: fitMode)
           : Image.network(imagePath, fit: fitMode);
-    }
   }
-
 
   List<BoxShadow>? _getSlideBoxShadow(index, actualIndex) =>
       (index == actualIndex) ? currentItemShadow : sideItemsShadow;

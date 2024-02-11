@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/play_session/alerts_and_dialogs.dart';
 import 'package:game_template/src/play_session/card_screens/play_gameboard_card.dart';
@@ -168,7 +167,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                       Expanded(
                                         child: InstantTooltip(
                                           message: getTranslatedString(context, 'deck_of_cards'),
-                                          child: SvgPicture.asset('assets/time_to_party_assets/center_main_board.svg'),
+                                          child: Image.asset('assets/time_to_party_assets/center_main_board.png'),
                                         ),
                                       ),
                                       downRowHorizontal(downRowFieldsSvg, screenWidth * scale),
@@ -207,7 +206,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                SvgPicture.asset(
+                                                Image.asset(
                                                   getFlagAssetFromColor(colorFromString(getCurrentTeamColor())),
                                                   width: ResponsiveSizing.scaleWidth(context, 15),
                                                   height: ResponsiveSizing.scaleWidth(context, 15),
@@ -482,7 +481,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     for (String field in fields) {
       children.add(InstantTooltip(
         message: getTranslatedString(context, fieldDescriptions[field] ?? "default_key"),
-        child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+        child: Image.asset('assets/time_to_party_assets/$field.png', width: screenWidth * 0.1436),
       ));
 
       children.add(SizedBox(width: screenWidth * 0.02768 - 4));
@@ -501,7 +500,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
     for (String field in fields) {
       children.add(InstantTooltip(
         message: getTranslatedString(context, fieldDescriptions[field] ?? "default_key"),
-        child: SvgPicture.asset('assets/time_to_party_assets/$field.svg', width: screenWidth * 0.1436),
+        child: Image.asset('assets/time_to_party_assets/$field.png', width: screenWidth * 0.1436),
       ));
       children.add(SizedBox(height: screenWidth * 0.02768 - 4));
     }
@@ -539,12 +538,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
           int index = entry.key;
           Color color = entry.value;
           List<String> flagAssets = [
-            'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
-            'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
-            'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
-            'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
-            'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
-            'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
+            'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png',
+            'assets/time_to_party_assets/main_board/flags/kolko01B210.png',
+            'assets/time_to_party_assets/main_board/flags/kolko9400AC.png',
+            'assets/time_to_party_assets/main_board/flags/kolkoF50000.png',
+            'assets/time_to_party_assets/main_board/flags/kolkoFFD335.png',
+            'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.png',
           ];
           return flagAssets.where((flag) {
             String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
@@ -604,12 +603,12 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
 
   String getFlagAssetFromColor(Color color) {
     List<String> flagAssets = [
-      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolko01B210.png',
+      'assets/time_to_party_assets/main_board/flags/kolko9400AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoF50000.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.png',
+      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.png',
     ];
     for (String flag in flagAssets) {
       String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
@@ -618,7 +617,7 @@ class _PlayGameboardState extends State<PlayGameboard> with TickerProviderStateM
         return flag;
       }
     }
-    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg';
+    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png';
   }
 
   //funkcja do wyswietlania koloru druzyny w app_barze

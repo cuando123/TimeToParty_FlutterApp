@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
 
@@ -18,11 +17,11 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
   late Random random = Random();
 
   List<String> StarsImages = [
-    'assets/time_to_party_assets/blue_star.svg',
-    'assets/time_to_party_assets/black_star.svg',
-    'assets/time_to_party_assets/grey_star.svg',
-    'assets/time_to_party_assets/pink_star.svg',
-    'assets/time_to_party_assets/yellow_star.svg',
+    'assets/time_to_party_assets/blue_star.png',
+    'assets/time_to_party_assets/black_star.png',
+    'assets/time_to_party_assets/grey_star.png',
+    'assets/time_to_party_assets/pink_star.png',
+    'assets/time_to_party_assets/yellow_star.png',
   ];
 
   @override
@@ -67,7 +66,7 @@ class _StarsAnimationState extends State<StarsAnimation> with TickerProviderStat
                     child: child,
                   ));
             },
-            child: SvgPicture.asset(
+            child: Image.asset(
               StarsImages[idx % StarsImages.length],
               height: ResponsiveSizing.scaleHeight(context, 56),
             ),

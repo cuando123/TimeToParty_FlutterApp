@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/Loading_screen/loading_screen_second.dart';
 import 'package:game_template/src/in_app_purchase/models/shared_preferences_helper.dart';
 import 'package:game_template/src/in_app_purchase/services/ad_mob_service.dart';
@@ -261,7 +260,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        SvgPicture.asset('assets/time_to_party_assets/team_icon.svg',
+                                        Image.asset('assets/time_to_party_assets/team_icon.png',
                                             height: ResponsiveSizing.scaleHeight(context, 40)),
                                         ResponsiveSizing.responsiveWidthGapWithCondition(context, 5, 10, 300),
                                         AnimatedBuilder(
@@ -489,6 +488,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                   builder: (context, adMobService, child) {
                                     if (isOnline && _nativeAdLoaded) {
                                       return Container(
+                                        color: Colors.white,
                                         height: 50,
                                         alignment: Alignment.center,
                                         child: AdWidget(ad: _nativeAd!),

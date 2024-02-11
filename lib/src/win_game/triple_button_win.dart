@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 
 import '../style/palette.dart';
@@ -69,7 +68,7 @@ class TripleButtonWin extends StatelessWidget {
 
   Widget _buildButtonContent() {
     if (svgAsset != null) {
-      return SvgPicture.asset(svgAsset!, width: 32, height: 32);
+      return Image.asset(svgAsset!, width: 32, height: 32);
     } else if (imageAsset != null) {
       return Image.asset(imageAsset!, width: 32, height: 32);
     } else if (iconData != null) {

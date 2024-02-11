@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 
 import '../../../app_lifecycle/translated_text.dart';
@@ -61,11 +60,11 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
                   spacing: 15.0, // odstęp między elementami poziomo
                   runSpacing: 5.0, // odstęp między liniami pionowo
                   children: <Widget>[
-                    buildGridItem("assets/time_to_party_assets/card_taboo.svg", 'taboo_words', context),
-                    buildGridItem("assets/time_to_party_assets/card_microphone.svg", 'famous_people', context),
-                    buildGridItem("assets/time_to_party_assets/card_letters.svg", 'alphabet', context),
-                    buildGridItem("assets/time_to_party_assets/card_pantomime.svg", 'pantomime', context),
-                    buildGridItem("assets/time_to_party_assets/card_rymes.svg", 'rymes', context),
+                    buildGridItem("assets/time_to_party_assets/card_taboo.png", 'taboo_words', context),
+                    buildGridItem("assets/time_to_party_assets/card_microphone.png", 'famous_people', context),
+                    buildGridItem("assets/time_to_party_assets/card_letters.png", 'alphabet', context),
+                    buildGridItem("assets/time_to_party_assets/card_pantomime.png", 'pantomime', context),
+                    buildGridItem("assets/time_to_party_assets/card_rymes.png", 'rymes', context),
                   ],
                 ),
               ],
@@ -92,7 +91,7 @@ class _AnimatedQuestionMarkState extends State<AnimatedQuestionMark> with Single
   Widget buildGridItem(String assetPath, String textKey, BuildContext context) {
     return Column(
       children: [
-        SvgPicture.asset(assetPath),
+        Image.asset(assetPath),
         SizedBox(
           width: ResponsiveSizing.scaleWidth(context, 110), // Ustaw stałą wysokość
           child: translatedText(context, textKey, 15, Colors.white, textAlign: TextAlign.center),

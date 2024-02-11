@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../app_lifecycle/responsive_sizing.dart';
 
@@ -60,8 +59,8 @@ class _SvgButtonState extends State<SvgButton> with SingleTickerProviderStateMix
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
           ),
-          child: SvgPicture.asset(widget.assetName,
-              height: ResponsiveSizing.scaleHeight(context, 75), width: double.maxFinite),
+          child: Image.asset(widget.assetName,
+              height: ResponsiveSizing.scaleHeight(context, 75)),
         ),
       ),
     );

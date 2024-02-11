@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/play_session/card_screens/svgbutton_enabled_dis.dart';
 import 'package:game_template/src/play_session/extensions.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -1027,8 +1026,8 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                                 children: [
                                   SvgButton(
                                     assetName: skipCount > 0
-                                        ? 'assets/time_to_party_assets/cards_screens/button_drop.svg'
-                                        : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.svg',
+                                        ? 'assets/time_to_party_assets/cards_screens/button_drop.png'
+                                        : 'assets/time_to_party_assets/cards_screens/button_drop_disabled.png',
                                     onPressed: _onSkipButtonPressed,
                                   ),
                                   Positioned(
@@ -1062,11 +1061,11 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                               )
                             : Container(),
                         SvgButton(
-                          assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                          assetName: 'assets/time_to_party_assets/cards_screens/button_declined.png',
                           onPressed: _onButtonXPressed,
                         ),
                         SvgButton(
-                          assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                          assetName: 'assets/time_to_party_assets/cards_screens/button_approved.png',
                           onPressed: _onButtonTickPressed,
                         ),
                         Spacer(),
@@ -1124,6 +1123,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
                         builder: (context, adMobService, child) {
                           if (isOnline && _nativeAdLoaded) {
                             return Container(
+                              color: Colors.white,
                               height: 50,
                               alignment: Alignment.center,
                               child: AdWidget(ad: _nativeAd!),
@@ -1161,12 +1161,12 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
   String getFlagAssetFromColor(Color color) {
     List<String> flagAssets = [
-      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko01B210.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko9400AC.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoF50000.svg',
-      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.svg',
-      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.svg',
+      'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolko01B210.png',
+      'assets/time_to_party_assets/main_board/flags/kolko9400AC.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoF50000.png',
+      'assets/time_to_party_assets/main_board/flags/kolkoFFD335.png',
+      'assets/time_to_party_assets/main_board/flags/kolko1C1AAA.png',
     ];
     for (String flag in flagAssets) {
       String flagColorHex = 'FF${flag.split('/').last.split('.').first.substring(5)}'; //zmiana z 4 na 5
@@ -1175,7 +1175,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         return flag;
       }
     }
-    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.svg';
+    return 'assets/time_to_party_assets/main_board/flags/kolko00A2AC.png';
   }
 
   List<Widget> _displayTeamColors() {
@@ -1183,7 +1183,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
 
     for (Color color in widget.teamColors) {
       String flagAsset = getFlagAssetFromColor(color);
-      displayWidgets.add(SvgPicture.asset(flagAsset));
+      displayWidgets.add(Image.asset(flagAsset));
       displayWidgets.add(SizedBox(height: 20.0));
     }
 
@@ -1224,16 +1224,16 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
   }
 
   final Map<String, String> fieldTypeImagePaths = {
-    'field_arrows': 'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.svg',
-    'field_sheet': 'assets/time_to_party_assets/cards_screens/rymes_icon_color.svg',
-    'field_letters': 'assets/time_to_party_assets/cards_screens/letters_icon_color.svg',
-    'field_pantomime': 'assets/time_to_party_assets/cards_screens/pantomime_icon_color.svg',
-    'field_microphone': 'assets/time_to_party_assets/cards_screens/microphone_icon_color.svg',
-    'field_taboo': 'assets/time_to_party_assets/cards_screens/taboo_icon_color.svg',
-    'field_star_blue_dark': 'assets/time_to_party_assets/cards_screens/star_blue_icon_color.svg',
-    'field_star_pink': 'assets/time_to_party_assets/cards_screens/star_pink_icon_color.svg',
-    'field_star_green': 'assets/time_to_party_assets/cards_screens/star_green_icon_color.svg',
-    'field_star_yellow': 'assets/time_to_party_assets/cards_screens/star_yellow_icon_color.svg'
+    'field_arrows': 'assets/time_to_party_assets/cards_screens/change_card_arrows_icon_color.png',
+    'field_sheet': 'assets/time_to_party_assets/cards_screens/rymes_icon_color.png',
+    'field_letters': 'assets/time_to_party_assets/cards_screens/letters_icon_color.png',
+    'field_pantomime': 'assets/time_to_party_assets/cards_screens/pantomime_icon_color.png',
+    'field_microphone': 'assets/time_to_party_assets/cards_screens/microphone_icon_color.png',
+    'field_taboo': 'assets/time_to_party_assets/cards_screens/taboo_icon_color.png',
+    'field_star_blue_dark': 'assets/time_to_party_assets/cards_screens/star_blue_icon_color.png',
+    'field_star_pink': 'assets/time_to_party_assets/cards_screens/star_pink_icon_color.png',
+    'field_star_green': 'assets/time_to_party_assets/cards_screens/star_green_icon_color.png',
+    'field_star_yellow': 'assets/time_to_party_assets/cards_screens/star_yellow_icon_color.png'
   };
 
   List<Widget> _displayCurrentField() {
@@ -1268,7 +1268,7 @@ class _PlayGameboardCardState extends State<PlayGameboardCard> with TickerProvid
         rowItems.add(
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
-            child: SvgPicture.asset(
+            child: Image.asset(
               currentImagePath,
               height: 30.0,
               fit: BoxFit.contain,

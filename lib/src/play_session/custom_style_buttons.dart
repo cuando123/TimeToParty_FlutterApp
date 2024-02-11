@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../app_lifecycle/responsive_sizing.dart';
 
@@ -37,7 +36,7 @@ class CustomStyledButton extends StatelessWidget {
     Widget leadingWidget;
 
     if (svgAsset != null) {
-      leadingWidget = SvgPicture.asset(svgAsset!, width: imageSize, height: imageSize);
+      leadingWidget = Image.asset(svgAsset!, width: imageSize, height: imageSize);
     } else if (imageAsset != null) {
       leadingWidget = Image.asset(imageAsset!, width: imageSize, height: imageSize);
     } else if (icon != null) {

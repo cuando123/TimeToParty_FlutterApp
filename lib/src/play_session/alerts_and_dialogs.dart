@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +48,7 @@ class AnimatedAlertDialog {
           dialogContent = Stack(
             alignment: Alignment.center,
             children: [
-              SvgPicture.asset('assets/time_to_party_assets/tlo.svg'), // Załaduj tło
+              Image.asset('assets/time_to_party_assets/tlo.png'), // Załaduj tło
               Transform.rotate(
                 angle: -pi / 180 * 5, // Obrót o kilka stopni
                 child: dialogContent,
@@ -124,7 +123,7 @@ class AnimatedAlertDialog {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                 ),
                 ResponsiveSizing.responsiveHeightGap(context, 10),
                 Center(
@@ -245,7 +244,7 @@ class AnimatedAlertDialog {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgButton(
-                      assetName: 'assets/time_to_party_assets/cards_screens/button_declined.svg',
+                      assetName: 'assets/time_to_party_assets/cards_screens/button_declined.png',
                       onPressed: () {
                         final audioController = context.read<AudioController>();
                         audioController.playSfx(SfxType.card_x_sound);
@@ -254,7 +253,7 @@ class AnimatedAlertDialog {
                       },
                     ),
                     SvgButton(
-                      assetName: 'assets/time_to_party_assets/cards_screens/button_approved.svg',
+                      assetName: 'assets/time_to_party_assets/cards_screens/button_approved.png',
                       onPressed: () {
                         final audioController = context.read<AudioController>();
                         audioController.playSfx(SfxType.card_tick_sound);
@@ -346,7 +345,7 @@ class AnimatedAlertDialog {
                     ResponsiveSizing.responsiveHeightGap(context, 10),
                     Center(child: description),
                     ResponsiveSizing.responsiveHeightGap(context, 10),
-                    SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                    Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                     ResponsiveSizing.responsiveHeightGap(context, 10),
                     CustomStyledButton(
                       icon: null,
@@ -402,7 +401,7 @@ class AnimatedAlertDialog {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                 ),
                 ResponsiveSizing.responsiveHeightGap(context, 10),
                 translatedText(context, 'redirected_to_the_website', 16, Palette().menudark,
@@ -631,7 +630,7 @@ class AnimatedAlertDialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
               ),
               //Text('Jak podoba Ci się nasza aplikacja?'),
               ResponsiveSizing.responsiveHeightGap(context, 10),
@@ -686,7 +685,7 @@ class AnimatedAlertDialog {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                                child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                               ),
                               ResponsiveSizing.responsiveHeightGap(context, 10),
                               translatedText(context, "your_opinion_matters_description", 16, Palette().menudark,
@@ -764,9 +763,9 @@ class AnimatedAlertDialog {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SvgPicture.asset('assets/time_to_party_assets/trophy_cup.svg'),
+              Image.asset('assets/time_to_party_assets/trophy_cup.png'),
               translatedText(context, 'congratulations', 20, Palette().pink, textAlign: TextAlign.center),
-              SvgPicture.asset('assets/time_to_party_assets/trophy_cup.svg'),
+              Image.asset('assets/time_to_party_assets/trophy_cup.png'),
             ],
           ),
           content: Column(
@@ -780,7 +779,7 @@ class AnimatedAlertDialog {
                   Palette().pink,
                   textAlign: TextAlign.center),
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/finish_flag.svg', width: 50),
+                child: Image.asset('assets/time_to_party_assets/finish_flag.png', width: 50),
               ),
               ResponsiveSizing.responsiveHeightGap(context, 10),
               letsText(context, getTranslatedString(context, 'do_you_want_cancel_turn'), 16, Palette().menudark,
@@ -949,7 +948,7 @@ class AnimatedAlertDialog {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                  child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
                 ),
                 ResponsiveSizing.responsiveHeightGap(context, 10),
                 Center(child: description),

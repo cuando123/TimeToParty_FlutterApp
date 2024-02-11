@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_template/main.dart';
 import 'package:game_template/src/in_app_purchase/services/firebase_service.dart';
 import 'package:game_template/src/in_app_purchase/services/iap_service.dart';
@@ -186,15 +185,15 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                 ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
                                 translatedText(context, 'exclusive_adventure', 18, Palette().pink,
                                     textAlign: TextAlign.center),
-                                SvgPicture.asset(
-                                  'assets/time_to_party_assets/banner_cards_advert.svg',
+                                Image.asset(
+                                  'assets/time_to_party_assets/banner_cards_advert.png',
                                   //width: ResponsiveSizing.responsiveWidthWithCondition(context, 160, 260, 400),
                                   height: ResponsiveSizing.responsiveHeightWithCondition(context, 125, 210, 650),
                                 ),
                                 translatedText(context, 'buy_unlimited_version', 20, Palette().white,
                                     textAlign: TextAlign.center),
                                 ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
-                                SvgPicture.asset('assets/time_to_party_assets/banner_cards_advert_linear.svg',
+                                Image.asset('assets/time_to_party_assets/banner_cards_advert_linear.png',
                                     width: ResponsiveSizing.scaleWidth(context, 77),
                                     height: ResponsiveSizing.scaleHeight(context, 40)),
                                 translatedText(context, 'discover_the_full_potential', 18, Palette().pink,
@@ -246,8 +245,8 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              SvgPicture.asset(
-                                                'assets/time_to_party_assets/no_ads_icon.svg',
+                                              Image.asset(
+                                                'assets/time_to_party_assets/no_ads_icon.png',
                                                 height: ResponsiveSizing.scaleHeight(context, 34),
                                                 width: ResponsiveSizing.scaleWidth(context, 34),
                                               ),
@@ -275,8 +274,8 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              SvgPicture.asset(
-                                                'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                                              Image.asset(
+                                                'assets/time_to_party_assets/banner_timer_icon_advert.png',
                                                 height: ResponsiveSizing.scaleHeight(context, 24),
                                                 width: ResponsiveSizing.scaleWidth(context, 24),
                                               ),
@@ -385,11 +384,11 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
-                  child: SvgPicture.asset('assets/time_to_party_assets/instruction_cards_linear_2.svg',
+                  child: Image.asset('assets/time_to_party_assets/instruction_cards_linear_2.png',
                       height: ResponsiveSizing.scaleHeight(context, 75))),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               translatedText(context, 'more_fun_description', 16, Palette().menudark, textAlign: TextAlign.center),
@@ -432,12 +431,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
-                  child: SvgPicture.asset(
-                'assets/time_to_party_assets/no_ads_icon.svg',
+                  child: Image.asset(
+                'assets/time_to_party_assets/no_ads_icon.png',
                 height: ResponsiveSizing.scaleHeight(context, 74),
                 width: ResponsiveSizing.scaleWidth(context, 74),
               )),
@@ -483,12 +482,12 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SvgPicture.asset('assets/time_to_party_assets/line_instruction_screen.svg'),
+                child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
               ),
               ResponsiveSizing.responsiveHeightGapWithCondition(context, 18, 10, 650),
               Center(
-                  child: SvgPicture.asset(
-                'assets/time_to_party_assets/banner_timer_icon_advert.svg',
+                  child: Image.asset(
+                'assets/time_to_party_assets/banner_timer_icon_advert.png',
                 height: ResponsiveSizing.scaleHeight(context, 74),
                 width: ResponsiveSizing.scaleWidth(context, 74),
                 color: Colors.black,

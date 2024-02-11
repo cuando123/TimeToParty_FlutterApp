@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -40,6 +39,7 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
             child: Scrollbar(
               thumbVisibility: false,
               child: ListView(
+                primary: false,
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   ResponsiveSizing.responsiveHeightGap(context, 10),
@@ -257,8 +257,8 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/time_to_party_assets/premium_cards_icon.svg',
+              Image.asset(
+                'assets/time_to_party_assets/premium_cards_icon.png',
                 height: ResponsiveSizing.scaleWidth(context, 43),
                 width: ResponsiveSizing.scaleWidth(context, 43),
               ),

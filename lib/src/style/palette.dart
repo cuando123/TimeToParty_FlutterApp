@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../app_lifecycle/responsive_sizing.dart';
 
 class Palette {
@@ -162,42 +161,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
 
   final List<ImageModel> layout1 = [
     ImageModel(
-        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        assetName: 'assets/time_to_party_assets/sheet_vector.png',
         topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        assetName: 'assets/time_to_party_assets/masks_vector.png',
         topPercentage: 55, // 5% wysokości ekranu
         leftPercentage: 7, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 25, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        assetName: 'assets/time_to_party_assets/microphone_vector.png',
         topPercentage: 70, // 5% wysokości ekranu
         leftPercentage: 5, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        assetName: 'assets/time_to_party_assets/letters_vector.png',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 65, // 10% szerokości ekranu
         widthPercentage: 10,
@@ -207,42 +206,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
 
   final List<ImageModel> layout2 = [
     ImageModel(
-        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        assetName: 'assets/time_to_party_assets/sheet_vector.png',
         topPercentage: 80, // 5% wysokości ekranu
         leftPercentage: 8, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        assetName: 'assets/time_to_party_assets/masks_vector.png',
         topPercentage: 58, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 58, // 5% wysokości ekranu
         leftPercentage: 15, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        assetName: 'assets/time_to_party_assets/microphone_vector.png',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 65, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        assetName: 'assets/time_to_party_assets/letters_vector.png',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 20, // 10% szerokości ekranu
         widthPercentage: 10,
@@ -252,42 +251,42 @@ class _CustomBackgroundState extends State<CustomBackground> {
 
   final List<ImageModel> layout3 = [
     ImageModel(
-        assetName: 'assets/time_to_party_assets/sheet_vector.svg',
+        assetName: 'assets/time_to_party_assets/sheet_vector.png',
         topPercentage: 20, // 5% wysokości ekranu
         leftPercentage: 70, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/masks_vector.svg',
+        assetName: 'assets/time_to_party_assets/masks_vector.png',
         topPercentage: 15, // 5% wysokości ekranu
         leftPercentage: 20, // 10% szerokości ekranu
         widthPercentage: 12,
         heightPercentage: 12,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 15, // 10% szerokości ekranu
         widthPercentage: 10,
         heightPercentage: 10,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/grey_star.svg',
+        assetName: 'assets/time_to_party_assets/grey_star.png',
         topPercentage: 60, // 5% wysokości ekranu
         leftPercentage: 80, // 10% szerokości ekranu
         widthPercentage: 12,
         heightPercentage: 12,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/microphone_vector.svg',
+        assetName: 'assets/time_to_party_assets/microphone_vector.png',
         topPercentage: 90, // 5% wysokości ekranu
         leftPercentage: 85, // 10% szerokości ekranu
         widthPercentage: 6,
         heightPercentage: 6,
         rotation: pi),
     ImageModel(
-        assetName: 'assets/time_to_party_assets/letters_vector.svg',
+        assetName: 'assets/time_to_party_assets/letters_vector.png',
         topPercentage: 85, // 5% wysokości ekranu
         leftPercentage: 10, // 10% szerokości ekranu
         widthPercentage: 10,
@@ -356,9 +355,11 @@ class _CustomBackgroundState extends State<CustomBackground> {
           child: SizedBox(
             width: imageModel.widthPercentage * screenSize.width / 100,
             height: imageModel.heightPercentage * screenSize.height / 100,
-            child: SvgPicture.asset(
-              imageModel.assetName,
-              colorFilter: ColorFilter.mode(Colors.white10, BlendMode.dstIn),
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.1), BlendMode.dstIn),
+              child: Image.asset(
+              imageModel.assetName
+              ),
             ),
           ),
         ),

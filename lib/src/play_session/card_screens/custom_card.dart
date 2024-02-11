@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/app_lifecycle/responsive_sizing.dart';
 import 'package:game_template/src/play_session/card_screens/roll_slot_machine.dart';
 import 'package:game_template/src/play_session/card_screens/styles/custom_style_strategy_bar.dart';
@@ -940,11 +939,11 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
   Widget buildImageWidget(ImageType? imageType) {
     switch (imageType) {
       case ImageType.declined:
-        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_declined.svg');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_declined.png');
       case ImageType.approved:
-        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_approved.svg');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_approved.png');
       case ImageType.skipped:
-        return SvgPicture.asset('assets/time_to_party_assets/cards_screens/button_drop.svg');
+        return Image.asset('assets/time_to_party_assets/cards_screens/button_drop.png');
       case ImageType.empty:
       default:
         return SizedBox(); // Pusty widget dla 'empty' lub 'null'
