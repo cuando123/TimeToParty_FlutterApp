@@ -273,9 +273,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                         );
                       },
                     ),*/
+                    SizedBox(height: 60),
                   ],
                 ),
               ),
+
               Consumer<IAPService>(
                 builder: (context, purchaseController, child) {
                   if (purchaseController.isPurchased) {

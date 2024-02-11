@@ -459,6 +459,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                         ],
                                       ),
                                     ),
+                                    SizedBox(height: 60),
                                   ],
                                 );
                               },
