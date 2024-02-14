@@ -320,9 +320,9 @@ class _CardAdvertisementScreenState extends State<CardAdvertisementScreen> with 
                                   fontSize: ResponsiveSizing.scaleHeight(context, 20),
                                 ),
                                 TextButton(
-                                  onPressed: () async {
+                                  onPressed: () {
                                     audioController.playSfx(SfxType.buttonBackExit);
-                                    await globalLoading.privacy_policy_function(context);
+                                    AnimatedAlertDialog.showPrivacyPolicyDialog(context);
                                   },
                                   child: translatedText(
                                       context, 'privacy_policy_and_personal_data', 14, Palette().white,

@@ -444,6 +444,68 @@ class AnimatedAlertDialog {
     );
   }
 
+//show privacy policy function
+  static void showPrivacyPolicyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final audioController = context.watch<AudioController>();
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            backgroundColor: Palette().white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: translatedText(context, 'would_you_like_exit', 20, Palette().pink, textAlign: TextAlign.center),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Image.asset('assets/time_to_party_assets/line_instruction_screen.png'),
+                ),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                translatedText(context, 'redirected_to_the_website', 16, Palette().menudark,
+                    textAlign: TextAlign.center),
+                ResponsiveSizing.responsiveHeightGap(context, 10),
+                Center(
+                  child: CustomStyledButton(
+                    icon: null,
+                    text: 'OK',
+                    onPressed: () async {
+                      audioController.playSfx(SfxType.buttonBackExit);
+                      Navigator.pop(context);
+                      String url = 'https://frydoapps.com/en/privacy-policy-for-games-and-apps/';
+                      if (await canLaunchUrlString(url)) {
+                        await launchUrlString(url, mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    backgroundColor: Palette().pink,
+                    foregroundColor: Palette().white,
+                    width: 200,
+                    height: 45,
+                    fontSize: ResponsiveSizing.scaleHeight(context, 20),
+                  ),
+                ),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: translatedText(context, 'cancel', 16, Palette().bluegrey, textAlign: TextAlign.center),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 //przekaz urzadzenie kolejnej osobie yellow card
   static void passTheDeviceNextPersonDialog(BuildContext context, String imageName, String text) {
     showGeneralDialog(

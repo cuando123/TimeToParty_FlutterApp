@@ -14,22 +14,6 @@ import '../audio/sounds.dart';
 import '../style/palette.dart';
 
 class GlobalLoading {
-  Future<void> privacy_policy_function(BuildContext context) async {
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
-    const url = 'https://frydoapps.com/wp-content/uploads/2023/04/Privacy_Policy_for_Applications_and_Games.pdf';
-    const fileName = 'Privacy_Policy_for_Applications_and_Games.pdf';
-
-    try {
-      final file = await downloadAndCachePdf(url, fileName);
-      _openPdfViewer(context, file, "Privacy policy");
-    } catch (e) {
-      print('Error: $e');
-      _connectionProblemDialog(context);
-    }
-
-    Provider.of<LoadingStatus>(context, listen: false).isLoading = false;
-  }
-
   Future<void> eula_function(BuildContext context) async {
     Provider.of<LoadingStatus>(context, listen: false).isLoading = true;
 

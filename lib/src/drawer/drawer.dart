@@ -95,9 +95,9 @@ class CustomAppDrawerState extends State<CustomAppDrawer> {
                             color: Palette().white,
                           ),
                           title: translatedText(context, 'privacy_policy', 14, Palette().white),
-                          onTap: () async {
+                          onTap: () {
                             audioController.playSfx(SfxType.buttonBackExit);
-                            await globalLoading.privacy_policy_function(context);
+                            AnimatedAlertDialog.showPrivacyPolicyDialog(context);
                           }),
                     ),
                   ),
