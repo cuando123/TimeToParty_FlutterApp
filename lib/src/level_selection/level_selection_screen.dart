@@ -398,6 +398,9 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                   // Opcjonalne: Czekaj krótką chwilę na zamknięcie klawiatury
                                                   await Future.delayed(Duration(milliseconds: 300));
 
+                                                  audioController.playSfx(SfxType.buttonAccept);
+                                                  await navigateToLoadingScreen(context, teamProvider.teamNames);
+                                                  /*
                                                   if (iapService.isPurchased) {
                                                     audioController.playSfx(SfxType.buttonAccept);
                                                     await navigateToLoadingScreen(context, teamProvider.teamNames);
@@ -416,7 +419,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                                                     } else {
                                                       navigateToLoadingScreen(context, teamProvider.teamNames);
                                                     }
-                                                  }
+                                                  }*/
                                                 } else {
                                                   AnimatedAlertDialog.showAnimatedDialog(context, 'team_names_empty',
                                                       SfxType.button_infos, 2, 20, false, false, true);
